@@ -43,6 +43,28 @@ Tag: latest | 168 PRs
 - X-Hermes-Session-Id headers for persistent sessions
 - Real-time tool streaming
 
+## v0.8.0 — Intelligent Automation (April 8, 2026)
+Tag: v2026.4.8 | 209 PRs | 82 issues resolved
+
+**Major additions:**
+- Background process notifications (no more polling)
+- Live model switching via /model across all platforms
+- Free Xiaomi MiMo v2 Pro on Nous Portal
+- Self-optimized GPT/Codex tool-use guidance (5 failure modes patched via automated benchmarking)
+- Native Google AI Studio (Gemini) integration with models.dev context length detection
+- Inactivity-based timeouts (tracks tool activity, not wall-clock)
+- Approval buttons for Slack and Telegram (native platform UI)
+- MCP OAuth 2.1 PKCE + OSV malware scanning
+- Centralized structured logging to ~/.hermes/logs/
+- Matrix promoted to Tier 1 (reactions, read receipts, E2EE, room management)
+- Supermemory memory provider
+- Expanded plugin system (custom CLI subcommands, request-scoped API hooks, session lifecycle)
+- New skills: popular-web-designs, p5js, manim-video, llm-wiki, gitnexus-explorer, research-paper-writing
+- Security hardening: SSRF consolidation, timing attack mitigations, tar traversal prevention, regex fix (100x perf)
+- 57 failing CI tests repaired
+
+Full release notes: research/27-release-v0.8.0.md
+
 ## Growth Trajectory
 - Feb 2026: Launch → 22,000 stars in weeks
-- Apr 2026: 36,400+ stars, 4,600+ forks, 2,100+ open issues
+- Apr 8 2026: v0.8.0 released — 43,700+ stars, 5,600+ forks, 2,500+ open issues

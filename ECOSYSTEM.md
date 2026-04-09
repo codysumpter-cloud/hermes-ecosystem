@@ -1,8 +1,8 @@
 # Hermes Agent Ecosystem Map
 
-> A comprehensive directory of tools, skills, plugins, and integrations for the [Hermes Agent](https://github.com/NousResearch/hermes-agent) by [Nous Research](https://nousresearch.com). Hermes is an autonomous, self-improving AI agent with persistent memory, auto-generated skills, and multi-platform deployment — MIT licensed, 36k+ stars.
+> A comprehensive directory of tools, skills, plugins, and integrations for the [Hermes Agent](https://github.com/NousResearch/hermes-agent) by [Nous Research](https://nousresearch.com). Hermes is an autonomous, self-improving AI agent with persistent memory, auto-generated skills, and multi-platform deployment — MIT licensed, 43.7k+ stars.
 >
-> **Last updated:** 2026-04-08 | **Hermes version:** 0.7.0
+> **Last updated:** 2026-04-09 | **Hermes version:** 0.8.0
 
 ---
 
@@ -40,7 +40,7 @@ The foundational repos maintained by Nous Research.
 
 | Repository | Description | Stars | Maturity |
 |:-----------|:------------|------:|:---------|
-| [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent) `official` | The core agent — self-improving AI with persistent memory, 47 tools, 14 messaging platforms, and 6 execution backends | 36,438 | Production |
+| [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent) `official` | The core agent — self-improving AI with persistent memory, 47 tools, 14 messaging platforms, and 6 execution backends | 43,724 | Production |
 | [NousResearch/hermes-agent-self-evolution](https://github.com/NousResearch/hermes-agent-self-evolution) `official` | Evolutionary self-improvement for Hermes — optimizes skills, prompts, and code using DSPy + GEPA | 778 | Beta |
 | [NousResearch/hermes-paperclip-adapter](https://github.com/NousResearch/hermes-paperclip-adapter) `official` | Run Hermes as a managed employee in Paperclip company systems | 663 | Beta |
 | [NousResearch/autonovel](https://github.com/NousResearch/autonovel) `official` | Autonomous novel-writing pipeline generating 100k+ word manuscripts | 401 | Beta |
