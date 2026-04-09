@@ -240,6 +240,133 @@
   }
   .footer .cta:hover { opacity: 0.85; text-decoration: none; }
 
+  /* ── Search bar ── */
+  .controls {
+    max-width: 1400px; margin: 0 auto 20px;
+    display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+  }
+  .search-wrap {
+    flex: 1; min-width: 200px; position: relative;
+  }
+  .search-wrap input {
+    width: 100%; padding: 10px 14px 10px 36px;
+    background: #13131f; border: 1px solid #1e1e30; border-radius: 10px;
+    color: #e0e0e8; font-size: 13px; font-family: inherit;
+    outline: none; transition: border-color 0.2s;
+  }
+  .search-wrap input:focus { border-color: #a78bfa; }
+  .search-wrap input::placeholder { color: #55556a; }
+  .search-wrap::before {
+    content: '\1F50D'; position: absolute; left: 12px; top: 50%;
+    transform: translateY(-50%); font-size: 13px; opacity: 0.4;
+  }
+  .sort-btns { display: flex; gap: 4px; }
+  .sort-btn {
+    padding: 6px 12px; border-radius: 8px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+    color: #8888a0; font-size: 11px; font-weight: 600; font-family: inherit;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .sort-btn:hover { background: rgba(255,255,255,0.08); color: #c8c8d8; }
+  .sort-btn.active { background: rgba(167,139,250,0.15); border-color: rgba(167,139,250,0.3); color: #a78bfa; }
+  #result-count { font-size: 11px; color: #6b6b80; min-width: 80px; }
+
+  /* ── Stats bar ── */
+  .stats-bar {
+    max-width: 1400px; margin: 0 auto 20px;
+    display: flex; gap: 24px; flex-wrap: wrap;
+    padding: 10px 16px; border-radius: 10px;
+    background: rgba(167,139,250,0.04); border: 1px solid rgba(167,139,250,0.08);
+    font-size: 12px; color: #6b6b80; opacity: 0.5;
+    transition: opacity 0.3s;
+  }
+  .stats-bar.loaded { opacity: 1; }
+  .stats-bar .stat-item { display: flex; gap: 6px; align-items: center; }
+  .stats-bar .stat-val { color: #c084fc; font-weight: 700; }
+
+  /* ── Chat widget ── */
+  #chat-btn {
+    position: fixed; bottom: 24px; right: 24px; z-index: 900;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    border: none; cursor: pointer; color: #fff;
+    font-size: 22px; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px rgba(167,139,250,0.4);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  #chat-btn:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(167,139,250,0.5); }
+
+  #chat-panel {
+    position: fixed; bottom: 0; right: 0; z-index: 950;
+    width: 420px; height: 100vh; max-height: 100vh;
+    background: #0d0d18; border-left: 1px solid #1e1e30;
+    display: flex; flex-direction: column;
+    transform: translateX(100%); transition: transform 0.25s ease;
+  }
+  #chat-panel.open { transform: translateX(0); }
+
+  .chat-header {
+    padding: 16px 18px; border-bottom: 1px solid #1e1e30;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .chat-header h3 {
+    font-size: 14px; font-weight: 700; color: #e0e0f0; margin: 0;
+  }
+  .chat-header span { font-size: 11px; color: #6b6b80; }
+  #chat-close {
+    background: none; border: none; color: #6b6b80; font-size: 20px;
+    cursor: pointer; padding: 4px 8px; border-radius: 6px;
+  }
+  #chat-close:hover { background: rgba(255,255,255,0.06); color: #e0e0e8; }
+
+  #chat-messages {
+    flex: 1; overflow-y: auto; padding: 16px 18px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .chat-msg {
+    padding: 10px 14px; border-radius: 12px;
+    font-size: 13px; line-height: 1.6; max-width: 90%;
+    word-wrap: break-word;
+  }
+  .chat-msg code { background: rgba(255,255,255,0.08); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+  .chat-msg .citation {
+    display: inline-block; background: rgba(99,102,241,0.15);
+    padding: 1px 8px; border-radius: 4px; font-size: 10px;
+    color: #818cf8; font-weight: 600; margin: 2px 2px;
+  }
+  .chat-msg a { color: #a78bfa; text-decoration: underline; }
+  .chat-user {
+    background: rgba(167,139,250,0.12); color: #d4c4ff;
+    align-self: flex-end; border-bottom-right-radius: 4px;
+  }
+  .chat-assistant {
+    background: #13131f; color: #b8b8cc;
+    align-self: flex-start; border-bottom-left-radius: 4px;
+  }
+  .chat-msg.loading { color: #6b6b80; font-style: italic; }
+  .chat-msg.error { color: #f87171; }
+
+  .chat-input-wrap {
+    padding: 12px 18px; border-top: 1px solid #1e1e30;
+    display: flex; gap: 8px;
+  }
+  #chat-input {
+    flex: 1; padding: 10px 14px; border-radius: 10px;
+    background: #13131f; border: 1px solid #1e1e30;
+    color: #e0e0e8; font-size: 13px; font-family: inherit;
+    outline: none; resize: none;
+  }
+  #chat-input:focus { border-color: #a78bfa; }
+  #chat-input::placeholder { color: #44445a; }
+  #chat-send {
+    padding: 10px 16px; border-radius: 10px;
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    border: none; color: #fff; font-size: 13px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+    transition: opacity 0.15s;
+  }
+  #chat-send:hover { opacity: 0.85; }
+
   /* ── Responsive ── */
   @media (max-width: 1100px) {
     .grid { grid-template-columns: repeat(3, 1fr); }
@@ -250,10 +377,12 @@
     .header h1 { font-size: 28px; }
     .hero-stats { gap: 16px; }
     .hero-stat .num { font-size: 16px; }
+    #chat-panel { width: 100%; }
   }
   @media (max-width: 500px) {
     .grid { grid-template-columns: 1fr; }
     .category.span-2 { grid-column: span 1; }
+    .controls { flex-direction: column; }
   }
 </style>
 </head>
@@ -272,6 +401,26 @@
   <div class="tt-name" id="tt-name"></div>
   <div class="tt-desc" id="tt-desc"></div>
   <div class="tt-link">Click to open on GitHub →</div>
+</div>
+
+<!-- Controls -->
+<div class="controls">
+  <div class="search-wrap">
+    <input type="text" id="search-input" placeholder="Search repos by name or description..." autocomplete="off">
+  </div>
+  <div class="sort-btns">
+    <button class="sort-btn active" data-sort="stars">Stars</button>
+    <button class="sort-btn" data-sort="name">Name</button>
+    <button class="sort-btn" data-sort="updated">Recent</button>
+  </div>
+  <span id="result-count"></span>
+</div>
+
+<!-- Stats Bar -->
+<div class="stats-bar" id="stats-bar">
+  <div class="stat-item">Total Stars: <span class="stat-val" id="stat-total-stars">--</span></div>
+  <div class="stat-item">Repos: <span class="stat-val" id="stat-total-repos">83</span></div>
+  <div class="stat-item">Last Updated: <span class="stat-val" id="stat-updated">--</span></div>
 </div>
 
 <div class="grid">
@@ -466,45 +615,283 @@
   <a class="cta" href="https://github.com/NousResearch/hermes-agent" target="_blank" rel="noopener">Get Hermes Agent →</a>
 </div>
 
-<!-- Tooltip JS -->
+<!-- Chat Widget -->
+<button id="chat-btn" title="Ask about the ecosystem">💬</button>
+<div id="chat-panel">
+  <div class="chat-header">
+    <div>
+      <h3>Ask the Ecosystem</h3>
+      <span>Powered by Hermes 3 · Grounded in research</span>
+    </div>
+    <button id="chat-close">✕</button>
+  </div>
+  <div id="chat-messages">
+    <div class="chat-msg chat-assistant">Hi! I know everything about the Hermes Agent ecosystem — tools, skills, comparisons, setup guides, and more. What would you like to know?</div>
+  </div>
+  <div class="chat-input-wrap">
+    <input type="text" id="chat-input" placeholder="Ask anything about Hermes Agent...">
+    <button id="chat-send">Send</button>
+  </div>
+</div>
+
+<!-- Tooltip + Dashboard + Chat JS -->
 <script>
+(function() {
+  // ── Tooltip ──
   const tooltip = document.getElementById('tooltip');
   const ttName = document.getElementById('tt-name');
   const ttDesc = document.getElementById('tt-desc');
 
-  document.querySelectorAll('.item[data-desc]').forEach(item => {
-    item.addEventListener('mouseenter', e => {
-      const name = item.textContent.replace(/★[\s\d,.K]+/, '').trim();
-      const desc = item.getAttribute('data-desc');
-      ttName.textContent = name;
-      ttDesc.textContent = desc;
-      tooltip.style.display = 'block';
-      positionTooltip(e);
+  function initTooltips() {
+    document.querySelectorAll('.item[data-desc]').forEach(item => {
+      item.addEventListener('mouseenter', e => {
+        ttName.textContent = item.textContent.replace(/★[\s\d,.K]+/, '').trim();
+        ttDesc.textContent = item.getAttribute('data-desc');
+        tooltip.style.display = 'block';
+        positionTooltip(e);
+      });
+      item.addEventListener('mousemove', positionTooltip);
+      item.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
     });
-
-    item.addEventListener('mousemove', positionTooltip);
-
-    item.addEventListener('mouseleave', () => {
-      tooltip.style.display = 'none';
-    });
-  });
+  }
 
   function positionTooltip(e) {
     const pad = 12;
-    let x = e.clientX + pad;
-    let y = e.clientY + pad;
-
-    // Keep tooltip on screen
-    const rect = tooltip.getBoundingClientRect();
-    const w = 340; // max-width
-    const h = rect.height || 80;
-
+    let x = e.clientX + pad, y = e.clientY + pad;
+    const w = 340, h = tooltip.getBoundingClientRect().height || 80;
     if (x + w > window.innerWidth) x = e.clientX - w - pad;
     if (y + h > window.innerHeight) y = e.clientY - h - pad;
-
     tooltip.style.left = x + 'px';
     tooltip.style.top = y + 'px';
   }
+
+  initTooltips();
+
+  // ── Add data-repo attributes to all items ──
+  document.querySelectorAll('.item[href*="github.com/"]').forEach(item => {
+    const match = item.href.match(/github\.com\/([^/]+\/[^/]+)/);
+    if (match) item.setAttribute('data-repo', match[1]);
+  });
+
+  // ── Live star counts ──
+  async function fetchStars() {
+    try {
+      const res = await fetch('/api/stars');
+      if (!res.ok) return;
+      const data = await res.json();
+
+      // Update star counts on each chip
+      document.querySelectorAll('.item[data-repo]').forEach(item => {
+        const key = item.getAttribute('data-repo');
+        const info = data.repos?.[key];
+        if (!info) return;
+
+        const starsEl = item.querySelector('.stars');
+        if (starsEl) {
+          starsEl.textContent = '★ ' + formatStars(info.stars);
+        }
+        item.setAttribute('data-stars', info.stars);
+        if (info.updatedAt) item.setAttribute('data-updated', info.updatedAt);
+      });
+
+      // Update stats bar
+      const statsBar = document.getElementById('stats-bar');
+      if (statsBar && data.totals) {
+        document.getElementById('stat-total-stars').textContent = formatStars(data.totals.stars);
+        document.getElementById('stat-total-repos').textContent = data.totals.count;
+        document.getElementById('stat-updated').textContent = new Date(data.totals.updated).toLocaleDateString();
+        statsBar.classList.add('loaded');
+      }
+
+      // Update hero stat
+      const heroStars = document.querySelector('.hero-stat .num');
+      if (heroStars && data.repos?.['NousResearch/hermes-agent']) {
+        heroStars.textContent = formatStars(data.repos['NousResearch/hermes-agent'].stars);
+      }
+    } catch (e) {
+      console.log('Stars API unavailable, using static counts');
+    }
+  }
+
+  function formatStars(n) {
+    if (n >= 1000) return (n / 1000).toFixed(n >= 10000 ? 1 : 1) + 'K';
+    return String(n);
+  }
+
+  fetchStars();
+
+  // ── Search & Filter ──
+  const searchInput = document.getElementById('search-input');
+  const sortBtns = document.querySelectorAll('.sort-btn');
+  const categories = document.querySelectorAll('.category');
+
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      const q = searchInput.value.toLowerCase().trim();
+      let totalVisible = 0;
+
+      categories.forEach(cat => {
+        const items = cat.querySelectorAll('.item');
+        let catVisible = 0;
+
+        items.forEach(item => {
+          const name = (item.getAttribute('data-repo') || item.textContent).toLowerCase();
+          const desc = (item.getAttribute('data-desc') || '').toLowerCase();
+          const match = !q || name.includes(q) || desc.includes(q);
+          item.style.display = match ? '' : 'none';
+          if (match) catVisible++;
+        });
+
+        cat.style.display = catVisible > 0 ? '' : 'none';
+        totalVisible += catVisible;
+
+        // Update count badge
+        const countEl = cat.querySelector('.count');
+        if (countEl && q) countEl.textContent = catVisible;
+      });
+
+      // Show result count
+      const resultCount = document.getElementById('result-count');
+      if (resultCount) {
+        resultCount.textContent = q ? `${totalVisible} results` : '';
+      }
+    });
+  }
+
+  // ── Sort ──
+  sortBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      sortBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const mode = btn.getAttribute('data-sort');
+      sortItems(mode);
+    });
+  });
+
+  function sortItems(mode) {
+    categories.forEach(cat => {
+      const container = cat.querySelector('.items');
+      if (!container) return;
+      const items = Array.from(container.querySelectorAll('.item'));
+
+      items.sort((a, b) => {
+        if (mode === 'stars') {
+          return (parseInt(b.getAttribute('data-stars')) || 0) - (parseInt(a.getAttribute('data-stars')) || 0);
+        } else if (mode === 'name') {
+          return (a.getAttribute('data-repo') || '').localeCompare(b.getAttribute('data-repo') || '');
+        } else if (mode === 'updated') {
+          return (b.getAttribute('data-updated') || '').localeCompare(a.getAttribute('data-updated') || '');
+        }
+        return 0;
+      });
+
+      items.forEach(item => container.appendChild(item));
+    });
+  }
+
+  // Initialize data-stars attributes from current star text
+  document.querySelectorAll('.item').forEach(item => {
+    const starsEl = item.querySelector('.stars');
+    if (starsEl && !item.getAttribute('data-stars')) {
+      const text = starsEl.textContent.replace('★', '').trim().replace(',', '');
+      let val = 0;
+      if (text.includes('K')) val = parseFloat(text) * 1000;
+      else val = parseInt(text) || 0;
+      item.setAttribute('data-stars', val);
+    }
+  });
+
+  // ── Chat Widget ──
+  const chatBtn = document.getElementById('chat-btn');
+  const chatPanel = document.getElementById('chat-panel');
+  const chatClose = document.getElementById('chat-close');
+  const chatInput = document.getElementById('chat-input');
+  const chatSend = document.getElementById('chat-send');
+  const chatMessages = document.getElementById('chat-messages');
+
+  let chatHistory = [];
+
+  if (chatBtn) {
+    chatBtn.addEventListener('click', () => {
+      chatPanel.classList.toggle('open');
+      if (chatPanel.classList.contains('open')) chatInput.focus();
+    });
+    chatClose.addEventListener('click', () => chatPanel.classList.remove('open'));
+  }
+
+  async function sendMessage() {
+    const msg = chatInput.value.trim();
+    if (!msg) return;
+
+    // Add user message
+    appendMessage('user', msg);
+    chatInput.value = '';
+    chatHistory.push({ role: 'user', content: msg });
+
+    // Add loading indicator
+    const loadingEl = appendMessage('assistant', '...');
+    loadingEl.classList.add('loading');
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: msg, history: chatHistory.slice(-6) })
+      });
+
+      if (!res.ok) throw new Error('Chat API error');
+
+      // Handle streaming response
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let fullResponse = '';
+      loadingEl.textContent = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        fullResponse += chunk;
+        loadingEl.innerHTML = renderMarkdown(fullResponse);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      loadingEl.classList.remove('loading');
+      chatHistory.push({ role: 'assistant', content: fullResponse });
+    } catch (e) {
+      loadingEl.textContent = 'Sorry, I couldn\'t process that. Please try again.';
+      loadingEl.classList.remove('loading');
+      loadingEl.classList.add('error');
+    }
+  }
+
+  if (chatSend) chatSend.addEventListener('click', sendMessage);
+  if (chatInput) chatInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
+
+  function appendMessage(role, text) {
+    const el = document.createElement('div');
+    el.className = `chat-msg chat-${role}`;
+    el.innerHTML = role === 'user' ? escapeHtml(text) : renderMarkdown(text);
+    chatMessages.appendChild(el);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    return el;
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function renderMarkdown(text) {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/\[Source: ([^\]]+)\]/g, '<span class="citation">$1</span>')
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
+      .replace(/\n/g, '<br>');
+  }
+})();
 </script>
 
 </body>
