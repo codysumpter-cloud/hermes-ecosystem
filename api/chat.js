@@ -18,13 +18,17 @@ function loadChunks() {
 
 const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
 
-// Model config — supports primary + fallback via OpenRouter's native routing
-// OpenRouter caps the models array at 3 total, so we pick: 1 primary free,
-// 1 best free fallback, 1 ultra-cheap paid safety net.
+// Model config — supports primary + fallback via OpenRouter's native routing.
+// OpenRouter caps the models array at 3 total.
+//
+// IMPORTANT: Only use NON-REASONING models here. Reasoning models (GLM-4.7-Flash,
+// Nemotron 3 Super) either stream to `delta.reasoning` instead of `delta.content`
+// (returning empty content to our parser) or leak reasoning text into their
+// content output.
 const PRIMARY_MODEL = process.env.OPENROUTER_MODEL || "google/gemma-4-31b-it:free";
 const FALLBACK_MODELS = (process.env.OPENROUTER_FALLBACK_MODELS ||
-  "nvidia/nemotron-3-super-120b-a12b:free," +
-  "z-ai/glm-4.7-flash"
+  "google/gemma-4-26b-a4b-it:free," +
+  "google/gemini-3-flash-preview"
 ).split(",").map(s => s.trim()).filter(Boolean).slice(0, 2);
 
 const MAX_TOKENS = parseInt(process.env.CHAT_MAX_TOKENS || "800");
