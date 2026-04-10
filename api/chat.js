@@ -129,10 +129,11 @@ ${context}`;
         "X-Title": "Hermes Ecosystem Chat",
       },
       body: JSON.stringify({
-        model: PRIMARY_MODEL,
-        // OpenRouter native fallback — tries these in order if primary fails
-        models: FALLBACK_MODELS.length > 0 ? [PRIMARY_MODEL, ...FALLBACK_MODELS] : undefined,
-        route: "fallback",
+        // OpenRouter native fallback — pass ONLY `models` array (no `model` field)
+        // It will try each in order until one succeeds
+        ...(FALLBACK_MODELS.length > 0
+          ? { models: [PRIMARY_MODEL, ...FALLBACK_MODELS] }
+          : { model: PRIMARY_MODEL }),
         messages,
         stream: true,
         max_tokens: MAX_TOKENS,
@@ -143,7 +144,17 @@ ${context}`;
     if (!llmRes.ok) {
       const err = await llmRes.text();
       console.error("LLM error:", err);
-      return res.status(502).json({ error: "LLM request failed" });
+      // Try to parse and surface the real error
+      let userMsg = "The AI service is temporarily unavailable. Please try again in a moment.";
+      try {
+        const parsed = JSON.parse(err);
+        if (parsed.error?.code === 429) {
+          userMsg = "All available models are rate-limited right now. Please try again in a minute.";
+        } else if (parsed.error?.message) {
+          userMsg = parsed.error.message;
+        }
+      } catch {}
+      return res.status(502).json({ error: userMsg });
     }
 
     // Stream SSE to client
