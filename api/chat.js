@@ -97,8 +97,16 @@ export default async function handler(req, res) {
       return res.end();
     }
 
-    // 2. Embed the query
-    const queryEmbedding = await getEmbedding(message);
+    // 2. Rewrite query using conversation history (if history exists)
+    // This transforms "how do I install it?" → "how do I install Hermes Agent?"
+    const searchQuery = history.length > 0
+      ? await rewriteQuery(message, history)
+      : message;
+
+    console.log(`[RAG] Original: "${message}" → Search: "${searchQuery}"`);
+
+    // 3. Embed the rewritten query
+    const queryEmbedding = await getEmbedding(searchQuery);
 
     // 3. Cosine similarity search — top 8 chunks for broader coverage
     const scored = allChunks
@@ -256,6 +264,124 @@ ${retrievedContext}`;
       res.write("\n\n[Error: " + (err.message || "Internal error") + "]");
       res.end();
     } catch {}
+  }
+}
+
+// Rewrite a follow-up question as a standalone query using conversation history.
+// Uses few-shot examples for reliable pronoun resolution and context expansion.
+async function rewriteQuery(message, history) {
+  try {
+    // Build a minimal history for the rewriter
+    const historyText = history
+      .slice(-4) // last 2 turns (user + assistant)
+      .map(m => `${m.role === "user" ? "User" : "Assistant"}: ${m.content.slice(0, 300)}`)
+      .join("\n");
+
+    const rewritePrompt = `Your job: rewrite follow-up questions into complete, standalone questions by resolving pronouns and adding implicit context from the conversation.
+
+Rules:
+- If the message uses pronouns like "it", "they", "this", "that" — replace them with the specific thing from the conversation.
+- If the message is a fragment like "and for Telegram?" or "what about X?" — expand it into a full question.
+- If the message is ALREADY a complete standalone question, return it EXACTLY as-is.
+- Output ONLY the rewritten question. No preamble, no quotes, no explanation.
+- Always prefer mentioning "Hermes Agent" explicitly if the question is about Hermes.
+
+Examples:
+
+History:
+User: What is Hermes Agent?
+Assistant: Hermes Agent is an open-source AI agent by Nous Research.
+Latest: how do I install it?
+Rewritten: How do I install Hermes Agent?
+
+History:
+User: Tell me about Hermes skills
+Assistant: Skills are on-demand knowledge documents.
+Latest: how do I create one?
+Rewritten: How do I create a Hermes skill?
+
+History:
+User: What tools come with Hermes?
+Assistant: Hermes has 47 built-in tools including terminal, browser, files, etc.
+Latest: what are they?
+Rewritten: What are the built-in tools in Hermes Agent?
+
+History:
+User: How do I set up the Discord integration in Hermes?
+Assistant: Run hermes gateway setup and select Discord.
+Latest: and for Telegram?
+Rewritten: How do I set up the Telegram integration in Hermes?
+
+History:
+User: What memory providers does Hermes support?
+Assistant: Hermes supports 8 providers including Honcho, Mem0, Supermemory, Hindsight.
+Latest: which one is best?
+Rewritten: Which memory provider is best for Hermes Agent?
+
+History:
+User: Hi
+Assistant: Hello! How can I help?
+Latest: What's the difference between Hermes Agent and OpenClaw?
+Rewritten: What's the difference between Hermes Agent and OpenClaw?
+
+Now rewrite this:
+
+History:
+${historyText}
+Latest: ${message}
+Rewritten:`;
+
+    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${OPENROUTER_KEY}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://hermes-ecosystem.vercel.app",
+        "X-Title": "Hermes Ecosystem Chat - Query Rewriter",
+      },
+      body: JSON.stringify({
+        // Query rewriting needs fast, reliable, non-reasoning models with good
+        // instruction following. Avoid reasoning models (GLM-4.7-Flash) which
+        // put output in a 'reasoning' field and return null content.
+        // All three options below are paid but cost fractions of a cent per call.
+        models: [
+          "google/gemini-3.1-flash-lite-preview",
+          "qwen/qwen3.5-flash-02-23",
+          "mistralai/mistral-small-2603",
+        ],
+        messages: [{ role: "user", content: rewritePrompt }],
+        max_tokens: 100,
+        temperature: 0,
+        stop: ["\n\n", "History:", "Latest:"],
+      }),
+    });
+
+    if (!res.ok) {
+      console.warn("Query rewrite failed, using original");
+      return message;
+    }
+
+    const data = await res.json();
+    let rewritten = data.choices?.[0]?.message?.content?.trim();
+
+    // Sanity checks: if rewrite is empty, too short, or way longer, fall back
+    if (!rewritten || rewritten.length < 5 || rewritten.length > message.length * 10) {
+      return message;
+    }
+
+    // Strip quotes if the model added them despite instructions
+    rewritten = rewritten.replace(/^["'`]+|["'`]+$/g, "").trim();
+
+    // Strip leading "Rewritten:" if the model echoed it
+    rewritten = rewritten.replace(/^Rewritten:\s*/i, "").trim();
+
+    // Take only first line (in case model added extra lines)
+    rewritten = rewritten.split("\n")[0].trim();
+
+    return rewritten || message;
+  } catch (err) {
+    console.warn("Query rewrite error:", err.message);
+    return message; // Always fall back to the original on any failure
   }
 }
 
