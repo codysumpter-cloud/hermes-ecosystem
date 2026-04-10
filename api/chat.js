@@ -19,9 +19,16 @@ function loadChunks() {
 const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
 
 // Model config — supports primary + fallback via OpenRouter's native routing
+// Default chain: 4 free models, then 1 ultra-cheap paid model as final safety net
+// (Free models share global rate limits and frequently get throttled)
 const PRIMARY_MODEL = process.env.OPENROUTER_MODEL || "google/gemma-4-31b-it:free";
-const FALLBACK_MODELS = (process.env.OPENROUTER_FALLBACK_MODELS || "google/gemma-4-26b-a4b-it:free,meta-llama/llama-3.3-70b-instruct:free")
-  .split(",").map(s => s.trim()).filter(Boolean);
+const FALLBACK_MODELS = (process.env.OPENROUTER_FALLBACK_MODELS ||
+  "google/gemma-4-26b-a4b-it:free," +
+  "nvidia/nemotron-3-super-120b-a12b:free," +
+  "arcee-ai/trinity-large-preview:free," +
+  "nvidia/nemotron-3-nano-30b-a3b:free," +
+  "z-ai/glm-4.7-flash"
+).split(",").map(s => s.trim()).filter(Boolean);
 
 const MAX_TOKENS = parseInt(process.env.CHAT_MAX_TOKENS || "800");
 
