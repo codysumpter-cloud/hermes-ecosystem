@@ -17,7 +17,9 @@ function loadChunks() {
 }
 
 const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
-const RATE_LIMIT = 20; // per hour per IP
+const CHAT_MODEL = process.env.OPENROUTER_MODEL || "meta-llama/llama-3.3-70b-instruct";
+const MAX_TOKENS = parseInt(process.env.CHAT_MAX_TOKENS || "800");
+const RATE_LIMIT = parseInt(process.env.CHAT_RATE_LIMIT || "20"); // per hour per IP
 const RATE_WINDOW = 3600; // seconds
 
 export default async function handler(req, res) {
@@ -103,10 +105,10 @@ ${context}`;
         "X-Title": "Hermes Ecosystem Chat",
       },
       body: JSON.stringify({
-        model: "nousresearch/hermes-3-llama-3.1-70b",
+        model: CHAT_MODEL,
         messages,
         stream: true,
-        max_tokens: 1024,
+        max_tokens: MAX_TOKENS,
         temperature: 0.3,
       }),
     });
