@@ -100,32 +100,60 @@ export default async function handler(req, res) {
     // 2. Embed the query
     const queryEmbedding = await getEmbedding(message);
 
-    // 3. Cosine similarity search
+    // 3. Cosine similarity search — top 8 chunks for broader coverage
     const scored = allChunks
       .map(chunk => ({
         ...chunk,
         score: cosineSimilarity(queryEmbedding, chunk.embedding),
       }))
       .sort((a, b) => b.score - a.score)
-      .slice(0, 5);
+      .slice(0, 8);
 
-    // 4. Build context from top chunks
-    const context = scored
+    // 4. Build context: ALWAYS include baseline + retrieved chunks
+    // This prevents vague queries from getting weak answers due to bad retrieval
+    const baselineContext = `## CORE FACTS (always true)
+
+Hermes Agent is an open-source autonomous AI agent developed by Nous Research, released in February 2026 under MIT license. It currently has 43,700+ stars on GitHub (v0.8.0 released April 8, 2026).
+
+**What makes it unique:** Unlike stateless chatbots, Hermes has a built-in learning loop — it creates reusable skills from experience, remembers what it learns across sessions via persistent memory (MEMORY.md + USER.md + SQLite FTS5), and gets more capable the longer you use it. It's "the agent that grows with you."
+
+**Core capabilities:**
+- 47 built-in tools (terminal, files, browser, code execution, image gen, voice, etc.)
+- 14 messaging platforms (Telegram, Discord, Slack, WhatsApp, Signal, Matrix, Feishu, etc.)
+- 20+ LLM providers (OpenRouter, Nous Portal, Anthropic, OpenAI, local via Ollama, etc.)
+- 6 execution backends (local, Docker, SSH, Singularity, Modal, Daytona)
+- Autonomous skill creation following agentskills.io standard
+- Persistent cross-session memory with 8 pluggable memory providers
+
+**Installation:** One-line install on Linux/macOS/WSL2:
+\`curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash\`
+Then run \`hermes\` to start. Only Git is required as a prerequisite — the installer handles Python, Node.js, ripgrep, and ffmpeg. Windows native not supported — use WSL2.
+
+**Links:** https://github.com/NousResearch/hermes-agent | https://hermes-agent.nousresearch.com/docs`;
+
+    const retrievedContext = scored
       .map(c => `[Source: ${c.source}${c.section ? `, Section: "${c.section}"` : ""}]\n${c.text}`)
       .join("\n\n---\n\n");
 
     // 5. Build messages for LLM
-    const systemPrompt = `You are the Hermes Agent Ecosystem assistant. You help users understand the Hermes Agent ecosystem — tools, skills, plugins, comparisons, setup guides, and more.
+    const systemPrompt = `You are the Hermes Agent Ecosystem assistant. You help users understand the Hermes Agent ecosystem — what it is, how to use it, tools, skills, plugins, comparisons, setup guides, and more.
 
-RULES:
-- Answer ONLY from the provided context. If the context doesn't cover the question, say so honestly.
-- Cite your sources using [Source: filename.md] format.
-- Be concise and direct. Use bullet points for lists.
-- When comparing tools or recommending repos, mention star counts if available.
-- If asked about setup or installation, reference the specific guide from the research.
+ANSWER RULES:
+- Start with a direct, complete answer. Don't hedge with "based on the context."
+- Use the CORE FACTS section as your baseline — those are always true.
+- Use the RETRIEVED CONTEXT section for specific details, recent updates, and tool recommendations.
+- Cite sources from RETRIEVED CONTEXT using [Source: filename.md] format in brackets.
+- For "what is" questions, give a proper 2-3 sentence overview first, THEN details.
+- For "how do I" questions, give concrete steps with commands.
+- Use bullet points for lists of tools, skills, or steps.
+- Mention star counts when comparing or recommending repos.
+- If a question isn't covered by your sources, say so honestly.
 
-CONTEXT:
-${context}`;
+${baselineContext}
+
+## RETRIEVED CONTEXT (relevant to this specific question)
+
+${retrievedContext}`;
 
     const messages = [
       { role: "system", content: systemPrompt },
@@ -177,6 +205,7 @@ ${context}`;
     const reader = llmRes.body.getReader();
     const decoder = new TextDecoder();
     let buffer = "";
+    let totalContent = "";
 
     while (true) {
       const { done, value } = await reader.read();
@@ -193,14 +222,30 @@ ${context}`;
 
         try {
           const parsed = JSON.parse(data);
+
+          // Check for errors embedded in the stream
+          if (parsed.error) {
+            console.error("Stream error:", parsed.error);
+            if (totalContent.length === 0) {
+              res.write("The model returned an error. Please try asking again.");
+            }
+            return res.end();
+          }
+
           const content = parsed.choices?.[0]?.delta?.content;
           if (content) {
+            totalContent += content;
             res.write(content);
           }
         } catch (e) {
           // Skip malformed chunks
         }
       }
+    }
+
+    // If the model returned nothing, tell the user
+    if (totalContent.trim().length === 0) {
+      res.write("The model returned an empty response. This sometimes happens with free models under load. Please try rephrasing or ask again.");
     }
 
     res.end();
