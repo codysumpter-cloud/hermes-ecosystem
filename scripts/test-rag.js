@@ -8,6 +8,13 @@
  * Usage: OPENROUTER_API_KEY=... node scripts/test-rag.js
  */
 
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.resolve(__dirname, "..");
+
 const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
 if (!OPENROUTER_KEY) {
   console.error("Error: OPENROUTER_API_KEY required");
@@ -173,14 +180,204 @@ const TESTS = [
   },
 ];
 
+// ── BM25 implementation (mirror of api/chat.js) ──
+const STOPWORDS = new Set([
+  "a","an","and","are","as","at","be","by","for","from","has","have","he","in","is","it",
+  "its","of","on","that","the","to","was","were","will","with","you","your","i","me","my",
+  "we","us","our","they","them","their","this","these","those","or","but","if","so","do",
+  "does","did","can","how","what","when","where","why","which","who","whom","which"
+]);
+
+function tokenize(text) {
+  return text.toLowerCase().split(/[^a-z0-9_-]+/).filter(t => t.length >= 2 && !STOPWORDS.has(t));
+}
+
+function buildBM25Index(chunks) {
+  const N = chunks.length;
+  const docFreq = new Map();
+  const docs = [];
+  let totalLen = 0;
+  for (const chunk of chunks) {
+    const tokens = tokenize(chunk.text);
+    const tf = new Map();
+    for (const t of tokens) tf.set(t, (tf.get(t) || 0) + 1);
+    docs.push({ tf, len: tokens.length });
+    totalLen += tokens.length;
+    for (const t of tf.keys()) docFreq.set(t, (docFreq.get(t) || 0) + 1);
+  }
+  const avgdl = totalLen / N;
+  const idf = new Map();
+  for (const [term, df] of docFreq) {
+    idf.set(term, Math.log((N - df + 0.5) / (df + 0.5) + 1));
+  }
+  return { docs, idf, avgdl, k1: 1.5, b: 0.75 };
+}
+
+function bm25Score(query, index) {
+  const queryTokens = tokenize(query);
+  const scores = new Array(index.docs.length).fill(0);
+  for (const term of queryTokens) {
+    const termIdf = index.idf.get(term);
+    if (!termIdf) continue;
+    for (let i = 0; i < index.docs.length; i++) {
+      const doc = index.docs[i];
+      const tf = doc.tf.get(term) || 0;
+      if (tf === 0) continue;
+      const norm = tf * (index.k1 + 1);
+      const denom = tf + index.k1 * (1 - index.b + index.b * (doc.len / index.avgdl));
+      scores[i] += termIdf * (norm / denom);
+    }
+  }
+  return scores;
+}
+
+function normalizeScores(scores) {
+  let max = 0;
+  for (const s of scores) if (s > max) max = s;
+  if (max === 0) return scores;
+  return scores.map(s => s / max);
+}
+
+function cosineSimilarity(a, b) {
+  let dot = 0, normA = 0, normB = 0;
+  for (let i = 0; i < a.length; i++) {
+    dot += a[i] * b[i];
+    normA += a[i] * a[i];
+    normB += b[i] * b[i];
+  }
+  return dot / (Math.sqrt(normA) * Math.sqrt(normB));
+}
+
+async function getEmbedding(text) {
+  const res = await fetch("https://openrouter.ai/api/v1/embeddings", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${OPENROUTER_KEY}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ model: "openai/text-embedding-3-small", input: [text] }),
+  });
+  if (!res.ok) throw new Error(`Embedding error: ${res.status}`);
+  const data = await res.json();
+  return data.data[0].embedding;
+}
+
+// Hybrid retrieval — combines BM25 and cosine
+function hybridRetrieve(query, queryEmbedding, chunks, bm25Index, topK = 8) {
+  const cosineScores = chunks.map(c => cosineSimilarity(queryEmbedding, c.embedding));
+  const bm25Scores = bm25Score(query, bm25Index);
+  const normCosine = normalizeScores(cosineScores);
+  const normBM25 = normalizeScores(bm25Scores);
+
+  return chunks
+    .map((chunk, i) => ({
+      ...chunk,
+      score: 0.7 * normCosine[i] + 0.3 * normBM25[i],
+      _cosine: cosineScores[i],
+      _bm25: bm25Scores[i],
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, topK);
+}
+
+// Pure cosine retrieval (baseline for comparison)
+function cosineOnlyRetrieve(queryEmbedding, chunks, topK = 8) {
+  return chunks
+    .map(c => ({ ...c, score: cosineSimilarity(queryEmbedding, c.embedding) }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, topK);
+}
+
+async function runRetrievalTests() {
+  console.log("=".repeat(60));
+  console.log("RAG #2: Hybrid Search Tests");
+  console.log("=".repeat(60));
+  console.log();
+
+  const chunksPath = path.join(ROOT, "data", "chunks.json");
+  if (!fs.existsSync(chunksPath)) {
+    console.error("chunks.json not found — run build-chunks.js first");
+    return { passed: 0, failed: 1 };
+  }
+
+  console.log("Loading chunks...");
+  const chunks = JSON.parse(fs.readFileSync(chunksPath, "utf-8"));
+  console.log(`  Loaded ${chunks.length} chunks`);
+
+  console.log("Building BM25 index...");
+  const bm25Index = buildBM25Index(chunks);
+  console.log(`  Vocabulary size: ${bm25Index.idf.size} terms`);
+  console.log();
+
+  // Test queries: the expectSubstring should appear in at least one of the top 3 chunks
+  const RETRIEVAL_TESTS = [
+    {
+      name: "CLI command exact match",
+      query: "hermes skills browse",
+      expectSubstringInTop3: "skills browse",
+    },
+    {
+      name: "Version number query",
+      query: "what's new in v0.8.0",
+      expectSubstringInTop3: "v0.8.0",
+    },
+    {
+      name: "Specific repo name",
+      query: "hermes-workspace features",
+      expectSubstringInTop3: "hermes-workspace",
+    },
+    {
+      name: "Technical keyword (MCP)",
+      query: "how does MCP work in Hermes",
+      expectSubstringInTop3: "MCP",
+    },
+    {
+      name: "Semantic question",
+      query: "how does the agent remember things across sessions",
+      expectSubstringInTop3: "memory",
+    },
+  ];
+
+  let passed = 0;
+  let failed = 0;
+
+  for (const test of RETRIEVAL_TESTS) {
+    console.log(`TEST: ${test.name}`);
+    console.log(`  Query: "${test.query}"`);
+
+    const queryEmbedding = await getEmbedding(test.query);
+
+    // Baseline: cosine only
+    const cosineResults = cosineOnlyRetrieve(queryEmbedding, chunks, 3);
+    // Hybrid: cosine + BM25
+    const hybridResults = hybridRetrieve(test.query, queryEmbedding, chunks, bm25Index, 3);
+
+    const cosineMatch = cosineResults.some(c => c.text.toLowerCase().includes(test.expectSubstringInTop3.toLowerCase()));
+    const hybridMatch = hybridResults.some(c => c.text.toLowerCase().includes(test.expectSubstringInTop3.toLowerCase()));
+
+    console.log(`  Cosine top source:  ${cosineResults[0]?.source || "none"}`);
+    console.log(`  Hybrid top source:  ${hybridResults[0]?.source || "none"}`);
+    console.log(`  Cosine found "${test.expectSubstringInTop3}": ${cosineMatch ? "yes" : "no"}`);
+    console.log(`  Hybrid found "${test.expectSubstringInTop3}": ${hybridMatch ? "yes" : "no"}`);
+
+    if (hybridMatch) {
+      console.log("  → PASS\n");
+      passed++;
+    } else {
+      console.log("  → FAIL\n");
+      failed++;
+    }
+  }
+
+  console.log(`Retrieval tests: ${passed} passed, ${failed} failed`);
+  return { passed, failed };
+}
+
 async function main() {
   console.log("=".repeat(60));
   console.log("RAG #1: Query Rewriting Tests");
   console.log("=".repeat(60));
   console.log();
 
-  let passed = 0;
-  let failed = 0;
+  let totalPassed = 0;
+  let totalFailed = 0;
 
   for (const test of TESTS) {
     console.log(`TEST: ${test.name}`);
@@ -192,7 +389,6 @@ async function main() {
     let testPassed = true;
     const checks = [];
 
-    // Check expected keywords are present
     if (test.expectKeywords) {
       const lower = rewritten.toLowerCase();
       for (const kw of test.expectKeywords) {
@@ -205,7 +401,6 @@ async function main() {
       }
     }
 
-    // For already-standalone questions, we just want some rewrite (could be identical)
     if (!test.expectKeywords && !test.expectRewrite) {
       checks.push(`  ✓ Returned (no specific check)`);
     }
@@ -214,18 +409,26 @@ async function main() {
 
     if (testPassed) {
       console.log("  → PASS\n");
-      passed++;
+      totalPassed++;
     } else {
       console.log("  → FAIL\n");
-      failed++;
+      totalFailed++;
     }
   }
 
+  console.log();
+
+  // Run retrieval tests
+  const retrievalResults = await runRetrievalTests();
+  totalPassed += retrievalResults.passed;
+  totalFailed += retrievalResults.failed;
+
+  console.log();
   console.log("=".repeat(60));
-  console.log(`Results: ${passed} passed, ${failed} failed`);
+  console.log(`TOTAL: ${totalPassed} passed, ${totalFailed} failed`);
   console.log("=".repeat(60));
 
-  if (failed > 0) process.exit(1);
+  if (totalFailed > 0) process.exit(1);
 }
 
 main().catch(err => {

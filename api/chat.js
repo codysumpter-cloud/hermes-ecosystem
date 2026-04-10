@@ -4,16 +4,92 @@ import { join } from "path";
 
 // Load chunks at module level (cached across invocations in same lambda)
 let chunks = null;
+let bm25Index = null;
 function loadChunks() {
   if (chunks) return chunks;
   try {
     const raw = readFileSync(join(process.cwd(), "data", "chunks.json"), "utf-8");
     chunks = JSON.parse(raw);
+    bm25Index = buildBM25Index(chunks);
     return chunks;
   } catch (e) {
     console.error("Failed to load chunks.json:", e.message);
     return [];
   }
+}
+
+// ── BM25 implementation ──
+// Lightweight keyword search that complements vector search.
+// Good at catching exact technical terms (CLI commands, repo names, version numbers).
+
+// Tokenize: lowercase, split on non-alphanumeric, drop tiny tokens and stopwords.
+const STOPWORDS = new Set([
+  "a","an","and","are","as","at","be","by","for","from","has","have","he","in","is","it",
+  "its","of","on","that","the","to","was","were","will","with","you","your","i","me","my",
+  "we","us","our","they","them","their","this","these","those","or","but","if","so","do",
+  "does","did","can","how","what","when","where","why","which","who","whom","which"
+]);
+
+function tokenize(text) {
+  return text
+    .toLowerCase()
+    .split(/[^a-z0-9_-]+/)
+    .filter(t => t.length >= 2 && !STOPWORDS.has(t));
+}
+
+function buildBM25Index(chunks) {
+  const N = chunks.length;
+  const docFreq = new Map(); // term -> number of docs containing it
+  const docs = [];
+
+  let totalLen = 0;
+  for (const chunk of chunks) {
+    const tokens = tokenize(chunk.text);
+    const tf = new Map();
+    for (const t of tokens) tf.set(t, (tf.get(t) || 0) + 1);
+    docs.push({ tf, len: tokens.length });
+    totalLen += tokens.length;
+    for (const t of tf.keys()) docFreq.set(t, (docFreq.get(t) || 0) + 1);
+  }
+  const avgdl = totalLen / N;
+
+  // Precompute IDF: log((N - df + 0.5) / (df + 0.5) + 1)
+  const idf = new Map();
+  for (const [term, df] of docFreq) {
+    idf.set(term, Math.log((N - df + 0.5) / (df + 0.5) + 1));
+  }
+
+  return { docs, idf, avgdl, k1: 1.5, b: 0.75 };
+}
+
+function bm25Score(query, index) {
+  const queryTokens = tokenize(query);
+  const scores = new Array(index.docs.length).fill(0);
+
+  for (const term of queryTokens) {
+    const termIdf = index.idf.get(term);
+    if (!termIdf) continue;
+
+    for (let i = 0; i < index.docs.length; i++) {
+      const doc = index.docs[i];
+      const tf = doc.tf.get(term) || 0;
+      if (tf === 0) continue;
+
+      const norm = tf * (index.k1 + 1);
+      const denom = tf + index.k1 * (1 - index.b + index.b * (doc.len / index.avgdl));
+      scores[i] += termIdf * (norm / denom);
+    }
+  }
+
+  return scores;
+}
+
+// Normalize scores to 0-1 range for combining with cosine similarity
+function normalizeScores(scores) {
+  let max = 0;
+  for (const s of scores) if (s > max) max = s;
+  if (max === 0) return scores;
+  return scores.map(s => s / max);
 }
 
 const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
@@ -112,14 +188,26 @@ export default async function handler(req, res) {
     // 3. Embed the rewritten query
     const queryEmbedding = await getEmbedding(searchQuery);
 
-    // 3. Cosine similarity search — top 8 chunks for broader coverage
+    // 4. Hybrid search: combine BM25 (keyword) and cosine (semantic) scores
+    // Normalize both to 0-1 then weighted sum: 0.7 vector + 0.3 keyword
+    // Vector dominates for semantic understanding; BM25 boosts exact term matches.
+    const cosineScores = allChunks.map(c => cosineSimilarity(queryEmbedding, c.embedding));
+    const bm25Scores = bm25Index ? bm25Score(searchQuery, bm25Index) : cosineScores.map(() => 0);
+
+    const normCosine = normalizeScores(cosineScores);
+    const normBM25 = normalizeScores(bm25Scores);
+
     const scored = allChunks
-      .map(chunk => ({
+      .map((chunk, i) => ({
         ...chunk,
-        score: cosineSimilarity(queryEmbedding, chunk.embedding),
+        score: 0.7 * normCosine[i] + 0.3 * normBM25[i],
+        _cosine: cosineScores[i],
+        _bm25: bm25Scores[i],
       }))
       .sort((a, b) => b.score - a.score)
       .slice(0, 8);
+
+    console.log(`[RAG] Top result: ${scored[0]?.source} (cos=${scored[0]?._cosine.toFixed(3)}, bm25=${scored[0]?._bm25.toFixed(3)})`);
 
     // 4. Build context: ALWAYS include baseline + retrieved chunks
     // This prevents vague queries from getting weak answers due to bad retrieval
