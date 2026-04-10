@@ -17,10 +17,21 @@ function loadChunks() {
 }
 
 const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
-const CHAT_MODEL = process.env.OPENROUTER_MODEL || "meta-llama/llama-3.3-70b-instruct";
+
+// Model config — supports primary + fallback via OpenRouter's native routing
+const PRIMARY_MODEL = process.env.OPENROUTER_MODEL || "google/gemma-4-31b-it:free";
+const FALLBACK_MODELS = (process.env.OPENROUTER_FALLBACK_MODELS || "google/gemma-4-26b-a4b-it:free,meta-llama/llama-3.3-70b-instruct:free")
+  .split(",").map(s => s.trim()).filter(Boolean);
+
 const MAX_TOKENS = parseInt(process.env.CHAT_MAX_TOKENS || "800");
-const RATE_LIMIT = parseInt(process.env.CHAT_RATE_LIMIT || "20"); // per hour per IP
-const RATE_WINDOW = 3600; // seconds
+
+// Per-IP rate limits
+const RATE_LIMIT_HOUR = parseInt(process.env.CHAT_RATE_LIMIT || "15"); // per hour per IP
+const RATE_LIMIT_DAY = parseInt(process.env.CHAT_RATE_LIMIT_DAY || "50"); // per day per IP
+
+// Global rate limit (all users combined)
+const GLOBAL_LIMIT_HOUR = parseInt(process.env.CHAT_GLOBAL_LIMIT || "300"); // per hour site-wide
+const GLOBAL_LIMIT_DAY = parseInt(process.env.CHAT_GLOBAL_LIMIT_DAY || "2000"); // per day site-wide
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -36,17 +47,30 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Invalid message" });
   }
 
-  // Rate limiting
+  // Rate limiting — per-IP (hour + day) and global (hour + day)
   const ip = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || "unknown";
-  const rateKey = `chat:rate:${ip}`;
+  const today = new Date().toISOString().slice(0, 10);
+
   try {
-    const count = await kv.incr(rateKey).catch(() => 1);
-    if (count === 1) await kv.expire(rateKey, RATE_WINDOW).catch(() => {});
-    if (count > RATE_LIMIT) {
-      return res.status(429).json({ error: "Rate limit exceeded. Try again in an hour." });
+    const limits = [
+      { key: `chat:ip:hour:${ip}`, max: RATE_LIMIT_HOUR, ttl: 3600, label: "per-hour", scope: "you" },
+      { key: `chat:ip:day:${ip}:${today}`, max: RATE_LIMIT_DAY, ttl: 86400, label: "per-day", scope: "you" },
+      { key: `chat:global:hour`, max: GLOBAL_LIMIT_HOUR, ttl: 3600, label: "per-hour", scope: "the site" },
+      { key: `chat:global:day:${today}`, max: GLOBAL_LIMIT_DAY, ttl: 86400, label: "per-day", scope: "the site" },
+    ];
+
+    for (const { key, max, ttl, label, scope } of limits) {
+      const count = await kv.incr(key).catch(() => 0);
+      if (count === 1) await kv.expire(key, ttl).catch(() => {});
+      if (count > max) {
+        return res.status(429).json({
+          error: `Rate limit reached (${max} ${label} for ${scope}). Try again later.`,
+        });
+      }
     }
   } catch (e) {
-    // KV unavailable — allow request
+    // KV unavailable — allow request to avoid blocking users due to infra issues
+    console.error("Rate limit check failed:", e.message);
   }
 
   try {
@@ -105,7 +129,10 @@ ${context}`;
         "X-Title": "Hermes Ecosystem Chat",
       },
       body: JSON.stringify({
-        model: CHAT_MODEL,
+        model: PRIMARY_MODEL,
+        // OpenRouter native fallback — tries these in order if primary fails
+        models: FALLBACK_MODELS.length > 0 ? [PRIMARY_MODEL, ...FALLBACK_MODELS] : undefined,
+        route: "fallback",
         messages,
         stream: true,
         max_tokens: MAX_TOKENS,
