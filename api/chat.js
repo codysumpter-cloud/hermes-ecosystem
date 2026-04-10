@@ -77,11 +77,24 @@ export default async function handler(req, res) {
     console.error("Rate limit check failed:", e.message);
   }
 
+  // Set streaming headers EARLY so client gets response immediately
+  // This prevents Vercel from killing the connection during slow LLM responses
+  res.setHeader("Content-Type", "text/plain; charset=utf-8");
+  res.setHeader("Transfer-Encoding", "chunked");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("X-Accel-Buffering", "no");
+
+  // Send immediate heartbeat (zero-width space) so connection is established
+  // Client can now show "thinking" indicator
+  res.write("\u200B");
+  if (typeof res.flush === "function") res.flush();
+
   try {
-    // 1. Load chunks
+    // 1. Load chunks (cached after first cold start)
     const allChunks = loadChunks();
     if (allChunks.length === 0) {
-      return res.status(500).json({ error: "Knowledge base not built yet" });
+      res.write("Knowledge base not built yet. Please try again later.");
+      return res.end();
     }
 
     // 2. Embed the query
@@ -148,23 +161,18 @@ ${context}`;
     if (!llmRes.ok) {
       const err = await llmRes.text();
       console.error("LLM error:", err);
-      // Try to parse and surface the real error
       let userMsg = "The AI service is temporarily unavailable. Please try again in a moment.";
       try {
         const parsed = JSON.parse(err);
         if (parsed.error?.code === 429) {
-          userMsg = "All available models are rate-limited right now. Please try again in a minute.";
+          userMsg = "All available AI models are rate-limited right now. Please try again in a minute.";
         } else if (parsed.error?.message) {
           userMsg = parsed.error.message;
         }
       } catch {}
-      return res.status(502).json({ error: userMsg });
+      res.write(userMsg);
+      return res.end();
     }
-
-    // Stream SSE to client
-    res.setHeader("Content-Type", "text/plain; charset=utf-8");
-    res.setHeader("Transfer-Encoding", "chunked");
-    res.setHeader("Cache-Control", "no-cache");
 
     const reader = llmRes.body.getReader();
     const decoder = new TextDecoder();
@@ -198,10 +206,11 @@ ${context}`;
     res.end();
   } catch (err) {
     console.error("Chat error:", err);
-    if (!res.headersSent) {
-      return res.status(500).json({ error: "Internal error" });
-    }
-    res.end();
+    // Headers are already sent, write error inline and end
+    try {
+      res.write("\n\n[Error: " + (err.message || "Internal error") + "]");
+      res.end();
+    } catch {}
   }
 }
 

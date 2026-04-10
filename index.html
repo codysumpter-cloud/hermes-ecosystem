@@ -343,8 +343,23 @@
     background: #13131f; color: #b8b8cc;
     align-self: flex-start; border-bottom-left-radius: 4px;
   }
-  .chat-msg.loading { color: #6b6b80; font-style: italic; }
+  .chat-msg.loading {
+    color: #8888a0; font-style: italic;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .chat-msg.loading::before {
+    content: ''; width: 14px; height: 14px;
+    border: 2px solid rgba(167,139,250,0.2);
+    border-top-color: #a78bfa;
+    border-radius: 50%;
+    animation: chat-spin 0.8s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes chat-spin { to { transform: rotate(360deg); } }
   .chat-msg.error { color: #f87171; }
+  #chat-send:disabled {
+    opacity: 0.5; cursor: not-allowed;
+  }
 
   .chat-input-wrap {
     padding: 12px 18px; border-top: 1px solid #1e1e30;
@@ -828,48 +843,76 @@
     chatInput.value = '';
     chatHistory.push({ role: 'user', content: msg });
 
-    // Add loading indicator
-    const loadingEl = appendMessage('assistant', '...');
+    // Disable send button + show loading
+    chatSend.disabled = true;
+    chatInput.disabled = true;
+    const loadingEl = appendMessage('assistant', 'Searching the research...');
     loadingEl.classList.add('loading');
 
     try {
+      const controller = new AbortController();
+      // 90 second client-side timeout (Vercel function maxDuration is 60s)
+      const timeoutId = setTimeout(() => controller.abort(), 90000);
+
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg, history: chatHistory.slice(-6) })
+        body: JSON.stringify({ message: msg, history: chatHistory.slice(-6) }),
+        signal: controller.signal
       });
 
-      // Handle error responses (which return JSON, not stream)
-      if (!res.ok) {
-        let errorMsg = `Error ${res.status}`;
-        try {
-          const errData = await res.json();
-          if (errData.error) errorMsg = errData.error;
-        } catch {}
-        throw new Error(errorMsg);
+      // Handle non-streaming error responses (rate limits return JSON 429)
+      if (!res.ok && res.headers.get('content-type')?.includes('application/json')) {
+        const errData = await res.json();
+        clearTimeout(timeoutId);
+        throw new Error(errData.error || `Error ${res.status}`);
       }
 
-      // Handle streaming response
+      // Handle streaming response (errors come inline as text now)
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let fullResponse = '';
-      loadingEl.textContent = '';
+      let firstChunk = true;
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
         const chunk = decoder.decode(value, { stream: true });
-        fullResponse += chunk;
+
+        // Skip the heartbeat zero-width space
+        const cleaned = chunk.replace(/\u200B/g, '');
+        if (!cleaned) continue;
+
+        if (firstChunk) {
+          loadingEl.textContent = '';
+          loadingEl.classList.remove('loading');
+          firstChunk = false;
+        }
+
+        fullResponse += cleaned;
         loadingEl.innerHTML = renderMarkdown(fullResponse);
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
 
-      loadingEl.classList.remove('loading');
+      clearTimeout(timeoutId);
+
+      if (!fullResponse.trim()) {
+        throw new Error('No response received. Please try again.');
+      }
+
       chatHistory.push({ role: 'assistant', content: fullResponse });
     } catch (e) {
-      loadingEl.textContent = e.message || 'Something went wrong. Please try again.';
+      let msg = e.message || 'Something went wrong. Please try again.';
+      if (e.name === 'AbortError') {
+        msg = 'Request timed out. The AI service is slow right now — please try again.';
+      }
+      loadingEl.textContent = msg;
       loadingEl.classList.remove('loading');
       loadingEl.classList.add('error');
+    } finally {
+      chatSend.disabled = false;
+      chatInput.disabled = false;
+      chatInput.focus();
     }
   }
 
