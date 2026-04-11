@@ -1,11 +1,31 @@
 import { kv } from "@vercel/kv";
-import repos from "../data/repos.json" assert { type: "json" };
+import { readFileSync } from "fs";
+import { join } from "path";
 
 const CACHE_KEY = "stars:current";
 const CACHE_TTL = 3600; // 1 hour
 
+// Load repos at module level (cached across invocations in same lambda)
+let repos = null;
+function loadRepos() {
+  if (repos) return repos;
+  try {
+    const raw = readFileSync(join(process.cwd(), "data", "repos.json"), "utf-8");
+    repos = JSON.parse(raw);
+    return repos;
+  } catch (e) {
+    console.error("Failed to load repos.json:", e.message);
+    return [];
+  }
+}
+
 export default async function handler(req, res) {
   try {
+    const repoList = loadRepos();
+    if (repoList.length === 0) {
+      return res.status(500).json({ error: "Repo list unavailable" });
+    }
+
     // Check cache first
     const cached = await kv.get(CACHE_KEY).catch(() => null);
     if (cached && !req.query.cron) {
@@ -16,7 +36,7 @@ export default async function handler(req, res) {
     const token = process.env.GITHUB_TOKEN;
     if (!token) {
       // No token — return static data from repos.json
-      const fallback = buildResponse(repos.map(r => ({
+      const fallback = buildResponse(repoList.map(r => ({
         owner: r.owner,
         repo: r.repo,
         stars: r.stars,
@@ -26,7 +46,7 @@ export default async function handler(req, res) {
     }
 
     // Batch all repos into one GraphQL query
-    const repoQueries = repos.map((r, i) =>
+    const repoQueries = repoList.map((r, i) =>
       `repo${i}: repository(owner: "${r.owner}", name: "${r.repo}") {
         stargazerCount
         updatedAt
@@ -57,7 +77,7 @@ export default async function handler(req, res) {
     }
 
     // Map results back to repos
-    const starData = repos.map((r, i) => {
+    const starData = repoList.map((r, i) => {
       const node = ghData.data?.[`repo${i}`];
       return {
         owner: r.owner,
@@ -84,7 +104,8 @@ export default async function handler(req, res) {
   } catch (err) {
     console.error("Stars API error:", err);
     // Fallback to static data
-    const fallback = buildResponse(repos.map(r => ({
+    const repoList = loadRepos();
+    const fallback = buildResponse(repoList.map(r => ({
       owner: r.owner,
       repo: r.repo,
       stars: r.stars,
