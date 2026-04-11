@@ -285,6 +285,53 @@ function cosineOnlyRetrieve(queryEmbedding, chunks, topK = 8) {
     .slice(0, topK);
 }
 
+// MMR — Maximal Marginal Relevance
+function mmrSelect(candidates, queryEmbedding, k, lambda = 0.6) {
+  if (candidates.length <= k) return candidates;
+  const selected = [];
+  const remaining = [...candidates];
+  selected.push(remaining.shift());
+
+  while (selected.length < k && remaining.length > 0) {
+    let bestIdx = 0;
+    let bestScore = -Infinity;
+    for (let i = 0; i < remaining.length; i++) {
+      const candidate = remaining[i];
+      const relevance = candidate.score;
+      let maxSim = 0;
+      for (const sel of selected) {
+        const sim = cosineSimilarity(candidate.embedding, sel.embedding);
+        if (sim > maxSim) maxSim = sim;
+      }
+      const mmr = lambda * relevance - (1 - lambda) * maxSim;
+      if (mmr > bestScore) {
+        bestScore = mmr;
+        bestIdx = i;
+      }
+    }
+    selected.push(remaining.splice(bestIdx, 1)[0]);
+  }
+  return selected;
+}
+
+// Hybrid + MMR pipeline
+function hybridMmrRetrieve(query, queryEmbedding, chunks, bm25Index, topK = 8) {
+  const cosineScores = chunks.map(c => cosineSimilarity(queryEmbedding, c.embedding));
+  const bm25Scores = bm25Score(query, bm25Index);
+  const normCosine = normalizeScores(cosineScores);
+  const normBM25 = normalizeScores(bm25Scores);
+
+  const candidates = chunks
+    .map((chunk, i) => ({
+      ...chunk,
+      score: 0.7 * normCosine[i] + 0.3 * normBM25[i],
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 20);
+
+  return mmrSelect(candidates, queryEmbedding, topK, 0.6);
+}
+
 async function runRetrievalTests() {
   console.log("=".repeat(60));
   console.log("RAG #2: Hybrid Search Tests");
@@ -370,6 +417,88 @@ async function runRetrievalTests() {
   return { passed, failed };
 }
 
+// Compute average pairwise cosine similarity within a set of chunks
+// Lower = more diverse content
+function avgPairwiseSimilarity(results) {
+  if (results.length < 2) return 0;
+  let total = 0;
+  let pairs = 0;
+  for (let i = 0; i < results.length; i++) {
+    for (let j = i + 1; j < results.length; j++) {
+      total += cosineSimilarity(results[i].embedding, results[j].embedding);
+      pairs++;
+    }
+  }
+  return total / pairs;
+}
+
+async function runMmrTests() {
+  console.log();
+  console.log("=".repeat(60));
+  console.log("RAG #3: MMR Diversity Tests");
+  console.log("=".repeat(60));
+  console.log();
+
+  const chunksPath = path.join(ROOT, "data", "chunks.json");
+  const chunks = JSON.parse(fs.readFileSync(chunksPath, "utf-8"));
+  const bm25Index = buildBM25Index(chunks);
+
+  // Queries known to retrieve near-duplicate chunks (community sentiment, broad topics)
+  const MMR_TESTS = [
+    {
+      name: "Community sentiment (Scoble report has duplicate sections)",
+      query: "what does the community say about Hermes Agent",
+      maxAvgSimilarity: 0.85,
+    },
+    {
+      name: "Broad capabilities question",
+      query: "What can Hermes Agent do for me?",
+      maxAvgSimilarity: 0.85,
+    },
+    {
+      name: "Comparison query",
+      query: "Hermes vs OpenClaw differences",
+      maxAvgSimilarity: 0.85,
+    },
+  ];
+
+  let passed = 0;
+  let failed = 0;
+
+  for (const test of MMR_TESTS) {
+    console.log(`TEST: ${test.name}`);
+    console.log(`  Query: "${test.query}"`);
+
+    const queryEmbedding = await getEmbedding(test.query);
+
+    // Baseline: hybrid without MMR (top 8 by score)
+    const baselineResults = hybridRetrieve(test.query, queryEmbedding, chunks, bm25Index, 8);
+    const baselineSim = avgPairwiseSimilarity(baselineResults);
+    const baselineUnique = new Set(baselineResults.map(r => r.source)).size;
+
+    // With MMR
+    const mmrResults = hybridMmrRetrieve(test.query, queryEmbedding, chunks, bm25Index, 8);
+    const mmrSim = avgPairwiseSimilarity(mmrResults);
+    const mmrUnique = new Set(mmrResults.map(r => r.source)).size;
+
+    console.log(`  Baseline avg similarity: ${baselineSim.toFixed(3)} (${baselineUnique} unique sources)`);
+    console.log(`  MMR avg similarity:      ${mmrSim.toFixed(3)} (${mmrUnique} unique sources)`);
+    console.log(`  Diversity improvement:   ${((baselineSim - mmrSim) * 100).toFixed(1)}%`);
+
+    // PASS if MMR has lower (or equal) avg similarity AND under threshold
+    if (mmrSim <= baselineSim && mmrSim <= test.maxAvgSimilarity) {
+      console.log("  → PASS\n");
+      passed++;
+    } else {
+      console.log("  → FAIL\n");
+      failed++;
+    }
+  }
+
+  console.log(`MMR tests: ${passed} passed, ${failed} failed`);
+  return { passed, failed };
+}
+
 async function main() {
   console.log("=".repeat(60));
   console.log("RAG #1: Query Rewriting Tests");
@@ -422,6 +551,11 @@ async function main() {
   const retrievalResults = await runRetrievalTests();
   totalPassed += retrievalResults.passed;
   totalFailed += retrievalResults.failed;
+
+  // Run MMR diversity tests
+  const mmrResults = await runMmrTests();
+  totalPassed += mmrResults.passed;
+  totalFailed += mmrResults.failed;
 
   console.log();
   console.log("=".repeat(60));

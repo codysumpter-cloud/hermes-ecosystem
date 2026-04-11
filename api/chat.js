@@ -92,6 +92,57 @@ function normalizeScores(scores) {
   return scores.map(s => s / max);
 }
 
+// Maximal Marginal Relevance — picks chunks that are both relevant AND diverse.
+// Prevents returning 8 near-duplicate paragraphs from the same section.
+//
+// Algorithm:
+//   Given top-N candidates ranked by relevance, iteratively pick the chunk that
+//   maximizes: λ × relevance − (1−λ) × max_similarity_to_already_selected
+//
+// λ = 1.0 → pure relevance (greedy top-K)
+// λ = 0.0 → pure diversity
+// λ = 0.5-0.7 → balanced (we use 0.6)
+function mmrSelect(candidates, queryEmbedding, k, lambda = 0.6) {
+  if (candidates.length <= k) return candidates;
+
+  const selected = [];
+  const remaining = [...candidates];
+
+  // Always pick the top relevance chunk first
+  selected.push(remaining.shift());
+
+  while (selected.length < k && remaining.length > 0) {
+    let bestIdx = 0;
+    let bestScore = -Infinity;
+
+    for (let i = 0; i < remaining.length; i++) {
+      const candidate = remaining[i];
+
+      // Relevance score (already in candidate.score from hybrid retrieval)
+      const relevance = candidate.score;
+
+      // Max similarity to any already-selected chunk
+      let maxSim = 0;
+      for (const sel of selected) {
+        const sim = cosineSimilarity(candidate.embedding, sel.embedding);
+        if (sim > maxSim) maxSim = sim;
+      }
+
+      // MMR score
+      const mmr = lambda * relevance - (1 - lambda) * maxSim;
+
+      if (mmr > bestScore) {
+        bestScore = mmr;
+        bestIdx = i;
+      }
+    }
+
+    selected.push(remaining.splice(bestIdx, 1)[0]);
+  }
+
+  return selected;
+}
+
 const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
 
 // Model config — supports primary + fallback via OpenRouter's native routing.
@@ -197,7 +248,8 @@ export default async function handler(req, res) {
     const normCosine = normalizeScores(cosineScores);
     const normBM25 = normalizeScores(bm25Scores);
 
-    const scored = allChunks
+    // Get top 20 candidates by hybrid score
+    const candidates = allChunks
       .map((chunk, i) => ({
         ...chunk,
         score: 0.7 * normCosine[i] + 0.3 * normBM25[i],
@@ -205,9 +257,13 @@ export default async function handler(req, res) {
         _bm25: bm25Scores[i],
       }))
       .sort((a, b) => b.score - a.score)
-      .slice(0, 8);
+      .slice(0, 20);
 
-    console.log(`[RAG] Top result: ${scored[0]?.source} (cos=${scored[0]?._cosine.toFixed(3)}, bm25=${scored[0]?._bm25.toFixed(3)})`);
+    // 5. MMR re-ranking: pick 8 chunks that are both relevant AND diverse
+    // Prevents returning 8 near-duplicate paragraphs from the same section
+    const scored = mmrSelect(candidates, queryEmbedding, 8, 0.6);
+
+    console.log(`[RAG] Top result: ${scored[0]?.source} (cos=${scored[0]?._cosine.toFixed(3)}, bm25=${scored[0]?._bm25.toFixed(3)}); ${new Set(scored.map(s => s.source)).size} unique sources`);
 
     // 4. Build context: ALWAYS include baseline + retrieved chunks
     // This prevents vague queries from getting weak answers due to bad retrieval
