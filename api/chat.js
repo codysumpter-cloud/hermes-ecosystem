@@ -5,6 +5,8 @@ import { join } from "path";
 // Load chunks at module level (cached across invocations in same lambda)
 let chunks = null;
 let bm25Index = null;
+let reposData = null;
+
 function loadChunks() {
   if (chunks) return chunks;
   try {
@@ -16,6 +18,56 @@ function loadChunks() {
     console.error("Failed to load chunks.json:", e.message);
     return [];
   }
+}
+
+function loadRepos() {
+  if (reposData) return reposData;
+  try {
+    const raw = readFileSync(join(process.cwd(), "data", "repos.json"), "utf-8");
+    reposData = JSON.parse(raw);
+    return reposData;
+  } catch (e) {
+    console.error("Failed to load repos.json:", e.message);
+    return [];
+  }
+}
+
+// Detect queries that benefit from repo metadata (rankings, comparisons, lists)
+function isRepoMetadataQuery(query) {
+  const lower = query.toLowerCase();
+  const rankingTerms = [
+    "best", "top", "most popular", "popular", "most starred", "highest",
+    "ranked", "ranking", "leading", "biggest", "largest",
+    "what are the", "list of", "which", "recommend", "compare",
+    " vs ", "versus", "alternatives", "options",
+  ];
+  return rankingTerms.some(term => lower.includes(term));
+}
+
+// Build a compact, LLM-friendly summary of all repos sorted by stars
+function buildRepoSummary(repos, category = null) {
+  let filtered = repos;
+  if (category) {
+    filtered = repos.filter(r => r.category === category);
+  }
+
+  // Group by category, sort each group by stars desc
+  const byCategory = {};
+  for (const repo of filtered) {
+    if (!byCategory[repo.category]) byCategory[repo.category] = [];
+    byCategory[repo.category].push(repo);
+  }
+
+  let summary = "";
+  for (const [cat, items] of Object.entries(byCategory)) {
+    items.sort((a, b) => b.stars - a.stars);
+    summary += `\n### ${cat}\n`;
+    for (const r of items) {
+      const officialTag = r.official ? " [OFFICIAL]" : "";
+      summary += `- **${r.owner}/${r.repo}**${officialTag} (★ ${r.stars}) — ${r.description}\n`;
+    }
+  }
+  return summary.trim();
 }
 
 // ── BM25 implementation ──
@@ -265,6 +317,18 @@ export default async function handler(req, res) {
 
     console.log(`[RAG] Top result: ${scored[0]?.source} (cos=${scored[0]?._cosine.toFixed(3)}, bm25=${scored[0]?._bm25.toFixed(3)}); ${new Set(scored.map(s => s.source)).size} unique sources`);
 
+    // 6. Detect ranking/comparison queries and inject repo metadata
+    // This gives the LLM live star counts to actually rank/compare repos
+    const needsRepoData = isRepoMetadataQuery(searchQuery);
+    let repoMetadataBlock = "";
+    if (needsRepoData) {
+      const repos = loadRepos();
+      if (repos.length > 0) {
+        repoMetadataBlock = `\n\n## REPO METADATA (sorted by stars within each category)\n${buildRepoSummary(repos)}\n`;
+        console.log(`[RAG] Injected repo metadata (${repos.length} repos) for ranking query`);
+      }
+    }
+
     // 4. Build context: ALWAYS include baseline + retrieved chunks
     // This prevents vague queries from getting weak answers due to bad retrieval
     const baselineContext = `## CORE FACTS (always true)
@@ -298,18 +362,19 @@ ANSWER RULES:
 - Start with a direct, complete answer. Don't hedge with "based on the context."
 - Use the CORE FACTS section as your baseline — those are always true.
 - Use the RETRIEVED CONTEXT section for specific details, recent updates, and tool recommendations.
+- For ranking/comparison/recommendation questions, use the REPO METADATA section for accurate star counts.
 - Cite sources from RETRIEVED CONTEXT using [Source: filename.md] format in brackets.
 - For "what is" questions, give a proper 2-3 sentence overview first, THEN details.
 - For "how do I" questions, give concrete steps with commands.
 - Use bullet points for lists of tools, skills, or steps.
-- Mention star counts when comparing or recommending repos.
+- ALWAYS mention exact star counts from REPO METADATA when comparing or recommending repos.
 - If a question isn't covered by your sources, say so honestly.
 
 ${baselineContext}
 
 ## RETRIEVED CONTEXT (relevant to this specific question)
 
-${retrievedContext}`;
+${retrievedContext}${repoMetadataBlock}`;
 
     const messages = [
       { role: "system", content: systemPrompt },

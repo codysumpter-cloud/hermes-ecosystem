@@ -432,6 +432,98 @@ function avgPairwiseSimilarity(results) {
   return total / pairs;
 }
 
+// Mirror of isRepoMetadataQuery from api/chat.js
+function isRepoMetadataQuery(query) {
+  const lower = query.toLowerCase();
+  const rankingTerms = [
+    "best", "top", "most popular", "popular", "most starred", "highest",
+    "ranked", "ranking", "leading", "biggest", "largest",
+    "what are the", "list of", "which", "recommend", "compare",
+    " vs ", "versus", "alternatives", "options",
+  ];
+  return rankingTerms.some(term => lower.includes(term));
+}
+
+function buildRepoSummary(repos) {
+  const byCategory = {};
+  for (const repo of repos) {
+    if (!byCategory[repo.category]) byCategory[repo.category] = [];
+    byCategory[repo.category].push(repo);
+  }
+  let summary = "";
+  for (const [cat, items] of Object.entries(byCategory)) {
+    items.sort((a, b) => b.stars - a.stars);
+    summary += `\n### ${cat}\n`;
+    for (const r of items) {
+      const officialTag = r.official ? " [OFFICIAL]" : "";
+      summary += `- **${r.owner}/${r.repo}**${officialTag} (★ ${r.stars}) — ${r.description}\n`;
+    }
+  }
+  return summary.trim();
+}
+
+async function runRepoMetadataTests() {
+  console.log();
+  console.log("=".repeat(60));
+  console.log("RAG #4: Repo Metadata Injection Tests");
+  console.log("=".repeat(60));
+  console.log();
+
+  const reposPath = path.join(ROOT, "data", "repos.json");
+  if (!fs.existsSync(reposPath)) {
+    console.error("repos.json not found");
+    return { passed: 0, failed: 1 };
+  }
+  const repos = JSON.parse(fs.readFileSync(reposPath, "utf-8"));
+  console.log(`Loaded ${repos.length} repos`);
+
+  const TESTS = [
+    // Should trigger
+    { query: "what are the best memory providers?", expected: true },
+    { query: "top hermes skills", expected: true },
+    { query: "most popular tools", expected: true },
+    { query: "compare hermes-workspace and hermes-desktop", expected: true },
+    { query: "Hermes Agent vs OpenClaw", expected: true },
+    { query: "which deployment option is best?", expected: true },
+    { query: "list of community plugins", expected: true },
+    { query: "alternatives to hermes-workspace", expected: true },
+
+    // Should NOT trigger (informational queries)
+    { query: "what is Hermes Agent?", expected: false },
+    { query: "how do I install Hermes?", expected: false },
+    { query: "explain the memory system", expected: false },
+    { query: "tell me about MCP", expected: false },
+  ];
+
+  let passed = 0;
+  let failed = 0;
+
+  for (const test of TESTS) {
+    const detected = isRepoMetadataQuery(test.query);
+    const ok = detected === test.expected;
+    const status = ok ? "PASS" : "FAIL";
+    console.log(`  [${status}] "${test.query}" → detected=${detected} expected=${test.expected}`);
+    if (ok) passed++; else failed++;
+  }
+
+  // Sanity check: build summary doesn't crash and produces reasonable output
+  console.log();
+  const summary = buildRepoSummary(repos);
+  console.log(`Summary length: ${summary.length} chars`);
+  console.log(`First 300 chars: ${summary.substring(0, 300)}...`);
+  if (summary.length > 1000 && summary.includes("★")) {
+    console.log("  → Summary build PASS");
+    passed++;
+  } else {
+    console.log("  → Summary build FAIL");
+    failed++;
+  }
+
+  console.log();
+  console.log(`Repo metadata tests: ${passed} passed, ${failed} failed`);
+  return { passed, failed };
+}
+
 async function runMmrTests() {
   console.log();
   console.log("=".repeat(60));
@@ -556,6 +648,11 @@ async function main() {
   const mmrResults = await runMmrTests();
   totalPassed += mmrResults.passed;
   totalFailed += mmrResults.failed;
+
+  // Run repo metadata injection tests
+  const repoResults = await runRepoMetadataTests();
+  totalPassed += repoResults.passed;
+  totalFailed += repoResults.failed;
 
   console.log();
   console.log("=".repeat(60));
