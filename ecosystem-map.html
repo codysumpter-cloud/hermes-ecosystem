@@ -389,6 +389,47 @@
   }
   .stars { font-size: 10px; font-weight: 700; color: var(--brand-star); opacity: 0.85; }
 
+  /* ── Sparklines ── */
+  .sparkline {
+    display: inline-block;
+    width: 36px; height: 12px;
+    margin-left: 2px;
+    vertical-align: middle;
+    opacity: 0.7;
+  }
+  .sparkline path { fill: none; stroke: var(--brand-star); stroke-width: 1.5; }
+  [data-theme="light"] .sparkline path { stroke: #d97706; }
+
+  /* Delta indicator (e.g. "+12") */
+  .delta {
+    font-size: 9px; font-weight: 700;
+    margin-left: 3px;
+    padding: 1px 4px; border-radius: 4px;
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+  }
+  [data-theme="light"] .delta {
+    background: rgba(22, 163, 74, 0.12);
+    color: #16a34a;
+  }
+  .delta.negative {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+  }
+
+  /* Trending flame badge */
+  .trending {
+    display: inline-block;
+    margin-left: 3px;
+    font-size: 11px;
+    filter: drop-shadow(0 0 4px rgba(251, 146, 60, 0.5));
+    animation: flame-flicker 2s ease-in-out infinite;
+  }
+  @keyframes flame-flicker {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+  }
+
   /* ── Tooltip ── */
   .tooltip {
     display: none;
@@ -944,14 +985,58 @@
     if (match) item.setAttribute('data-repo', match[1]);
   });
 
-  // ── Live star counts ──
+  // ── Live star counts + sparklines + trending badges ──
   async function fetchStars() {
     try {
-      const res = await fetch('/api/stars');
-      if (!res.ok) return;
-      const data = await res.json();
+      // Fetch current stars and 30-day history in parallel
+      const [starsRes, historyRes] = await Promise.all([
+        fetch('/api/stars'),
+        fetch('/api/stars-history?days=30').catch(() => null)
+      ]);
 
-      // Update star counts on each chip
+      if (!starsRes.ok) return;
+      const data = await starsRes.json();
+
+      // History data (may be empty if KV hasn't accumulated days yet)
+      let history = null;
+      if (historyRes && historyRes.ok) {
+        const histData = await historyRes.json();
+        history = histData.history || [];
+      }
+
+      // Build per-repo time series from history
+      const timeSeries = {};
+      if (history && history.length > 0) {
+        for (const snapshot of history) {
+          for (const [key, stars] of Object.entries(snapshot.data || {})) {
+            if (!timeSeries[key]) timeSeries[key] = [];
+            timeSeries[key].push(stars);
+          }
+        }
+      }
+
+      // Calculate weekly deltas (current - 7 days ago) for trending
+      const deltas = {};
+      const growthPct = {};
+      for (const [key, series] of Object.entries(timeSeries)) {
+        if (series.length < 2) continue;
+        const current = series[series.length - 1];
+        const weekAgo = series[Math.max(0, series.length - 8)] || series[0];
+        const delta = current - weekAgo;
+        deltas[key] = delta;
+        if (weekAgo > 0) growthPct[key] = (delta / weekAgo) * 100;
+      }
+
+      // Determine top 5 trending repos by % growth
+      const trendingSet = new Set(
+        Object.entries(growthPct)
+          .filter(([_, pct]) => pct > 0)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 5)
+          .map(([key]) => key)
+      );
+
+      // Update each chip
       document.querySelectorAll('.item[data-repo]').forEach(item => {
         const key = item.getAttribute('data-repo');
         const info = data.repos?.[key];
@@ -963,6 +1048,35 @@
         }
         item.setAttribute('data-stars', info.stars);
         if (info.updatedAt) item.setAttribute('data-updated', info.updatedAt);
+
+        // Remove any previously added decorations
+        item.querySelectorAll('.sparkline, .delta, .trending').forEach(el => el.remove());
+
+        // Sparkline (only if we have at least 2 data points)
+        const series = timeSeries[key];
+        if (series && series.length >= 2) {
+          const spark = renderSparkline(series);
+          if (spark) item.appendChild(spark);
+        }
+
+        // Delta indicator (only if non-zero change)
+        const delta = deltas[key];
+        if (delta && Math.abs(delta) >= 1) {
+          const deltaEl = document.createElement('span');
+          deltaEl.className = delta > 0 ? 'delta' : 'delta negative';
+          deltaEl.textContent = (delta > 0 ? '+' : '') + formatStars(Math.abs(delta));
+          deltaEl.title = `${delta > 0 ? '+' : ''}${delta} stars in 7 days`;
+          item.appendChild(deltaEl);
+        }
+
+        // Trending flame badge
+        if (trendingSet.has(key)) {
+          const flame = document.createElement('span');
+          flame.className = 'trending';
+          flame.textContent = '🔥';
+          flame.title = `Trending — top 5 fastest growing`;
+          item.appendChild(flame);
+        }
       });
 
       // Update stats bar
@@ -980,13 +1094,41 @@
         heroStars.textContent = formatStars(data.repos['NousResearch/hermes-agent'].stars);
       }
     } catch (e) {
-      console.log('Stars API unavailable, using static counts');
+      console.log('Stars API unavailable, using static counts', e);
     }
   }
 
   function formatStars(n) {
     if (n >= 1000) return (n / 1000).toFixed(n >= 10000 ? 1 : 1) + 'K';
     return String(n);
+  }
+
+  // Render an SVG sparkline from a numeric series
+  function renderSparkline(series) {
+    if (!series || series.length < 2) return null;
+    const w = 36, h = 12, pad = 1;
+    const min = Math.min(...series);
+    const max = Math.max(...series);
+    const range = max - min || 1;
+    const stepX = (w - 2 * pad) / (series.length - 1);
+
+    let d = '';
+    for (let i = 0; i < series.length; i++) {
+      const x = pad + i * stepX;
+      const y = h - pad - ((series[i] - min) / range) * (h - 2 * pad);
+      d += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+    }
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', 'sparkline');
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    svg.setAttribute('aria-hidden', 'true');
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', d.trim());
+    svg.appendChild(path);
+
+    return svg;
   }
 
   fetchStars();
