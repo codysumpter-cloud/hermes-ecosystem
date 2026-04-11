@@ -334,7 +334,7 @@ export default async function handler(req, res) {
     // This prevents vague queries from getting weak answers due to bad retrieval
     const baselineContext = `## CORE FACTS (always true)
 
-Hermes Agent is an open-source autonomous AI agent developed by Nous Research, released in February 2026 under MIT license. It currently has 43,700+ stars on GitHub (v0.8.0 released April 8, 2026).
+Hermes Agent is an open-source autonomous AI agent developed by Nous Research, released in February 2026 under MIT license. It currently has 57,200+ stars on GitHub (v0.8.0 released April 8, 2026).
 
 **What makes it unique:** Unlike stateless chatbots, Hermes has a built-in learning loop — it creates reusable skills from experience, remembers what it learns across sessions via persistent memory (MEMORY.md + USER.md + SQLite FTS5), and gets more capable the longer you use it. It's "the agent that grows with you."
 
@@ -428,6 +428,7 @@ ${retrievedContext}${repoMetadataBlock}`;
     const decoder = new TextDecoder();
     let buffer = "";
     let totalContent = "";
+    let actualModel = null; // Captured from OpenRouter SSE chunks
 
     while (true) {
       const { done, value } = await reader.read();
@@ -454,6 +455,11 @@ ${retrievedContext}${repoMetadataBlock}`;
             return res.end();
           }
 
+          // Capture which model OpenRouter actually selected (after fallback routing)
+          if (parsed.model && !actualModel) {
+            actualModel = parsed.model;
+          }
+
           const content = parsed.choices?.[0]?.delta?.content;
           if (content) {
             totalContent += content;
@@ -468,6 +474,13 @@ ${retrievedContext}${repoMetadataBlock}`;
     // If the model returned nothing, tell the user
     if (totalContent.trim().length === 0) {
       res.write("The model returned an empty response. This sometimes happens with free models under load. Please try rephrasing or ask again.");
+    }
+
+    // Append model trailer at end of stream — client splits it off
+    // Format: \u200E (LRM, invisible) + JSON + \u200E
+    if (actualModel) {
+      const trailer = `\u200E__META__${JSON.stringify({ model: actualModel })}__META__\u200E`;
+      res.write(trailer);
     }
 
     res.end();

@@ -623,6 +623,22 @@
     background: var(--chat-assistant-bg); color: var(--text-on-elevated);
     align-self: flex-start; border-bottom-left-radius: 4px;
   }
+  .chat-model-badge {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(99,102,241,0.1);
+    color: var(--brand-indigo);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: lowercase;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  [data-theme="light"] .chat-model-badge {
+    background: rgba(99,102,241,0.12);
+  }
   .chat-msg.loading {
     color: var(--text-tertiary); font-style: italic;
     display: flex; align-items: center; gap: 8px;
@@ -1288,14 +1304,38 @@
         }
 
         fullResponse += cleaned;
-        loadingEl.innerHTML = renderMarkdown(fullResponse);
+
+        // Strip the model trailer if it appears mid-stream so we never render it
+        const displayText = fullResponse.replace(/\u200E__META__.*?__META__\u200E/, '');
+        loadingEl.innerHTML = renderMarkdown(displayText);
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
 
       clearTimeout(timeoutId);
 
+      // Parse out the model trailer from the final response
+      let modelUsed = null;
+      const trailerMatch = fullResponse.match(/\u200E__META__(.*?)__META__\u200E/);
+      if (trailerMatch) {
+        try {
+          const meta = JSON.parse(trailerMatch[1]);
+          modelUsed = meta.model;
+        } catch {}
+        fullResponse = fullResponse.replace(trailerMatch[0], '');
+      }
+
       if (!fullResponse.trim()) {
         throw new Error('No response received. Please try again.');
+      }
+
+      // Re-render final content (without trailer) and add model badge
+      loadingEl.innerHTML = renderMarkdown(fullResponse);
+      if (modelUsed) {
+        const badge = document.createElement('div');
+        badge.className = 'chat-model-badge';
+        badge.textContent = formatModelName(modelUsed);
+        badge.title = `Answered by ${modelUsed}`;
+        loadingEl.appendChild(badge);
       }
 
       chatHistory.push({ role: 'assistant', content: fullResponse });
@@ -1330,6 +1370,27 @@
 
   function escapeHtml(s) {
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // Convert long OpenRouter model IDs to friendly short names
+  function formatModelName(id) {
+    if (!id) return '';
+    // Strip date suffix like -20260402
+    let name = id.replace(/-\d{8}$/, '');
+    // Strip :free suffix
+    name = name.replace(/:free$/, '');
+    // Get the part after the slash
+    const parts = name.split('/');
+    const lastPart = parts[parts.length - 1];
+    // Handle common model families
+    if (lastPart.includes('gemma')) return 'powered by gemma 4';
+    if (lastPart.includes('gemini')) return 'powered by gemini';
+    if (lastPart.includes('hermes')) return 'powered by hermes 3';
+    if (lastPart.includes('llama')) return 'powered by llama';
+    if (lastPart.includes('nemotron')) return 'powered by nemotron';
+    if (lastPart.includes('glm')) return 'powered by glm';
+    if (lastPart.includes('claude')) return 'powered by claude';
+    return 'powered by ' + lastPart;
   }
 
   function renderMarkdown(text) {
