@@ -357,7 +357,7 @@ Then run \`hermes\` to start. Only Git is required as a prerequisite — the ins
       .join("\n\n---\n\n");
 
     // 5. Build messages for LLM
-    const systemPrompt = `You are the Hermes Agent Ecosystem assistant. You help users understand the Hermes Agent ecosystem — what it is, how to use it, tools, skills, plugins, comparisons, setup guides, and more.
+    const systemPrompt = `You are the Hermes Atlas assistant — the official chatbot of Hermes Atlas, a community-curated map of the Hermes Agent ecosystem. You help users understand Hermes Agent (by Nous Research) and its ecosystem — what it is, how to use it, tools, skills, plugins, comparisons, setup guides, and more.
 
 ANSWER RULES:
 - Start with a direct, complete answer. Don't hedge with "based on the context."
@@ -392,8 +392,8 @@ ${retrievedContext}${repoMetadataBlock}`;
       headers: {
         Authorization: `Bearer ${OPENROUTER_KEY}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://hermes-ecosystem.vercel.app",
-        "X-Title": "Hermes Ecosystem Chat",
+        "HTTP-Referer": "https://hermesatlas.com",
+        "X-Title": "Hermes Atlas",
       },
       body: JSON.stringify({
         // OpenRouter native fallback — pass ONLY `models` array (no `model` field)
@@ -563,8 +563,8 @@ Rewritten:`;
       headers: {
         Authorization: `Bearer ${OPENROUTER_KEY}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://hermes-ecosystem.vercel.app",
-        "X-Title": "Hermes Ecosystem Chat - Query Rewriter",
+        "HTTP-Referer": "https://hermesatlas.com",
+        "X-Title": "Hermes Atlas — Query Rewriter",
       },
       body: JSON.stringify({
         // Query rewriting needs fast, reliable, non-reasoning models with good

@@ -3,16 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hermes Agent Ecosystem Map — Every tool, skill, and integration</title>
-<meta name="description" content="The complete ecosystem map for Hermes Agent by Nous Research. 80+ quality-filtered projects across skills, plugins, memory, orchestration, deployment, and more.">
-<meta property="og:title" content="Hermes Agent Ecosystem Map">
-<meta property="og:description" content="80+ tools, skills, plugins, and integrations for the self-improving AI agent by Nous Research. Quality-filtered and security-reviewed.">
+<title>Hermes Atlas — The community map for Hermes Agent</title>
+<meta name="description" content="Hermes Atlas is the community-curated map of every tool, skill, plugin, and integration for Hermes Agent by Nous Research. 80+ quality-filtered, security-reviewed projects. Live data, RAG-powered search.">
+<link rel="canonical" href="https://hermesatlas.com/">
+<meta property="og:title" content="Hermes Atlas — The community map for Hermes Agent">
+<meta property="og:description" content="80+ tools, skills, plugins, and integrations for the self-improving AI agent by Nous Research. Quality-filtered, security-reviewed, live data.">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://hermes-agent.nousresearch.com/img/hermes-agent-og.png">
+<meta property="og:url" content="https://hermesatlas.com/">
+<meta property="og:site_name" content="Hermes Atlas">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Hermes Agent Ecosystem Map">
-<meta name="twitter:description" content="80+ tools, skills, plugins, and integrations for Hermes Agent by Nous Research.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚕</text></svg>">
+<meta name="twitter:title" content="Hermes Atlas — The community map for Hermes Agent">
+<meta name="twitter:description" content="80+ tools, skills, plugins, and integrations for Hermes Agent by Nous Research. Quality-filtered. Live data.">
+<meta name="twitter:url" content="https://hermesatlas.com/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
 <script>
   // Theme init — runs synchronously before any content renders to prevent flash
   (function() {
@@ -713,10 +716,10 @@
 
 <!-- Header -->
 <div class="header">
-  <div class="header-icon">⚕</div>
-  <h1>Hermes Agent Ecosystem</h1>
-  <div class="subtitle">The complete map of tools, skills, and integrations for <span>Hermes Agent</span> by Nous Research</div>
-  <div class="meta">April 2026 · 80+ Projects · Security Reviewed · Quality Filtered · v0.8.0</div>
+  <div class="header-icon">🗺️</div>
+  <h1>Hermes Atlas</h1>
+  <div class="subtitle">The community map of every tool, skill, and integration for <span>Hermes Agent</span> by Nous Research</div>
+  <div class="meta">April 2026 · 80+ Projects · Security Reviewed · Quality Filtered · Hermes v0.8.0</div>
 </div>
 
 <!-- Tooltip (single shared element, positioned via JS) -->
@@ -939,11 +942,11 @@
 </div>
 
 <!-- Chat Widget -->
-<button id="chat-btn" title="Ask about the ecosystem">💬</button>
+<button id="chat-btn" title="Ask the Atlas">💬</button>
 <div id="chat-panel">
   <div class="chat-header">
     <div>
-      <h3>Ask the Ecosystem</h3>
+      <h3>Ask the Atlas</h3>
       <span>Powered by OpenRouter · Grounded in research</span>
     </div>
     <div class="chat-header-actions">
@@ -954,7 +957,7 @@
   <div id="chat-messages"></div>
   <div class="chat-input-wrap">
     <input type="text" id="chat-input" placeholder="Ask anything about Hermes Agent...">
-    <button id="chat-send">Send</button>
+    <button id="chat-send" title="Send">Send</button>
   </div>
 </div>
 
@@ -1248,7 +1251,7 @@
 
   const CHAT_STORAGE_KEY = 'hermes-chat-history-v1';
   const CHAT_MAX_SAVED = 30; // keep last 30 turns to avoid localStorage bloat
-  const WELCOME_MSG = 'Hi! I know everything about the Hermes Agent ecosystem — tools, skills, comparisons, setup guides, and more. What would you like to know?';
+  const WELCOME_MSG = 'Hi! I\'m the Hermes Atlas assistant. I know everything about the Hermes Agent ecosystem — tools, skills, comparisons, setup guides, and more. What would you like to know?';
 
   let chatHistory = [];
 

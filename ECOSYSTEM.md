@@ -1,8 +1,8 @@
-# Hermes Agent Ecosystem Map
+# Hermes Atlas
 
-> A comprehensive directory of tools, skills, plugins, and integrations for the [Hermes Agent](https://github.com/NousResearch/hermes-agent) by [Nous Research](https://nousresearch.com). Hermes is an autonomous, self-improving AI agent with persistent memory, auto-generated skills, and multi-platform deployment — MIT licensed, 43.7k+ stars.
+> The community-curated map of every tool, skill, plugin, and integration for [Hermes Agent](https://github.com/NousResearch/hermes-agent) by [Nous Research](https://nousresearch.com). Hermes Agent is an autonomous, self-improving AI agent with persistent memory, auto-generated skills, and multi-platform deployment — MIT licensed, 57k+ stars.
 >
-> **Last updated:** 2026-04-09 | **Hermes version:** 0.8.0
+> **Live site:** [hermesatlas.com](https://hermesatlas.com) · **Last updated:** 2026-04-11 · **Hermes version:** 0.8.0
 
 ---
 
