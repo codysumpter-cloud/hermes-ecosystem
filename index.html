@@ -590,11 +590,17 @@
     font-size: 14px; font-weight: 700; color: var(--text-strong); margin: 0;
   }
   .chat-header span { font-size: 11px; color: var(--text-tertiary); }
-  #chat-close {
-    background: none; border: none; color: var(--text-tertiary); font-size: 20px;
+  .chat-header-actions { display: flex; gap: 4px; align-items: center; }
+  #chat-close, #chat-clear {
+    background: none; border: none; color: var(--text-tertiary);
     cursor: pointer; padding: 4px 8px; border-radius: 6px;
+    line-height: 1;
   }
-  #chat-close:hover { background: var(--chat-close-hover-bg); color: var(--text-primary); }
+  #chat-close { font-size: 20px; }
+  #chat-clear { font-size: 16px; }
+  #chat-close:hover, #chat-clear:hover {
+    background: var(--chat-close-hover-bg); color: var(--text-primary);
+  }
 
   #chat-messages {
     flex: 1; overflow-y: auto; padding: 16px 18px;
@@ -940,11 +946,12 @@
       <h3>Ask the Ecosystem</h3>
       <span>Powered by OpenRouter · Grounded in research</span>
     </div>
-    <button id="chat-close">✕</button>
+    <div class="chat-header-actions">
+      <button id="chat-clear" title="Clear conversation">↻</button>
+      <button id="chat-close" title="Close">✕</button>
+    </div>
   </div>
-  <div id="chat-messages">
-    <div class="chat-msg chat-assistant">Hi! I know everything about the Hermes Agent ecosystem — tools, skills, comparisons, setup guides, and more. What would you like to know?</div>
-  </div>
+  <div id="chat-messages"></div>
   <div class="chat-input-wrap">
     <input type="text" id="chat-input" placeholder="Ask anything about Hermes Agent...">
     <button id="chat-send">Send</button>
@@ -1234,18 +1241,95 @@
   const chatBtn = document.getElementById('chat-btn');
   const chatPanel = document.getElementById('chat-panel');
   const chatClose = document.getElementById('chat-close');
+  const chatClear = document.getElementById('chat-clear');
   const chatInput = document.getElementById('chat-input');
   const chatSend = document.getElementById('chat-send');
   const chatMessages = document.getElementById('chat-messages');
 
+  const CHAT_STORAGE_KEY = 'hermes-chat-history-v1';
+  const CHAT_MAX_SAVED = 30; // keep last 30 turns to avoid localStorage bloat
+  const WELCOME_MSG = 'Hi! I know everything about the Hermes Agent ecosystem — tools, skills, comparisons, setup guides, and more. What would you like to know?';
+
   let chatHistory = [];
+
+  // Load saved history from localStorage
+  function loadChatHistory() {
+    try {
+      const raw = localStorage.getItem(CHAT_STORAGE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return null;
+      return parsed;
+    } catch {
+      return null;
+    }
+  }
+
+  function saveChatHistory() {
+    try {
+      const trimmed = chatHistory.slice(-CHAT_MAX_SAVED);
+      localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(trimmed));
+    } catch {}
+  }
+
+  function clearChatHistory() {
+    chatHistory = [];
+    try { localStorage.removeItem(CHAT_STORAGE_KEY); } catch {}
+    chatMessages.innerHTML = '';
+    appendStaticMessage('assistant', WELCOME_MSG);
+  }
+
+  // Append a message without saving (used for restoration and welcome msg)
+  function appendStaticMessage(role, text, modelUsed) {
+    const el = document.createElement('div');
+    el.className = `chat-msg chat-${role}`;
+    el.innerHTML = role === 'user' ? escapeHtml(text) : renderMarkdown(text);
+    if (role === 'assistant' && modelUsed) {
+      const badge = document.createElement('div');
+      badge.className = 'chat-model-badge';
+      badge.textContent = formatModelName(modelUsed);
+      badge.title = `Answered by ${modelUsed}`;
+      el.appendChild(badge);
+    }
+    chatMessages.appendChild(el);
+    return el;
+  }
+
+  // Initialize chat: restore history or show welcome
+  function initChat() {
+    const saved = loadChatHistory();
+    if (saved && saved.length > 0) {
+      chatHistory = saved;
+      // Show welcome first
+      appendStaticMessage('assistant', WELCOME_MSG);
+      // Then restore each saved turn
+      for (const msg of saved) {
+        appendStaticMessage(msg.role, msg.content, msg.model);
+      }
+    } else {
+      appendStaticMessage('assistant', WELCOME_MSG);
+    }
+  }
+  initChat();
 
   if (chatBtn) {
     chatBtn.addEventListener('click', () => {
       chatPanel.classList.toggle('open');
-      if (chatPanel.classList.contains('open')) chatInput.focus();
+      if (chatPanel.classList.contains('open')) {
+        chatInput.focus();
+        // Scroll to bottom when opening
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
     });
     chatClose.addEventListener('click', () => chatPanel.classList.remove('open'));
+  }
+  if (chatClear) {
+    chatClear.addEventListener('click', () => {
+      if (chatHistory.length === 0 || confirm('Clear conversation history?')) {
+        clearChatHistory();
+        chatInput.focus();
+      }
+    });
   }
 
   async function sendMessage() {
@@ -1256,6 +1340,7 @@
     appendMessage('user', msg);
     chatInput.value = '';
     chatHistory.push({ role: 'user', content: msg });
+    saveChatHistory();
 
     // Disable send button + show loading
     chatSend.disabled = true;
@@ -1338,7 +1423,8 @@
         loadingEl.appendChild(badge);
       }
 
-      chatHistory.push({ role: 'assistant', content: fullResponse });
+      chatHistory.push({ role: 'assistant', content: fullResponse, model: modelUsed });
+      saveChatHistory();
     } catch (e) {
       let msg = e.message || 'Something went wrong. Please try again.';
       if (e.name === 'AbortError') {
