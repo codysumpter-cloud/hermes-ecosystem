@@ -46,10 +46,10 @@
     background-clip: text;
     margin-bottom: 6px;
   }
-  .header .subtitle { font-size: 15px; color: #8888a0; font-weight: 500; }
+  .header .subtitle { font-size: 15px; color: #a8a8c0; font-weight: 500; }
   .header .subtitle span { color: #a78bfa; font-weight: 700; }
   .header .meta {
-    font-size: 12px; color: #55556a; margin-top: 8px;
+    font-size: 12px; color: #9494b0; margin-top: 8px;
     letter-spacing: 0.5px; text-transform: uppercase;
   }
 
@@ -127,8 +127,8 @@
   }
   .cat-label .count {
     font-size: 10px; font-weight: 600;
-    background: rgba(255,255,255,0.06);
-    padding: 2px 7px; border-radius: 10px; color: #6b6b80;
+    background: rgba(255,255,255,0.08);
+    padding: 2px 7px; border-radius: 10px; color: #b0b0c8;
   }
 
   /* ── Item chips ── */
@@ -181,7 +181,7 @@
     font-weight: 700; color: #e0e0f0;
     margin-bottom: 4px; font-size: 12.5px;
   }
-  .tooltip .tt-desc { color: #9090a8; }
+  .tooltip .tt-desc { color: #b8b8d0; }
   .tooltip .tt-link {
     margin-top: 6px; font-size: 10px; color: #6366f1;
     font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
@@ -219,7 +219,7 @@
   .hero-stat .num { font-size: 20px; font-weight: 800; color: #c084fc; }
   .hero-stat .label {
     font-size: 10px; text-transform: uppercase;
-    letter-spacing: 0.8px; color: #6b6b80; margin-top: 2px;
+    letter-spacing: 0.8px; color: #b0a8d0; margin-top: 2px;
   }
 
   /* ── Footer ── */
@@ -227,7 +227,7 @@
     text-align: center; margin-top: 40px; padding-top: 24px;
     border-top: 1px solid #1a1a2a;
   }
-  .footer p { font-size: 11px; color: #44445a; margin-bottom: 4px; }
+  .footer p { font-size: 11px; color: #8888a8; margin-bottom: 4px; }
   .footer a { color: #6366f1; }
   .footer a:hover { text-decoration: underline; }
   .footer .cta {
@@ -255,29 +255,29 @@
     outline: none; transition: border-color 0.2s;
   }
   .search-wrap input:focus { border-color: #a78bfa; }
-  .search-wrap input::placeholder { color: #55556a; }
+  .search-wrap input::placeholder { color: #8a8aa8; }
   .search-wrap::before {
     content: '\1F50D'; position: absolute; left: 12px; top: 50%;
-    transform: translateY(-50%); font-size: 13px; opacity: 0.4;
+    transform: translateY(-50%); font-size: 13px; opacity: 0.6;
   }
   .sort-btns { display: flex; gap: 4px; }
   .sort-btn {
     padding: 6px 12px; border-radius: 8px;
-    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
-    color: #8888a0; font-size: 11px; font-weight: 600; font-family: inherit;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    color: #b0b0c8; font-size: 11px; font-weight: 600; font-family: inherit;
     cursor: pointer; transition: all 0.15s;
   }
-  .sort-btn:hover { background: rgba(255,255,255,0.08); color: #c8c8d8; }
-  .sort-btn.active { background: rgba(167,139,250,0.15); border-color: rgba(167,139,250,0.3); color: #a78bfa; }
-  #result-count { font-size: 11px; color: #6b6b80; min-width: 80px; }
+  .sort-btn:hover { background: rgba(255,255,255,0.1); color: #e0e0f0; }
+  .sort-btn.active { background: rgba(167,139,250,0.18); border-color: rgba(167,139,250,0.4); color: #c4b5fd; }
+  #result-count { font-size: 11px; color: #a8a8c0; min-width: 80px; }
 
   /* ── Stats bar ── */
   .stats-bar {
     max-width: 1400px; margin: 0 auto 20px;
     display: flex; gap: 24px; flex-wrap: wrap;
     padding: 10px 16px; border-radius: 10px;
-    background: rgba(167,139,250,0.04); border: 1px solid rgba(167,139,250,0.08);
-    font-size: 12px; color: #6b6b80; opacity: 0.5;
+    background: rgba(167,139,250,0.06); border: 1px solid rgba(167,139,250,0.12);
+    font-size: 12px; color: #b0b0c8; opacity: 0.5;
     transition: opacity 0.3s;
   }
   .stats-bar.loaded { opacity: 1; }
@@ -312,9 +312,9 @@
   .chat-header h3 {
     font-size: 14px; font-weight: 700; color: #e0e0f0; margin: 0;
   }
-  .chat-header span { font-size: 11px; color: #6b6b80; }
+  .chat-header span { font-size: 11px; color: #a8a8c0; }
   #chat-close {
-    background: none; border: none; color: #6b6b80; font-size: 20px;
+    background: none; border: none; color: #a8a8c0; font-size: 20px;
     cursor: pointer; padding: 4px 8px; border-radius: 6px;
   }
   #chat-close:hover { background: rgba(255,255,255,0.06); color: #e0e0e8; }
@@ -344,7 +344,7 @@
     align-self: flex-start; border-bottom-left-radius: 4px;
   }
   .chat-msg.loading {
-    color: #8888a0; font-style: italic;
+    color: #b0b0c8; font-style: italic;
     display: flex; align-items: center; gap: 8px;
   }
   .chat-msg.loading::before {
@@ -372,7 +372,7 @@
     outline: none; resize: none;
   }
   #chat-input:focus { border-color: #a78bfa; }
-  #chat-input::placeholder { color: #44445a; }
+  #chat-input::placeholder { color: #8a8aa8; }
   #chat-send {
     padding: 10px 16px; border-radius: 10px;
     background: linear-gradient(135deg, #a78bfa, #818cf8);
