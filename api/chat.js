@@ -1,4 +1,4 @@
-import { kv } from "@vercel/kv";
+import { kvIncr, kvExpire } from "../lib/redis.js";
 import { readFileSync } from "fs";
 import { join } from "path";
 
@@ -247,8 +247,9 @@ export default async function handler(req, res) {
     ];
 
     for (const { key, max, ttl, label, scope } of limits) {
-      const count = await kv.incr(key).catch(() => 0);
-      if (count === 1) await kv.expire(key, ttl).catch(() => {});
+      const count = await kvIncr(key);
+      if (count === null) continue; // Redis unavailable, skip this limit
+      if (count === 1) await kvExpire(key, ttl);
       if (count > max) {
         return res.status(429).json({
           error: `Rate limit reached (${max} ${label} for ${scope}). Try again later.`,

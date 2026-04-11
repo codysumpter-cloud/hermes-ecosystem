@@ -1,4 +1,4 @@
-import { kv } from "@vercel/kv";
+import { kvGet, kvSet } from "../lib/redis.js";
 import { readFileSync } from "fs";
 import { join } from "path";
 
@@ -27,7 +27,7 @@ export default async function handler(req, res) {
     }
 
     // Check cache first
-    const cached = await kv.get(CACHE_KEY).catch(() => null);
+    const cached = await kvGet(CACHE_KEY);
     if (cached && !req.query.cron) {
       return res.status(200).json(cached);
     }
@@ -90,7 +90,7 @@ export default async function handler(req, res) {
     const response = buildResponse(starData);
 
     // Cache the result
-    await kv.set(CACHE_KEY, response, { ex: CACHE_TTL }).catch(console.error);
+    await kvSet(CACHE_KEY, response, { ex: CACHE_TTL });
 
     // Save daily snapshot for history
     const today = new Date().toISOString().slice(0, 10);
@@ -98,7 +98,7 @@ export default async function handler(req, res) {
     const snapshot = Object.fromEntries(
       starData.map(r => [`${r.owner}/${r.repo}`, r.stars])
     );
-    await kv.set(historyKey, snapshot).catch(console.error);
+    await kvSet(historyKey, snapshot);
 
     return res.status(200).json(response);
   } catch (err) {
