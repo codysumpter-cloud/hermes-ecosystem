@@ -513,6 +513,43 @@
   }
   .footer .cta:hover { opacity: 0.85; text-decoration: none; }
 
+  /* ── Report banner ── */
+  .report-banner {
+    max-width: 1400px; margin: 0 auto 16px;
+    padding: 10px 18px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(167,139,250,0.12), rgba(96,165,250,0.08));
+    border: 1px solid rgba(167,139,250,0.2);
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    font-size: 13px;
+    animation: banner-fade-in 0.4s ease;
+  }
+  @keyframes banner-fade-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+  .report-banner.hidden { display: none; }
+  .report-banner-content {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .report-banner-badge {
+    display: inline-block;
+    padding: 2px 8px; border-radius: 4px;
+    background: rgba(167,139,250,0.2);
+    color: var(--brand-purple); font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.4px;
+    white-space: nowrap;
+  }
+  [data-theme="light"] .report-banner-badge { color: #6d4fc4; }
+  .report-banner-text { color: var(--text-secondary); }
+  .report-banner-text a { color: var(--brand-purple); font-weight: 600; }
+  [data-theme="light"] .report-banner-text a { color: #6d4fc4; }
+  .report-banner-text a:hover { text-decoration: underline; }
+  .report-banner-close {
+    background: none; border: none; color: var(--text-muted);
+    cursor: pointer; font-size: 16px; padding: 2px 6px; border-radius: 4px;
+    flex-shrink: 0; line-height: 1;
+  }
+  .report-banner-close:hover { color: var(--text-primary); background: rgba(255,255,255,0.06); }
+  [data-theme="light"] .report-banner-close:hover { background: rgba(0,0,0,0.05); }
+
   /* ── Search bar ── */
   .controls {
     max-width: 1400px; margin: 0 auto 20px;
@@ -727,6 +764,15 @@
   <div class="tt-name" id="tt-name"></div>
   <div class="tt-desc" id="tt-desc"></div>
   <div class="tt-link">Click to open on GitHub →</div>
+</div>
+
+<!-- Report Banner -->
+<div class="report-banner" id="report-banner">
+  <div class="report-banner-content">
+    <span class="report-banner-badge">New Report</span>
+    <span class="report-banner-text"><a href="/reports/state-of-hermes-q1-2026">The State of Hermes Agent — Q1 2026</a> · 57K stars in 6 weeks, 80+ ecosystem projects, and what to watch next</span>
+  </div>
+  <button class="report-banner-close" id="report-banner-close" title="Dismiss" aria-label="Dismiss banner">✕</button>
 </div>
 
 <!-- Controls -->
@@ -972,6 +1018,25 @@
       const next = current === 'light' ? 'dark' : 'light';
       document.documentElement.setAttribute('data-theme', next);
       try { localStorage.setItem('theme', next); } catch (e) {}
+    });
+  }
+
+  // ── Report banner dismiss ──
+  const reportBanner = document.getElementById('report-banner');
+  const reportBannerClose = document.getElementById('report-banner-close');
+  const BANNER_DISMISSED_KEY = 'hermes-banner-dismissed-q1-2026';
+
+  if (reportBanner) {
+    try {
+      if (localStorage.getItem(BANNER_DISMISSED_KEY)) {
+        reportBanner.classList.add('hidden');
+      }
+    } catch {}
+  }
+  if (reportBannerClose) {
+    reportBannerClose.addEventListener('click', () => {
+      reportBanner.classList.add('hidden');
+      try { localStorage.setItem(BANNER_DISMISSED_KEY, '1'); } catch {}
     });
   }
 
