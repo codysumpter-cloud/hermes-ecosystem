@@ -396,17 +396,6 @@
   }
   .stars { font-size: 10px; font-weight: 700; color: var(--brand-star); opacity: 0.85; }
 
-  /* ── Sparklines ── */
-  .sparkline {
-    display: inline-block;
-    width: 36px; height: 12px;
-    margin-left: 2px;
-    vertical-align: middle;
-    opacity: 0.7;
-  }
-  .sparkline path { fill: none; stroke: var(--brand-star); stroke-width: 1.5; }
-  [data-theme="light"] .sparkline path { stroke: #d97706; }
-
   /* Delta indicator (e.g. "+12") */
   .delta {
     font-size: 9px; font-weight: 700;
@@ -795,8 +784,9 @@
 <!-- Stats Bar -->
 <div class="stats-bar" id="stats-bar">
   <div class="stat-item">Total Stars: <span class="stat-val" id="stat-total-stars">--</span></div>
-  <div class="stat-item">Repos: <span class="stat-val" id="stat-total-repos">83</span></div>
+  <div class="stat-item">Repos: <span class="stat-val" id="stat-total-repos">84</span></div>
   <div class="stat-item">Last Updated: <span class="stat-val" id="stat-updated">--</span></div>
+  <div class="stat-item" style="color: var(--text-muted); font-size: 11px;">+/- figures reflect weekly change</div>
 </div>
 
 <div class="grid">
@@ -1145,22 +1135,15 @@
         if (info.updatedAt) item.setAttribute('data-updated', info.updatedAt);
 
         // Remove any previously added decorations
-        item.querySelectorAll('.sparkline, .delta, .trending').forEach(el => el.remove());
+        item.querySelectorAll('.delta, .trending').forEach(el => el.remove());
 
-        // Sparkline (only if we have at least 2 data points)
-        const series = timeSeries[key];
-        if (series && series.length >= 2) {
-          const spark = renderSparkline(series);
-          if (spark) item.appendChild(spark);
-        }
-
-        // Delta indicator (only if non-zero change)
+        // Weekly delta indicator (only if non-zero change)
         const delta = deltas[key];
         if (delta && Math.abs(delta) >= 1) {
           const deltaEl = document.createElement('span');
           deltaEl.className = delta > 0 ? 'delta' : 'delta negative';
           deltaEl.textContent = (delta > 0 ? '+' : '') + formatStars(Math.abs(delta));
-          deltaEl.title = `${delta > 0 ? '+' : ''}${delta} stars in 7 days`;
+          deltaEl.title = `${delta > 0 ? '+' : ''}${delta} stars since last weekly snapshot`;
           item.appendChild(deltaEl);
         }
 
@@ -1196,34 +1179,6 @@
   function formatStars(n) {
     if (n >= 1000) return (n / 1000).toFixed(n >= 10000 ? 1 : 1) + 'K';
     return String(n);
-  }
-
-  // Render an SVG sparkline from a numeric series
-  function renderSparkline(series) {
-    if (!series || series.length < 2) return null;
-    const w = 36, h = 12, pad = 1;
-    const min = Math.min(...series);
-    const max = Math.max(...series);
-    const range = max - min || 1;
-    const stepX = (w - 2 * pad) / (series.length - 1);
-
-    let d = '';
-    for (let i = 0; i < series.length; i++) {
-      const x = pad + i * stepX;
-      const y = h - pad - ((series[i] - min) / range) * (h - 2 * pad);
-      d += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
-    }
-
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('class', 'sparkline');
-    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-    svg.setAttribute('aria-hidden', 'true');
-
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d', d.trim());
-    svg.appendChild(path);
-
-    return svg;
   }
 
   fetchStars();
