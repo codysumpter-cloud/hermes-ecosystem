@@ -241,7 +241,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: `Add ${owner}/${repo} (${stars} stars) to ${category}`,
-              body: `Adds [${owner}/${repo}](${htmlUrl}) to the ecosystem map.\n\n**Stars:** ${stars}\n**Category:** ${category}\n**Description:** ${description}\n\nSuggested in #${context.issue.number}\n\n> Note: This PR only updates repos.json. The HTML map will need a manual update to include the new chip, or will be picked up in the next full refresh.`,
+              body: `Adds [${owner}/${repo}](${htmlUrl}) to the ecosystem map.\n\n**Stars:** ${stars}\n**Category:** ${category}\n**Description:** ${description}\n\nCloses #${context.issue.number}\n\n> Note: This PR only updates repos.json. The HTML map will need a manual update to include the new chip, or will be picked up in the next full refresh.`,
               head: branch,
               base: 'main'
             });
