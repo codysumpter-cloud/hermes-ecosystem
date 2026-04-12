@@ -1,0 +1,33 @@
+name: Report a Bug
+description: Something broken on hermesatlas.com? Let us know.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Ecosystem map (main page)
+        - Chat / Ask the Atlas
+        - Report page
+        - Star counts / live data
+        - Search / filter / sort
+        - Light/dark mode
+        - Mobile layout
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the bug. Include screenshots if possible.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: false

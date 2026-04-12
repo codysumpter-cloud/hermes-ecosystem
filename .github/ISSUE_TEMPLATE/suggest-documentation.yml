@@ -1,0 +1,47 @@
+name: Submit Documentation
+description: Share a blog post, tutorial, video, or guide about Hermes Agent for the knowledge base.
+title: "[Doc] "
+labels: ["doc-submission"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Help us keep the Hermes Atlas knowledge base current! Submit links to quality documentation, tutorials, blog posts, or videos about Hermes Agent. Our chatbot uses this content to answer user questions.
+  - type: input
+    id: url
+    attributes:
+      label: URL
+      description: Link to the content (blog post, tutorial, video, docs page, etc.)
+      placeholder: https://
+    validations:
+      required: true
+  - type: dropdown
+    id: content_type
+    attributes:
+      label: Content Type
+      options:
+        - Official documentation / release notes
+        - Blog post / article
+        - Tutorial / guide
+        - Video (YouTube, etc.)
+        - Community discussion (Reddit, X thread, etc.)
+        - Comparison / review
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Brief Summary
+      description: 1-2 sentences about what this content covers and why it's useful.
+      placeholder: e.g. "Step-by-step guide for deploying Hermes on Fly.io with Docker"
+    validations:
+      required: true
+  - type: textarea
+    id: key_topics
+    attributes:
+      label: Key Topics Covered
+      description: Optional — helps us categorize the content for the knowledge base.
+      placeholder: e.g. deployment, Docker, Fly.io, gateway setup
+    validations:
+      required: false

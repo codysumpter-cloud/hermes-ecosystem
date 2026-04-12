@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Hermes Agent (the product itself)
+    url: https://github.com/NousResearch/hermes-agent/issues
+    about: For bugs or feature requests about Hermes Agent itself, go to the official repo.
+  - name: Hermes Atlas Chat
+    url: https://hermesatlas.com
+    about: Have a question about the Hermes ecosystem? Try the Ask the Atlas chatbot first.

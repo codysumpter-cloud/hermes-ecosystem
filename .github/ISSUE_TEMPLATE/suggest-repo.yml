@@ -1,0 +1,45 @@
+name: Suggest a Repo
+description: Found a Hermes Agent project that should be on the map? Submit it here.
+title: "[Repo] "
+labels: ["repo-suggestion"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a repo! Our automation will fetch the metadata and run a basic check. You just need to provide the URL.
+  - type: input
+    id: repo_url
+    attributes:
+      label: GitHub Repository URL
+      description: Full URL to the GitHub repo (e.g. https://github.com/owner/repo)
+      placeholder: https://github.com/
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Suggested Category
+      description: Which category fits best? (We may recategorize during review)
+      options:
+        - Skills & Skill Registries
+        - Memory & Context
+        - Plugins & Extensions
+        - Multi-Agent & Orchestration
+        - Workspaces & GUIs
+        - Deployment & Infra
+        - Integrations & Bridges
+        - Developer Tools
+        - Domain Applications
+        - Guides & Docs
+        - Forks & Derivatives
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Why should this be included?
+      description: Optional — anything that helps us understand why this adds value to the Hermes ecosystem.
+      placeholder: e.g. "This is the official Hermes integration for X" or "Solves a common problem with Y"
+    validations:
+      required: false
