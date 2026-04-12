@@ -1,0 +1,54 @@
+name: Rebuild Knowledge Base Chunks
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'research/**'
+      - 'repos/*.md'
+      - 'ECOSYSTEM.md'
+      - 'data/repos.json'
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Rebuild chunks
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: node scripts/build-chunks.js
+
+      - name: Check if chunks changed
+        id: diff
+        run: |
+          git diff --stat data/chunks.json
+          if git diff --quiet data/chunks.json; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            CHUNKS=$(node -e "const c=require('./data/chunks.json');console.log(c.length)")
+            echo "count=$CHUNKS" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit updated chunks
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "Hermes Atlas Bot"
+          git config user.email "bot@hermesatlas.com"
+          git add data/chunks.json
+          git commit -m "Rebuild knowledge base chunks (${{ steps.diff.outputs.count }} chunks)"
+          git push

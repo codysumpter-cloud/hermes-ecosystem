@@ -1,0 +1,136 @@
+name: Weekly Repo Discovery
+
+on:
+  schedule:
+    # Run every Monday at 08:00 UTC
+    - cron: '0 8 * * 1'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Search for new Hermes repos
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            // Load current repos to avoid duplicates
+            const currentRepos = JSON.parse(fs.readFileSync('data/repos.json', 'utf-8'));
+            const knownRepos = new Set(currentRepos.map(r => `${r.owner}/${r.repo}`.toLowerCase()));
+
+            // Also check for repos we've already opened issues about
+            const { data: existingIssues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'repo-discovery',
+              state: 'all',
+              per_page: 100
+            });
+            const issuedRepos = new Set(
+              existingIssues
+                .map(i => i.body?.match(/github\.com\/([a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+)/)?.[1]?.toLowerCase())
+                .filter(Boolean)
+            );
+
+            // Search strategies
+            const queries = [
+              'topic:hermes-agent fork:false created:>2025-07-22',
+              '"hermes-agent" in:name fork:false created:>2025-07-22',
+              '"hermes agent" in:description fork:false created:>2025-07-22',
+            ];
+
+            const candidates = new Map(); // key: owner/repo, value: repo data
+
+            for (const q of queries) {
+              try {
+                const { data } = await github.rest.search.repos({
+                  q,
+                  sort: 'stars',
+                  order: 'desc',
+                  per_page: 30
+                });
+
+                for (const repo of data.items) {
+                  const key = `${repo.owner.login}/${repo.name}`.toLowerCase();
+
+                  // Skip if we already know about it
+                  if (knownRepos.has(key)) continue;
+                  if (issuedRepos.has(key)) continue;
+                  if (candidates.has(key)) continue;
+
+                  // Skip the main hermes-agent repo itself
+                  if (key === 'nousresearch/hermes-agent') continue;
+
+                  // Basic filters
+                  if (repo.fork && repo.owner.login !== 'NousResearch') continue;
+                  if (!repo.description) continue;
+                  if (repo.stargazers_count < 1) continue;
+
+                  candidates.set(key, {
+                    owner: repo.owner.login,
+                    name: repo.name,
+                    stars: repo.stargazers_count,
+                    description: repo.description,
+                    url: repo.html_url,
+                    language: repo.language,
+                    created: repo.created_at,
+                    updated: repo.pushed_at,
+                  });
+                }
+
+                // Respect rate limits between searches
+                await new Promise(r => setTimeout(r, 2000));
+              } catch (e) {
+                console.log(`Search failed for "${q}":`, e.message);
+              }
+            }
+
+            console.log(`Found ${candidates.size} new candidate repos`);
+
+            // Create an issue for each candidate (max 10 per run to avoid spam)
+            let created = 0;
+            const sorted = [...candidates.values()].sort((a, b) => b.stars - a.stars);
+
+            for (const repo of sorted.slice(0, 10)) {
+              const daysOld = Math.floor((Date.now() - new Date(repo.updated).getTime()) / 86400000);
+
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `[Discovery] ${repo.owner}/${repo.name} (${repo.stars} stars)`,
+                body: `## New Hermes ecosystem repo discovered\n\n` +
+                  `| Field | Value |\n|-------|-------|\n` +
+                  `| **Repo** | [${repo.owner}/${repo.name}](${repo.url}) |\n` +
+                  `| **Stars** | ${repo.stars} |\n` +
+                  `| **Language** | ${repo.language || 'Unknown'} |\n` +
+                  `| **Created** | ${repo.created.slice(0,10)} |\n` +
+                  `| **Last push** | ${repo.updated.slice(0,10)} (${daysOld} days ago) |\n` +
+                  `| **Description** | ${repo.description} |\n\n` +
+                  `**Action:** Review this repo. If it adds value to the Hermes ecosystem, ` +
+                  `convert this to a repo suggestion by editing the title to start with "[Repo]" ` +
+                  `and adding the "repo-suggestion" label, or close if not relevant.\n\n` +
+                  `_Found by weekly automated discovery._`,
+                labels: ['repo-discovery']
+              });
+
+              created++;
+              console.log(`Created issue for ${repo.owner}/${repo.name} (${repo.stars} stars)`);
+
+              // Small delay to avoid rate limiting
+              await new Promise(r => setTimeout(r, 1000));
+            }
+
+            console.log(`Created ${created} discovery issues`);
+
+            if (candidates.size > 10) {
+              console.log(`Note: ${candidates.size - 10} additional candidates were found but not issued (max 10 per run)`);
+            }

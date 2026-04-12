@@ -1,0 +1,245 @@
+name: Daily Release Monitor
+
+on:
+  schedule:
+    # Run daily at 06:00 UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  check-releases:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for new Hermes Agent releases
+        id: check
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            // Get latest release from NousResearch/hermes-agent
+            let latestRelease;
+            try {
+              const { data } = await github.rest.repos.getLatestRelease({
+                owner: 'NousResearch',
+                repo: 'hermes-agent'
+              });
+              latestRelease = data;
+            } catch (e) {
+              console.log('No releases found or API error:', e.message);
+              core.setOutput('new_release', 'false');
+              return;
+            }
+
+            const tag = latestRelease.tag_name;
+            const releaseName = latestRelease.name || tag;
+            const publishedAt = latestRelease.published_at;
+            const body = latestRelease.body || '';
+
+            console.log(`Latest release: ${releaseName} (${tag}) published ${publishedAt}`);
+
+            // Check if we already have this release documented
+            const researchDir = 'research';
+            const existingFiles = fs.readdirSync(researchDir);
+
+            // Look for the version number in existing research files
+            const versionClean = tag.replace(/^v/, '').replace(/[^0-9.]/g, '');
+            const alreadyTracked = existingFiles.some(f => {
+              if (!f.endsWith('.md')) return false;
+              const content = fs.readFileSync(`${researchDir}/${f}`, 'utf-8');
+              return content.includes(tag) || content.includes(versionClean);
+            });
+
+            if (alreadyTracked) {
+              console.log(`Release ${tag} already tracked in research files`);
+              core.setOutput('new_release', 'false');
+              return;
+            }
+
+            console.log(`New release found: ${tag} — not yet in research files`);
+            core.setOutput('new_release', 'true');
+            core.setOutput('tag', tag);
+            core.setOutput('release_name', releaseName);
+            core.setOutput('published_at', publishedAt);
+            core.setOutput('body', body);
+
+      - name: Fetch full release notes from repo
+        if: steps.check.outputs.new_release == 'true'
+        id: notes
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const tag = '${{ steps.check.outputs.tag }}';
+            const versionClean = tag.replace(/^v/, '').replace(/[^0-9.]/g, '');
+
+            // Try to fetch the RELEASE_vX.Y.Z.md file from the repo
+            let releaseNotes = '';
+            const filenames = [
+              `RELEASE_v${versionClean}.md`,
+              `RELEASE_${tag}.md`,
+              `CHANGELOG.md`
+            ];
+
+            for (const filename of filenames) {
+              try {
+                const { data } = await github.rest.repos.getContent({
+                  owner: 'NousResearch',
+                  repo: 'hermes-agent',
+                  path: filename,
+                  ref: 'main'
+                });
+                releaseNotes = Buffer.from(data.content, 'base64').toString('utf-8');
+                console.log(`Found release notes in ${filename} (${releaseNotes.length} chars)`);
+                break;
+              } catch {
+                console.log(`${filename} not found, trying next...`);
+              }
+            }
+
+            // Fall back to the release body from GitHub Releases
+            if (!releaseNotes) {
+              releaseNotes = '${{ steps.check.outputs.body }}'.replace(/\\n/g, '\n');
+              console.log(`Using GitHub Release body (${releaseNotes.length} chars)`);
+            }
+
+            // Truncate if extremely long
+            if (releaseNotes.length > 50000) {
+              releaseNotes = releaseNotes.slice(0, 50000) + '\n\n[Truncated — see full release notes on GitHub]';
+            }
+
+            core.setOutput('content', releaseNotes);
+            core.setOutput('has_notes', releaseNotes.length > 100 ? 'true' : 'false');
+
+      - name: Create research file and open PR
+        if: steps.check.outputs.new_release == 'true' && steps.notes.outputs.has_notes == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const tag = '${{ steps.check.outputs.tag }}';
+            const releaseName = '${{ steps.check.outputs.release_name }}';
+            const publishedAt = '${{ steps.check.outputs.published_at }}';
+            const content = `${{ steps.notes.outputs.content }}`.replace(/\\n/g, '\n');
+            const versionClean = tag.replace(/^v/, '').replace(/[^0-9.]/g, '');
+
+            // Build the research file content
+            const fileContent = `# Hermes Agent ${tag} Release Notes
+
+**Version:** ${tag}
+**Published:** ${publishedAt}
+**Source:** https://github.com/NousResearch/hermes-agent/releases/tag/${tag}
+
+${content}
+`;
+
+            // Determine filename (increment from existing)
+            const fs = require('fs');
+            const existing = fs.readdirSync('research')
+              .filter(f => f.match(/^\d+-/))
+              .sort()
+              .pop();
+            const nextNum = existing ? parseInt(existing.split('-')[0]) + 1 : 30;
+            const filename = `research/${nextNum}-release-${versionClean.replace(/\./g, '-')}.md`;
+
+            // Create branch and PR
+            const branch = `release-notes-${versionClean}`;
+
+            const { data: ref } = await github.rest.git.getRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'heads/main'
+            });
+
+            await github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/heads/${branch}`,
+              sha: ref.object.sha
+            });
+
+            await github.rest.repos.createOrUpdateFileContents({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              path: filename,
+              message: `Add ${tag} release notes to knowledge base`,
+              content: Buffer.from(fileContent).toString('base64'),
+              branch
+            });
+
+            const { data: pr } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `New release: Hermes Agent ${tag}`,
+              body: `Hermes Agent ${releaseName} was published on ${publishedAt}.\n\nThis PR adds the release notes to the research knowledge base at \`${filename}\`.\n\nAfter merge, the chunks rebuild action will automatically update the chatbot's knowledge.\n\n[View release on GitHub](https://github.com/NousResearch/hermes-agent/releases/tag/${tag})`,
+              head: branch,
+              base: 'main'
+            });
+
+            console.log(`PR #${pr.number} created for ${tag}`);
+
+      - name: Check for new official docs changes
+        id: docs_check
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Check if the docs website has been updated recently
+            // by looking at the website/ directory's last commit
+            try {
+              const { data: commits } = await github.rest.repos.listCommits({
+                owner: 'NousResearch',
+                repo: 'hermes-agent',
+                path: 'website/docs',
+                per_page: 1,
+                since: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+              });
+
+              if (commits.length > 0) {
+                console.log(`Docs updated in last 24h: ${commits[0].sha.slice(0,7)} — "${commits[0].commit.message.split('\n')[0]}"`);
+                core.setOutput('docs_updated', 'true');
+                core.setOutput('commit_msg', commits[0].commit.message.split('\n')[0]);
+              } else {
+                console.log('No docs changes in last 24h');
+                core.setOutput('docs_updated', 'false');
+              }
+            } catch (e) {
+              console.log('Could not check docs:', e.message);
+              core.setOutput('docs_updated', 'false');
+            }
+
+      - name: Create issue for docs update
+        if: steps.docs_check.outputs.docs_updated == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const msg = '${{ steps.docs_check.outputs.commit_msg }}';
+
+            // Check if we already have an open issue for docs updates today
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'docs-update',
+              state: 'open',
+              per_page: 5
+            });
+
+            const today = new Date().toISOString().slice(0, 10);
+            const alreadyOpen = issues.some(i => i.title.includes(today));
+
+            if (!alreadyOpen) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `[Docs] Official documentation updated (${today})`,
+                body: `The Hermes Agent official documentation was updated in the last 24 hours.\n\nLatest commit: "${msg}"\n\n**Action needed:** Review the changes at https://hermes-agent.nousresearch.com/docs and update the relevant research files if the changes are significant.\n\nSource: https://github.com/NousResearch/hermes-agent/tree/main/website/docs`,
+                labels: ['docs-update']
+              });
+              console.log('Created docs update issue');
+            } else {
+              console.log('Docs update issue already exists for today');
+            }
