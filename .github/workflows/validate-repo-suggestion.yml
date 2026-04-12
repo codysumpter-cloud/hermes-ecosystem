@@ -1,0 +1,255 @@
+name: Validate Repo Suggestion
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  validate:
+    if: contains(github.event.issue.labels.*.name, 'repo-suggestion')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Extract repo URL from issue body
+        id: extract
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.issue.body || '';
+
+            // Extract GitHub URL from the issue body
+            const urlMatch = body.match(/https:\/\/github\.com\/([a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+)/);
+            if (!urlMatch) {
+              core.setFailed('No valid GitHub URL found in the issue body');
+              return;
+            }
+
+            const repoPath = urlMatch[1].replace(/\/$/, '');
+            const [owner, repo] = repoPath.split('/');
+
+            // Extract suggested category
+            const catMatch = body.match(/### Suggested Category\s*\n\s*(.+)/);
+            const category = catMatch ? catMatch[1].trim() : 'Not sure';
+
+            core.setOutput('owner', owner);
+            core.setOutput('repo', repo);
+            core.setOutput('category', category);
+            core.setOutput('repo_path', repoPath);
+
+            console.log(`Extracted: ${owner}/${repo}, category: ${category}`);
+
+      - name: Fetch repo metadata from GitHub API
+        id: metadata
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = '${{ steps.extract.outputs.owner }}';
+            const repo = '${{ steps.extract.outputs.repo }}';
+
+            try {
+              const { data } = await github.rest.repos.get({ owner, repo });
+
+              core.setOutput('stars', data.stargazers_count);
+              core.setOutput('description', data.description || 'No description');
+              core.setOutput('language', data.language || 'Unknown');
+              core.setOutput('license', data.license?.spdx_id || 'None');
+              core.setOutput('created_at', data.created_at);
+              core.setOutput('updated_at', data.pushed_at);
+              core.setOutput('is_fork', data.fork);
+              core.setOutput('html_url', data.html_url);
+              core.setOutput('exists', 'true');
+
+              console.log(`${owner}/${repo}: ${data.stargazers_count} stars, ${data.language}, created ${data.created_at}`);
+            } catch (e) {
+              core.setOutput('exists', 'false');
+              core.setFailed(`Repo not found: ${owner}/${repo}`);
+            }
+
+      - name: Run validation checks
+        id: validate
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = '${{ steps.extract.outputs.owner }}';
+            const repo = '${{ steps.extract.outputs.repo }}';
+            const stars = parseInt('${{ steps.metadata.outputs.stars }}') || 0;
+            const createdAt = new Date('${{ steps.metadata.outputs.created_at }}');
+            const isFork = '${{ steps.metadata.outputs.is_fork }}' === 'true';
+            const description = '${{ steps.metadata.outputs.description }}';
+            const hermesLaunch = new Date('2025-07-22');
+
+            const issues = [];
+            const warnings = [];
+
+            // Check if already in repos.json
+            const fs = require('fs');
+            const repos = JSON.parse(fs.readFileSync('data/repos.json', 'utf-8'));
+            const alreadyExists = repos.some(r => r.owner === owner && r.repo === repo);
+            if (alreadyExists) {
+              issues.push(`Already in the ecosystem map`);
+            }
+
+            // Filter checks
+            if (isFork) {
+              warnings.push(`This is a fork — we only include forks with meaningful changes`);
+            }
+            if (stars === 0) {
+              warnings.push(`0 stars — we generally require at least 1 star`);
+            }
+            if (description === 'No description') {
+              warnings.push(`No description set on the repo`);
+            }
+            if (createdAt < hermesLaunch) {
+              warnings.push(`Created before Hermes Agent launch (${createdAt.toISOString().slice(0,10)})`);
+            }
+
+            // Check if description/readme mentions hermes
+            const descLower = (description || '').toLowerCase();
+            const mentionsHermes = descLower.includes('hermes') || descLower.includes('nous');
+            if (!mentionsHermes) {
+              warnings.push(`Description doesn't mention "hermes" or "nous" — may not be related`);
+            }
+
+            const passed = issues.length === 0;
+            const hasWarnings = warnings.length > 0;
+
+            core.setOutput('passed', passed ? 'true' : 'false');
+            core.setOutput('issues', JSON.stringify(issues));
+            core.setOutput('warnings', JSON.stringify(warnings));
+
+            let report = `## Automated Validation Report\n\n`;
+            report += `| Field | Value |\n|-------|-------|\n`;
+            report += `| **Repo** | [${owner}/${repo}](${{ steps.metadata.outputs.html_url }}) |\n`;
+            report += `| **Stars** | ${{ steps.metadata.outputs.stars }} |\n`;
+            report += `| **Language** | ${{ steps.metadata.outputs.language }} |\n`;
+            report += `| **License** | ${{ steps.metadata.outputs.license }} |\n`;
+            report += `| **Created** | ${{ steps.metadata.outputs.created_at }} |\n`;
+            report += `| **Last push** | ${{ steps.metadata.outputs.updated_at }} |\n`;
+            report += `| **Fork** | ${isFork} |\n`;
+            report += `| **Description** | ${description} |\n\n`;
+
+            if (issues.length > 0) {
+              report += `### Blocking Issues\n${issues.map(i => `- ${i}`).join('\n')}\n\n`;
+            }
+            if (warnings.length > 0) {
+              report += `### Warnings\n${warnings.map(w => `- ${w}`).join('\n')}\n\n`;
+            }
+            if (passed && !hasWarnings) {
+              report += `### Result: PASS\nAll checks passed. A PR will be created to add this repo.\n`;
+            } else if (passed && hasWarnings) {
+              report += `### Result: PASS with warnings\nNo blocking issues, but please review the warnings above. A PR will be created.\n`;
+            } else {
+              report += `### Result: BLOCKED\nThis repo cannot be auto-added due to the issues above. A maintainer will review manually.\n`;
+            }
+
+            core.setOutput('report', report);
+
+      - name: Comment validation report on issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const report = `${{ steps.validate.outputs.report }}`.replace(/\\n/g, '\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: report
+            });
+
+      - name: Create PR to add repo (if passed)
+        if: steps.validate.outputs.passed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const owner = '${{ steps.extract.outputs.owner }}';
+            const repo = '${{ steps.extract.outputs.repo }}';
+            const stars = parseInt('${{ steps.metadata.outputs.stars }}') || 0;
+            const description = '${{ steps.metadata.outputs.description }}';
+            const htmlUrl = '${{ steps.metadata.outputs.html_url }}';
+            let category = '${{ steps.extract.outputs.category }}';
+            if (category === 'Not sure') category = 'Developer Tools';
+
+            // Read current repos.json
+            const repos = JSON.parse(fs.readFileSync('data/repos.json', 'utf-8'));
+
+            // Add new repo
+            const newRepo = {
+              owner,
+              repo,
+              name: repo,
+              description: description.slice(0, 200),
+              stars,
+              url: htmlUrl,
+              official: owner === 'NousResearch',
+              category
+            };
+
+            repos.push(newRepo);
+
+            // Write updated repos.json
+            const branch = `add-repo-${owner}-${repo}`.toLowerCase().replace(/[^a-z0-9-]/g, '-');
+
+            // Get current main SHA
+            const { data: ref } = await github.rest.git.getRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'heads/main'
+            });
+
+            // Create branch
+            await github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/heads/${branch}`,
+              sha: ref.object.sha
+            });
+
+            // Get current file
+            const { data: file } = await github.rest.repos.getContent({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              path: 'data/repos.json',
+              ref: 'main'
+            });
+
+            // Update file on new branch
+            await github.rest.repos.createOrUpdateFileContents({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              path: 'data/repos.json',
+              message: `Add ${owner}/${repo} to ecosystem map\n\nSuggested in #${context.issue.number}`,
+              content: Buffer.from(JSON.stringify(repos, null, 2) + '\n').toString('base64'),
+              sha: file.sha,
+              branch
+            });
+
+            // Create PR
+            const { data: pr } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Add ${owner}/${repo} (${stars} stars) to ${category}`,
+              body: `Adds [${owner}/${repo}](${htmlUrl}) to the ecosystem map.\n\n**Stars:** ${stars}\n**Category:** ${category}\n**Description:** ${description}\n\nSuggested in #${context.issue.number}\n\n> Note: This PR only updates repos.json. The HTML map will need a manual update to include the new chip, or will be picked up in the next full refresh.`,
+              head: branch,
+              base: 'main'
+            });
+
+            // Comment on the issue with the PR link
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `PR created: #${pr.number}\n\nOnce merged, this repo will appear in the ecosystem map.`
+            });
