@@ -67,8 +67,9 @@ jobs:
                   if (issuedRepos.has(key)) continue;
                   if (candidates.has(key)) continue;
 
-                  // Skip the main hermes-agent repo itself
+                  // Skip repos we don't want to discover
                   if (key === 'nousresearch/hermes-agent') continue;
+                  if (key === 'ksimback/hermes-ecosystem') continue;
 
                   // Basic filters
                   if (repo.fork && repo.owner.login !== 'NousResearch') continue;

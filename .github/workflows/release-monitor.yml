@@ -2,7 +2,7 @@ name: Daily Release Monitor
 
 on:
   schedule:
-    # Run daily at 06:00 UTC
+    # Run daily at 06:00 UTC (checks releases + docs changes)
     - cron: '0 6 * * *'
   workflow_dispatch: # Allow manual trigger
 
