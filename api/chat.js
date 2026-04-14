@@ -346,6 +346,8 @@ Hermes Agent is an open-source autonomous AI agent developed by Nous Research, r
 - Autonomous skill creation following agentskills.io standard
 - Persistent cross-session memory with 8 pluggable memory providers
 
+**Latest release (v0.9.0, April 13 2026):** Local web dashboard, Fast Mode (/fast) for GPT-5.4/Codex/Claude, iMessage via BlueBubbles, WeChat + WeCom native support, Termux/Android native, background process monitoring (watch_patterns), pluggable context engine, xAI (Grok) + Xiaomi MiMo + Qwen native providers, unified proxy support, 16 security fixes. 487 commits, 269 PRs, 24 contributors.
+
 **Installation:** One-line install on Linux/macOS/WSL2:
 \`curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash\`
 Then run \`hermes\` to start. Only Git is required as a prerequisite — the installer handles Python, Node.js, ripgrep, and ffmpeg. Windows native not supported — use WSL2.
