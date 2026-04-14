@@ -334,13 +334,13 @@ export default async function handler(req, res) {
     // This prevents vague queries from getting weak answers due to bad retrieval
     const baselineContext = `## CORE FACTS (always true)
 
-Hermes Agent is an open-source autonomous AI agent developed by Nous Research, released in February 2026 under MIT license. It currently has 57,200+ stars on GitHub (v0.8.0 released April 8, 2026).
+Hermes Agent is an open-source autonomous AI agent developed by Nous Research, released in February 2026 under MIT license. It currently has 83,000+ stars on GitHub (v0.9.0 released April 13, 2026).
 
 **What makes it unique:** Unlike stateless chatbots, Hermes has a built-in learning loop — it creates reusable skills from experience, remembers what it learns across sessions via persistent memory (MEMORY.md + USER.md + SQLite FTS5), and gets more capable the longer you use it. It's "the agent that grows with you."
 
 **Core capabilities:**
 - 47 built-in tools (terminal, files, browser, code execution, image gen, voice, etc.)
-- 14 messaging platforms (Telegram, Discord, Slack, WhatsApp, Signal, Matrix, Feishu, etc.)
+- 16 messaging platforms (Telegram, Discord, Slack, WhatsApp, Signal, Matrix, Feishu, iMessage, WeChat, etc.)
 - 20+ LLM providers (OpenRouter, Nous Portal, Anthropic, OpenAI, local via Ollama, etc.)
 - 6 execution backends (local, Docker, SSH, Singularity, Modal, Daytona)
 - Autonomous skill creation following agentskills.io standard
