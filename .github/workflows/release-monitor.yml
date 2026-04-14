@@ -109,9 +109,10 @@ jobs:
               console.log(`Using GitHub Release body (${releaseNotes.length} chars)`);
             }
 
-            // Truncate if extremely long
-            if (releaseNotes.length > 50000) {
-              releaseNotes = releaseNotes.slice(0, 50000) + '\n\n[Truncated — see full release notes on GitHub]';
+            // Only truncate truly massive files (200K+). We want FULL release notes
+            // in the KB so the chatbot can answer detailed questions.
+            if (releaseNotes.length > 200000) {
+              releaseNotes = releaseNotes.slice(0, 200000) + '\n\n[Truncated — see full release notes on GitHub]';
             }
 
             core.setOutput('content', releaseNotes);
