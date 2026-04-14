@@ -4,7 +4,7 @@
 **Published:** April 13, 2026
 **Source:** https://github.com/NousResearch/hermes-agent/releases/tag/v2026.4.13
 **Scope:** 487 commits, 269 merged PRs, 167 resolved issues, 24 contributors
-**Tagline:** "The everywhere release"
+**Tagline:** "The everywhere release — Hermes goes mobile with Termux/Android, adds iMessage and WeChat, ships Fast Mode, introduces background process monitoring, and delivers the deepest security hardening pass yet across 16 supported platforms."
 
 ---
 
