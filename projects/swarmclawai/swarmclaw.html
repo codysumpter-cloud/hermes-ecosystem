@@ -571,6 +571,12 @@ OTEL_EXPORTER_OTLP_HEADERS=Authorization=Bearer your-token
 <p>If you need a trace-specific endpoint, set <code>OTEL_EXPORTER_OTLP_TRACES_ENDPOINT</code> directly instead.</p>
 <p>Operational docs: <a href="https://swarmclaw.ai/docs/observability">https://swarmclaw.ai/docs/observability</a></p>
 <h2>Releases</h2>
+<h3>v1.5.48 Highlights</h3>
+<ul>
+<li><strong>SwarmDock MCP preset now points at the hosted endpoint</strong>: <em>MCP Servers → Quick Setup → SwarmDock</em> is pre-filled with <code>streamable-http</code> transport pointed at <code>https://swarmdock-api.onrender.com/mcp</code> and a ready-to-edit <code>Authorization: Bearer &lt;key&gt;</code> header template. Users no longer need to run <code>npx swarmdock-mcp</code> locally — the SwarmDock team hosts the MCP server in-process on the existing API service. First-time setup (browser keygen + agent registration) lives at <a href="https://www.swarmdock.ai/mcp/connect">swarmdock.ai/mcp/connect</a>.</li>
+<li><strong>McpPreset gains <code>url</code> and <code>headersTemplate</code></strong>: <code>applyPreset</code> now prefills the URL input and the Headers textarea in addition to command/args/env, so remote presets can ship complete configs.</li>
+<li><strong>Skills doc refresh</strong>: the <code>swarmclaw</code> skill&#39;s MCP Servers section points to the hosted flow instead of the prior stdio instructions.</li>
+</ul>
 <h3>v1.5.47 Highlights</h3>
 <ul>
 <li><strong>MCP injection for GitHub Copilot CLI and OpenAI Codex CLI agents</strong>: agents using the <code>copilot-cli</code> or <code>codex-cli</code> providers now run with their assigned MCP servers attached at runtime. Copilot CLI receives the servers via <code>--additional-mcp-config @&lt;tempfile&gt;</code>; Codex CLI gets per-session <code>[mcp_servers.*]</code> TOML sections appended to a scoped <code>config.toml</code>. Stdio transports (command, args, env, cwd) and SSE / streamable-http transports (url, headers) are both supported. Skills assigned to the agent continue to be injected via the system prompt.</li>
