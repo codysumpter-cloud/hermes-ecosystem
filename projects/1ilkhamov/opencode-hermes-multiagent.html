@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>opencode-hermes-multiagent — Hermes Agent Multi-Agent &amp; Orchestration | Hermes Atlas</title>
+<meta name="description" content="Hermes — a multi-agent system for OpenCode AI. 17 specialized agents for research, planning, implementation, quality, and infrastructure.">
+<link rel="canonical" href="https://hermesatlas.com/projects/1ilkhamov/opencode-hermes-multiagent">
+<meta property="og:title" content="opencode-hermes-multiagent — Hermes Atlas">
+<meta property="og:description" content="Hermes — a multi-agent system for OpenCode AI. 17 specialized agents for research, planning, implementation, quality, and infrastructure.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/1ilkhamov/opencode-hermes-multiagent">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="opencode-hermes-multiagent — Hermes Atlas">
+<meta name="twitter:description" content="Hermes — a multi-agent system for OpenCode AI. 17 specialized agents for research, planning, implementation, quality, and infrastructure.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Multi-Agent &amp; Orchestration</a>
+  </div>
+
+  <h1>opencode-hermes-multiagent</h1>
+  <p class="project-desc">Hermes — a multi-agent system for OpenCode AI. 17 specialized agents for research, planning, implementation, quality, and infrastructure.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 40</span>
+    
+    
+    
+    <span>Updated 12/31/2025</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/1ilkhamov/opencode-hermes-multiagent" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <h1>🔱 Hermes Multi-Agent System for OpenCode AI</h1>
+<div align="center">
+
+<p><strong><a href="#english">English</a> | <a href="#russian">Русский</a></strong></p>
+<p><a href="https://opencode.ai"><img src="https://img.shields.io/badge/OpenCode-AI-blue?style=for-the-badge" alt="OpenCode AI"></a>
+<a href=""><img src="https://img.shields.io/badge/Agents-17-green?style=for-the-badge" alt="Agents"></a>
+<a href=""><img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" alt="License"></a></p>
+</div>
+
+<hr>
+<p><a name="english"></a></p>
+<h2>🇬🇧 English</h2>
+<h3>Overview</h3>
+<p>Hermes is a sophisticated multi-agent orchestration system designed for OpenCode AI. It coordinates 17 specialized AI agents to handle complex software development tasks — from research and planning to implementation, testing, and deployment.</p>
+<p>The system follows a strict pipeline architecture where each agent has a specific role, ensuring quality, security, and consistency across all operations.</p>
+<h3>Architecture</h3>
+<pre><code>                              ┌─────────────────────────────────────┐
+                              │           🔱 HERMES                 │
+                              │      Master Orchestrator            │
+                              │      (openai/gpt-5.2-high)          │
+                              └─────────────────┬───────────────────┘
+                                                │
+        ┌───────────────────────────────────────┼───────────────────────────────────────┐
+        │                                       │                                       │
+        ▼                                       ▼                                       ▼
+┌───────────────┐                     ┌───────────────┐                       ┌───────────────┐
+│   RESEARCH    │                     │   PLANNING    │                       │IMPLEMENTATION │
+├───────────────┤                     ├───────────────┤                       ├───────────────┤
+│ @finder       │                     │ @architect    │                       │ @coder        │
+│ @analyst      │                     │ @planner      │                       │ @editor       │
+│ @researcher   │                     └───────────────┘                       │ @fixer        │
+└───────────────┘                                                             │ @refactorer   │
+                                                                              └───────────────┘
+        ┌───────────────────────────────────────┼───────────────────────────────────────┐
+        │                                       │                                       │
+        ▼                                       ▼                                       ▼
+┌───────────────┐                     ┌───────────────┐                       ┌───────────────┐
+│    QUALITY    │                     │ DOCUMENTATION │                       │INFRASTRUCTURE │
+├───────────────┤                     ├───────────────┤                       ├───────────────┤
+│ @reviewer     │                     │ @documenter   │                       │ @devops       │
+│ @tester       │                     │ @commenter    │                       │ @optimizer    │
+│ @debugger     │                     └───────────────┘                       └───────────────┘
+│ @security     │
+└───────────────┘
+</code></pre>
+<h3>Agents</h3>
+<h4>🔱 Hermes — Master Orchestrator</h4>
+<ul>
+<li><strong>Model:</strong> <code>openai/gpt-5.2-high</code></li>
+<li><strong>Role:</strong> Routes requests, manages pipelines, coordinates agents, handles conflicts</li>
+<li><strong>Tools:</strong> <code>task</code>, <code>todowrite</code>, <code>todoread</code></li>
+</ul>
+<h4>🔍 Research Agents</h4>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>Model</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>@finder</strong></td>
+<td><code>gemini-3-flash</code></td>
+<td>Fast codebase scout. Finds files, patterns, project structure</td>
+</tr>
+<tr>
+<td><strong>@analyst</strong></td>
+<td><code>sonnet-4.5-thinking-high</code></td>
+<td>Deep code analysis. Dependencies, risks, data flow</td>
+</tr>
+<tr>
+<td><strong>@researcher</strong></td>
+<td><code>sonnet-4.5-thinking-low</code></td>
+<td>External knowledge. Documentation, best practices, solutions</td>
+</tr>
+</tbody></table>
+<h4>📐 Planning Agents</h4>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>Model</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>@architect</strong></td>
+<td><code>opus-4.5-thinking-medium</code></td>
+<td>Solution design. Components, interfaces, integration</td>
+</tr>
+<tr>
+<td><strong>@planner</strong></td>
+<td><code>gemini-3-flash</code></td>
+<td>Task decomposition. Atomic tasks, dependencies, ordering</td>
+</tr>
+</tbody></table>
+<h4>💻 Implementation Agents</h4>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>Model</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>@coder</strong></td>
+<td><code>opus-4.5-thinking-high</code></td>
+<td>Creates new code. Files, functions, classes</td>
+</tr>
+<tr>
+<td><strong>@editor</strong></td>
+<td><code>opus-4.5-thinking-high</code></td>
+<td>Modifies existing code. Safe changes, backward compatibility</td>
+</tr>
+<tr>
+<td><strong>@fixer</strong></td>
+<td><code>sonnet-4.5-thinking-high</code></td>
+<td>Fixes bugs. Minimal changes, root cause fixes</td>
+</tr>
+<tr>
+<td><strong>@refactorer</strong></td>
+<td><code>sonnet-4.5-thinking-high</code></td>
+<td>Improves structure. Same behavior, better code</td>
+</tr>
+</tbody></table>
+<h4>✅ Quality Agents</h4>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>Model</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>@reviewer</strong></td>
+<td><code>gpt-5.2-codex-xhigh</code></td>
+<td>Code review. Quality, best practices, issues</td>
+</tr>
+<tr>
+<td><strong>@tester</strong></td>
+<td><code>gpt-5.2-codex-xhigh</code></td>
+<td>Testing. Unit tests, integration tests, coverage</td>
+</tr>
+<tr>
+<td><strong>@debugger</strong></td>
+<td><code>sonnet-4.5-thinking-high</code></td>
+<td>Bug investigation. Root cause analysis, diagnosis</td>
+</tr>
+<tr>
+<td><strong>@security</strong></td>
+<td><code>gpt-5.2-codex-xhigh</code></td>
+<td>Security audit. Vulnerabilities, compliance, OWASP</td>
+</tr>
+</tbody></table>
+<h4>📚 Documentation Agents</h4>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>Model</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>@documenter</strong></td>
+<td><code>sonnet-4.5-thinking-medium</code></td>
+<td>Technical docs. README, API docs, guides</td>
+</tr>
+<tr>
+<td><strong>@commenter</strong></td>
+<td><code>sonnet-4.5-thinking-low</code></td>
+<td>Code comments. JSDoc, inline comments</td>
+</tr>
+</tbody></table>
+<h4>🔧 Infrastructure Agents</h4>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>Model</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>@devops</strong></td>
+<td><code>sonnet-4.5-thinking-medium</code></td>
+<td>CI/CD, Docker, deployment, infrastructure</td>
+</tr>
+<tr>
+<td><strong>@optimizer</strong></td>
+<td><code>sonnet-4.5-thinking-high</code></td>
+<td>Performance. Bottlenecks, memory, efficiency</td>
+</tr>
+</tbody></table>
+<h3>Pipelines</h3>
+<h4>New Feature</h4>
+<pre><code>@finder → @analyst → @architect → @planner → @coder → @reviewer → @tester → @documenter
+</code></pre>
+<h4>New Feature (Security-Related)</h4>
+<pre><code>@finder → @analyst → @researcher → @architect → @planner → @coder → @reviewer → @security → @tester → @documenter
+</code></pre>
+<h4>Bug Fix (Unknown Cause)</h4>
+<pre><code>@finder → @debugger → @fixer → @reviewer → @tester
+</code></pre>
+<h4>Bug Fix (Known Cause)</h4>
+<pre><code>@finder → @fixer → @reviewer → @tester
+</code></pre>
+<h4>Refactoring</h4>
+<pre><code>@finder → @analyst → @refactorer → @reviewer → @tester
+</code></pre>
+<h4>Performance Optimization</h4>
+<pre><code>@finder → @analyst → @optimizer → @reviewer → @tester
+</code></pre>
+<h4>Infrastructure Changes</h4>
+<pre><code>@finder → @devops → @reviewer → @tester
+</code></pre>
+<h3>Key Features</h3>
+<ul>
+<li><strong>Mandatory Quality Gates:</strong> <code>@reviewer</code> and <code>@tester</code> run after every code change</li>
+<li><strong>Security First:</strong> <code>@security</code> is mandatory for auth, user data, secrets</li>
+<li><strong>Checkpoints:</strong> User confirmation required between phases</li>
+<li><strong>Revision Loops:</strong> Up to 3 iterations for fixes before escalation</li>
+<li><strong>Context Passing:</strong> Full context flows between all agents</li>
+<li><strong>Session Learning:</strong> System learns from repeated issues</li>
+<li><strong>Conflict Resolution:</strong> Priority-based resolution (security &gt; quality &gt; implementation)</li>
+</ul>
+<h3>Installation</h3>
+<ol>
+<li>Clone the repository:</li>
+</ol>
+<pre><code class="language-bash">git clone &lt;repository-url&gt;
+cd hermes-agents
+</code></pre>
+<ol start="2">
+<li>Install dependencies:</li>
+</ol>
+<pre><code class="language-bash">bun install
+# or
+npm install
+</code></pre>
+<ol start="3">
+<li>Configure OpenCode AI to use the agent system:</li>
+</ol>
+<pre><code class="language-bash"># Copy agent files to OpenCode config
+cp -r agent ~/.config/opencode/
+</code></pre>
+<ol start="4">
+<li>Set up MCP servers (for @researcher):</li>
+</ol>
+<pre><code class="language-bash"># Context7 for library documentation
+npx -y @upstash/context7-mcp
+
+# Fetch for web pages
+uvx mcp-server-fetch
+</code></pre>
+<h3>Usage</h3>
+<p>The system activates automatically when you use OpenCode AI. Hermes analyzes your request and routes it to the appropriate pipeline.</p>
+<p><strong>Examples:</strong></p>
+<pre><code>&quot;Add user authentication with JWT&quot;
+→ Security-related feature pipeline
+
+&quot;Fix the login bug&quot;
+→ Bug fix pipeline (debugger if cause unknown)
+
+&quot;Refactor the UserService&quot;
+→ Refactoring pipeline
+
+&quot;Optimize database queries&quot;
+→ Performance pipeline
+</code></pre>
+<h3>Configuration</h3>
+<p>All configuration is in <code>opencode.json</code>:</p>
+<ul>
+<li><strong>Models:</strong> Customize models for each agent</li>
+<li><strong>Tools:</strong> Enable/disable tools per agent</li>
+<li><strong>MCP:</strong> Configure external tool servers</li>
+<li><strong>LSP:</strong> Language Server Protocol integration</li>
+</ul>
+<h3>Project Structure</h3>
+<pre><code>agent/
+├── core/
+│   └── hermes.md          # Master orchestrator
+└── subagents/
+    ├── research/
+    │   ├── finder.md      # Codebase scout
+    │   ├── analyst.md     # Code analyst
+    │   └── researcher.md  # External knowledge
+    ├── planning/
+    │   ├── architect.md   # Solution design
+    │   └── planner.md     # Task decomposition
+    ├── implementation/
+    │   ├── coder.md       # Code writer
+    │   ├── editor.md      # Code editor
+    │   ├── fixer.md       # Bug fixer
+    │   └── refactorer.md  # Code refactorer
+    ├── quality/
+    │   ├── reviewer.md    # Code reviewer
+    │   ├── tester.md      # Test engineer
+    │   ├── debugger.md    # Bug investigator
+    │   └── security.md    # Security auditor
+    ├── documentation/
+    │   ├── documenter.md  # Technical writer
+    │   └── commenter.md   # Code commenter
+    └── infrastructure/
+        ├── devops.md      # DevOps engineer
+        └── optimizer.md   # Performance optimizer
+</code></pre>
+<hr>
+<p><a name="russian"></a></p>
+<h2>🇷🇺 Русский</h2>
+<h3>Обзор</h3>
+<p>Hermes — это продвинутая мультиагентная система оркестрации для OpenCode AI. Она координирует 17 специализированных ИИ-агентов для выполнения сложных задач разработки — от исследования и планирования до реализации, тестирования и деплоя.</p>
+<p>Система следует строгой пайплайн-архитектуре, где каждый агент имеет определённую роль, обеспечивая качество, безопасность и согласованность всех операций.</p>
+<h3>Архитектура</h3>
+<pre><code>                              ┌─────────────────────────────────────┐
+                              │           🔱 HERMES                 │
+                              │      Главный Оркестратор            │
+                              │      (openai/gpt-5.2-high)          │
+                              └─────────────────┬───────────────────┘
+                                                │
+        ┌───────────────────────────────────────┼───────────────────────────────────────┐
+        │                                       │                                       │
+        ▼                                       ▼                                       ▼
+┌───────────────┐                     ┌───────────────┐                       ┌───────────────┐
+│ ИССЛЕДОВАНИЕ  │                     │ ПЛАНИРОВАНИЕ  │                       │  РЕАЛИЗАЦИЯ   │
+├───────────────┤                     ├───────────────┤                       ├───────────────┤
+│ @finder       │                     │ @architect    │                       │ @coder        │
+│ @analyst      │                     │ @planner      │                       │ @editor       │
+│ @researcher   │                     └───────────────┘                       │ @fixer        │
+└───────────────┘                                                             │ @refactorer   │
+                                                                              └───────────────┘
+        ┌───────────────────────────────────────┼───────────────────────────────────────┐
+        │                                       │                                       │
+        ▼                                       ▼                                       ▼
+┌───────────────┐                     ┌───────────────┐                       ┌───────────────┐
+│   КАЧЕСТВО    │                     │ ДОКУМЕНТАЦИЯ  │                       │ИНФРАСТРУКТУРА │
+├───────────────┤                     ├───────────────┤                       ├───────────────┤
+│ @reviewer     │                     │ @documenter   │                       │ @devops       │
+│ @tester       │                     │ @commenter    │                       │ @optimizer    │
+│ @debugger     │                     └───────────────┘                       └───────────────┘
+│ @security     │
+└───────────────┘
+</code></pre>
+<h3>Агенты</h3>
+<h4>🔱 Hermes — Главный Оркестратор</h4>
+<ul>
+<li><strong>Модель:</strong> <code>openai/gpt-5.2-high</code></li>
+<li><strong>Роль:</strong> Маршрутизация запросов, управление пайплайнами, координация агентов, разрешение конфликтов</li>
+<li><strong>Инструменты:</strong> <code>task</code>, <code>todowrite</code>, <code>todoread</code></li>
+</ul>
+<h4>🔍 Агенты Исследования</h4>
+<table>
+<thead>
+<tr>
+<th>Агент</th>
+<th>Модель</th>
+<th>Роль</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>@finder</strong></td>
+<td><code>gemini-3-flash</code></td>
+<td>Быстрый поиск по кодовой базе. Файлы, паттерны, структура</td>
+</tr>
+<tr>
+<td><strong>@analyst</strong></td>
+<td><code>sonnet-4.5-thinking-high</code></td>
+<td>Глубокий анализ кода. Зависимости, риски, поток данных</td>
+</tr>
+<tr>
+<td><strong>@researcher</strong></td>
+<td><code>sonnet-4.5-thinking-low</code></td>
+<td>Внешние знания. Документация, лучшие практики, решения</td>
+</tr>
+</tbody></table>
+<h4>📐 Агенты Планирования</h4>
+<table>
+<thead>
+<tr>
+<th>Агент</th>
+<th>Модель</th>
+<th>Роль</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>@architect</strong></td>
+<td><code>opus-4.5-thinking-medium</code></td>
+<td>Проектирование решений. Компоненты, интерфейсы, интеграция</td>
+</tr>
+<tr>
+<td><strong>@planner</strong></td>
+<td><code>gemini-3-flash</code></td>
+<td>Декомпозиция задач. Атомарные задачи, зависимости, порядок</td>
+</tr>
+</tbody></table>
+<h4>💻 Агенты Реализации</h4>
+<table>
+<thead>
+<tr>
+<th>Агент</th>
+<th>Модель</th>
+<th>Роль</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>@coder</strong></td>
+<td><code>opus-4.5-thinking-high</code></td>
+<td>Создание нового кода. Файлы, функции, классы</td>
+</tr>
+<tr>
+<td><strong>@editor</strong></td>
+<td><code>opus-4.5-thinking-high</code></td>
+<td>Модификация существующего кода. Безопасные изменения</td>
+</tr>
+<tr>
+<td><strong>@fixer</strong></td>
+<td><code>sonnet-4.5-thinking-high</code></td>
+<td>Исправление багов. Минимальные изменения</td>
+</tr>
+<tr>
+<td><strong>@refactorer</strong></td>
+<td><code>sonnet-4.5-thinking-high</code></td>
+<td>Улучшение структуры. То же поведение, лучший код</td>
+</tr>
+</tbody></table>
+<h4>✅ Агенты Качества</h4>
+<table>
+<thead>
+<tr>
+<th>Агент</th>
+<th>Модель</th>
+<th>Роль</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>@reviewer</strong></td>
+<td><code>gpt-5.2-codex-xhigh</code></td>
+<td>Код-ревью. Качество, лучшие практики, проблемы</td>
+</tr>
+<tr>
+<td><strong>@tester</strong></td>
+<td><code>gpt-5.2-codex-xhigh</code></td>
+<td>Тестирование. Unit-тесты, интеграционные тесты, покрытие</td>
+</tr>
+<tr>
+<td><strong>@debugger</strong></td>
+<td><code>sonnet-4.5-thinking-high</code></td>
+<td>Расследование багов. Анализ первопричин, диагностика</td>
+</tr>
+<tr>
+<td><strong>@security</strong></td>
+<td><code>gpt-5.2-codex-xhigh</code></td>
+<td>Аудит безопасности. Уязвимости, соответствие, OWASP</td>
+</tr>
+</tbody></table>
+<h4>📚 Агенты Документации</h4>
+<table>
+<thead>
+<tr>
+<th>Агент</th>
+<th>Модель</th>
+<th>Роль</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>@documenter</strong></td>
+<td><code>sonnet-4.5-thinking-medium</code></td>
+<td>Техническая документация. README, API docs, гайды</td>
+</tr>
+<tr>
+<td><strong>@commenter</strong></td>
+<td><code>sonnet-4.5-thinking-low</code></td>
+<td>Комментарии в коде. JSDoc, inline-комментарии</td>
+</tr>
+</tbody></table>
+<h4>🔧 Агенты Инфраструктуры</h4>
+<table>
+<thead>
+<tr>
+<th>Агент</th>
+<th>Модель</th>
+<th>Роль</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>@devops</strong></td>
+<td><code>sonnet-4.5-thinking-medium</code></td>
+<td>CI/CD, Docker, деплой, инфраструктура</td>
+</tr>
+<tr>
+<td><strong>@optimizer</strong></td>
+<td><code>sonnet-4.5-thinking-high</code></td>
+<td>Производительность. Узкие места, память, эффективность</td>
+</tr>
+</tbody></table>
+<h3>Пайплайны</h3>
+<h4>Новая Фича</h4>
+<pre><code>@finder → @analyst → @architect → @planner → @coder → @reviewer → @tester → @documenter
+</code></pre>
+<h4>Новая Фича (Связанная с Безопасностью)</h4>
+<pre><code>@finder → @analyst → @researcher → @architect → @planner → @coder → @reviewer → @security → @tester → @documenter
+</code></pre>
+<h4>Исправление Бага (Причина Неизвестна)</h4>
+<pre><code>@finder → @debugger → @fixer → @reviewer → @tester
+</code></pre>
+<h4>Исправление Бага (Причина Известна)</h4>
+<pre><code>@finder → @fixer → @reviewer → @tester
+</code></pre>
+<h4>Рефакторинг</h4>
+<pre><code>@finder → @analyst → @refactorer → @reviewer → @tester
+</code></pre>
+<h4>Оптимизация Производительности</h4>
+<pre><code>@finder → @analyst → @optimizer → @reviewer → @tester
+</code></pre>
+<h4>Изменения Инфраструктуры</h4>
+<pre><code>@finder → @devops → @reviewer → @tester
+</code></pre>
+<h3>Ключевые Особенности</h3>
+<ul>
+<li><strong>Обязательные Проверки Качества:</strong> <code>@reviewer</code> и <code>@tester</code> запускаются после каждого изменения кода</li>
+<li><strong>Безопасность Прежде Всего:</strong> <code>@security</code> обязателен для auth, пользовательских данных, секретов</li>
+<li><strong>Чекпоинты:</strong> Требуется подтверждение пользователя между фазами</li>
+<li><strong>Циклы Ревизии:</strong> До 3 итераций для исправлений перед эскалацией</li>
+<li><strong>Передача Контекста:</strong> Полный контекст передаётся между всеми агентами</li>
+<li><strong>Обучение в Сессии:</strong> Система учится на повторяющихся проблемах</li>
+<li><strong>Разрешение Конфликтов:</strong> Приоритетное разрешение (безопасность &gt; качество &gt; реализация)</li>
+</ul>
+<h3>Установка</h3>
+<ol>
+<li>Клонируйте репозиторий:</li>
+</ol>
+<pre><code class="language-bash">git clone &lt;repository-url&gt;
+cd hermes-agents
+</code></pre>
+<ol start="2">
+<li>Установите зависимости:</li>
+</ol>
+<pre><code class="language-bash">bun install
+# или
+npm install
+</code></pre>
+<ol start="3">
+<li>Настройте OpenCode AI для использования системы агентов:</li>
+</ol>
+<pre><code class="language-bash"># Скопируйте файлы агентов в конфиг OpenCode
+cp -r agent ~/.config/opencode/
+</code></pre>
+<ol start="4">
+<li>Настройте MCP серверы (для @researcher):</li>
+</ol>
+<pre><code class="language-bash"># Context7 для документации библиотек
+npx -y @upstash/context7-mcp
+
+# Fetch для веб-страниц
+uvx mcp-server-fetch
+</code></pre>
+<h3>Использование</h3>
+<p>Система активируется автоматически при использовании OpenCode AI. Hermes анализирует ваш запрос и направляет его в соответствующий пайплайн.</p>
+<p><strong>Примеры:</strong></p>
+<pre><code>&quot;Добавь аутентификацию пользователей с JWT&quot;
+→ Пайплайн фичи, связанной с безопасностью
+
+&quot;Исправь баг в логине&quot;
+→ Пайплайн исправления бага (debugger если причина неизвестна)
+
+&quot;Отрефактори UserService&quot;
+→ Пайплайн рефакторинга
+
+&quot;Оптимизируй запросы к базе данных&quot;
+→ Пайплайн производительности
+</code></pre>
+<h3>Конфигурация</h3>
+<p>Вся конфигурация в <code>opencode.json</code>:</p>
+<ul>
+<li><strong>Models:</strong> Настройка моделей для каждого агента</li>
+<li><strong>Tools:</strong> Включение/отключение инструментов для агента</li>
+<li><strong>MCP:</strong> Конфигурация внешних серверов инструментов</li>
+<li><strong>LSP:</strong> Интеграция Language Server Protocol</li>
+</ul>
+<h3>Структура Проекта</h3>
+<pre><code>agent/
+├── core/
+│   └── hermes.md          # Главный оркестратор
+└── subagents/
+    ├── research/
+    │   ├── finder.md      # Поиск по кодовой базе
+    │   ├── analyst.md     # Анализ кода
+    │   └── researcher.md  # Внешние знания
+    ├── planning/
+    │   ├── architect.md   # Проектирование решений
+    │   └── planner.md     # Декомпозиция задач
+    ├── implementation/
+    │   ├── coder.md       # Написание кода
+    │   ├── editor.md      # Редактирование кода
+    │   ├── fixer.md       # Исправление багов
+    │   └── refactorer.md  # Рефакторинг кода
+    ├── quality/
+    │   ├── reviewer.md    # Код-ревью
+    │   ├── tester.md      # Тестирование
+    │   ├── debugger.md    # Расследование багов
+    │   └── security.md    # Аудит безопасности
+    ├── documentation/
+    │   ├── documenter.md  # Техническая документация
+    │   └── commenter.md   # Комментарии в коде
+    └── infrastructure/
+        ├── devops.md      # DevOps инженер
+        └── optimizer.md   # Оптимизация производительности
+</code></pre>
+<hr>
+<h2>License</h2>
+<p>MIT</p>
+<h2>Contributing</h2>
+<p>Contributions are welcome! Please read the contribution guidelines before submitting a pull request.</p>
+<hr>
+<div align="center">
+  <sub>Built with ❤️ for OpenCode AI</sub>
+</div>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Multi-Agent &amp; Orchestration</h2>
+    <div class="related-grid">
+      <a href="/projects/builderz-labs/mission-control" class="related-chip">mission-control <span class="related-stars">3.9K</span></a>
+          <a href="/projects/swarmclawai/swarmclaw" class="related-chip">swarmclaw <span class="related-stars">285</span></a>
+          <a href="/projects/howdymary/hermes-agent-metaharness" class="related-chip">hermes-agent-metaharness <span class="related-stars">46</span></a>
+          <a href="/projects/runtimenoteslabs/gladiator" class="related-chip">gladiator <span class="related-stars">29</span></a>
+          <a href="/projects/supermodeltools/bigiron" class="related-chip">bigiron <span class="related-stars">7</span></a>
+          <a href="/projects/Rainhoole/hermes-agent-acp-skill" class="related-chip">hermes-agent-acp-skill <span class="related-stars">4</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/multi-agent-frameworks">See all Multi-Agent &amp; Orchestration projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

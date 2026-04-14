@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>tokscale — Hermes Agent Developer Tools | Hermes Atlas</title>
+<meta name="description" content="🛰️ A CLI tool for tracking token usage from OpenCode, Claude Code, 🦞OpenClaw (Clawdbot/Moltbot), Pi, Codex, Gemini, Cursor, AmpCode, Factory Droid, Kimi, and ">
+<link rel="canonical" href="https://hermesatlas.com/projects/junhoyeo/tokscale">
+<meta property="og:title" content="tokscale — Hermes Atlas">
+<meta property="og:description" content="🛰️ A CLI tool for tracking token usage from OpenCode, Claude Code, 🦞OpenClaw (Clawdbot/Moltbot), Pi, Codex, Gemini, Cursor, AmpCode, Factory Droid, Kimi, and ">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/junhoyeo/tokscale">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="tokscale — Hermes Atlas">
+<meta name="twitter:description" content="🛰️ A CLI tool for tracking token usage from OpenCode, Claude Code, 🦞OpenClaw (Clawdbot/Moltbot), Pi, Codex, Gemini, Cursor, AmpCode, Factory Droid, Kimi, and ">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Developer Tools</a>
+  </div>
+
+  <h1>tokscale</h1>
+  <p class="project-desc">🛰️ A CLI tool for tracking token usage from OpenCode, Claude Code, 🦞OpenClaw (Clawdbot/Moltbot), Pi, Codex, Gemini, Cursor, AmpCode, Factory Droid, Kimi, and more! • 🏅Global Leaderboard + 2D/3D Contributions Graph</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 1.9K</span>
+    <span class="badge badge-lang">Rust</span>
+    <span class="badge badge-lang">MIT</span>
+    
+    <span>Updated 4/13/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/junhoyeo/tokscale" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    <a href="https://tokscale.ai" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
+  </div>
+
+  <section class="readme">
+    <!-- <CENTERED SECTION FOR GITHUB DISPLAY> -->
+
+<div align="center">
+
+<p><a href="https://tokscale.ai"><img src="./.github/assets/hero-v2.png" alt="Tokscale"></a></p>
+</div>
+
+<blockquote>
+<p>A high-performance CLI tool and visualization dashboard for tracking token usage and costs across multiple AI coding agents.</p>
+</blockquote>
+<blockquote>
+<p>[!TIP]</p>
+<p>v2 is here — native Rust TUI, cross-platform support, and more. <br />
+I drop new open-source work every week. Don&#39;t miss the next one.</p>
+<table>
+<thead>
+<tr>
+<th align="left"><a href="https://github.com/junhoyeo"><img alt="GitHub Follow" src="https://img.shields.io/github/followers/junhoyeo?style=flat-square&logo=github&labelColor=black&color=24292f" width="156px" /></a></th>
+<th align="left">Follow <a href="https://github.com/junhoyeo">@junhoyeo</a> on GitHub for more projects. Hacking on AI, infra, and everything in between.</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a href="https://discord.gg/h6DUGWdBbm"><img alt="Discord link" src="https://img.shields.io/discord/1480206352755458110?color=5865F2&label=discord&labelColor=black&logo=discord&logoColor=white&style=flat-square" width="156px" /></a></td>
+<td align="left">Come hang out in our <a href="https://discord.gg/h6DUGWdBbm">Discord</a> — and surround yourself with the world&#39;s top-tier vibers.</td>
+</tr>
+</tbody></table>
+</blockquote>
+<div align="center">
+
+<p><a href="https://github.com/junhoyeo/tokscale/releases"><img src="https://img.shields.io/github/v/release/junhoyeo/tokscale?color=0073FF&labelColor=black&logo=github&style=flat-square" alt="GitHub Release"></a>
+<a href="https://www.npmjs.com/package/tokscale"><img src="https://img.shields.io/npm/dt/tokscale?color=0073FF&labelColor=black&style=flat-square" alt="npm Downloads"></a>
+<a href="https://github.com/junhoyeo/tokscale/graphs/contributors"><img src="https://img.shields.io/github/contributors/junhoyeo/tokscale?color=0073FF&labelColor=black&style=flat-square" alt="GitHub Contributors"></a>
+<a href="https://github.com/junhoyeo/tokscale/network/members"><img src="https://img.shields.io/github/forks/junhoyeo/tokscale?color=0073FF&labelColor=black&style=flat-square" alt="GitHub Forks"></a>
+<a href="https://github.com/junhoyeo/tokscale/stargazers"><img src="https://img.shields.io/github/stars/junhoyeo/tokscale?color=0073FF&labelColor=black&style=flat-square" alt="GitHub Stars"></a>
+<a href="https://github.com/junhoyeo/tokscale/issues"><img src="https://img.shields.io/github/issues/junhoyeo/tokscale?color=0073FF&labelColor=black&style=flat-square" alt="GitHub Issues"></a>
+<a href="https://github.com/junhoyeo/tokscale/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-white?labelColor=black&style=flat-square" alt="License"></a>
+<a href="https://github.com/junhoyeo/tokscale/issues/403"><img src="https://raw.githubusercontent.com/junhoyeo/tokscale/refs/heads/main/.github/badges/coverage.svg" alt="Coverage"></a></p>
+<p><a href="README.md">🇺🇸 English</a> | <a href="README.ko.md">🇰🇷 한국어</a> | <a href="README.ja.md">🇯🇵 日本語</a> | <a href="README.zh-cn.md">🇨🇳 简体中文</a></p>
+</div>
+
+<!-- </CENTERED SECTION FOR GITHUB DISPLAY> -->
+
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th align="center">Models</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><img src=".github/assets/tui-overview.png" alt="TUI Overview"></td>
+<td align="center"><img src=".github/assets/tui-models.png" alt="TUI Models"></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="center">Daily Summary</th>
+<th align="center">Stats</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><img src=".github/assets/tui-daily.png" alt="TUI Daily Summary"></td>
+<td align="center"><img src=".github/assets/tui-stats.png" alt="TUI Stats"></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="center">Frontend (3D Contributions Graph)</th>
+<th align="center">Wrapped 2025</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><a href="https://tokscale.ai"><img alt="Frontend (3D Contributions Graph)" src=".github/assets/frontend-contributions-graph.png" width="700px" /></a></td>
+<td align="center"><a href="#wrapped-2025"><img alt="Wrapped 2025" src=".github/assets/wrapped-2025-agents.png" width="700px" /></a></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Run <a href="#social"><code>bunx tokscale@latest submit</code></a> to submit your usage data to the leaderboard and create your public profile!</strong></p>
+</blockquote>
+<h2>Overview</h2>
+<p><strong>Tokscale</strong> helps you monitor and analyze your token consumption from:</p>
+<table>
+<thead>
+<tr>
+<th>Logo</th>
+<th>Client</th>
+<th>Data Location</th>
+<th>Supported</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><img width="48px" src=".github/assets/client-opencode.png" alt="OpenCode" /></td>
+<td><a href="https://github.com/sst/opencode">OpenCode</a></td>
+<td><code>~/.local/share/opencode/opencode.db</code> (1.2+, all channels including <code>opencode-stable.db</code>) or/and <code>~/.local/share/opencode/storage/message/</code> (legacy/unmigrated)</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><img width="48px" src=".github/assets/client-claude.jpg" alt="Claude" /></td>
+<td><a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a></td>
+<td><code>~/.claude/projects/</code></td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><img width="48px" src=".github/assets/client-openclaw.jpg" alt="OpenClaw" /></td>
+<td><a href="https://openclaw.ai/">OpenClaw</a></td>
+<td><code>~/.openclaw/agents/</code> (+ legacy: <code>.clawdbot</code>, <code>.moltbot</code>, <code>.moldbot</code>)</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><img width="48px" src=".github/assets/client-openai.jpg" alt="Codex" /></td>
+<td><a href="https://github.com/openai/codex">Codex CLI</a></td>
+<td><code>~/.codex/sessions/</code></td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><img width="48px" src=".github/assets/client-copilot.jpg" alt="Copilot" /></td>
+<td><a href="https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-the-github-copilot-coding-agent-in-cli">GitHub Copilot CLI</a></td>
+<td><code>~/.copilot/otel/*.jsonl</code> (+ <code>COPILOT_OTEL_FILE_EXPORTER_PATH</code>)</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><img width="48px" src=".github/assets/client-hermes.png" alt="Hermes Agent" /></td>
+<td><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a></td>
+<td><code>$HERMES_HOME/state.db</code> (fallback: <code>~/.hermes/state.db</code>)</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><img width="48px" src=".github/assets/client-gemini.png" alt="Gemini" /></td>
+<td><a href="https://github.com/google-gemini/gemini-cli">Gemini CLI</a></td>
+<td><code>~/.gemini/tmp/*/chats/*.json</code></td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><img width="48px" src=".github/assets/client-cursor.jpg" alt="Cursor" /></td>
+<td><a href="https://cursor.com/">Cursor IDE</a></td>
+<td>API sync via <code>~/.config/tokscale/cursor-cache/</code></td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><img width="48px" src=".github/assets/client-amp.png" alt="Amp" /></td>
+<td><a href="https://ampcode.com/">Amp (AmpCode)</a></td>
+<td><code>~/.local/share/amp/threads/</code></td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><img width="48px" src=".github/assets/client-droid.png" alt="Droid" /></td>
+<td><a href="https://factory.ai/">Droid (Factory Droid)</a></td>
+<td><code>~/.factory/sessions/</code></td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><img width="48px" src=".github/assets/client-pi.png" alt="Pi" /></td>
+<td><a href="https://github.com/badlogic/pi-mono">Pi</a></td>
+<td><code>~/.pi/agent/sessions/</code> and <code>~/.omp/agent/sessions/</code> (<a href="https://github.com/can1357/oh-my-pi">Oh My Pi</a>)</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><img width="48px" src=".github/assets/client-kimi.png" alt="Kimi" /></td>
+<td><a href="https://github.com/MoonshotAI/kimi-cli">Kimi CLI</a></td>
+<td><code>~/.kimi/sessions/</code></td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><img width="48px" src=".github/assets/client-qwen.png" alt="Qwen" /></td>
+<td><a href="https://github.com/QwenLM/qwen-cli">Qwen CLI</a></td>
+<td><code>~/.qwen/projects/</code></td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><img width="48px" src=".github/assets/client-roocode.png" alt="Roo Code" /></td>
+<td><a href="https://github.com/RooCodeInc/Roo-Code">Roo Code</a></td>
+<td><code>~/.config/Code/User/globalStorage/rooveterinaryinc.roo-cline/tasks/</code> (+ server: <code>~/.vscode-server/data/User/globalStorage/rooveterinaryinc.roo-cline/tasks/</code>)</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><img width="48px" src=".github/assets/client-kilocode.png" alt="Kilo" /></td>
+<td><a href="https://github.com/Kilo-Org/kilocode">Kilo</a></td>
+<td><code>~/.config/Code/User/globalStorage/kilocode.kilo-code/tasks/</code> (+ server: <code>~/.vscode-server/data/User/globalStorage/kilocode.kilo-code/tasks/</code>)</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><img width="48px" src=".github/assets/client-mux.png" alt="Mux" /></td>
+<td><a href="https://github.com/coder/mux">Mux</a></td>
+<td><code>~/.mux/sessions/</code></td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><img width="48px" src=".github/assets/client-kilocode.png" alt="Kilo CLI" /></td>
+<td><a href="https://github.com/nicepkg/kilo">Kilo CLI</a></td>
+<td><code>~/.local/share/kilo/kilo.db</code></td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><img width="48px" src=".github/assets/client-crush.png" alt="Crush" /></td>
+<td><a href="https://crush.ai/">Crush</a></td>
+<td><code>$XDG_DATA_HOME/crush/projects.json</code> (project registry; fallback: <code>~/.local/share/crush/projects.json</code>)</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><img width="48px" src=".github/assets/client-synthetic.png" alt="Synthetic" /></td>
+<td><a href="https://synthetic.new/">Synthetic</a></td>
+<td>Re-attributed from other sources via <code>hf:</code> model prefix or <code>synthetic</code> provider (+ <a href="https://github.com/synthetic-lab/octofriend">Octofriend</a>: <code>~/.local/share/octofriend/sqlite.db</code>)</td>
+<td>✅ Yes</td>
+</tr>
+</tbody></table>
+<p>Get real-time pricing calculations using <a href="https://github.com/BerriAI/litellm">🚅 LiteLLM&#39;s pricing data</a>, with support for tiered pricing models and cache token discounts.</p>
+<h3>Why &quot;Tokscale&quot;?</h3>
+<p><a href="https://tokscale.ai"><img src="./.github/assets/hero.png" alt="Tokscale"></a></p>
+<p>This project is inspired by the <strong><a href="https://en.wikipedia.org/wiki/Kardashev_scale">Kardashev scale</a></strong>, a method proposed by astrophysicist Nikolai Kardashev to measure a civilization&#39;s level of technological advancement based on its energy consumption. A Type I civilization harnesses all energy available on its planet, Type II captures the entire output of its star, and Type III commands the energy of an entire galaxy.</p>
+<p>In the age of AI-assisted development, <strong>tokens are the new energy</strong>. They power our reasoning, fuel our productivity, and drive our creative output. Just as the Kardashev scale tracks energy consumption at cosmic scales, Tokscale measures your token consumption as you scale the ranks of AI-augmented development. Whether you&#39;re a casual user or burning through millions of tokens daily, Tokscale helps you visualize your journey up the scale—from planetary developer to galactic code architect.</p>
+<h2>Contents</h2>
+<ul>
+<li><a href="#overview">Overview</a><ul>
+<li><a href="#why-tokscale">Why &quot;Tokscale&quot;?</a></li>
+</ul>
+</li>
+<li><a href="#features">Features</a></li>
+<li><a href="#installation">Installation</a><ul>
+<li><a href="#quick-start">Quick Start</a></li>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#development-setup">Development Setup</a></li>
+<li><a href="#building-the-native-module">Building the Native Module</a></li>
+</ul>
+</li>
+<li><a href="#usage">Usage</a><ul>
+<li><a href="#basic-commands">Basic Commands</a></li>
+<li><a href="#tui-features">TUI Features</a></li>
+<li><a href="#filtering-by-platform">Filtering by Platform</a></li>
+<li><a href="#date-filtering">Date Filtering</a></li>
+<li><a href="#pricing-lookup">Pricing Lookup</a></li>
+<li><a href="#social">Social</a></li>
+<li><a href="#cursor-ide-commands">Cursor IDE Commands</a></li>
+<li><a href="#example-output---light-version">Example Output</a></li>
+<li><a href="#configuration">Configuration</a></li>
+<li><a href="#environment-variables">Environment Variables</a></li>
+</ul>
+</li>
+<li><a href="#frontend-visualization">Frontend Visualization</a><ul>
+<li><a href="#features-1">Features</a></li>
+<li><a href="#running-the-frontend">Running the Frontend</a></li>
+</ul>
+</li>
+<li><a href="#social-platform">Social Platform</a><ul>
+<li><a href="#features-2">Features</a></li>
+<li><a href="#getting-started">Getting Started</a></li>
+<li><a href="#data-validation">Data Validation</a></li>
+</ul>
+</li>
+<li><a href="#wrapped-2025">Wrapped 2025</a><ul>
+<li><a href="#command">Command</a></li>
+<li><a href="#whats-included">What&#39;s Included</a></li>
+</ul>
+</li>
+<li><a href="#development">Development</a><ul>
+<li><a href="#prerequisites-1">Prerequisites</a></li>
+<li><a href="#how-to-run">How to Run</a></li>
+</ul>
+</li>
+<li><a href="#supported-platforms">Supported Platforms</a><ul>
+<li><a href="#native-module-targets">Native Module Targets</a></li>
+<li><a href="#windows-support">Windows Support</a></li>
+</ul>
+</li>
+<li><a href="#session-data-retention">Session Data Retention</a></li>
+<li><a href="#data-sources">Data Sources</a></li>
+<li><a href="#pricing">Pricing</a></li>
+<li><a href="#contributing">Contributing</a><ul>
+<li><a href="#development-guidelines">Development Guidelines</a></li>
+</ul>
+</li>
+<li><a href="#acknowledgments">Acknowledgments</a></li>
+<li><a href="#license">License</a></li>
+</ul>
+<h2>Features</h2>
+<ul>
+<li><strong>Interactive TUI Mode</strong> - Beautiful terminal UI powered by Ratatui (default mode)<ul>
+<li>6 interactive views: Overview, Models, Daily, Hourly, Stats, Agents</li>
+<li>Keyboard &amp; mouse navigation</li>
+<li>GitHub-style contribution graph with 9 color themes</li>
+<li>Real-time filtering and sorting</li>
+<li>Zero flicker rendering</li>
+</ul>
+</li>
+<li><strong>Multi-platform support</strong> - Track usage across OpenCode, Claude Code, Codex CLI, Copilot CLI, Cursor IDE, Gemini CLI, Amp, Droid, OpenClaw, Hermes Agent, Pi, Kimi CLI, Qwen CLI, Roo Code, Kilo, Mux, Kilo CLI, Crush, and Synthetic</li>
+<li><strong>Real-time pricing</strong> - Fetches current pricing from LiteLLM with 1-hour disk cache; automatic OpenRouter fallback and Cursor model pricing for newly released models</li>
+<li><strong>Detailed breakdowns</strong> - Input, output, cache read/write, and reasoning token tracking</li>
+<li><strong>Native Rust core</strong> - All parsing and aggregation done in Rust for 10x faster processing</li>
+<li><strong>Web visualization</strong> - Interactive contribution graph with 2D and 3D views</li>
+<li><strong>Flexible filtering</strong> - Filter by platform, date range, or year</li>
+<li><strong>Export to JSON</strong> - Generate data for external visualization tools</li>
+<li><strong>Social Platform</strong> - Share your usage, compete on leaderboards, and view public profiles</li>
+</ul>
+<h2>Installation</h2>
+<h3>Quick Start</h3>
+<pre><code class="language-bash"># Run directly with npx
+npx tokscale@latest
+
+# Or use bunx
+bunx tokscale@latest
+
+# Light mode (table rendering only)
+npx tokscale@latest --light
+</code></pre>
+<p>That&#39;s it! This gives you the full interactive TUI experience with zero setup.</p>
+<blockquote>
+<p><strong>Package Structure</strong>: <code>tokscale</code> is an alias package (like <a href="https://www.npmjs.com/package/swc"><code>swc</code></a>) that installs <code>@tokscale/cli</code>. Both install the same CLI with the native Rust core (<code>@tokscale/core</code>) included.</p>
+</blockquote>
+<h3>Prerequisites</h3>
+<ul>
+<li><a href="https://nodejs.org/">Node.js</a> or <a href="https://bun.sh/">Bun</a></li>
+<li>(Optional) Rust toolchain for building native module from source</li>
+</ul>
+<h3>Development Setup</h3>
+<p>For local development or building from source:</p>
+<pre><code class="language-bash"># Clone the repository
+git clone https://github.com/junhoyeo/tokscale.git
+cd tokscale
+
+# Install Bun (if not already installed)
+curl -fsSL https://bun.sh/install | bash
+
+# Install dependencies
+bun install
+
+# Run the CLI in development mode
+bun run cli
+</code></pre>
+<blockquote>
+<p><strong>Note</strong>: <code>bun run cli</code> is for local development. When installed via <code>bunx tokscale</code>, the command runs directly. The Usage section below shows the installed binary commands.</p>
+</blockquote>
+<h3>Building the Native Module</h3>
+<p>The native Rust module is <strong>required</strong> for CLI operation. It provides ~10x faster processing through parallel file scanning and SIMD JSON parsing:</p>
+<pre><code class="language-bash"># Build the native core (run from repository root)
+bun run build:core
+</code></pre>
+<blockquote>
+<p><strong>Note</strong>: Native binaries are pre-built and included when you install via <code>bunx tokscale@latest</code>. Building from source is only needed for local development.</p>
+</blockquote>
+<h2>Usage</h2>
+<h3>Basic Commands</h3>
+<pre><code class="language-bash"># Launch interactive TUI (default)
+tokscale
+
+# Launch TUI with specific tab
+tokscale models    # Models tab
+tokscale monthly   # Daily view (shows daily breakdown)
+tokscale hourly    # Hourly tab
+
+# Use legacy CLI table output
+tokscale --light
+tokscale models --light
+
+# Launch TUI explicitly
+tokscale tui
+
+# Export contribution graph data as JSON
+tokscale graph --output data.json
+
+# Output data as JSON (for scripting/automation)
+tokscale --json                    # Default models view as JSON
+tokscale models --json             # Models breakdown as JSON
+tokscale monthly --json            # Monthly breakdown as JSON
+tokscale models --json &gt; report.json   # Save to file
+</code></pre>
+<h3>TUI Features</h3>
+<p>The interactive TUI mode provides:</p>
+<ul>
+<li><strong>6 Views</strong>: Overview (chart + top models), Models, Daily, Hourly, Stats (contribution graph), Agents</li>
+<li><strong>Keyboard Navigation</strong>:<ul>
+<li><code>1-6</code> or <code>←/→/Tab</code>: Switch views</li>
+<li><code>↑/↓</code>: Navigate lists</li>
+<li><code>c/d/t</code>: Sort by cost/date/tokens</li>
+<li><code>s</code>: Open source picker dialog</li>
+<li><code>g</code>: Open group-by picker dialog (model, client+model, client+provider+model)</li>
+<li><code>p</code>: Cycle through 9 color themes</li>
+<li><code>r</code>: Refresh data</li>
+<li><code>e</code>: Export to JSON</li>
+<li><code>q</code>: Quit</li>
+</ul>
+</li>
+<li><strong>Mouse Support</strong>: Click tabs, buttons, and filters</li>
+<li><strong>Themes</strong>: Green, Halloween, Teal, Blue, Pink, Purple, Orange, Monochrome, YlGnBu</li>
+<li><strong>Settings Persistence</strong>: Preferences saved to <code>~/.config/tokscale/settings.json</code> (see <a href="#configuration">Configuration</a>)</li>
+</ul>
+<h3>Group-By Strategies</h3>
+<p>Press <code>g</code> in the TUI or use <code>--group-by</code> in <code>--light</code>/<code>--json</code> mode to control how model rows are aggregated:</p>
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Flag</th>
+<th>TUI Default</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Model</strong></td>
+<td><code>--group-by model</code></td>
+<td>✅</td>
+<td>One row per model — merges all clients and providers</td>
+</tr>
+<tr>
+<td><strong>Client + Model</strong></td>
+<td><code>--group-by client,model</code></td>
+<td></td>
+<td>One row per client-model pair</td>
+</tr>
+<tr>
+<td><strong>Client + Provider + Model</strong></td>
+<td><code>--group-by client,provider,model</code></td>
+<td></td>
+<td>Most granular — no merging</td>
+</tr>
+</tbody></table>
+<p><strong><code>--group-by model</code></strong> (most consolidated)</p>
+<table>
+<thead>
+<tr>
+<th>Clients</th>
+<th>Providers</th>
+<th>Model</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OpenCode, Claude, Amp</td>
+<td>github-copilot, anthropic</td>
+<td>claude-opus-4-5</td>
+<td>$2,424</td>
+</tr>
+<tr>
+<td>OpenCode, Claude</td>
+<td>anthropic, github-copilot</td>
+<td>claude-sonnet-4-5</td>
+<td>$1,332</td>
+</tr>
+</tbody></table>
+<p><strong><code>--group-by client,model</code></strong> (CLI default)</p>
+<table>
+<thead>
+<tr>
+<th>Client</th>
+<th>Provider</th>
+<th>Model</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OpenCode</td>
+<td>github-copilot, anthropic</td>
+<td>claude-opus-4-5</td>
+<td>$1,368</td>
+</tr>
+<tr>
+<td>Claude</td>
+<td>anthropic</td>
+<td>claude-opus-4-5</td>
+<td>$970</td>
+</tr>
+</tbody></table>
+<p><strong><code>--group-by client,provider,model</code></strong> (most granular)</p>
+<table>
+<thead>
+<tr>
+<th>Client</th>
+<th>Provider</th>
+<th>Model</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OpenCode</td>
+<td>github-copilot</td>
+<td>claude-opus-4-5</td>
+<td>$1,200</td>
+</tr>
+<tr>
+<td>OpenCode</td>
+<td>anthropic</td>
+<td>claude-opus-4-5</td>
+<td>$168</td>
+</tr>
+<tr>
+<td>Claude</td>
+<td>anthropic</td>
+<td>claude-opus-4-5</td>
+<td>$970</td>
+</tr>
+</tbody></table>
+<h3>Filtering by Platform</h3>
+<pre><code class="language-bash"># Show only OpenCode usage
+tokscale --opencode
+
+# Show only Claude Code usage
+tokscale --claude
+
+# Show only Codex CLI usage
+tokscale --codex
+
+# Show only Copilot CLI usage
+tokscale --copilot
+
+# Show only OpenClaw usage
+tokscale --openclaw
+
+# Show only Pi usage
+tokscale --pi
+
+# Show only Gemini CLI usage
+tokscale --gemini
+
+# Show only Cursor IDE usage (requires `tokscale cursor login` first)
+tokscale --cursor
+
+# Show only Amp usage
+tokscale --amp
+
+# Show only Droid usage
+tokscale --droid
+
+# Show only Hermes Agent usage
+tokscale --hermes
+
+# Show only Kimi CLI usage
+tokscale --kimi
+
+# Show only Qwen CLI usage
+tokscale --qwen
+
+# Show only Roo Code usage
+tokscale --roocode
+
+# Show only Kilo usage
+tokscale --kilocode
+
+# Show only Mux usage
+tokscale --mux
+
+# Show only Kilo CLI usage
+tokscale --kilo
+
+# Show only Crush usage
+tokscale --crush
+
+# Show only Synthetic (synthetic.new) usage
+tokscale --synthetic
+
+# Combine filters
+tokscale --opencode --claude
+</code></pre>
+<h3>Date Filtering</h3>
+<p>Date filters work across all commands that generate reports (<code>tokscale</code>, <code>tokscale models</code>, <code>tokscale monthly</code>, <code>tokscale graph</code>):</p>
+<pre><code class="language-bash"># Quick date shortcuts
+tokscale --today              # Today only
+tokscale --week               # Last 7 days
+tokscale --month              # Current calendar month
+
+# Custom date range (inclusive, local timezone)
+tokscale --since 2024-01-01 --until 2024-12-31
+
+# Filter by year
+tokscale --year 2024
+
+# Combine with other options
+tokscale models --week --claude --json
+tokscale monthly --month --benchmark
+</code></pre>
+<blockquote>
+<p><strong>Note</strong>: Date filters use your local timezone. Both <code>--since</code> and <code>--until</code> are inclusive.</p>
+</blockquote>
+<h3>Pricing Lookup</h3>
+<p>Look up real-time pricing for any model:</p>
+<pre><code class="language-bash"># Look up model pricing
+tokscale pricing &quot;claude-3-5-sonnet-20241022&quot;
+tokscale pricing &quot;gpt-4o&quot;
+tokscale pricing &quot;grok-code&quot;
+
+# Force specific provider source
+tokscale pricing &quot;grok-code&quot; --provider openrouter
+tokscale pricing &quot;claude-3-5-sonnet&quot; --provider litellm
+</code></pre>
+<p><strong>Lookup Strategy:</strong></p>
+<p>The pricing lookup uses a multi-step resolution strategy:</p>
+<ol>
+<li><strong>Exact Match</strong> - Direct lookup in LiteLLM/OpenRouter databases</li>
+<li><strong>Alias Resolution</strong> - Resolves friendly names (e.g., <code>big-pickle</code> → <code>glm-4.7</code>)</li>
+<li><strong>Tier Suffix Stripping</strong> - Removes quality tiers (<code>gpt-5.2-xhigh</code> → <code>gpt-5.2</code>)</li>
+<li><strong>Version Normalization</strong> - Handles version formats (<code>claude-3-5-sonnet</code> ↔ <code>claude-3.5-sonnet</code>)</li>
+<li><strong>Provider Prefix Matching</strong> - Tries common prefixes (<code>anthropic/</code>, <code>openai/</code>, etc.)</li>
+<li><strong>Cursor Model Pricing</strong> - Hardcoded pricing for models not yet in LiteLLM/OpenRouter (e.g., <code>gpt-5.3-codex</code>)</li>
+<li><strong>Fuzzy Matching</strong> - Word-boundary matching for partial model names</li>
+</ol>
+<p><strong>Provider Preference:</strong></p>
+<p>When multiple matches exist, original model creators are preferred over resellers:</p>
+<table>
+<thead>
+<tr>
+<th>Preferred (Original)</th>
+<th>Deprioritized (Reseller)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>xai/</code> (Grok)</td>
+<td><code>azure_ai/</code></td>
+</tr>
+<tr>
+<td><code>anthropic/</code> (Claude)</td>
+<td><code>bedrock/</code></td>
+</tr>
+<tr>
+<td><code>openai/</code> (GPT)</td>
+<td><code>vertex_ai/</code></td>
+</tr>
+<tr>
+<td><code>google/</code> (Gemini)</td>
+<td><code>together_ai/</code></td>
+</tr>
+<tr>
+<td><code>meta-llama/</code></td>
+<td><code>fireworks_ai/</code></td>
+</tr>
+</tbody></table>
+<p>Example: <code>grok-code</code> matches <code>xai/grok-code-fast-1</code> ($0.20/$1.50) instead of <code>azure_ai/grok-code-fast-1</code> ($3.50/$17.50).</p>
+<h3>Social</h3>
+<pre><code class="language-bash"># Login to Tokscale (opens browser for GitHub auth)
+tokscale login
+
+# Check who you&#39;re logged in as
+tokscale whoami
+
+# Submit your usage data to the leaderboard
+tokscale submit
+
+# Submit with filters
+tokscale submit --opencode --claude --since 2024-01-01
+
+# Preview what would be submitted (dry run)
+tokscale submit --dry-run
+
+# Logout
+tokscale logout
+</code></pre>
+<img alt="CLI Submit" src="./.github/assets/cli-submit.png" />
+
+<h3>Cursor IDE Commands</h3>
+<p>Cursor IDE requires separate authentication via session token (different from the social platform login):</p>
+<pre><code class="language-bash"># Login to Cursor (requires session token from browser)
+# --name is optional; it just helps you identify accounts later
+tokscale cursor login --name work
+
+# Check Cursor authentication status and session validity
+tokscale cursor status
+
+# List saved Cursor accounts
+tokscale cursor accounts
+
+# Switch active account (controls which account syncs to cursor-cache/usage.csv)
+tokscale cursor switch work
+
+# Logout from a specific account (keeps history; excludes it from aggregation)
+tokscale cursor logout --name work
+
+# Logout and delete cached usage for that account
+tokscale cursor logout --name work --purge-cache
+
+# Logout from all Cursor accounts (keeps history; excludes from aggregation)
+tokscale cursor logout --all
+
+# Logout from all accounts and delete cached usage
+tokscale cursor logout --all --purge-cache
+</code></pre>
+<p>By default, tokscale <strong>aggregates usage across all saved Cursor accounts</strong> (all <code>cursor-cache/usage*.csv</code>).</p>
+<p>When you log out, tokscale keeps your cached usage history by moving it to <code>cursor-cache/archive/</code> (so it won&#39;t be aggregated). Use <code>--purge-cache</code> if you want to delete the cached usage instead.</p>
+<p><strong>Credentials storage</strong>: Cursor accounts are stored in <code>~/.config/tokscale/cursor-credentials.json</code>. Usage data is cached at <code>~/.config/tokscale/cursor-cache/</code> (active account uses <code>usage.csv</code>, additional accounts use <code>usage.&lt;account&gt;.csv</code>).</p>
+<p><strong>To get your Cursor session token:</strong></p>
+<ol>
+<li>Open <a href="https://www.cursor.com/settings">https://www.cursor.com/settings</a> in your browser</li>
+<li>Open Developer Tools (F12)</li>
+<li><strong>Option A - Network tab</strong>: Make any action on the page, find a request to <code>cursor.com/api/*</code>, look in the Request Headers for the <code>Cookie</code> header, and copy only the value after <code>WorkosCursorSessionToken=</code></li>
+<li><strong>Option B - Application tab</strong>: Go to Application → Cookies → <code>https://www.cursor.com</code>, find the <code>WorkosCursorSessionToken</code> cookie, and copy its value (not the cookie name)</li>
+</ol>
+<blockquote>
+<p>⚠️ <strong>Security Warning</strong>: Treat your session token like a password. Never share it publicly or commit it to version control. The token grants full access to your Cursor account.</p>
+</blockquote>
+<h3>Example Output (<code>--light</code> version)</h3>
+<img alt="CLI Light" src="./.github/assets/cli-light.png" />
+
+<h3>Configuration</h3>
+<p>Tokscale stores settings in <code>~/.config/tokscale/settings.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;colorPalette&quot;: &quot;blue&quot;,
+  &quot;includeUnusedModels&quot;: false,
+  &quot;scanner&quot;: {
+    &quot;extraScanPaths&quot;: {
+      &quot;codex&quot;: [
+        &quot;/Users/me/workspace/project-a/.codex/sessions&quot;,
+        &quot;/Users/me/workspace/project-b/.codex/archived_sessions&quot;
+      ]
+    }
+  }
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>colorPalette</code></td>
+<td>string</td>
+<td><code>&quot;blue&quot;</code></td>
+<td>TUI color theme (green, halloween, teal, blue, pink, purple, orange, monochrome, ylgnbu)</td>
+</tr>
+<tr>
+<td><code>includeUnusedModels</code></td>
+<td>boolean</td>
+<td><code>false</code></td>
+<td>Show models with zero tokens in reports</td>
+</tr>
+<tr>
+<td><code>autoRefreshEnabled</code></td>
+<td>boolean</td>
+<td><code>false</code></td>
+<td>Enable auto-refresh in TUI</td>
+</tr>
+<tr>
+<td><code>autoRefreshMs</code></td>
+<td>number</td>
+<td><code>60000</code></td>
+<td>Auto-refresh interval (30000-3600000ms)</td>
+</tr>
+<tr>
+<td><code>nativeTimeoutMs</code></td>
+<td>number</td>
+<td><code>300000</code></td>
+<td>Maximum time for native subprocess processing (5000-3600000ms)</td>
+</tr>
+<tr>
+<td><code>scanner.extraScanPaths</code></td>
+<td>object</td>
+<td><code>{}</code></td>
+<td>Additional per-client scan roots for sessions outside Tokscale&#39;s default home-root locations</td>
+</tr>
+</tbody></table>
+<p>Use <code>scanner.extraScanPaths</code> for persistent extra roots such as project-level <code>.codex</code> directories or imported Gemini/OpenClaw histories. Tokscale merges these paths with the default scan roots on every run and deduplicates overlapping roots by canonical path.</p>
+<h3>Environment Variables</h3>
+<p>Environment variables override config file values. For CI/CD or one-off use:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>TOKSCALE_NATIVE_TIMEOUT_MS</code></td>
+<td><code>300000</code> (5 min)</td>
+<td>Overrides <code>nativeTimeoutMs</code> config</td>
+</tr>
+<tr>
+<td><code>TOKSCALE_EXTRA_DIRS</code></td>
+<td>unset</td>
+<td>One-off extra session roots as <code>client:/abs/path,client:/abs/path</code></td>
+</tr>
+</tbody></table>
+<pre><code class="language-bash"># Example: Increase timeout for very large datasets
+TOKSCALE_NATIVE_TIMEOUT_MS=600000 tokscale graph --output data.json
+
+# Example: one-off extra scan roots
+TOKSCALE_EXTRA_DIRS=&#39;codex:/Users/me/workspace/project-a/.codex/sessions,gemini:/Users/me/imports/imac/gemini/tmp&#39; tokscale
+</code></pre>
+<blockquote>
+<p><strong>Note</strong>: For persistent extra roots, prefer <code>scanner.extraScanPaths</code> in <code>~/.config/tokscale/settings.json</code>. <code>TOKSCALE_EXTRA_DIRS</code> is best for one-off overrides or CI/CD.</p>
+</blockquote>
+<h3>Headless Mode</h3>
+<p>Tokscale can aggregate token usage from <strong>Codex CLI headless outputs</strong> for automation, CI/CD pipelines, and batch processing.</p>
+<p><strong>What is headless mode?</strong></p>
+<p>When you run Codex CLI with JSON output flags (e.g., <code>codex exec --json</code>), it outputs usage data to stdout instead of storing it in its regular session directories. Headless mode allows you to capture and track this usage.</p>
+<p><strong>Storage location:</strong> <code>~/.config/tokscale/headless/</code></p>
+<p>On macOS, Tokscale also scans <code>~/Library/Application Support/tokscale/headless/</code> when <code>TOKSCALE_HEADLESS_DIR</code> is not set.</p>
+<p>Tokscale automatically scans this directory structure:</p>
+<pre><code>~/.config/tokscale/headless/
+└── codex/       # Codex CLI JSONL outputs
+</code></pre>
+<p><strong>Environment variable:</strong> Set <code>TOKSCALE_HEADLESS_DIR</code> to customize the headless log directory:</p>
+<pre><code class="language-bash">export TOKSCALE_HEADLESS_DIR=&quot;$HOME/my-custom-logs&quot;
+</code></pre>
+<p><strong>Recommended (automatic capture):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Command Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Codex CLI</strong></td>
+<td><code>tokscale headless codex exec -m gpt-5 &quot;implement feature&quot;</code></td>
+</tr>
+</tbody></table>
+<p><strong>Manual redirect (optional):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Command Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Codex CLI</strong></td>
+<td><code>codex exec --json &quot;implement feature&quot; &gt; ~/.config/tokscale/headless/codex/ci-run.jsonl</code></td>
+</tr>
+</tbody></table>
+<p><strong>Diagnostics:</strong></p>
+<pre><code class="language-bash"># Show scan locations and headless counts
+tokscale sources
+tokscale sources --json
+</code></pre>
+<p><strong>CI/CD integration example:</strong></p>
+<pre><code class="language-bash"># In your GitHub Actions workflow
+- name: Run AI automation
+  run: |
+    mkdir -p ~/.config/tokscale/headless/codex
+    codex exec --json &quot;review code changes&quot; \
+      &gt; ~/.config/tokscale/headless/codex/pr-${{ github.event.pull_request.number }}.jsonl
+
+# Later, track usage
+- name: Report token usage
+  run: tokscale --json
+</code></pre>
+<blockquote>
+<p><strong>Note</strong>: Headless capture is supported for Codex CLI only. If you run Codex directly, redirect stdout to the headless directory as shown above.</p>
+</blockquote>
+<h2>Frontend Visualization</h2>
+<p>The frontend provides a GitHub-style contribution graph visualization:</p>
+<h3>Features</h3>
+<ul>
+<li><strong>2D View</strong>: Classic GitHub contribution calendar</li>
+<li><strong>3D View</strong>: Isometric 3D contribution graph with height based on token usage</li>
+<li><strong>Multiple color palettes</strong>: GitHub, GitLab, Halloween, Winter, and more</li>
+<li><strong>3-way theme toggle</strong>: Light / Dark / System (follows OS preference)</li>
+<li><strong>GitHub Primer design</strong>: Uses GitHub&#39;s official color system</li>
+<li><strong>Interactive tooltips</strong>: Hover for detailed daily breakdowns</li>
+<li><strong>Day breakdown panel</strong>: Click to see per-source and per-model details</li>
+<li><strong>Year filtering</strong>: Navigate between years</li>
+<li><strong>Source filtering</strong>: Filter by platform (OpenCode, Claude, Codex, Copilot, Cursor, Gemini, Amp, Droid, OpenClaw, Hermes Agent, Pi, Kimi, Qwen, Roo Code, Kilo, Mux, Kilo CLI, Crush, Synthetic)</li>
+<li><strong>Stats panel</strong>: Total cost, tokens, active days, streaks</li>
+<li><strong>FOUC prevention</strong>: Theme applied before React hydrates (no flash)</li>
+</ul>
+<h3>Running the Frontend</h3>
+<pre><code class="language-bash">cd packages/frontend
+bun install
+bun run dev
+</code></pre>
+<p>Open <a href="http://localhost:3000">http://localhost:3000</a> to access the social platform.</p>
+<h2>Social Platform</h2>
+<p>Tokscale includes a social platform where you can share your usage data and compete with other developers.</p>
+<h3>Features</h3>
+<ul>
+<li><strong>Leaderboard</strong> - See who&#39;s using the most tokens across all platforms</li>
+<li><strong>User Profiles</strong> - Public profiles with contribution graphs and statistics</li>
+<li><strong>Period Filtering</strong> - View stats for all time, this month, or this week</li>
+<li><strong>GitHub Integration</strong> - Login with your GitHub account</li>
+<li><strong>Local Viewer</strong> - View your data privately without submitting</li>
+</ul>
+<h3>GitHub Profile Embed Widget</h3>
+<p>You can embed your public Tokscale stats directly in your GitHub profile README:</p>
+<pre><code class="language-md">[![Tokscale Stats](https://tokscale.ai/api/embed/&lt;username&gt;/svg)](https://tokscale.ai/u/&lt;username&gt;)
+</code></pre>
+<ul>
+<li>Replace <code>&lt;username&gt;</code> with your GitHub username</li>
+<li>Optional query params:<ul>
+<li><code>theme=light</code> for a light theme</li>
+<li><code>sort=tokens</code> (default) or <code>sort=cost</code> to control ranking basis</li>
+<li><code>compact=1</code> to use compact layout + compact number notation (e.g., <code>1.2M</code>, <code>$3.4K</code>)</li>
+</ul>
+</li>
+<li>Example:<ul>
+<li><code>https://tokscale.ai/api/embed/&lt;username&gt;/svg?theme=light&amp;sort=cost&amp;compact=1</code></li>
+</ul>
+</li>
+</ul>
+<h3>GitHub Profile Badge</h3>
+<p>You can also use a shields.io-style badge for a more compact display:</p>
+<pre><code class="language-md">![Tokscale Tokens](https://tokscale.ai/api/badge/&lt;username&gt;/svg)
+</code></pre>
+<ul>
+<li>Replace <code>&lt;username&gt;</code> with your GitHub username</li>
+<li>Optional query params:<ul>
+<li><code>metric=tokens</code> (default), <code>metric=cost</code>, or <code>metric=rank</code></li>
+<li><code>style=flat</code> (default) or <code>style=flat-square</code></li>
+<li><code>sort=tokens</code> (default) or <code>sort=cost</code> to control ranking basis</li>
+<li><code>compact=1</code> to use compact number notation (e.g., <code>1.2M</code>, <code>$3.4K</code>)</li>
+<li><code>label=&lt;text&gt;</code> to override the left-side label</li>
+<li><code>color=&lt;hex&gt;</code> to override the right-side color (e.g., <code>color=ff5733</code>)</li>
+</ul>
+</li>
+<li>Examples:<ul>
+<li><code>https://tokscale.ai/api/badge/&lt;username&gt;/svg?metric=cost&amp;compact=1</code></li>
+<li><code>https://tokscale.ai/api/badge/&lt;username&gt;/svg?metric=rank&amp;sort=cost&amp;style=flat-square</code></li>
+</ul>
+</li>
+</ul>
+<h3>Getting Started</h3>
+<ol>
+<li><strong>Login</strong> - Run <code>tokscale login</code> to authenticate via GitHub</li>
+<li><strong>Submit</strong> - Run <code>tokscale submit</code> to upload your usage data</li>
+<li><strong>View</strong> - Visit the web platform to see your profile and the leaderboard</li>
+</ol>
+<h3>Data Validation</h3>
+<p>Submitted data goes through Level 1 validation:</p>
+<ul>
+<li>Mathematical consistency (totals match, no negatives)</li>
+<li>No future dates</li>
+<li>Required fields present</li>
+<li>Duplicate detection</li>
+</ul>
+<h2>Wrapped 2025</h2>
+<p><img src=".github/assets/hero-wrapped-2025.png" alt="Wrapped 2025"></p>
+<p>Generate a beautiful year-in-review image summarizing your AI coding assistant usage—inspired by Spotify Wrapped.</p>
+<table>
+<thead>
+<tr>
+<th align="center"><code>bunx tokscale@latest wrapped</code></th>
+<th align="center"><code>bunx tokscale@latest wrapped --clients</code></th>
+<th align="center"><code>bunx tokscale@latest wrapped --agents --disable-pinned</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><img src=".github/assets/wrapped-2025-agents.png" alt="Wrapped 2025 (Agents + Pin Sisyphus)"></td>
+<td align="center"><img src=".github/assets/wrapped-2025-clients.png" alt="Wrapped 2025 (Clients)"></td>
+<td align="center"><img src=".github/assets/wrapped-2025-agents-disable-pinned.png" alt="Wrapped 2025 (Agents + Disable Pinned)"></td>
+</tr>
+</tbody></table>
+<h3>Command</h3>
+<pre><code class="language-bash"># Generate wrapped image for current year
+tokscale wrapped
+
+# Generate for a specific year
+tokscale wrapped --year 2025
+</code></pre>
+<h3>What&#39;s Included</h3>
+<p>The generated image includes:</p>
+<ul>
+<li><strong>Total Tokens</strong> - Your total token consumption for the year</li>
+<li><strong>Top Models</strong> - Your 3 most-used AI models ranked by cost</li>
+<li><strong>Top Clients</strong> - Your 3 most-used platforms (OpenCode, Claude Code, Cursor, etc.)</li>
+<li><strong>Messages</strong> - Total number of AI interactions</li>
+<li><strong>Active Days</strong> - Days with at least one AI interaction</li>
+<li><strong>Cost</strong> - Estimated total cost based on LiteLLM pricing</li>
+<li><strong>Streak</strong> - Your longest consecutive streak of active days</li>
+<li><strong>Contribution Graph</strong> - A visual heatmap of your yearly activity</li>
+</ul>
+<p>The generated PNG is optimized for sharing on social media. Share your coding journey with the community!</p>
+<h2>Development</h2>
+<blockquote>
+<p><strong>Quick setup</strong>: If you just want to get started quickly, see <a href="#development-setup">Development Setup</a> in the Installation section above.</p>
+</blockquote>
+<h3>Prerequisites</h3>
+<pre><code class="language-bash"># Bun (required)
+bun --version
+
+# Rust (for native module)
+rustc --version
+cargo --version
+</code></pre>
+<h3>How to Run</h3>
+<p>After following the <a href="#development-setup">Development Setup</a>, you can:</p>
+<pre><code class="language-bash"># Build native module (optional but recommended)
+bun run build:core
+
+# Run in development mode (launches TUI)
+cd packages/cli &amp;&amp; bun src/cli.ts
+
+# Or use legacy CLI mode
+cd packages/cli &amp;&amp; bun src/cli.ts --light
+</code></pre>
+<details>
+<summary>Advanced Development</summary>
+
+<h3>Project Scripts</h3>
+<table>
+<thead>
+<tr>
+<th>Script</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>bun run cli</code></td>
+<td>Run CLI in development mode (TUI with Bun)</td>
+</tr>
+<tr>
+<td><code>bun run build:core</code></td>
+<td>Build native Rust module (release)</td>
+</tr>
+<tr>
+<td><code>bun run build:cli</code></td>
+<td>Build CLI TypeScript to dist/</td>
+</tr>
+<tr>
+<td><code>bun run build</code></td>
+<td>Build both core and CLI</td>
+</tr>
+<tr>
+<td><code>bun run dev:frontend</code></td>
+<td>Run frontend development server</td>
+</tr>
+</tbody></table>
+<p><strong>Package-specific scripts</strong> (from within package directories):</p>
+<ul>
+<li><code>packages/cli</code>: <code>bun run dev</code>, <code>bun run tui</code></li>
+<li><code>packages/core</code>: <code>bun run build:debug</code>, <code>bun run test</code>, <code>bun run bench</code></li>
+</ul>
+<p><strong>Note</strong>: This project uses <strong>Bun</strong> as the package manager for development.</p>
+<h3>Testing</h3>
+<pre><code class="language-bash"># Test native module (Rust)
+cd packages/core
+bun run test:rust      # Cargo tests
+bun run test           # Node.js integration tests
+bun run test:all       # Both
+</code></pre>
+<h3>Native Module Development</h3>
+<pre><code class="language-bash">cd packages/core
+
+# Build in debug mode (faster compilation)
+bun run build:debug
+
+# Build in release mode (optimized)
+bun run build
+
+# Run Rust benchmarks
+bun run bench
+</code></pre>
+<h3>Graph Command Options</h3>
+<pre><code class="language-bash"># Export graph data to file
+tokscale graph --output usage-data.json
+
+# Date filtering (all shortcuts work)
+tokscale graph --today
+tokscale graph --week
+tokscale graph --since 2024-01-01 --until 2024-12-31
+tokscale graph --year 2024
+
+# Filter by platform
+tokscale graph --opencode --claude
+
+# Show processing time benchmark
+tokscale graph --output data.json --benchmark
+</code></pre>
+<h3>Benchmark Flag</h3>
+<p>Show processing time for performance analysis:</p>
+<pre><code class="language-bash">tokscale --benchmark           # Show processing time with default view
+tokscale models --benchmark    # Benchmark models report
+tokscale monthly --benchmark   # Benchmark monthly report
+tokscale graph --benchmark     # Benchmark graph generation
+</code></pre>
+<h3>Generating Data for Frontend</h3>
+<pre><code class="language-bash"># Export data for visualization
+tokscale graph --output packages/frontend/public/my-data.json
+</code></pre>
+<h3>Performance</h3>
+<p>The native Rust module provides significant performance improvements:</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>TypeScript</th>
+<th>Rust Native</th>
+<th>Speedup</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>File Discovery</td>
+<td>~500ms</td>
+<td>~50ms</td>
+<td><strong>10x</strong></td>
+</tr>
+<tr>
+<td>JSON Parsing</td>
+<td>~800ms</td>
+<td>~100ms</td>
+<td><strong>8x</strong></td>
+</tr>
+<tr>
+<td>Aggregation</td>
+<td>~200ms</td>
+<td>~25ms</td>
+<td><strong>8x</strong></td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>~1.5s</strong></td>
+<td><strong>~175ms</strong></td>
+<td><strong>~8.5x</strong></td>
+</tr>
+</tbody></table>
+<p><em>Benchmarks for ~1000 session files, 100k messages</em></p>
+<h4>Memory Optimization</h4>
+<p>The native module also provides ~45% memory reduction through:</p>
+<ul>
+<li>Streaming JSON parsing (no full file buffering)</li>
+<li>Zero-copy string handling</li>
+<li>Efficient parallel aggregation with map-reduce</li>
+</ul>
+<h4>Running Benchmarks</h4>
+<pre><code class="language-bash"># Generate synthetic data
+cd packages/benchmarks &amp;&amp; bun run generate
+
+# Run Rust benchmarks
+cd packages/core &amp;&amp; bun run bench
+</code></pre>
+</details>
+
+<h2>Supported Platforms</h2>
+<h3>Native Module Targets</h3>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Architecture</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>macOS</td>
+<td>x86_64</td>
+<td>✅ Supported</td>
+</tr>
+<tr>
+<td>macOS</td>
+<td>aarch64 (Apple Silicon)</td>
+<td>✅ Supported</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>x86_64 (glibc)</td>
+<td>✅ Supported</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>aarch64 (glibc)</td>
+<td>✅ Supported</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>x86_64 (musl)</td>
+<td>✅ Supported</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>aarch64 (musl)</td>
+<td>✅ Supported</td>
+</tr>
+<tr>
+<td>Windows</td>
+<td>x86_64</td>
+<td>✅ Supported</td>
+</tr>
+<tr>
+<td>Windows</td>
+<td>aarch64</td>
+<td>✅ Supported</td>
+</tr>
+</tbody></table>
+<h3>Windows Support</h3>
+<p>Tokscale fully supports Windows. The TUI and CLI work the same as on macOS/Linux.</p>
+<p><strong>Installation on Windows:</strong></p>
+<pre><code class="language-powershell"># Install Bun (PowerShell)
+powershell -c &quot;irm bun.sh/install.ps1 | iex&quot;
+
+# Run tokscale
+bunx tokscale@latest
+</code></pre>
+<h4>Data Locations on Windows</h4>
+<p>AI coding tools store their session data in cross-platform locations. Most tools use the same relative paths on all platforms:</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Unix Path</th>
+<th>Windows Path</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OpenCode</td>
+<td><code>~/.local/share/opencode/</code></td>
+<td><code>%USERPROFILE%\.local\share\opencode\</code></td>
+<td>Uses <a href="https://github.com/sindresorhus/xdg-basedir"><code>xdg-basedir</code></a> for cross-platform consistency (<a href="https://github.com/sst/opencode/blob/main/packages/opencode/src/global/index.ts">source</a>)</td>
+</tr>
+<tr>
+<td>Claude Code</td>
+<td><code>~/.claude/</code></td>
+<td><code>%USERPROFILE%\.claude\</code></td>
+<td>Same path on all platforms</td>
+</tr>
+<tr>
+<td>OpenClaw</td>
+<td><code>~/.openclaw/</code> (+ legacy: <code>.clawdbot</code>, <code>.moltbot</code>, <code>.moldbot</code>)</td>
+<td><code>%USERPROFILE%\.openclaw\</code> (+ legacy paths)</td>
+<td>Same path on all platforms</td>
+</tr>
+<tr>
+<td>Codex CLI</td>
+<td><code>~/.codex/</code></td>
+<td><code>%USERPROFILE%\.codex\</code></td>
+<td>Configurable via <code>CODEX_HOME</code> env var (<a href="https://github.com/openai/codex">source</a>)</td>
+</tr>
+<tr>
+<td>Copilot CLI</td>
+<td><code>~/.copilot/otel/</code></td>
+<td><code>%USERPROFILE%\.copilot\otel\</code></td>
+<td>Requires OTEL file export; also auto-ingests <code>COPILOT_OTEL_FILE_EXPORTER_PATH</code></td>
+</tr>
+<tr>
+<td>Hermes Agent</td>
+<td><code>~/.hermes/</code></td>
+<td><code>%USERPROFILE%\.hermes\</code></td>
+<td>Configurable via <code>HERMES_HOME</code> env var (<a href="https://github.com/NousResearch/hermes-agent/blob/main/website/docs/developer-guide/session-storage.md">source</a>)</td>
+</tr>
+<tr>
+<td>Gemini CLI</td>
+<td><code>~/.gemini/</code></td>
+<td><code>%USERPROFILE%\.gemini\</code></td>
+<td>Same path on all platforms</td>
+</tr>
+<tr>
+<td>Amp</td>
+<td><code>~/.local/share/amp/</code></td>
+<td><code>%USERPROFILE%\.local\share\amp\</code></td>
+<td>Uses <code>xdg-basedir</code> like OpenCode</td>
+</tr>
+<tr>
+<td>Cursor</td>
+<td>API sync</td>
+<td>API sync</td>
+<td>Data fetched via API, cached in <code>%USERPROFILE%\.config\tokscale\cursor-cache\</code></td>
+</tr>
+<tr>
+<td>Droid</td>
+<td><code>~/.factory/</code></td>
+<td><code>%USERPROFILE%\.factory\</code></td>
+<td>Same path on all platforms</td>
+</tr>
+<tr>
+<td>Pi</td>
+<td><code>~/.pi/</code> and <code>~/.omp/</code></td>
+<td><code>%USERPROFILE%\.pi\</code> and <code>%USERPROFILE%\.omp\</code></td>
+<td>Same path on all platforms (supports both Pi and <a href="https://github.com/can1357/oh-my-pi">Oh My Pi</a>)</td>
+</tr>
+<tr>
+<td>Kimi CLI</td>
+<td><code>~/.kimi/</code></td>
+<td><code>%USERPROFILE%\.kimi\</code></td>
+<td>Same path on all platforms</td>
+</tr>
+<tr>
+<td>Qwen CLI</td>
+<td><code>~/.qwen/</code></td>
+<td><code>%USERPROFILE%\.qwen\</code></td>
+<td>Same path on all platforms</td>
+</tr>
+<tr>
+<td>Roo Code</td>
+<td><code>~/.config/Code/User/globalStorage/rooveterinaryinc.roo-cline/tasks/</code></td>
+<td><code>%USERPROFILE%\.config\Code\User\globalStorage\rooveterinaryinc.roo-cline\tasks\</code></td>
+<td>VS Code globalStorage task logs</td>
+</tr>
+<tr>
+<td>Kilo</td>
+<td><code>~/.config/Code/User/globalStorage/kilocode.kilo-code/tasks/</code></td>
+<td><code>%USERPROFILE%\.config\Code\User\globalStorage\kilocode.kilo-code\tasks\</code></td>
+<td>VS Code globalStorage task logs</td>
+</tr>
+<tr>
+<td>Mux</td>
+<td><code>~/.mux/sessions/</code></td>
+<td><code>%USERPROFILE%\.mux\sessions\</code></td>
+<td>Same path on all platforms</td>
+</tr>
+<tr>
+<td>Kilo CLI</td>
+<td><code>~/.local/share/kilo/</code></td>
+<td><code>%USERPROFILE%\.local\share\kilo\</code></td>
+<td>Uses <code>xdg-basedir</code> like OpenCode</td>
+</tr>
+<tr>
+<td>Crush</td>
+<td><code>$XDG_DATA_HOME/crush/</code> (fallback: <code>~/.local/share/crush/</code>)</td>
+<td><code>%USERPROFILE%\.local\share\crush\</code> (or <code>%XDG_DATA_HOME%\crush\</code> if set)</td>
+<td>Uses XDG data directory with fallback</td>
+</tr>
+<tr>
+<td>Synthetic</td>
+<td>Re-attributed from other sources</td>
+<td>Re-attributed from other sources</td>
+<td>Detects <code>hf:</code> model prefix + <code>synthetic</code> provider</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Note</strong>: On Windows, <code>~</code> expands to <code>%USERPROFILE%</code> (e.g., <code>C:\Users\YourName</code>). These tools intentionally use Unix-style paths (like <code>.local/share</code>) even on Windows for cross-platform consistency, rather than Windows-native paths like <code>%APPDATA%</code>.</p>
+</blockquote>
+<h4>Windows-Specific Configuration</h4>
+<p>Tokscale stores its configuration in:</p>
+<ul>
+<li><strong>Config</strong>: <code>%USERPROFILE%\.config\tokscale\settings.json</code></li>
+<li><strong>Cache</strong>: <code>%USERPROFILE%\.cache\tokscale\</code></li>
+<li><strong>Cursor credentials</strong>: <code>%USERPROFILE%\.config\tokscale\cursor-credentials.json</code></li>
+</ul>
+<h2>Session Data Retention</h2>
+<p>By default, some AI coding assistants automatically delete old session files. To preserve your usage history for accurate tracking, disable or extend the cleanup period.</p>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Default</th>
+<th>Config File</th>
+<th>Setting to Disable</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Claude Code</td>
+<td><strong>⚠️ 30 days</strong></td>
+<td><code>~/.claude/settings.json</code></td>
+<td><code>&quot;cleanupPeriodDays&quot;: 9999999999</code></td>
+<td><a href="https://docs.anthropic.com/en/docs/claude-code/settings">Docs</a></td>
+</tr>
+<tr>
+<td>Gemini CLI</td>
+<td>Disabled</td>
+<td><code>~/.gemini/settings.json</code></td>
+<td><code>&quot;general.sessionRetention.enabled&quot;: false</code></td>
+<td><a href="https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/session-management.md">Docs</a></td>
+</tr>
+<tr>
+<td>Codex CLI</td>
+<td>Disabled</td>
+<td>N/A</td>
+<td>No cleanup feature</td>
+<td><a href="https://github.com/openai/codex/issues/6015">#6015</a></td>
+</tr>
+<tr>
+<td>OpenCode</td>
+<td>Disabled</td>
+<td>N/A</td>
+<td>No cleanup feature</td>
+<td><a href="https://github.com/sst/opencode/issues/4980">#4980</a></td>
+</tr>
+</tbody></table>
+<h3>Claude Code</h3>
+<p><strong>Default</strong>: 30 days cleanup period</p>
+<p>Add to <code>~/.claude/settings.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;cleanupPeriodDays&quot;: 9999999999
+}
+</code></pre>
+<blockquote>
+<p>Setting an extremely large value (e.g., <code>9999999999</code> days ≈ 27 million years) effectively disables cleanup.</p>
+</blockquote>
+<h3>Gemini CLI</h3>
+<p><strong>Default</strong>: Cleanup disabled (sessions persist forever)</p>
+<p>If you&#39;ve enabled cleanup and want to disable it, remove or set <code>enabled: false</code> in <code>~/.gemini/settings.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;general&quot;: {
+    &quot;sessionRetention&quot;: {
+      &quot;enabled&quot;: false
+    }
+  }
+}
+</code></pre>
+<p>Or set an extremely long retention period:</p>
+<pre><code class="language-json">{
+  &quot;general&quot;: {
+    &quot;sessionRetention&quot;: {
+      &quot;enabled&quot;: true,
+      &quot;maxAge&quot;: &quot;9999999d&quot;
+    }
+  }
+}
+</code></pre>
+<h3>Codex CLI</h3>
+<p><strong>Default</strong>: No automatic cleanup (sessions persist forever)</p>
+<p>Codex CLI does not have built-in session cleanup. Sessions in <code>~/.codex/sessions/</code> persist indefinitely.</p>
+<blockquote>
+<p><strong>Note</strong>: There&#39;s an open feature request for this: <a href="https://github.com/openai/codex/issues/6015">#6015</a></p>
+</blockquote>
+<h3>OpenCode</h3>
+<p><strong>Default</strong>: No automatic cleanup (sessions persist forever)</p>
+<p>OpenCode does not have built-in session cleanup. Sessions in <code>~/.local/share/opencode/storage/</code> persist indefinitely.</p>
+<blockquote>
+<p><strong>Note</strong>: See <a href="https://github.com/sst/opencode/issues/4980">#4980</a></p>
+</blockquote>
+<hr>
+<h2>Data Sources</h2>
+<h3>OpenCode</h3>
+<p>Location: <code>~/.local/share/opencode/opencode.db</code> (v1.2+) or <code>storage/message/{sessionId}/*.json</code> (legacy)</p>
+<p>OpenCode 1.2+ stores sessions in SQLite. Tokscale reads from SQLite first and falls back to legacy JSON files for older versions.</p>
+<p>OpenCode picks the db filename from the release channel the binary was built against: the <code>latest</code> and <code>beta</code> channels use <code>opencode.db</code>, while other channels use <code>opencode-&lt;channel&gt;.db</code> (e.g. <code>opencode-stable.db</code>, <code>opencode-nightly.db</code>). Tokscale scans all of them, so users running multiple channels side by side get a unified view.</p>
+<p>If you launched opencode with <code>OPENCODE_DB</code> pointing at a file outside <code>~/.local/share/opencode</code>, add the absolute path to <code>~/.config/tokscale/settings.json</code> so tokscale can find it on every run:</p>
+<pre><code class="language-json">{
+  &quot;scanner&quot;: {
+    &quot;opencodeDbPaths&quot;: [
+      &quot;/custom/location/opencode.db&quot;,
+      &quot;/another/location/opencode-stable.db&quot;
+    ]
+  }
+}
+</code></pre>
+<p>Paths are merged with auto-discovery, deduped by canonical path, and non-existent entries are silently skipped (so stale config never breaks a scan). <code>opencode.db-wal</code>, <code>opencode.db-shm</code>, and other SQLite sidecars are rejected.</p>
+<p>If you keep sessions outside Tokscale&#39;s default home-root locations, you can also persist extra scan roots per client:</p>
+<pre><code class="language-json">{
+  &quot;scanner&quot;: {
+    &quot;extraScanPaths&quot;: {
+      &quot;codex&quot;: [
+        &quot;/Users/me/workspace/project-a/.codex/sessions&quot;,
+        &quot;/Users/me/workspace/project-b/.codex/archived_sessions&quot;
+      ],
+      &quot;gemini&quot;: [&quot;/Users/me/imports/imac/gemini/tmp&quot;],
+      &quot;openclaw&quot;: [&quot;/Users/me/imports/imac/openclaw/agents&quot;]
+    }
+  }
+}
+</code></pre>
+<p>This is useful for project-level <code>.codex</code> directories and imported histories. Tokscale still scans its default roots, then merges <code>scanner.extraScanPaths</code> and <code>TOKSCALE_EXTRA_DIRS</code> on top with canonical-path deduplication. It does not auto-discover your whole workspace.</p>
+<p>Each message contains:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;msg_xxx&quot;,
+  &quot;role&quot;: &quot;assistant&quot;,
+  &quot;modelID&quot;: &quot;claude-sonnet-4-20250514&quot;,
+  &quot;providerID&quot;: &quot;anthropic&quot;,
+  &quot;tokens&quot;: {
+    &quot;input&quot;: 1234,
+    &quot;output&quot;: 567,
+    &quot;reasoning&quot;: 0,
+    &quot;cache&quot;: { &quot;read&quot;: 890, &quot;write&quot;: 123 }
+  },
+  &quot;time&quot;: { &quot;created&quot;: 1699999999999 }
+}
+</code></pre>
+<h3>Claude Code</h3>
+<p>Location: <code>~/.claude/projects/{projectPath}/*.jsonl</code></p>
+<p>JSONL format with assistant messages containing usage data:</p>
+<pre><code class="language-json">{&quot;type&quot;: &quot;assistant&quot;, &quot;message&quot;: {&quot;model&quot;: &quot;claude-sonnet-4-20250514&quot;, &quot;usage&quot;: {&quot;input_tokens&quot;: 1234, &quot;output_tokens&quot;: 567, &quot;cache_read_input_tokens&quot;: 890}}, &quot;timestamp&quot;: &quot;2024-01-01T00:00:00Z&quot;}
+</code></pre>
+<h3>Codex CLI</h3>
+<p>Location: <code>~/.codex/sessions/*.jsonl</code></p>
+<p>Event-based format with <code>token_count</code> events:</p>
+<pre><code class="language-json">{&quot;type&quot;: &quot;event_msg&quot;, &quot;payload&quot;: {&quot;type&quot;: &quot;token_count&quot;, &quot;info&quot;: {&quot;last_token_usage&quot;: {&quot;input_tokens&quot;: 1234, &quot;output_tokens&quot;: 567}}}}
+</code></pre>
+<h3>Copilot CLI</h3>
+<p>Location: <code>~/.copilot/otel/*.jsonl</code> or the explicit path in <code>COPILOT_OTEL_FILE_EXPORTER_PATH</code></p>
+<p>Copilot support reads file-exported OpenTelemetry JSONL. Enable it before running Copilot:</p>
+<pre><code class="language-bash">export COPILOT_OTEL_ENABLED=true
+export COPILOT_OTEL_EXPORTER_TYPE=file
+mkdir -p &quot;$HOME/.copilot/otel&quot;
+export COPILOT_OTEL_FILE_EXPORTER_PATH=&quot;$HOME/.copilot/otel/copilot-otel-$(date +%Y%m%d-%H%M%S).jsonl&quot;
+</code></pre>
+<p>PowerShell:</p>
+<pre><code class="language-powershell">$otelDir = &quot;$HOME/.copilot/otel&quot;
+New-Item -ItemType Directory -Force -Path $otelDir | Out-Null
+$env:COPILOT_OTEL_ENABLED = &quot;true&quot;
+$env:COPILOT_OTEL_EXPORTER_TYPE = &quot;file&quot;
+$env:COPILOT_OTEL_FILE_EXPORTER_PATH = Join-Path $otelDir (&quot;copilot-otel-{0}.jsonl&quot; -f (Get-Date -Format &quot;yyyyMMdd-HHmmss&quot;))
+</code></pre>
+<p>Using a timestamped filename is recommended so each Copilot session writes to a fresh file instead of accumulating into one huge OTEL log.</p>
+<p>Tokscale treats <code>chat</code> spans as the source of truth for token accounting and ignores tool spans plus cumulative metrics in phase 1:</p>
+<pre><code class="language-json">{&quot;type&quot;:&quot;span&quot;,&quot;name&quot;:&quot;chat gpt-5.4-mini&quot;,&quot;attributes&quot;:{&quot;gen_ai.operation.name&quot;:&quot;chat&quot;,&quot;gen_ai.response.model&quot;:&quot;gpt-5.4-mini&quot;,&quot;gen_ai.conversation.id&quot;:&quot;session-id&quot;,&quot;gen_ai.usage.input_tokens&quot;:1234,&quot;gen_ai.usage.output_tokens&quot;:567,&quot;gen_ai.usage.cache_read.input_tokens&quot;:890,&quot;gen_ai.usage.reasoning.output_tokens&quot;:123}}
+</code></pre>
+<blockquote>
+<p>Copilot&#39;s OTEL payloads currently do not expose stable workspace metadata, so Copilot rows may appear without workspace attribution. Tokscale prices these rows from the reported model when possible and does not trust <code>github.copilot.cost</code> directly.</p>
+</blockquote>
+<h3>Gemini CLI</h3>
+<p>Location: <code>~/.gemini/tmp/{projectHash}/chats/*.json</code></p>
+<p>Session files containing message arrays:</p>
+<pre><code class="language-json">{
+  &quot;sessionId&quot;: &quot;xxx&quot;,
+  &quot;messages&quot;: [
+    {&quot;type&quot;: &quot;gemini&quot;, &quot;model&quot;: &quot;gemini-2.5-pro&quot;, &quot;tokens&quot;: {&quot;input&quot;: 1234, &quot;output&quot;: 567, &quot;cached&quot;: 890, &quot;thoughts&quot;: 123}}
+  ]
+}
+</code></pre>
+<h3>Cursor IDE</h3>
+<p>Location: <code>~/.config/tokscale/cursor-cache/</code> (synced via Cursor API)</p>
+<p>Cursor data is fetched from the Cursor API using your session token and cached locally. Run <code>tokscale cursor login</code> to authenticate. See <a href="#cursor-ide-commands">Cursor IDE Commands</a> for setup instructions.</p>
+<h3>OpenClaw</h3>
+<p>Location: <code>~/.openclaw/agents/*/sessions/sessions.json</code> (also scans legacy paths: <code>~/.clawdbot/</code>, <code>~/.moltbot/</code>, <code>~/.moldbot/</code>)</p>
+<p>Index file pointing to JSONL session files:</p>
+<pre><code class="language-json">{
+  &quot;agent:main:main&quot;: {
+    &quot;sessionId&quot;: &quot;uuid&quot;,
+    &quot;sessionFile&quot;: &quot;/path/to/session.jsonl&quot;
+  }
+}
+</code></pre>
+<p>Session JSONL format with model_change events and assistant messages:</p>
+<pre><code class="language-json">{&quot;type&quot;:&quot;model_change&quot;,&quot;provider&quot;:&quot;openai-codex&quot;,&quot;modelId&quot;:&quot;gpt-5.2&quot;}
+{&quot;type&quot;:&quot;message&quot;,&quot;message&quot;:{&quot;role&quot;:&quot;assistant&quot;,&quot;usage&quot;:{&quot;input&quot;:1660,&quot;output&quot;:55,&quot;cacheRead&quot;:108928,&quot;cost&quot;:{&quot;total&quot;:0.02}},&quot;timestamp&quot;:1769753935279}}
+</code></pre>
+<h3>Hermes Agent</h3>
+<p>Location: <code>$HERMES_HOME/state.db</code> (fallback: <code>~/.hermes/state.db</code>)</p>
+<p>Hermes stores session-level usage in a SQLite <code>sessions</code> table. Tokscale imports rows where <code>model</code> is present and token or cost totals are non-zero, uses <code>started_at</code> as the timestamp, preserves <code>message_count</code>, and prefers <code>actual_cost_usd</code> over <code>estimated_cost_usd</code>.</p>
+<h3>Pi</h3>
+<p>Location: <code>~/.pi/agent/sessions/&lt;encoded-cwd&gt;/*.jsonl</code> and <code>~/.omp/agent/sessions/&lt;encoded-cwd&gt;/*.jsonl</code> (<a href="https://github.com/can1357/oh-my-pi">Oh My Pi</a>)</p>
+<p>JSONL format with session header and message entries:</p>
+<pre><code class="language-json">{&quot;type&quot;:&quot;session&quot;,&quot;id&quot;:&quot;pi_ses_001&quot;,&quot;timestamp&quot;:&quot;2026-01-01T00:00:00.000Z&quot;,&quot;cwd&quot;:&quot;/tmp&quot;}
+{&quot;type&quot;:&quot;message&quot;,&quot;id&quot;:&quot;msg_001&quot;,&quot;timestamp&quot;:&quot;2026-01-01T00:00:01.000Z&quot;,&quot;message&quot;:{&quot;role&quot;:&quot;assistant&quot;,&quot;model&quot;:&quot;claude-3-5-sonnet&quot;,&quot;provider&quot;:&quot;anthropic&quot;,&quot;usage&quot;:{&quot;input&quot;:100,&quot;output&quot;:50,&quot;cacheRead&quot;:10,&quot;cacheWrite&quot;:5,&quot;totalTokens&quot;:165}}}
+</code></pre>
+<h3>Kimi CLI</h3>
+<p>Location: <code>~/.kimi/sessions/{GROUP_ID}/{SESSION_UUID}/wire.jsonl</code></p>
+<p>wire.jsonl format with StatusUpdate messages:</p>
+<pre><code class="language-json">{&quot;type&quot;: &quot;metadata&quot;, &quot;protocol_version&quot;: &quot;1.3&quot;}
+{&quot;timestamp&quot;: 1770983426.420942, &quot;message&quot;: {&quot;type&quot;: &quot;StatusUpdate&quot;, &quot;payload&quot;: {&quot;token_usage&quot;: {&quot;input_other&quot;: 1562, &quot;output&quot;: 2463, &quot;input_cache_read&quot;: 0, &quot;input_cache_creation&quot;: 0}, &quot;message_id&quot;: &quot;chatcmpl-xxx&quot;}}}
+</code></pre>
+<h3>Qwen CLI</h3>
+<p>Location: <code>~/.qwen/projects/{PROJECT_PATH}/chats/{CHAT_ID}.jsonl</code></p>
+<p>Format: JSONL — one JSON object per line, each with <code>type</code>, <code>model</code>, <code>timestamp</code>, <code>sessionId</code>, and <code>usageMetadata</code> fields.</p>
+<p>Token fields (from <code>usageMetadata</code>):</p>
+<ul>
+<li><code>promptTokenCount</code> → input tokens</li>
+<li><code>candidatesTokenCount</code> → output tokens</li>
+<li><code>thoughtsTokenCount</code> → reasoning/thinking tokens</li>
+<li><code>cachedContentTokenCount</code> → cached input tokens</li>
+</ul>
+<h3>Roo Code</h3>
+<p>Location:</p>
+<ul>
+<li>Local: <code>~/.config/Code/User/globalStorage/rooveterinaryinc.roo-cline/tasks/{TASK_ID}/ui_messages.json</code></li>
+<li>Server (best-effort): <code>~/.vscode-server/data/User/globalStorage/rooveterinaryinc.roo-cline/tasks/{TASK_ID}/ui_messages.json</code></li>
+</ul>
+<p>Each task directory may also include <code>api_conversation_history.json</code> with <code>&lt;environment_details&gt;</code> blocks used for model/agent metadata.</p>
+<p><code>ui_messages.json</code> is an array of UI events. Tokscale counts only:</p>
+<ul>
+<li><code>type == &quot;say&quot;</code></li>
+<li><code>say == &quot;api_req_started&quot;</code></li>
+</ul>
+<p>The <code>text</code> field is JSON containing token/cost metadata:</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;say&quot;,
+  &quot;say&quot;: &quot;api_req_started&quot;,
+  &quot;ts&quot;: &quot;2026-02-18T12:00:00Z&quot;,
+  &quot;text&quot;: &quot;{\&quot;cost\&quot;:0.12,\&quot;tokensIn\&quot;:100,\&quot;tokensOut\&quot;:50,\&quot;cacheReads\&quot;:20,\&quot;cacheWrites\&quot;:5,\&quot;apiProtocol\&quot;:\&quot;anthropic\&quot;}&quot;
+}
+</code></pre>
+<h3>Kilo</h3>
+<p>Location:</p>
+<ul>
+<li>Local: <code>~/.config/Code/User/globalStorage/kilocode.kilo-code/tasks/{TASK_ID}/ui_messages.json</code></li>
+<li>Server (best-effort): <code>~/.vscode-server/data/User/globalStorage/kilocode.kilo-code/tasks/{TASK_ID}/ui_messages.json</code></li>
+</ul>
+<p>Kilo uses the same task log shape as Roo Code. Tokscale applies the same rules:</p>
+<ul>
+<li>count only <code>say/api_req_started</code> events from <code>ui_messages.json</code></li>
+<li>parse <code>tokensIn</code>, <code>tokensOut</code>, <code>cacheReads</code>, <code>cacheWrites</code>, <code>cost</code>, and <code>apiProtocol</code> from <code>text</code> JSON</li>
+<li>enrich model/agent metadata from sibling <code>api_conversation_history.json</code> when available</li>
+</ul>
+<h3>Mux</h3>
+<p>Location:</p>
+<ul>
+<li><code>~/.mux/sessions/{WORKSPACE_ID}/session-usage.json</code></li>
+</ul>
+<p>Mux stores cumulative per-session token usage in <code>session-usage.json</code> files. Each file contains a <code>byModel</code> map with per-model token breakdowns:</p>
+<ul>
+<li><code>input</code>, <code>cached</code> (cache reads), <code>cacheCreate</code> (cache writes), <code>output</code>, <code>reasoning</code></li>
+<li>Model names use <code>provider:model</code> format (e.g., <code>anthropic:claude-opus-4-6</code>) — tokscale strips the provider prefix for model identification</li>
+<li>Sub-agent usage is automatically rolled up into parent sessions by Mux, so there is no double-counting</li>
+</ul>
+<h3>Kilo CLI</h3>
+<p>Location: <code>~/.local/share/kilo/kilo.db</code></p>
+<p>Kilo CLI stores session data in a SQLite database similar to OpenCode. Each message row contains per-message token breakdowns (input, output, cache read/write, reasoning) with model and provider attribution.</p>
+<h3>Crush</h3>
+<p>Location: Project-level SQLite databases discovered via <code>$XDG_DATA_HOME/crush/projects.json</code> (fallback: `~/.local/share/crush/projects</p>
+<hr>
+<p><em>README truncated. <a href="https://github.com/junhoyeo/tokscale#readme">Continue reading on GitHub</a></em></p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Developer Tools</h2>
+    <div class="related-grid">
+      <a href="/projects/joeynyc/hermes-skins" class="related-chip">hermes-skins <span class="related-stars">76</span></a>
+          <a href="/projects/AlexAI-MCP/hermes-CCC" class="related-chip">hermes-CCC <span class="related-stars">56</span></a>
+          <a href="/projects/unmodeled-tyler/vessel-browser" class="related-chip">vessel-browser <span class="related-stars">44</span></a>
+          <a href="/projects/Abruptive/Ankh.md" class="related-chip">Ankh.md <span class="related-stars">25</span></a>
+          <a href="/projects/roli-lpci/lintlang" class="related-chip">lintlang <span class="related-stars">24</span></a>
+          <a href="/projects/0xNyk/openclaw-to-hermes" class="related-chip">openclaw-to-hermes <span class="related-stars">21</span></a>
+          <a href="/projects/42-evey/evey-setup" class="related-chip">evey-setup <span class="related-stars">7</span></a>
+          <a href="/projects/rookiemann/portable-hermes-agent" class="related-chip">portable-hermes <span class="related-stars">7</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/developer-tools">See all Developer Tools projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

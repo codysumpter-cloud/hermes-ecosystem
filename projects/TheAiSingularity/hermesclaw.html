@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hermesclaw — Hermes Agent Deployment &amp; Infra | Hermes Atlas</title>
+<meta name="description" content="Hermes Agent (NousResearch) sandboxed by NVIDIA OpenShell — hardware-enforced network/filesystem/syscall policy, full memory + gateway stack">
+<link rel="canonical" href="https://hermesatlas.com/projects/TheAiSingularity/hermesclaw">
+<meta property="og:title" content="hermesclaw — Hermes Atlas">
+<meta property="og:description" content="Hermes Agent (NousResearch) sandboxed by NVIDIA OpenShell — hardware-enforced network/filesystem/syscall policy, full memory + gateway stack">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/TheAiSingularity/hermesclaw">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hermesclaw — Hermes Atlas">
+<meta name="twitter:description" content="Hermes Agent (NousResearch) sandboxed by NVIDIA OpenShell — hardware-enforced network/filesystem/syscall policy, full memory + gateway stack">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Deployment &amp; Infra</a>
+  </div>
+
+  <h1>hermesclaw</h1>
+  <p class="project-desc">Hermes Agent (NousResearch) sandboxed by NVIDIA OpenShell — hardware-enforced network/filesystem/syscall policy, full memory + gateway stack</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 25</span>
+    <span class="badge badge-lang">Shell</span>
+    <span class="badge badge-lang">MIT</span>
+    
+    <span>Updated 3/31/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/TheAiSingularity/hermesclaw" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <p align="center">
+  <img src="assets/banner.png" alt="HermesClaw" width="100%">
+</p>
+
+<p align="center">
+  <a href="https://github.com/TheAiSingularity/hermesclaw/actions/workflows/ci.yml"><img src="https://github.com/TheAiSingularity/hermesclaw/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/TheAiSingularity/hermesclaw/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+  <a href="https://github.com/TheAiSingularity/hermesclaw/blob/main/CONTRIBUTING.md"><img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg" alt="Contributions welcome"></a>
+  <a href="https://github.com/TheAiSingularity/hermesclaw/blob/main/CHANGELOG.md"><img src="https://img.shields.io/badge/version-0.3.0-orange.svg" alt="Version"></a>
+</p>
+
+<p><strong>Hermes Agent (NousResearch) running inside NVIDIA OpenShell.</strong></p>
+<p>NVIDIA built OpenShell to hardware-enforce AI agent behavior — blocking network egress, filesystem writes, and dangerous syscalls at the kernel level. HermesClaw is a community implementation that puts Hermes Agent inside the same sandbox. The agent gets its full capability stack while the OS enforces hard limits. If a skill goes rogue, the kernel stops it.</p>
+<hr>
+<h2>Table of Contents</h2>
+<ul>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#quick-start">Quick Start</a><ul>
+<li><a href="#path-1--docker-no-nvidia-hardware-required">Path 1 — Docker (no NVIDIA hardware)</a></li>
+<li><a href="#path-2--openshell-sandbox-full-hardware-enforcement">Path 2 — OpenShell Sandbox</a></li>
+</ul>
+</li>
+<li><a href="#what-openshell-enforces">What OpenShell Enforces</a></li>
+<li><a href="#policy-presets">Policy Presets</a></li>
+<li><a href="#hermes-features-inside-the-sandbox">Hermes Features</a></li>
+<li><a href="#skills-library">Skills Library</a></li>
+<li><a href="#use-cases">Use Cases</a></li>
+<li><a href="#hermesclaw-vs-nemoclaw">HermesClaw vs NemoClaw</a></li>
+<li><a href="#hermesclaw-cli">CLI Reference</a></li>
+<li><a href="#personalise-hermes">Personalise Hermes</a></li>
+<li><a href="#project-structure">Project Structure</a></li>
+<li><a href="#diagnostics--testing">Diagnostics &amp; Testing</a></li>
+<li><a href="#contributing">Contributing</a></li>
+<li><a href="#related">Related Projects</a></li>
+</ul>
+<hr>
+<h2>Architecture</h2>
+<p align="center">
+  <img src="assets/architecture.png" alt="HermesClaw Architecture" width="780">
+</p>
+
+<p>OpenShell intercepts every call to <code>inference.local</code> inside the sandbox and routes it to the configured backend. Hermes never knows it&#39;s sandboxed.</p>
+<hr>
+<h2>Quick Start</h2>
+<h3>Path 1 — Docker (no NVIDIA hardware required)</h3>
+<p>All Hermes features work. No kernel-level sandbox enforcement — Docker isolation only.</p>
+<p><strong>Step 1 — Clone and configure</strong></p>
+<pre><code class="language-bash">git clone https://github.com/TheAiSingularity/hermesclaw
+cd hermesclaw
+cp .env.example .env
+</code></pre>
+<p>Edit <code>.env</code> and set <code>MODEL_FILE</code> to your model filename. Download a model into <code>models/</code>:</p>
+<pre><code class="language-bash"># Example — Qwen3 4B (2.5 GB):
+curl -L -o models/Qwen3-4B-Q4_K_M.gguf \
+  https://huggingface.co/bartowski/Qwen3-4B-GGUF/resolve/main/Qwen3-4B-Q4_K_M.gguf
+</code></pre>
+<p><strong>Step 2 — Build the image</strong></p>
+<pre><code class="language-bash">./scripts/setup.sh
+</code></pre>
+<p><strong>Step 3 — Start llama-server on your host</strong> (Hermes connects to it via <code>host.docker.internal</code>)</p>
+<p>macOS:</p>
+<pre><code class="language-bash">brew install llama.cpp
+llama-server -m models/your-model.gguf --port 8080 --ctx-size 32768 -ngl 99 --log-disable
+</code></pre>
+<p>Linux (<a href="https://github.com/ggerganov/llama.cpp#build">build instructions</a>):</p>
+<pre><code class="language-bash">llama-server -m models/your-model.gguf --port 8080 --ctx-size 32768 -ngl 99
+</code></pre>
+<blockquote>
+<p><strong>Note:</strong> <code>--ctx-size 32768</code> is required. Hermes&#39;s system prompt alone is ~11k tokens — lower values cause context overflow on every query.</p>
+</blockquote>
+<p><strong>Step 4 — Start Hermes</strong></p>
+<pre><code class="language-bash">docker compose up -d
+docker exec -it hermesclaw hermes chat -q &quot;hello&quot;
+</code></pre>
+<hr>
+<h3>Path 2 — OpenShell Sandbox (full hardware enforcement)</h3>
+<p>Requires Linux + NVIDIA GPU + OpenShell installed.</p>
+<pre><code class="language-bash"># Install OpenShell (requires NVIDIA account)
+curl -fsSL https://www.nvidia.com/openshell.sh | bash
+
+git clone https://github.com/TheAiSingularity/hermesclaw
+cd hermesclaw
+
+# Build image + register OpenShell policy and profile
+./scripts/setup.sh
+
+# Start llama-server on the host
+llama-server -m models/your-model.gguf --port 8080 --ctx-size 32768 -ngl 99
+
+# Start Hermes inside the sandbox
+./scripts/start.sh
+</code></pre>
+<p>Or use the <code>hermesclaw</code> CLI:</p>
+<pre><code class="language-bash">./scripts/hermesclaw onboard       # check all prerequisites
+./scripts/hermesclaw start         # start with default (strict) policy
+./scripts/hermesclaw start --gpu --policy gateway  # GPU + messaging enabled
+./scripts/hermesclaw chat &quot;hello&quot;  # one-shot message
+</code></pre>
+<hr>
+<h2>What OpenShell Enforces</h2>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Mechanism</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Network</strong></td>
+<td>OPA + HTTP CONNECT proxy</td>
+<td>Egress to approved hosts only — all else blocked</td>
+</tr>
+<tr>
+<td><strong>Filesystem</strong></td>
+<td>Landlock LSM</td>
+<td><code>~/.hermes/</code> + <code>/sandbox/</code> + <code>/tmp/</code> only</td>
+</tr>
+<tr>
+<td><strong>Process</strong></td>
+<td>Seccomp BPF</td>
+<td><code>ptrace</code>, <code>mount</code>, <code>kexec_load</code>, <code>perf_event_open</code>, <code>process_vm_*</code> blocked</td>
+</tr>
+<tr>
+<td><strong>Inference</strong></td>
+<td>Privacy router</td>
+<td>Credentials stripped from agent; backend credentials injected by OpenShell</td>
+</tr>
+</tbody></table>
+<p>All four layers are enforced <strong>out-of-process</strong> — even a fully compromised Hermes instance cannot override them.</p>
+<hr>
+<h2>Policy Presets</h2>
+<p>Switch security posture <strong>without restarting</strong> the sandbox:</p>
+<pre><code class="language-bash">./scripts/hermesclaw policy-set strict      # inference only (default)
+./scripts/hermesclaw policy-set gateway     # + Telegram + Discord
+./scripts/hermesclaw policy-set permissive  # + web search + GitHub skills
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Preset</th>
+<th align="center">Inference</th>
+<th align="center">Telegram / Discord</th>
+<th align="center">Web Search</th>
+<th align="center">GitHub Skills</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>strict</code></td>
+<td align="center">✅</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+</tr>
+<tr>
+<td><code>gateway</code></td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+</tr>
+<tr>
+<td><code>permissive</code></td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Hermes Features Inside the Sandbox</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th align="center">Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>hermes chat</code></td>
+<td align="center">✅</td>
+<td>Routes via <code>inference.local</code> → llama.cpp</td>
+</tr>
+<tr>
+<td>Persistent memory (MEMORY.md + USER.md)</td>
+<td align="center">✅</td>
+<td>Volume-mounted on host, survives sandbox recreation</td>
+</tr>
+<tr>
+<td>Self-improving skills</td>
+<td align="center">✅</td>
+<td>DSPy + GEPA optimisation, stored in <code>~/.hermes/skills/</code></td>
+</tr>
+<tr>
+<td>40+ built-in tools</td>
+<td align="center">✅</td>
+<td>Terminal, file, vision, voice, browser, RL, image gen, etc.</td>
+</tr>
+<tr>
+<td>Cron / scheduled tasks</td>
+<td align="center">✅</td>
+<td><code>hermes cron create</code></td>
+</tr>
+<tr>
+<td>Multi-agent delegation</td>
+<td align="center">✅</td>
+<td><code>hermes delegate_task</code></td>
+</tr>
+<tr>
+<td>MCP server integration</td>
+<td align="center">✅</td>
+<td><code>hermes mcp</code></td>
+</tr>
+<tr>
+<td>IDE integration (ACP)</td>
+<td align="center">✅</td>
+<td>VS Code, JetBrains, Zed</td>
+</tr>
+<tr>
+<td>Python SDK</td>
+<td align="center">✅</td>
+<td><code>from run_agent import AIAgent</code></td>
+</tr>
+<tr>
+<td>Telegram / Discord gateway</td>
+<td align="center">✅</td>
+<td>Requires <code>gateway</code> or <code>permissive</code> policy</td>
+</tr>
+<tr>
+<td>Signal / Slack / WhatsApp / Email</td>
+<td align="center">✅</td>
+<td>Requires <code>permissive</code> policy</td>
+</tr>
+<tr>
+<td>Voice notes (all platforms)</td>
+<td align="center">✅</td>
+<td>Auto-transcribed before passing to model</td>
+</tr>
+<tr>
+<td>Web search</td>
+<td align="center">✅</td>
+<td>Requires <code>permissive</code> policy (DuckDuckGo)</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Skills Library</h2>
+<p>Pre-built skills that encode recurring workflows. Install with one command, invoke via chat:</p>
+<pre><code class="language-bash">./skills/install.sh research-digest     # weekly arXiv digest → Telegram
+./skills/install.sh code-review         # local code review (CLI or VS Code ACP)
+./skills/install.sh anomaly-detection   # daily DB anomaly detection → Slack/Telegram
+./skills/install.sh market-alerts       # watchlist price alerts → Telegram
+./skills/install.sh slack-support       # Slack support bot with knowledge base
+./skills/install.sh home-assistant      # natural language smart home control
+./skills/install.sh --all               # install everything
+</code></pre>
+<p>After installing, invoke from chat or any connected messaging platform:</p>
+<pre><code class="language-bash">docker exec -it hermesclaw hermes chat -q &quot;run research-digest&quot;
+# or in Telegram: &quot;run the anomaly-detection skill&quot;
+</code></pre>
+<p>Full index: <a href="skills/">skills/README.md</a></p>
+<hr>
+<h2>Use Cases</h2>
+<p>Seven end-to-end guides covering real deployment scenarios — each with prerequisites, setup steps, automated tests, and a NemoClaw comparison:</p>
+<table>
+<thead>
+<tr>
+<th>Who</th>
+<th>Setup</th>
+<th>Guide</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Researcher / writer</td>
+<td>Docker + Telegram + weekly arXiv digest</td>
+<td><a href="docs/use-cases/01-researcher/">01-researcher</a></td>
+</tr>
+<tr>
+<td>Developer</td>
+<td>Docker + VS Code ACP</td>
+<td><a href="docs/use-cases/02-developer/">02-developer</a></td>
+</tr>
+<tr>
+<td>Home automation</td>
+<td>Docker + Home Assistant MCP + Telegram</td>
+<td><a href="docs/use-cases/03-home-automation/">03-home-automation</a></td>
+</tr>
+<tr>
+<td>Data analyst</td>
+<td>Docker + Postgres MCP + anomaly alerts</td>
+<td><a href="docs/use-cases/04-data-analyst/">04-data-analyst</a></td>
+</tr>
+<tr>
+<td>Small business</td>
+<td>Docker + Slack support bot + knowledge base</td>
+<td><a href="docs/use-cases/05-small-business/">05-small-business</a></td>
+</tr>
+<tr>
+<td>Privacy-regulated</td>
+<td>OpenShell sandbox + strict policy (HIPAA/legal)</td>
+<td><a href="docs/use-cases/06-privacy-regulated/">06-privacy-regulated</a></td>
+</tr>
+<tr>
+<td>Trader / quant</td>
+<td>Docker + local model + Telegram price alerts</td>
+<td><a href="docs/use-cases/07-trader/">07-trader</a></td>
+</tr>
+</tbody></table>
+<p>Full index and NemoClaw compatibility table: <a href="docs/use-cases/">docs/use-cases/</a></p>
+<hr>
+<h2>HermesClaw vs NemoClaw</h2>
+<p>Full comparison and test results: <a href="docs/test-results.md">docs/test-results.md</a> · <a href="docs/test-results-uc.md">docs/test-results-uc.md</a></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>HermesClaw</th>
+<th>NemoClaw</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Agent</strong></td>
+<td>Hermes (NousResearch)</td>
+<td>OpenClaw (wrapped by NemoClaw)</td>
+</tr>
+<tr>
+<td><strong>Sandbox</strong></td>
+<td>OpenShell (optional)</td>
+<td>OpenShell</td>
+</tr>
+<tr>
+<td><strong>Tools</strong></td>
+<td>40+ (web, browser, vision, voice, RL, …)</td>
+<td>25+ via OpenClaw</td>
+</tr>
+<tr>
+<td><strong>Memory</strong></td>
+<td>Persistent MEMORY.md + USER.md</td>
+<td>Session only — no cross-session persistence</td>
+</tr>
+<tr>
+<td><strong>Self-improving skills</strong></td>
+<td>Yes (DSPy + GEPA)</td>
+<td>No</td>
+</tr>
+<tr>
+<td><strong>Messaging</strong></td>
+<td>Telegram, Discord, Signal, Slack, WhatsApp, Email</td>
+<td>Telegram, Discord, Slack, WhatsApp, Signal, Teams (via OpenClaw)</td>
+</tr>
+<tr>
+<td><strong>MCP servers</strong></td>
+<td>Yes</td>
+<td>Unconfirmed</td>
+</tr>
+<tr>
+<td><strong>IDE integration</strong></td>
+<td>VS Code, JetBrains, Zed (ACP)</td>
+<td>OpenClaw-native (not ACP)</td>
+</tr>
+<tr>
+<td><strong>Inference providers</strong></td>
+<td>llama.cpp, NVIDIA NIM, OpenAI, Anthropic, Ollama, vLLM</td>
+<td>OpenAI, Anthropic, Gemini, NVIDIA NIM, local (Linux only)</td>
+</tr>
+<tr>
+<td><strong>macOS local inference</strong></td>
+<td>✅ Works</td>
+<td>❌ Broken (DNS bug, issue #260)</td>
+</tr>
+<tr>
+<td><strong>Without NVIDIA GPU</strong></td>
+<td>✅ CPU Docker mode</td>
+<td>✅ Cloud inference</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>Community implementation</td>
+<td>NVIDIA official (alpha)</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>hermesclaw CLI</h2>
+<pre><code>hermesclaw onboard                    First-time setup and prerequisite check
+hermesclaw start [--gpu] [--policy]   Start sandbox (OpenShell) or docker compose
+hermesclaw stop                       Stop sandbox (memories + skills preserved)
+hermesclaw status                     Show inference config + memory/skill counts
+hermesclaw connect                    Open interactive shell inside sandbox
+hermesclaw logs [--follow]            Stream sandbox logs
+hermesclaw policy-list                List available policy presets
+hermesclaw policy-set PRESET          Hot-swap policy without restart
+hermesclaw doctor                     End-to-end diagnostic
+hermesclaw chat &quot;prompt&quot;              One-shot message to Hermes
+hermesclaw version                    Print version
+hermesclaw uninstall                  Remove Docker image (data preserved)
+</code></pre>
+<hr>
+<h2>Personalise Hermes</h2>
+<pre><code class="language-bash">cp configs/persona.yaml.example configs/persona.yaml
+</code></pre>
+<p>Edit <code>configs/persona.yaml</code> — set your name, role, expertise, ticker watchlist, and response style. Hermes loads this into every session. For deeper personalisation, edit <code>~/.hermes/SOUL.md</code> — this goes directly into the system prompt.</p>
+<hr>
+<h2>Project Structure</h2>
+<pre><code>hermesclaw/
+├── Dockerfile                          # Hermes Agent on debian:bookworm-slim
+├── docker-compose.yml                  # Hermes container (llama-server runs on host)
+├── .env.example                        # MODEL_FILE, CTX_SIZE, bot tokens
+├── openshell/
+│   ├── hermesclaw-policy.yaml          # Default policy
+│   ├── hermesclaw-profile.yaml         # Sandbox profile
+│   ├── policy-strict.yaml             # Inference only
+│   ├── policy-gateway.yaml            # Inference + Telegram + Discord
+│   └── policy-permissive.yaml         # Everything
+├── configs/
+│   ├── hermes.yaml.example            # Full Hermes config
+│   └── persona.yaml.example           # User persona
+├── skills/
+│   ├── install.sh                     # Skill installer
+│   ├── anomaly-detection/             # DB anomaly detection (detect.py)
+│   ├── market-alerts/                 # Price threshold alerts (monitor.py)
+│   ├── code-review/                   # Code review prompts
+│   ├── slack-support/                 # FAQ + escalation bot
+│   ├── home-assistant/                # HA MCP control
+│   └── research-digest/               # Weekly arXiv digest
+├── scripts/
+│   ├── hermesclaw                     # Main CLI
+│   ├── setup.sh                       # One-time setup
+│   ├── start.sh / stop.sh / status.sh
+│   ├── doctor.sh                      # End-to-end diagnostic
+│   ├── test.sh                        # Feature comparison test suite
+│   ├── test-setup.sh                  # Use-case test environment setup
+│   └── test-uc-01.sh … test-uc-07.sh  # Per-use-case automated tests
+├── docs/
+│   ├── use-cases/                     # 7 end-to-end use-case guides
+│   ├── features.md                    # Full feature reference
+│   ├── test-results.md                # Feature comparison table
+│   └── test-results-uc.md             # Use-case test results (2026-03-31)
+├── knowledge/                         # Drop documents here (RAG context, read-only mount)
+└── models/                            # Drop .gguf model weights here
+</code></pre>
+<hr>
+<h2>Diagnostics &amp; Testing</h2>
+<pre><code class="language-bash"># Check your environment
+./scripts/doctor.sh           # full diagnostic
+./scripts/doctor.sh --quick   # skip slow checks
+
+# Run the feature test suite
+./scripts/test.sh             # generates docs/test-results.md
+./scripts/test.sh --quick     # skip live inference tests
+
+# Run use-case tests
+bash scripts/test-setup.sh          # verify environment
+bash scripts/test-uc-01.sh          # researcher
+bash scripts/test-uc-04.sh          # data analyst (Postgres + anomaly detection)
+bash scripts/test-uc-07.sh          # trader (latency measurement)
+</code></pre>
+<hr>
+<h2>Contributing</h2>
+<p>HermesClaw welcomes contributions — especially:</p>
+<ul>
+<li><strong>OpenShell policy corrections</strong> — if you have access to a real OpenShell environment, correctness fixes are the highest-value contribution</li>
+<li><strong>New policy presets</strong> — homeassistant, coding, research, etc.</li>
+<li><strong>New skills</strong> — follow the <code>SKILL.md</code> format in any existing skill as a template</li>
+<li><strong>Real-world test reports</strong> — if you&#39;ve run HermesClaw on NVIDIA hardware, share your <code>./scripts/doctor.sh</code> output</li>
+</ul>
+<p><strong>Quick contributor setup:</strong></p>
+<pre><code class="language-bash">git clone https://github.com/TheAiSingularity/hermesclaw
+cd hermesclaw
+./scripts/doctor.sh --quick    # verify your environment
+./scripts/test.sh --quick      # run the feature test suite
+shellcheck scripts/hermesclaw  # lint before submitting
+</code></pre>
+<p>Full guide: <a href="CONTRIBUTING.md">CONTRIBUTING.md</a> · <a href="CODE_OF_CONDUCT.md">Code of Conduct</a> · <a href="CHANGELOG.md">Changelog</a></p>
+<hr>
+<h2>Related</h2>
+<ul>
+<li><a href="https://github.com/TheAiSingularity/hermes-agent-nemoclaw-openclaw">hermes-agent-nemoclaw-openclaw</a> — The parent repo: Hermes + NemoClaw + lightweight bots in one stack</li>
+<li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — NousResearch&#39;s agent (18k ⭐)</li>
+<li><a href="https://github.com/NVIDIA/NemoClaw">NemoClaw</a> — NVIDIA&#39;s OpenClaw + OpenShell reference implementation</li>
+<li><a href="https://docs.nvidia.com/openshell/latest/">OpenShell</a> — NVIDIA&#39;s hardware-enforced AI sandbox</li>
+</ul>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Deployment &amp; Infra</h2>
+    <div class="related-grid">
+      <a href="/projects/numtide/llm-agents.nix" class="related-chip">llm-agents.nix <span class="related-stars">967</span></a>
+          <a href="/projects/0xrsydn/nix-hermes-agent" class="related-chip">nix-hermes-agent <span class="related-stars">11</span></a>
+          <a href="/projects/rookiemann/portable-hermes-agent" class="related-chip">portable-hermes-agent <span class="related-stars">7</span></a>
+          <a href="/projects/xmbshwll/hermes-agent-docker" class="related-chip">hermes-agent-docker <span class="related-stars">6</span></a>
+          <a href="/projects/JackTheGit/hermes-autonomous-server" class="related-chip">hermes-autonomous-server <span class="related-stars">2</span></a>
+          <a href="/projects/ellickjohnson/portainer-stack-hermes" class="related-chip">portainer-stack-hermes <span class="related-stars">1</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/deployment-options">See all Deployment &amp; Infra projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

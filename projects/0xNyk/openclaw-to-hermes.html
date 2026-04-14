@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>openclaw-to-hermes — Hermes Agent Developer Tools | Hermes Atlas</title>
+<meta name="description" content="Migrate from OpenClaw to Hermes Agent — complete, battle-tested migration tool">
+<link rel="canonical" href="https://hermesatlas.com/projects/0xNyk/openclaw-to-hermes">
+<meta property="og:title" content="openclaw-to-hermes — Hermes Atlas">
+<meta property="og:description" content="Migrate from OpenClaw to Hermes Agent — complete, battle-tested migration tool">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/0xNyk/openclaw-to-hermes">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="openclaw-to-hermes — Hermes Atlas">
+<meta name="twitter:description" content="Migrate from OpenClaw to Hermes Agent — complete, battle-tested migration tool">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Developer Tools</a>
+  </div>
+
+  <h1>openclaw-to-hermes</h1>
+  <p class="project-desc">Migrate from OpenClaw to Hermes Agent — complete, battle-tested migration tool</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 22</span>
+    <span class="badge badge-lang">Python</span>
+    <span class="badge badge-lang">MIT</span>
+    
+    <span>Updated 3/26/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/0xNyk/openclaw-to-hermes" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <h1>openclaw-to-hermes</h1>
+<p>Migrate from <a href="https://github.com/openclaw/openclaw">OpenClaw</a> to <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — a complete, battle-tested migration tool.</p>
+<p>Built from a real production migration. Fixes every issue we found in the existing <code>hermes-migrate</code> tool.</p>
+<blockquote>
+<p><strong>Note:</strong> As of Hermes Agent v0.3.0+, the native <code>hermes claw migrate</code> command now covers the full migration path — including the bugs this tool was originally built to fix. <strong>For new migrations, use the native command first:</strong></p>
+<pre><code class="language-bash">hermes claw migrate              # Interactive migration
+hermes claw migrate --preset full --overwrite  # Full migration
+</code></pre>
+<p>This tool remains useful as a reference implementation and for users on older Hermes versions (pre-v0.3.0) where the native migration had known issues.</p>
+</blockquote>
+<h2>What It Does</h2>
+<ul>
+<li>Discovers all OpenClaw agents, workspaces, channels, and credentials</li>
+<li>Migrates SOUL.md, MEMORY.md, workspace files, skills, and memory archives</li>
+<li>Maps OpenClaw config → Hermes <code>config.yaml</code> (models, channels, tools, advanced settings)</li>
+<li>Handles dict-type model configs (<code>primary</code>/<code>fallbacks</code>) correctly</li>
+<li>Migrates credentials from both <code>~/.openclaw/</code> and <code>/etc/openclaw-tenants/</code></li>
+<li>Writes <code>auth.json</code> in the correct Hermes nested format</li>
+<li>Sets up systemd gateway service with lingering</li>
+<li>Creates backup archive before any destructive operations</li>
+<li>Supports dry-run mode for safe preview</li>
+</ul>
+<h2>Quick Start</h2>
+<pre><code class="language-bash"># Install
+pip install openclaw-to-hermes
+# or
+pipx install openclaw-to-hermes
+
+# Preview what will happen
+oc2hermes --dry-run
+
+# Run full migration
+oc2hermes
+
+# Migrate a specific agent
+oc2hermes --agent quant
+
+# Skip auto-start of hermes gateway
+oc2hermes --no-start
+</code></pre>
+<h2>What Gets Migrated</h2>
+<table>
+<thead>
+<tr>
+<th>OpenClaw</th>
+<th>Hermes</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>~/.openclaw/openclaw.json</code></td>
+<td><code>~/.hermes/config.yaml</code></td>
+<td>Model, channel, tool config</td>
+</tr>
+<tr>
+<td><code>~/clawd/SOUL.md</code> (workspace)</td>
+<td><code>~/.hermes/SOUL.md</code></td>
+<td>Agent persona</td>
+</tr>
+<tr>
+<td><code>~/clawd/MEMORY.md</code>, <code>USER.md</code>, etc.</td>
+<td><code>~/.hermes/memories/</code></td>
+<td>All workspace .md files</td>
+</tr>
+<tr>
+<td><code>~/clawd/memory/</code></td>
+<td><code>~/.hermes/memories/openclaw_archive/</code></td>
+<td>Daily logs, research, playbooks</td>
+</tr>
+<tr>
+<td><code>~/clawd/skills/</code></td>
+<td><code>~/.hermes/memories/openclaw_skills/</code></td>
+<td>Agent skills</td>
+</tr>
+<tr>
+<td>Auth profiles JSON</td>
+<td><code>~/.hermes/auth.json</code></td>
+<td>OAuth tokens (nested format)</td>
+</tr>
+<tr>
+<td><code>/etc/openclaw-tenants/{user}.env</code></td>
+<td><code>~/.hermes/.env</code></td>
+<td>Bot tokens, API keys</td>
+</tr>
+<tr>
+<td><code>agents.list[].model</code></td>
+<td><code>config.yaml model.default</code></td>
+<td>Handles both string and dict formats</td>
+</tr>
+<tr>
+<td><code>channels.telegram</code></td>
+<td><code>config.yaml platforms.telegram</code></td>
+<td>Channel bindings + allowlists</td>
+</tr>
+<tr>
+<td><code>agents.defaults.compaction</code></td>
+<td><code>config.yaml compression</code></td>
+<td>Maps compaction modes</td>
+</tr>
+<tr>
+<td><code>agents.defaults.contextPruning</code></td>
+<td><code>config.yaml</code></td>
+<td>TTL, keep settings</td>
+</tr>
+</tbody></table>
+<h2>Prerequisites</h2>
+<ul>
+<li>OpenClaw installed and configured (<code>~/.openclaw/openclaw.json</code> exists)</li>
+<li>Hermes Agent installed (<code>hermes</code> CLI available or auto-installed)</li>
+<li>Python 3.10+</li>
+</ul>
+<h2>Architecture</h2>
+<pre><code>~/.openclaw/
+├── openclaw.json              # Main config (agents, models, channels, tools)
+├── state/
+│   └── agents/{id}/agent/
+│       └── auth-profiles.json # OAuth tokens, API keys
+└── .env                       # (optional) env vars
+
+/etc/openclaw-tenants/
+└── {user}.env                 # System-level secrets (bot tokens, gateway tokens)
+
+~/clawd/                       # Agent workspace (configurable path)
+├── SOUL.md                    # Persona
+├── MEMORY.md                  # Agent memory
+├── USER.md                    # User profile
+├── IDENTITY.md                # Identity config
+├── AGENTS.md                  # Multi-agent setup
+├── TOOLS.md                   # Tool documentation
+├── HEARTBEAT.md               # Heartbeat config
+├── memory/                    # Daily logs, research notes
+└── skills/                    # Agent skills
+
+        ↓ oc2hermes ↓
+
+~/.hermes/
+├── config.yaml                # Unified config
+├── SOUL.md                    # Persona
+├── auth.json                  # OAuth (nested providers format)
+├── .env                       # API keys, bot tokens
+├── memories/
+│   ├── MEMORY.md
+│   ├── USER.md
+│   ├── IDENTITY.md
+│   ├── openclaw_archive/      # Memory history
+│   └── openclaw_skills/       # Migrated skills
+└── cron/
+    └── jobs.json              # Scheduled tasks
+</code></pre>
+<h2>Known Issues with <code>hermes-migrate</code></h2>
+<p>This tool exists because the official <code>hermes-migrate</code> (v1.2.1) has several bugs:</p>
+<ol>
+<li><strong>Crashes on dict model configs</strong> — <code>agents.list[].model</code> can be <code>{&quot;primary&quot;: &quot;...&quot;, &quot;fallbacks&quot;: [...]}</code>, not just a string</li>
+<li><strong>Wrong auth.json format</strong> — writes flat structure instead of nested <code>providers.{id}.tokens</code></li>
+<li><strong>Misses workspace files</strong> — doesn&#39;t detect SOUL.md, MEMORY.md, etc. in the agent workspace directory</li>
+<li><strong>No system env handling</strong> — doesn&#39;t read <code>/etc/openclaw-tenants/{user}.env</code> for bot tokens</li>
+<li><strong>Stale OAuth tokens</strong> — can&#39;t refresh expired tokens, needs device-code re-auth</li>
+<li><strong>Missing croniter dependency</strong> — hermes-agent venv lacks croniter for cron job creation</li>
+<li><strong>Gateway restart hangs</strong> — <code>hermes gateway restart</code> can block indefinitely</li>
+</ol>
+<h2>Post-Migration Steps</h2>
+<p>After running <code>oc2hermes</code>:</p>
+<ol>
+<li><strong>Verify credentials</strong>: <code>hermes status</code> — check API keys and auth providers</li>
+<li><strong>Re-authenticate OAuth</strong> (if tokens expired): The tool will prompt you</li>
+<li><strong>Approve Telegram pairing</strong>: Send a message to your bot, then run the pairing command it shows</li>
+<li><strong>Set home channel</strong>: Type <code>/sethome</code> in your Telegram chat with the bot</li>
+<li><strong>Verify cron jobs</strong>: <code>hermes cron list</code></li>
+</ol>
+<h2>Configuration</h2>
+<p>Create <code>~/.oc2hermes.yaml</code> to customize behavior:</p>
+<pre><code class="language-yaml"># Override workspace detection
+workspace: /home/user/clawd
+
+# Skip specific migration steps
+skip:
+  - credentials   # Don&#39;t migrate credentials
+  - cron          # Don&#39;t create cron jobs
+
+# Custom model mapping (OpenClaw model → Hermes model)
+model_map:
+  &quot;openai-codex/gpt-5.3-codex&quot;: &quot;openrouter/auto&quot;
+  &quot;ollama/qwen3.5:9b&quot;: &quot;qwen/qwen3.5-9b&quot;
+
+# OpenRouter as default provider
+provider: openrouter
+openrouter_model: &quot;openrouter/auto&quot;
+
+# System env file path (for bot tokens)
+tenant_env: /etc/openclaw-tenants/{user}.env
+</code></pre>
+<h2>Development</h2>
+<pre><code class="language-bash">git clone https://github.com/0xNyk/openclaw-to-hermes.git
+cd openclaw-to-hermes
+uv venv &amp;&amp; source .venv/bin/activate
+uv pip install -e &quot;.[dev]&quot;
+
+# Run tests
+pytest
+
+# Lint
+ruff check .
+</code></pre>
+<h2>License</h2>
+<p>MIT</p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Developer Tools</h2>
+    <div class="related-grid">
+      <a href="/projects/junhoyeo/tokscale" class="related-chip">tokscale <span class="related-stars">1.7K</span></a>
+          <a href="/projects/joeynyc/hermes-skins" class="related-chip">hermes-skins <span class="related-stars">76</span></a>
+          <a href="/projects/AlexAI-MCP/hermes-CCC" class="related-chip">hermes-CCC <span class="related-stars">56</span></a>
+          <a href="/projects/unmodeled-tyler/vessel-browser" class="related-chip">vessel-browser <span class="related-stars">44</span></a>
+          <a href="/projects/Abruptive/Ankh.md" class="related-chip">Ankh.md <span class="related-stars">25</span></a>
+          <a href="/projects/roli-lpci/lintlang" class="related-chip">lintlang <span class="related-stars">24</span></a>
+          <a href="/projects/42-evey/evey-setup" class="related-chip">evey-setup <span class="related-stars">7</span></a>
+          <a href="/projects/rookiemann/portable-hermes-agent" class="related-chip">portable-hermes <span class="related-stars">7</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/developer-tools">See all Developer Tools projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

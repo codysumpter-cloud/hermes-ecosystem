@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anthropic-Cybersecurity-Skills — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
+<meta name="description" content="754 structured cybersecurity skills for AI agents · Mapped to 5 frameworks: MITRE ATT&amp;CK, NIST CSF 2.0, MITRE ATLAS, D3FEND &amp; NIST AI RMF · agentskills.io stand">
+<link rel="canonical" href="https://hermesatlas.com/projects/mukul975/Anthropic-Cybersecurity-Skills">
+<meta property="og:title" content="Anthropic-Cybersecurity-Skills — Hermes Atlas">
+<meta property="og:description" content="754 structured cybersecurity skills for AI agents · Mapped to 5 frameworks: MITRE ATT&amp;CK, NIST CSF 2.0, MITRE ATLAS, D3FEND &amp; NIST AI RMF · agentskills.io stand">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/mukul975/Anthropic-Cybersecurity-Skills">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Anthropic-Cybersecurity-Skills — Hermes Atlas">
+<meta name="twitter:description" content="754 structured cybersecurity skills for AI agents · Mapped to 5 frameworks: MITRE ATT&amp;CK, NIST CSF 2.0, MITRE ATLAS, D3FEND &amp; NIST AI RMF · agentskills.io stand">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Skills &amp; Skill Registries</a>
+  </div>
+
+  <h1>Anthropic-Cybersecurity-Skills</h1>
+  <p class="project-desc">754 structured cybersecurity skills for AI agents · Mapped to 5 frameworks: MITRE ATT&amp;CK, NIST CSF 2.0, MITRE ATLAS, D3FEND &amp; NIST AI RMF · agentskills.io standard · Works with Claude Code, GitHub Copilot, Codex CLI, Cursor, Gemini CLI &amp; 20+ platforms · 26 security domains · Apache 2.0</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 4.4K</span>
+    <span class="badge badge-lang">Python</span>
+    <span class="badge badge-lang">Apache-2.0</span>
+    
+    <span>Updated 4/11/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    <a href="https://mahipal.engineer/Anthropic-Cybersecurity-Skills/" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
+  </div>
+
+  <section class="readme">
+    <p align="center">
+  <img src="assets/banner.png" alt="Anthropic Cybersecurity Skills" width="100%">
+</p>
+
+<div align="center">
+
+<h1>Anthropic Cybersecurity Skills</h1>
+<h3>The largest open-source cybersecurity skills library for AI agents</h3>
+<p><a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=flat-square" alt="License"></a>
+<a href="#whats-inside--26-security-domains"><img src="https://img.shields.io/badge/skills-754-brightgreen?style=flat-square" alt="Skills"></a>
+<a href="#five-frameworks-one-skill-library"><img src="https://img.shields.io/badge/frameworks-5-orange?style=flat-square" alt="Frameworks"></a>
+<a href="#whats-inside--26-security-domains"><img src="https://img.shields.io/badge/domains-26-9cf?style=flat-square" alt="Domains"></a>
+<a href="#compatible-platforms"><img src="https://img.shields.io/badge/platforms-26%2B-blueviolet?style=flat-square" alt="Platforms"></a>
+<a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills/stargazers"><img src="https://img.shields.io/github/stars/mukul975/Anthropic-Cybersecurity-Skills?style=flat-square" alt="GitHub stars"></a>
+<a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills/network/members"><img src="https://img.shields.io/github/forks/mukul975/Anthropic-Cybersecurity-Skills?style=flat-square" alt="GitHub forks"></a>
+<a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills/commits/main"><img src="https://img.shields.io/github/last-commit/mukul975/Anthropic-Cybersecurity-Skills?style=flat-square" alt="Last Commit"></a>
+<a href="https://agentskills.io"><img src="https://img.shields.io/badge/standard-agentskills.io-ff6600?style=flat-square" alt="agentskills.io"></a>
+<a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs Welcome"></a>
+<a href="https://casky.ai/?utm_source=github&utm_medium=readme&utm_campaign=cohort_launch#waitlist"><img src="https://img.shields.io/badge/Playground-Casky.ai-blue" alt="Playground"></a></p>
+<p><strong>754 production-grade cybersecurity skills · 26 security domains · 5 framework mappings · 26+ AI platforms</strong></p>
+<p><a href="#quick-start">Get Started</a> · <a href="#whats-inside--26-security-domains">What&#39;s Inside</a> · <a href="#five-frameworks-one-skill-library">Frameworks</a> · <a href="#compatible-platforms">Platforms</a> · <a href="#contributing">Contributing</a></p>
+</div>
+
+<hr>
+<blockquote>
+<p>⚠️ <strong>Community Project</strong> — This is an independent, community-created project. Not affiliated with Anthropic PBC. </p>
+</blockquote>
+<h2>Give any AI agent the security skills of a senior analyst</h2>
+<p>A junior analyst knows which Volatility3 plugin to run on a suspicious memory dump, which Sigma rules catch Kerberoasting, and how to scope a cloud breach across three providers. <strong>Your AI agent doesn&#39;t — unless you give it these skills.</strong></p>
+<p>This repo contains <strong>754 structured cybersecurity skills</strong> spanning <strong>26 security domains</strong>, each following the <a href="https://agentskills.io">agentskills.io</a> open standard.  Every skill is mapped to <strong>five industry frameworks</strong> — MITRE ATT&amp;CK, NIST CSF 2.0, MITRE ATLAS, MITRE D3FEND, and NIST AI RMF  — making this the only open-source skills library with unified cross-framework coverage.  Clone it, point your agent at it, and your next security investigation gets expert-level guidance in seconds.</p>
+<h2>Five frameworks, one skill library</h2>
+<p>No other open-source skills library maps every skill to all five frameworks.  One skill, five compliance checkboxes. </p>
+<table>
+<thead>
+<tr>
+<th>Framework</th>
+<th>Version</th>
+<th>Scope in this repo</th>
+<th>What it maps</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://attack.mitre.org">MITRE ATT&amp;CK</a></td>
+<td>v18</td>
+<td>14 tactics · 200+ techniques</td>
+<td>Adversary behaviors and TTPs</td>
+</tr>
+<tr>
+<td><a href="https://www.nist.gov/cyberframework">NIST CSF 2.0</a></td>
+<td>2.0</td>
+<td>6 functions · 22 categories</td>
+<td>Organizational security posture</td>
+</tr>
+<tr>
+<td><a href="https://atlas.mitre.org">MITRE ATLAS</a></td>
+<td>v5.4</td>
+<td>16 tactics · 84 techniques</td>
+<td>AI/ML adversarial threats</td>
+</tr>
+<tr>
+<td><a href="https://d3fend.mitre.org">MITRE D3FEND</a></td>
+<td>v1.3</td>
+<td>7 categories · 267 techniques</td>
+<td>Defensive countermeasures</td>
+</tr>
+<tr>
+<td><a href="https://airc.nist.gov/AI_RMF">NIST AI RMF</a></td>
+<td>1.0</td>
+<td>4 functions · 72 subcategories</td>
+<td>AI risk management</td>
+</tr>
+</tbody></table>
+<p><strong>Example — a single skill maps across all five:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>ATT&amp;CK</th>
+<th>NIST CSF</th>
+<th>ATLAS</th>
+<th>D3FEND</th>
+<th>AI RMF</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>analyzing-network-traffic-of-malware</code></td>
+<td>T1071</td>
+<td>DE.CM</td>
+<td>AML.T0047</td>
+<td>D3-NTA</td>
+<td>MEASURE-2.6</td>
+</tr>
+</tbody></table>
+<h2>Quick start</h2>
+<pre><code class="language-bash"># Option 1: npx (recommended)
+npx skills add mukul975/Anthropic-Cybersecurity-Skills
+
+# Option 2: Git clone
+git clone https://github.com/mukul975/Anthropic-Cybersecurity-Skills.git
+cd Anthropic-Cybersecurity-Skills
+</code></pre>
+<p>Works immediately with Claude Code, GitHub Copilot, OpenAI Codex CLI, Cursor, Gemini CLI, and any <a href="https://agentskills.io">agentskills.io</a>-compatible platform. </p>
+<h2>🚀 Try it on the Playground</h2>
+<p>Experience Casky.ai hands-on — no setup required.</p>
+<p><strong><a href="https://casky.ai/?utm_source=github&utm_medium=readme&utm_campaign=cohort_launch#waitlist">→ Launch Playground on Casky.ai</a></strong></p>
+<p>The playground lets you:</p>
+<ul>
+<li>Run live cybersecurity skill exercises against real targets</li>
+<li>See AI agents execute structured skills in real time</li>
+<li>Explore MITRE ATT&amp;CK mapped workflows interactively</li>
+<li>Test threat hunting, DFIR, and penetration testing scenarios</li>
+</ul>
+<p>No installation. No configuration. Just open and start.</p>
+<h2>Why this exists</h2>
+<p>The cybersecurity workforce gap hit <strong>4.8 million unfilled roles</strong> globally in 2024 (ISC2). AI agents can help close that gap — but only if they have structured domain knowledge to work from. Today&#39;s agents can write code and search the web, but they lack the practitioner playbooks that turn a generic LLM into a capable security analyst.</p>
+<p>Existing security tool repos give you wordlists, payloads, or exploit code. None of them give an AI agent the structured decision-making workflow a senior analyst follows: when to use each technique, what prerequisites to check, how to execute step-by-step, and how to verify results. That is the gap this project fills.</p>
+<p><strong>Anthropic Cybersecurity Skills</strong> is not a collection of scripts or checklists. It is an <strong>AI-native knowledge base</strong> built from the ground up for the agentskills.io standard  — YAML frontmatter for sub-second discovery, structured Markdown for step-by-step execution, and reference files for deep technical context.  Every skill encodes real practitioner workflows, not generated summaries. </p>
+<h2>What&#39;s inside — 26 security domains</h2>
+<table>
+<thead>
+<tr>
+<th>Domain</th>
+<th>Skills</th>
+<th>Key capabilities</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cloud Security</td>
+<td>60</td>
+<td>AWS, Azure, GCP hardening · CSPM · cloud forensics</td>
+</tr>
+<tr>
+<td>Threat Hunting</td>
+<td>55</td>
+<td>Hypothesis-driven hunts · LOTL detection · behavioral analytics</td>
+</tr>
+<tr>
+<td>Threat Intelligence</td>
+<td>50</td>
+<td>STIX/TAXII · MISP · feed integration · actor profiling</td>
+</tr>
+<tr>
+<td>Web Application Security</td>
+<td>42</td>
+<td>OWASP Top 10 · SQLi · XSS · SSRF · deserialization</td>
+</tr>
+<tr>
+<td>Network Security</td>
+<td>40</td>
+<td>IDS/IPS · firewall rules · VLAN segmentation · traffic analysis</td>
+</tr>
+<tr>
+<td>Malware Analysis</td>
+<td>39</td>
+<td>Static/dynamic analysis · reverse engineering · sandboxing</td>
+</tr>
+<tr>
+<td>Digital Forensics</td>
+<td>37</td>
+<td>Disk imaging · memory forensics · timeline reconstruction</td>
+</tr>
+<tr>
+<td>Security Operations</td>
+<td>36</td>
+<td>SIEM correlation · log analysis · alert triage</td>
+</tr>
+<tr>
+<td>Identity &amp; Access Management</td>
+<td>35</td>
+<td>IAM policies · PAM · zero trust identity · Okta · SailPoint</td>
+</tr>
+<tr>
+<td>SOC Operations</td>
+<td>33</td>
+<td>Playbooks · escalation workflows · metrics · tabletop exercises</td>
+</tr>
+<tr>
+<td>Container Security</td>
+<td>30</td>
+<td>K8s RBAC · image scanning · Falco · container forensics</td>
+</tr>
+<tr>
+<td>OT/ICS Security</td>
+<td>28</td>
+<td>Modbus · DNP3 · IEC 62443 · historian defense · SCADA</td>
+</tr>
+<tr>
+<td>API Security</td>
+<td>28</td>
+<td>GraphQL · REST · OWASP API Top 10 · WAF bypass</td>
+</tr>
+<tr>
+<td>Vulnerability Management</td>
+<td>25</td>
+<td>Nessus · scanning workflows · patch prioritization · CVSS</td>
+</tr>
+<tr>
+<td>Incident Response</td>
+<td>25</td>
+<td>Breach containment · ransomware response · IR playbooks</td>
+</tr>
+<tr>
+<td>Red Teaming</td>
+<td>24</td>
+<td>Full-scope engagements · AD attacks · phishing simulation</td>
+</tr>
+<tr>
+<td>Penetration Testing</td>
+<td>23</td>
+<td>Network · web · cloud · mobile · wireless pentesting</td>
+</tr>
+<tr>
+<td>Endpoint Security</td>
+<td>17</td>
+<td>EDR · LOTL detection · fileless malware · persistence hunting</td>
+</tr>
+<tr>
+<td>DevSecOps</td>
+<td>17</td>
+<td>CI/CD security · code signing · Terraform auditing</td>
+</tr>
+<tr>
+<td>Phishing Defense</td>
+<td>16</td>
+<td>Email authentication · BEC detection · phishing IR</td>
+</tr>
+<tr>
+<td>Cryptography</td>
+<td>14</td>
+<td>TLS · Ed25519 · certificate transparency · key management</td>
+</tr>
+<tr>
+<td>Zero Trust Architecture</td>
+<td>13</td>
+<td>BeyondCorp · CISA maturity model · microsegmentation</td>
+</tr>
+<tr>
+<td>Mobile Security</td>
+<td>12</td>
+<td>Android/iOS analysis · mobile pentesting · MDM forensics</td>
+</tr>
+<tr>
+<td>Ransomware Defense</td>
+<td>7</td>
+<td>Precursor detection · response · recovery · encryption analysis</td>
+</tr>
+<tr>
+<td>Compliance &amp; Governance</td>
+<td>5</td>
+<td>CIS benchmarks · SOC 2 · regulatory frameworks</td>
+</tr>
+<tr>
+<td>Deception Technology</td>
+<td>2</td>
+<td>Honeytokens · breach detection canaries</td>
+</tr>
+</tbody></table>
+<h2>How AI agents use these skills</h2>
+<p>Each skill costs <strong>~30 tokens to scan</strong> (frontmatter only)  and <strong>500–2,000 tokens to fully load</strong> (complete workflow). This progressive disclosure architecture lets agents search all 754 skills in a single pass without blowing context windows. </p>
+<pre><code>User prompt: &quot;Analyze this memory dump for signs of credential theft&quot;
+
+Agent&#39;s internal process:
+
+  1. Scans 754 skill frontmatters (~30 tokens each)
+     → identifies 12 relevant skills by matching tags, description, domain
+
+  2. Loads top 3 matches:
+     • performing-memory-forensics-with-volatility3
+     • hunting-for-credential-dumping-lsass
+     • analyzing-windows-event-logs-for-credential-access
+
+  3. Executes the structured Workflow section step-by-step
+     → runs Volatility3 plugins, checks LSASS access patterns,
+        correlates with event log evidence
+
+  4. Validates results using the Verification section
+     → confirms IOCs, maps findings to ATT&amp;CK T1003 (Credential Dumping)
+</code></pre>
+<p><strong>Without these skills</strong>, the agent guesses at tool commands and misses critical steps. <strong>With them</strong>, it follows the same playbook a senior DFIR analyst would use. </p>
+<h2>Skill anatomy</h2>
+<p>Every skill follows a consistent directory structure:</p>
+<pre><code>skills/performing-memory-forensics-with-volatility3/
+├── SKILL.md              ← Skill definition (YAML frontmatter + Markdown body)
+├── references/
+│   ├── standards.md      ← MITRE ATT&amp;CK, ATLAS, D3FEND, NIST mappings
+│   └── workflows.md      ← Deep technical procedure reference
+├── scripts/
+│   └── process.py        ← Working helper scripts
+└── assets/
+    └── template.md       ← Filled-in checklists and report templates
+</code></pre>
+<h3>YAML frontmatter (real example)</h3>
+<pre><code class="language-yaml">---
+name: performing-memory-forensics-with-volatility3
+description: &gt;-
+  Analyze memory dumps to extract running processes, network connections,
+  injected code, and malware artifacts using the Volatility3 framework.
+domain: cybersecurity
+subdomain: digital-forensics
+tags: [forensics, memory-analysis, volatility3, incident-response, dfir]
+atlas_techniques: [AML.T0047]
+d3fend_techniques: [D3-MA, D3-PSMD]
+nist_ai_rmf: [MEASURE-2.6]
+nist_csf: [DE.CM-01, RS.AN-03]
+version: &quot;1.2&quot;
+author: mukul975
+license: Apache-2.0
+---
+</code></pre>
+<h3>Markdown body sections</h3>
+<pre><code class="language-markdown">## When to Use
+Trigger conditions — when should an AI agent activate this skill?
+
+## Prerequisites
+Required tools, access levels, and environment setup.
+
+## Workflow
+Step-by-step execution guide with specific commands and decision points.
+
+## Verification
+How to confirm the skill was executed successfully.
+</code></pre>
+<p>Frontmatter fields: <code>name</code> (kebab-case, 1–64 chars), <code>description</code> (keyword-rich for agent discovery), <code>domain</code>, <code>subdomain</code>, <code>tags</code>,  <code>atlas_techniques</code> (MITRE ATLAS IDs), <code>d3fend_techniques</code> (MITRE D3FEND IDs), <code>nist_ai_rmf</code> (NIST AI RMF references), <code>nist_csf</code> (NIST CSF 2.0 categories).  MITRE ATT&amp;CK technique mappings are documented in each skill&#39;s <code>references/standards.md</code> file and in the ATT&amp;CK Navigator layer included with releases. </p>
+<details>
+<summary><strong>📊 MITRE ATT&CK Enterprise coverage — all 14 tactics</strong></summary>
+
+<p>&nbsp;</p>
+<table>
+<thead>
+<tr>
+<th>Tactic</th>
+<th>ID</th>
+<th>Coverage</th>
+<th>Key skills</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Reconnaissance</td>
+<td>TA0043</td>
+<td>Strong</td>
+<td>OSINT, subdomain enumeration, DNS recon</td>
+</tr>
+<tr>
+<td>Resource Development</td>
+<td>TA0042</td>
+<td>Moderate</td>
+<td>Phishing infrastructure, C2 setup detection</td>
+</tr>
+<tr>
+<td>Initial Access</td>
+<td>TA0001</td>
+<td>Strong</td>
+<td>Phishing simulation, exploit detection, forced browsing</td>
+</tr>
+<tr>
+<td>Execution</td>
+<td>TA0002</td>
+<td>Strong</td>
+<td>PowerShell analysis, fileless malware, script block logging</td>
+</tr>
+<tr>
+<td>Persistence</td>
+<td>TA0003</td>
+<td>Strong</td>
+<td>Scheduled tasks, registry, service accounts, LOTL</td>
+</tr>
+<tr>
+<td>Privilege Escalation</td>
+<td>TA0004</td>
+<td>Strong</td>
+<td>Kerberoasting, AD attacks, cloud privilege escalation</td>
+</tr>
+<tr>
+<td>Defense Evasion</td>
+<td>TA0005</td>
+<td>Strong</td>
+<td>Obfuscation, rootkit analysis, evasion detection</td>
+</tr>
+<tr>
+<td>Credential Access</td>
+<td>TA0006</td>
+<td>Strong</td>
+<td>Mimikatz detection, pass-the-hash, credential dumping</td>
+</tr>
+<tr>
+<td>Discovery</td>
+<td>TA0007</td>
+<td>Moderate</td>
+<td>BloodHound, AD enumeration, network scanning</td>
+</tr>
+<tr>
+<td>Lateral Movement</td>
+<td>TA0008</td>
+<td>Strong</td>
+<td>SMB exploits, lateral movement detection with Splunk</td>
+</tr>
+<tr>
+<td>Collection</td>
+<td>TA0009</td>
+<td>Moderate</td>
+<td>Email forensics, data staging detection</td>
+</tr>
+<tr>
+<td>Command and Control</td>
+<td>TA0011</td>
+<td>Strong</td>
+<td>C2 beaconing, DNS tunneling, Cobalt Strike analysis</td>
+</tr>
+<tr>
+<td>Exfiltration</td>
+<td>TA0010</td>
+<td>Strong</td>
+<td>DNS exfiltration, DLP controls, data loss detection</td>
+</tr>
+<tr>
+<td>Impact</td>
+<td>TA0040</td>
+<td>Strong</td>
+<td>Ransomware defense, encryption analysis, recovery</td>
+</tr>
+</tbody></table>
+<p>An <strong>ATT&amp;CK Navigator layer file</strong> is included in the <a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills/releases/tag/v1.0.0">v1.0.0 release assets</a> for visual coverage mapping. </p>
+<blockquote>
+<p><strong>Note:</strong> ATT&amp;CK v19 lands April 28, 2026 — splitting Defense Evasion (TA0005) into two new tactics: <em>Stealth</em> and <em>Impair Defenses</em>.  Skill mappings will be updated in a forthcoming release.</p>
+</blockquote>
+</details>
+
+<details>
+<summary><strong>📊 NIST CSF 2.0 alignment — all 6 functions</strong></summary>
+
+<p>&nbsp;</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Skills</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Govern (GV)</strong></td>
+<td>30+</td>
+<td>Risk strategy, policy frameworks, roles &amp; responsibilities</td>
+</tr>
+<tr>
+<td><strong>Identify (ID)</strong></td>
+<td>120+</td>
+<td>Asset discovery, threat landscape assessment, risk analysis</td>
+</tr>
+<tr>
+<td><strong>Protect (PR)</strong></td>
+<td>150+</td>
+<td>IAM hardening, WAF rules, zero trust, encryption</td>
+</tr>
+<tr>
+<td><strong>Detect (DE)</strong></td>
+<td>200+</td>
+<td>Threat hunting, SIEM correlation, anomaly detection</td>
+</tr>
+<tr>
+<td><strong>Respond (RS)</strong></td>
+<td>160+</td>
+<td>Incident response, forensics, breach containment</td>
+</tr>
+<tr>
+<td><strong>Recover (RC)</strong></td>
+<td>40+</td>
+<td>Ransomware recovery, BCP, disaster recovery</td>
+</tr>
+</tbody></table>
+<p>NIST CSF 2.0 (February 2024) added the <strong>Govern</strong> function  and expanded scope from critical infrastructure to all organizations.  Skill mappings align to all 22 categories and reference 106 subcategories. </p>
+</details>
+
+<details>
+<summary><strong>📊 Framework deep dive — ATLAS, D3FEND, AI RMF</strong></summary>
+
+<p>&nbsp;</p>
+<h3>MITRE ATLAS v5.4 — AI/ML adversarial threats</h3>
+<p>ATLAS maps adversarial tactics, techniques, and case studies specific to AI and machine learning systems. Version 5.4 covers <strong>16 tactics and 84 techniques</strong> including agentic AI attack vectors added in late 2025: AI agent context poisoning, tool invocation abuse, MCP server compromises, and malicious agent deployment.  Skills mapped to ATLAS help agents identify and defend against threats to ML pipelines, model weights, inference APIs, and autonomous workflows. </p>
+<h3>MITRE D3FEND v1.3 — Defensive countermeasures</h3>
+<p>D3FEND is an NSA-funded knowledge graph of <strong>267 defensive techniques</strong> organized across 7 tactical categories: Model, Harden, Detect, Isolate, Deceive, Evict, and Restore.  Built on OWL 2 ontology, it uses a shared Digital Artifact layer to bidirectionally map defensive countermeasures to ATT&amp;CK offensive techniques.  Skills tagged with D3FEND identifiers let agents recommend specific countermeasures for detected threats.</p>
+<h3>NIST AI RMF 1.0 + GenAI Profile (AI 600-1)</h3>
+<p>The AI Risk Management Framework defines 4 core functions — Govern, Map, Measure, Manage — with <strong>72 subcategories</strong> for trustworthy AI development.  The GenAI Profile (AI 600-1, July 2024) adds <strong>12 risk categories</strong> specific to generative AI, from confabulation and data privacy to prompt injection and supply chain risks.  Colorado&#39;s AI Act (effective February 2026) provides a <strong>legal safe harbor</strong> for organizations complying with NIST AI RMF, making these mappings directly relevant to regulatory compliance.</p>
+</details>
+
+<h2>Compatible platforms</h2>
+<p><strong>AI code assistants</strong>
+Claude Code (Anthropic) · GitHub Copilot (Microsoft) · Cursor · Windsurf · Cline · Aider · Continue · Roo Code · Amazon Q Developer · Tabnine · Sourcegraph Cody · JetBrains AI </p>
+<p><strong>CLI agents</strong>
+OpenAI Codex CLI · Gemini CLI (Google) </p>
+<p><strong>Autonomous agents</strong>
+Devin · Replit Agent · SWE-agent · OpenHands </p>
+<p><strong>Agent frameworks &amp; SDKs</strong>
+LangChain · CrewAI · AutoGen · Semantic Kernel · Haystack · Vercel AI SDK · Any MCP-compatible agent </p>
+<p>All platforms that support the <a href="https://agentskills.io">agentskills.io</a> standard can load these skills with zero configuration. </p>
+<h2>What people are saying</h2>
+<blockquote>
+<p><em>&quot;A database of real, organized security skills that any AI agent can plug into and use. Not tutorials. Not blog posts.&quot;</em> 
+— <strong><a href="https://x.com/hasantoxr/status/2033193922349179249">Hasan Toor (@hasantoxr)</a></strong>, AI/tech creator</p>
+</blockquote>
+<blockquote>
+<p><em>&quot;This is not a random collection of security scripts. It&#39;s a structured operational knowledge base designed for AI-driven security workflows.&quot;</em> 
+— <strong><a href="https://fazal-sec.medium.com/claude-skills-ai-powered-cybersecurity-the-complete-guide-to-building-intelligent-security-7bb7e9d14c8e">fazal-sec</a></strong>,  Medium</p>
+</blockquote>
+<h2>Featured in</h2>
+<table>
+<thead>
+<tr>
+<th>Where</th>
+<th>Type</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>awesome-agent-skills</strong></td>
+<td>Awesome List (1,000+ skills index)</td>
+<td><a href="https://github.com/VoltAgent/awesome-agent-skills">VoltAgent/awesome-agent-skills</a></td>
+</tr>
+<tr>
+<td><strong>awesome-ai-security</strong></td>
+<td>Awesome List (AI security tools)</td>
+<td><a href="https://github.com/ottosulin/awesome-ai-security">ottosulin/awesome-ai-security</a></td>
+</tr>
+<tr>
+<td><strong>awesome-codex-cli</strong></td>
+<td>Awesome List (Codex CLI resources)</td>
+<td><a href="https://github.com/RoggeOhta/awesome-codex-cli">RoggeOhta/awesome-codex-cli</a></td>
+</tr>
+<tr>
+<td><strong>SkillsLLM</strong></td>
+<td>Skills directory &amp; marketplace</td>
+<td><a href="https://skillsllm.com/skill/anthropic-cybersecurity-skills">skillsllm.com/skill/anthropic-cybersecurity-skills</a></td>
+</tr>
+<tr>
+<td><strong>Openflows</strong></td>
+<td>Signal analysis &amp; tracking</td>
+<td><a href="https://openflows.org/currency/currents/anthropic-cybersecurity-skills/">openflows.org</a></td>
+</tr>
+<tr>
+<td><strong>NeverSight skills_feed</strong></td>
+<td>Automated skills index</td>
+<td><a href="https://github.com/NeverSight/skills_feed">NeverSight/skills_feed</a></td>
+</tr>
+</tbody></table>
+<h2>Star history</h2>
+<a href="https://star-history.com/#mukul975/Anthropic-Cybersecurity-Skills&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=mukul975/Anthropic-Cybersecurity-Skills&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=mukul975/Anthropic-Cybersecurity-Skills&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=mukul975/Anthropic-Cybersecurity-Skills&type=Date" width="100%" />
+ </picture>
+</a>
+
+<h2>Releases</h2>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Date</th>
+<th>Highlights</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills/releases/tag/v1.0.0">v1.0.0</a></td>
+<td>March 11, 2026</td>
+<td>734 skills · 26 domains · MITRE ATT&amp;CK + NIST CSF 2.0 mapping · ATT&amp;CK Navigator layer</td>
+</tr>
+</tbody></table>
+<p>Skills have continued to grow on <code>main</code> since v1.0.0 — the library now contains <strong>754 skills</strong> with <strong>5-framework mapping</strong>  (MITRE ATLAS, D3FEND, and NIST AI RMF added post-release).  Check <a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills/releases">Releases</a> for the latest tagged version.</p>
+<h2>Contributing</h2>
+<p>This project grows through community contributions. Here is how to get involved:</p>
+<p><strong>Add a new skill</strong> — Domains like Deception Technology (2 skills) and Compliance &amp; Governance (5 skills) need the most help. Follow the template in <a href="CONTRIBUTING.md">CONTRIBUTING.md</a> and submit a PR with the title <code>Add skill: your-skill-name</code>.</p>
+<p><strong>Improve existing skills</strong> — Add framework mappings, fix workflows, update tool references, or contribute scripts and templates.</p>
+<p><strong>Report issues</strong> — Found an inaccurate procedure or broken script? <a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills/issues">Open an issue</a>.</p>
+<p>Every PR is reviewed for technical accuracy and agentskills.io standard compliance within 48 hours.  Check <a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22">good first issues</a> for a starting point.</p>
+<p>This project follows the <a href="https://www.contributor-covenant.org/">Contributor Covenant</a>. By participating, you agree to uphold this code. </p>
+<h2>Community</h2>
+<p>💬 <a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills/discussions">Discussions</a> — Questions, ideas, and roadmap conversations
+🐛 <a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills/issues">Issues</a> — Bug reports and feature requests
+🔒 <a href="SECURITY.md">Security Policy</a> — Responsible disclosure process (48-hour acknowledgment) </p>
+<h2>Citation</h2>
+<p>If you use this project in research or publications:</p>
+<pre><code class="language-bibtex">@software{anthropic_cybersecurity_skills,
+  author       = {Jangra, Mahipal},
+  title        = {Anthropic Cybersecurity Skills},
+  year         = {2026},
+  url          = {https://github.com/mukul975/Anthropic-Cybersecurity-Skills},
+  license      = {Apache-2.0},
+  note         = {754 structured cybersecurity skills for AI agents,
+                  mapped to MITRE ATT\&amp;CK, NIST CSF 2.0, MITRE ATLAS,
+                  MITRE D3FEND, and NIST AI RMF}
+}
+</code></pre>
+<h2>License</h2>
+<p>This project is licensed under the <a href="LICENSE">Apache License 2.0</a>. You are free to use, modify, and distribute these skills in both personal and commercial projects. </p>
+<hr>
+<div align="center">
+
+<p><strong>If this project helps your security work, consider giving it a ⭐</strong></p>
+<p><a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills/stargazers">⭐ Star</a> · <a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills/fork">🍴 Fork</a> · <a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills/discussions">💬 Discuss</a> · <a href="CONTRIBUTING.md">📝 Contribute</a></p>
+<p>Community project by <a href="https://github.com/mukul975">@mukul975</a>. Not affiliated with Anthropic PBC.</p>
+</div>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Skills &amp; Skill Registries</h2>
+    <div class="related-grid">
+      <a href="/projects/conorbronsdon/avoid-ai-writing" class="related-chip">avoid-ai-writing <span class="related-stars">759</span></a>
+          <a href="/projects/wondelai/skills" class="related-chip">wondelai/skills <span class="related-stars">480</span></a>
+          <a href="/projects/DougTrajano/pydantic-ai-skills" class="related-chip">pydantic-ai-skills <span class="related-stars">220</span></a>
+          <a href="/projects/Agents365-ai/drawio-skill" class="related-chip">drawio-skill <span class="related-stars">131</span></a>
+          <a href="/projects/smartcontractkit/chainlink-agent-skills" class="related-chip">chainlink-agent-skills <span class="related-stars">85</span></a>
+          <a href="/projects/tlehman/litprog-skill" class="related-chip">litprog-skill <span class="related-stars">81</span></a>
+          <a href="/projects/esaradev/icarus-plugin" class="related-chip">icarus-plugin <span class="related-stars">51</span></a>
+          <a href="/projects/chigwell/skilldock.io" class="related-chip">skilldock.io <span class="related-stars">50</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/top-skills">See all Skills &amp; Skill Registries projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

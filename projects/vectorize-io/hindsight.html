@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hindsight — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
+<meta name="description" content="Hindsight: Agent Memory That  Learns">
+<link rel="canonical" href="https://hermesatlas.com/projects/vectorize-io/hindsight">
+<meta property="og:title" content="hindsight — Hermes Atlas">
+<meta property="og:description" content="Hindsight: Agent Memory That  Learns">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/vectorize-io/hindsight">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hindsight — Hermes Atlas">
+<meta name="twitter:description" content="Hindsight: Agent Memory That  Learns">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Memory &amp; Context</a>
+  </div>
+
+  <h1>hindsight</h1>
+  <p class="project-desc">Hindsight: Agent Memory That  Learns</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 9.2K</span>
+    <span class="badge badge-lang">Python</span>
+    <span class="badge badge-lang">MIT</span>
+    
+    <span>Updated 4/14/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/vectorize-io/hindsight" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    <a href="https://hindsight.vectorize.io/" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
+  </div>
+
+  <section class="readme">
+    <div align="center">
+
+<p><img src="./hindsight-docs/static/img/hindsight-github-banner.png" alt="Hindsight Banner"></p>
+<p><a href="https://hindsight.vectorize.io">Documentation</a> • <a href="https://arxiv.org/abs/2512.12818">Paper</a> • <a href="https://hindsight.vectorize.io/cookbook">Cookbook</a> • <a href="https://ui.hindsight.vectorize.io/signup">Hindsight Cloud</a></p>
+<p><a href="https://github.com/vectorize-io/hindsight/actions/workflows/release.yml"><img src="https://github.com/vectorize-io/hindsight/actions/workflows/release.yml/badge.svg" alt="CI"></a>
+<a href="https://join.slack.com/t/hindsight-space/shared_invite/zt-3nhbm4w29-LeSJ5Ixi6j8PdiYOCPlOgg"><img src="https://img.shields.io/badge/Slack-Join%20Community-4A154B?logo=slack" alt="Slack Community"></a>
+<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+<a href="https://gitcgr.com/vectorize-io/hindsight"><img src="https://gitcgr.com/badge/vectorize-io/hindsight.svg" alt="gitcgr"></a>
+<img src="https://img.shields.io/pypi/dm/hindsight-api?label=PyPI" alt="PyPI - Downloads">
+<img src="https://img.shields.io/npm/dm/%40vectorize-io%2Fhindsight-client?logoColor=orange&label=NPM&color=blue&link=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2F%40vectorize-io%2Fhindsight-client" alt="NPM Downloads">
+<br/></p>
+<p><a href="https://trendshift.io/repositories/15603" target="_blank"><img src="https://trendshift.io/api/badge/repositories/15603" alt="vectorize-io%2Fhindsight | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a></p>
+</div>
+
+<hr>
+<h2>What is Hindsight?</h2>
+<p>Hindsight™ is an agent memory system built to create smarter agents that learn over time. Most agent memory systems focus on recalling conversation history. Hindsight is focused on making agents that learn, not just remember.</p>
+<p><video src="https://github.com/user-attachments/assets/923b798d-3581-4897-bb62-9cfa5a931682" controls></video></p>
+<p>It eliminates the shortcomings of alternative techniques such as RAG and knowledge graph and delivers state-of-the-art performance on long term memory tasks.</p>
+<h2>Memory Performance &amp; Accuracy</h2>
+<p>Hindsight is the most accurate agent memory system ever tested according to benchmark performance. It has achieved state-of-the-art performance on the LongMemEval benchmark, widely used to assess memory system performance across a variety of conversational AI scenarios. The current reported performance of Hindsight and other agent memory solutions as of January 2026 is shown here:</p>
+<p><img src="./hindsight-docs/static/img/hindsight-bench.jpg" alt="Overview"></p>
+<p>The benchmark performance data for Hindsight has been independently reproduced by research collaborators at the Virginia Tech <a href="https://sanghani.cs.vt.edu/">Sanghani Center for Artificial Intelligence and Data Analytics</a> and The Washington Post. Other scores are self-reported by software vendors.</p>
+<p>Hindsight is being used in production at Fortune 500 enterprises and by a growing number of AI startups. </p>
+<h2>Adding Hindsight to Your AI Agents</h2>
+<p>The easiest way to use Hindsight with an existing agent is with the LLM Wrapper. You can add memory to your agent with 2 lines of code. That will swap your current LLM client out with the Hindsight wrapper. After that, memories will be stored and retrieved automatically as you make LLM calls.</p>
+<p>If you need more control over how and when your agent stores and recalls memories, there&#39;s also a simple API you can integrate with using the SDKs or directly via HTTP.</p>
+<p><img src="./hindsight-docs/static/img/migration-code.png" alt="Hindsight Banner"></p>
+<hr>
+<blockquote>
+<p>🤖 <strong>Using a coding agent?</strong> Install the Hindsight documentation skill for instant access to docs while you code:</p>
+<pre><code class="language-bash">npx skills add https://github.com/vectorize-io/hindsight --skill hindsight-docs
+</code></pre>
+<p>Works with Claude Code, Cursor, and other AI coding assistants.</p>
+</blockquote>
+<hr>
+<h2>Quick Start</h2>
+<h3>Docker (recommended)</h3>
+<pre><code class="language-bash">export OPENAI_API_KEY=sk-xxx
+
+docker run --rm -it --pull always -p 8888:8888 -p 9999:9999 \
+  -e HINDSIGHT_API_LLM_API_KEY=$OPENAI_API_KEY \
+  -v $HOME/.hindsight-docker:/home/hindsight/.pg0 \
+  ghcr.io/vectorize-io/hindsight:latest
+</code></pre>
+<blockquote>
+<p>API: <a href="http://localhost:8888">http://localhost:8888</a>
+UI: <a href="http://localhost:9999">http://localhost:9999</a></p>
+</blockquote>
+<p>You can modify the LLM provider by setting <code>HINDSIGHT_API_LLM_PROVIDER</code>. Valid options are <code>openai</code>, <code>anthropic</code>, <code>gemini</code>, <code>groq</code>, <code>ollama</code>, <code>lmstudio</code>, and <code>minimax</code>. The documentation provides more details on <a href="https://hindsight.vectorize.io/developer/models">supported models</a>.</p>
+<h3>Docker (external PostgreSQL)</h3>
+<pre><code class="language-bash">export OPENAI_API_KEY=sk-xxx
+export HINDSIGHT_DB_PASSWORD=choose-a-password
+cd docker/docker-compose
+docker compose up 
+</code></pre>
+<blockquote>
+<p>API: <a href="http://localhost:8888">http://localhost:8888</a>
+UI: <a href="http://localhost:9999">http://localhost:9999</a></p>
+</blockquote>
+<h3>Client</h3>
+<pre><code class="language-bash">pip install hindsight-client -U
+# or
+npm install @vectorize-io/hindsight-client
+</code></pre>
+<h4>Python</h4>
+<pre><code class="language-python">from hindsight_client import Hindsight
+
+client = Hindsight(base_url=&quot;http://localhost:8888&quot;)
+
+# Retain: Store information
+client.retain(bank_id=&quot;my-bank&quot;, content=&quot;Alice works at Google as a software engineer&quot;)
+
+# Recall: Search memories
+client.recall(bank_id=&quot;my-bank&quot;, query=&quot;What does Alice do?&quot;)
+
+# Reflect: Generate disposition-aware response
+client.reflect(bank_id=&quot;my-bank&quot;, query=&quot;Tell me about Alice&quot;)
+</code></pre>
+<h4>Node.js / TypeScript</h4>
+<pre><code class="language-bash">npm install @vectorize-io/hindsight-client
+</code></pre>
+<pre><code class="language-javascript">const { HindsightClient } = require(&#39;@vectorize-io/hindsight-client&#39;);
+
+const main = async () =&gt; {
+  const client = new HindsightClient({ baseUrl: &#39;http://localhost:8888&#39; });
+
+  await client.retain(&#39;my-bank&#39;, &#39;Alice loves hiking in Yosemite&#39;);
+
+  const results = await client.recall(&#39;my-bank&#39;, &#39;What does Alice like?&#39;);
+  console.log(results);
+}
+
+main();
+</code></pre>
+<h3>Python Embedded (no server required)</h3>
+<pre><code class="language-bash">pip install hindsight-all -U
+</code></pre>
+<pre><code class="language-python">import os
+from hindsight import HindsightServer, HindsightClient
+
+with HindsightServer(
+    llm_provider=&quot;openai&quot;,
+    llm_model=&quot;gpt-5-mini&quot;, 
+    llm_api_key=os.environ[&quot;OPENAI_API_KEY&quot;]
+) as server:
+    client = HindsightClient(base_url=server.url)
+    client.retain(bank_id=&quot;my-bank&quot;, content=&quot;Alice works at Google&quot;)
+    results = client.recall(bank_id=&quot;my-bank&quot;, query=&quot;Where does Alice work?&quot;)
+</code></pre>
+<hr>
+<h2>Use Cases</h2>
+<p>Hindsight is built to support conversational AI agents as well as agents that are intended to perform tasks autonomously. The ideal use case for Hindsight are agents that require a blend of these features such as AI employees that need to handle open-ended tasks, change behavior based on user feedback, and learn to perform complex tasks to automate work at a level that approximates a human work. Hindsight can be used with simple AI workflows like those built with n8n and other similar tools, but may be overkill for such applications.</p>
+<h3>Per-User Memories and Chat History</h3>
+<p>One of the simpler use cases you can use Hindsight for is to personalize AI chatbots and other conversational agents by storing and recalling memories associated with individual users.</p>
+<p>The requirements for this use case usually look something like this:</p>
+<p><img src="./hindsight-docs/static/img/per-user-memory-requirements.png" alt="Per-User Memories"></p>
+<p><video src="https://github.com/user-attachments/assets/4805e8e1-e7d1-47c6-a4f8-2344a5ec8906" controls></video></p>
+<p>Satisfying these requirements in Hindsight is straightforward. When new user inputs and tool calls are ingested into Hindsight using the retain operation, custom metadata can be used to enrich the new memories. Metadata provides a convenient way to isolate memories that need to be restricted to a given user. Once these are fed into the retain operation, any raw memories and mental models that get created can be filtered when retrieving relevant memories. </p>
+<p><img src="./hindsight-docs/static/img/per-user-memory-howto.png" alt="Per-User Memories"></p>
+<hr>
+<h2>Architecture &amp; Operations</h2>
+<p><img src="./hindsight-docs/static/img/hindsight-overview.webp" alt="Overview"></p>
+<p>Most agent memory implementations rely on basic vector search or sometimes use a knowledge graph. Hindsight uses biomimetic data structures to organize agent memories in a way that is more like how human memory works:</p>
+<ul>
+<li><strong>World:</strong> Facts about the world (&quot;The stove gets hot&quot;)</li>
+<li><strong>Experiences:</strong> Agent&#39;s own experiences (&quot;I touched the stove and it really hurt&quot;)</li>
+<li><strong>Mental Models:</strong> Learned understanding of the agent&#39;s world formed by reflecting on raw memories and experiences.</li>
+</ul>
+<p>Memories in Hindsight are stored in banks (i.e. memory banks). When memories are added to Hindsight, they are pushed into either the world facts or experiences memory pathway. They are then represented as a combination of entities, relationships, and time series with sparse/dense vector representations to aid in later recall.</p>
+<p>Hindsight provides three simple methods to interact with the system:</p>
+<ul>
+<li><strong>Retain:</strong> Provide information to Hindsight that you want it to remember</li>
+<li><strong>Recall:</strong> Retrieve memories from Hindsight</li>
+<li><strong>Reflect:</strong> Reflect on memories and experiences to generate new observations and insights from existing memories.</li>
+</ul>
+<h3>Retain</h3>
+<p>The <code>retain</code> operation is used to push new memories into Hindsight. It tells Hindsight to <em>retain</em> the information you pass in as an input.</p>
+<pre><code class="language-python">from hindsight_client import Hindsight
+
+client = Hindsight(base_url=&quot;http://localhost:8888&quot;)
+
+# Simple
+client.retain(
+    bank_id=&quot;my-bank&quot;,
+    content=&quot;Alice works at Google as a software engineer&quot;
+)
+
+# With context and timestamp
+client.retain(
+    bank_id=&quot;my-bank&quot;,
+    content=&quot;Alice got promoted to senior engineer&quot;,
+    context=&quot;career update&quot;,
+    timestamp=&quot;2025-06-15T10:00:00Z&quot;
+)
+</code></pre>
+<p>Behind the scenes, the retain operation uses an LLM to extract key facts, temporal data, entities, and relationships. It passes these through a normalization process to transform extracted data into canonical entities, time series, and search indexes along with metadata. These representations create the pathways for accurate memory retrieval in the recall and reflect operations. </p>
+<p><img src="hindsight-docs/static/img/retain-operation.webp" alt="Retain Operation"></p>
+<h3>Recall</h3>
+<p>The recall operation is used to retrieve memories. These memories can come from any of the memory types (world, experiences, etc.)</p>
+<pre><code class="language-python">from hindsight_client import Hindsight
+
+client = Hindsight(base_url=&quot;http://localhost:8888&quot;)
+
+# Simple
+client.recall(bank_id=&quot;my-bank&quot;, query=&quot;What does Alice do?&quot;)
+
+# Temporal
+client.recall(bank_id=&quot;my-bank&quot;, query=&quot;What happened in June?&quot;)
+</code></pre>
+<p>Recall performs 4 retrieval strategies in parallel:</p>
+<ul>
+<li>Semantic: Vector similarity</li>
+<li>Keyword: BM25 exact matching</li>
+<li>Graph: Entity/temporal/causal links</li>
+<li>Temporal: Time range filtering</li>
+</ul>
+<p><img src="hindsight-docs/static/img/recall-operation.webp" alt="Retain Operation"></p>
+<p>The individual results from the retrievals are merged, then ordered by relevance using reciprocal rank fusion and a cross-encoder reranking model.</p>
+<p>The final output is trimmed as needed to fit within the token limit.</p>
+<h3>Reflect</h3>
+<p>The reflect operation is used to perform a more thorough analysis of existing memories. This allows the agent to form new connections between memories and build a more thorough understanding of its world.</p>
+<p>For example, the <code>reflect</code> operation can be used to support use cases such as:</p>
+<ul>
+<li>An <strong>AI Project Manager</strong> reflecting on what risks need to be mitigated on a project.</li>
+<li>A <strong>Sales Agent</strong> reflecting on why certain outreach messages have gotten responses while others haven&#39;t.</li>
+<li>A <strong>Support Agent</strong> reflecting on opportunities where customers have questions not answered by current product documentation.</li>
+</ul>
+<p>The <code>reflect</code> operation can also be used to handle on-demand question answering or analysis which require more deep thinking.</p>
+<pre><code class="language-python">from hindsight_client import Hindsight
+
+client = Hindsight(base_url=&quot;http://localhost:8888&quot;)
+
+client.reflect(bank_id=&quot;my-bank&quot;, query=&quot;What should I know about Alice?&quot;)
+</code></pre>
+<p><img src="hindsight-docs/static/img/reflect-operation.webp" alt="Retain Operation"></p>
+<hr>
+<h2>Resources</h2>
+<p><strong>Documentation:</strong> </p>
+<ul>
+<li><a href="https://hindsight.vectorize.io">https://hindsight.vectorize.io</a></li>
+</ul>
+<p><strong>Clients:</strong></p>
+<ul>
+<li><a href="http://hindsight.vectorize.io/sdks/python">Python</a></li>
+<li><a href="http://hindsight.vectorize.io/sdks/nodejs">Node.js</a></li>
+<li><a href="https://hindsight.vectorize.io/api-reference">REST API</a></li>
+<li><a href="https://hindsight.vectorize.io/sdks/cli">CLI</a></li>
+</ul>
+<p><strong>Community:</strong></p>
+<ul>
+<li><a href="https://join.slack.com/t/hindsight-space/shared_invite/zt-3nhbm4w29-LeSJ5Ixi6j8PdiYOCPlOgg">Slack</a></li>
+<li><a href="https://github.com/vectorize-io/hindsight/issues">GitHub Issues</a></li>
+</ul>
+<hr>
+<h2>Star History</h2>
+<h2><a href="https://www.star-history.com/#vectorize-io/hindsight&type=date&legend=top-left"><img src="https://api.star-history.com/svg?repos=vectorize-io/hindsight&type=date&legend=top-left" alt="Star History Chart"></a></h2>
+<h2>Contributing</h2>
+<p>See <a href="./CONTRIBUTING.md">CONTRIBUTING.md</a>.</p>
+<h2>License</h2>
+<p>MIT — see <a href="./LICENSE">LICENSE</a></p>
+<hr>
+<p>Built by <a href="https://vectorize.io">Vectorize.io</a></p>
+<img src="https://umami-pixel.chris-latimer.workers.dev/?id=a8b043e6-6964-454d-80df-69b69d3f0d50&host=github.com&url=/vectorize-io/hindsight" width="1" height="1" alt="" />
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Memory &amp; Context</h2>
+    <div class="related-grid">
+      <a href="/projects/greyhaven-ai/autocontext" class="related-chip">autocontext <span class="related-stars">711</span></a>
+          <a href="/projects/elkimek/honcho-self-hosted" class="related-chip">honcho-self-hosted <span class="related-stars">126</span></a>
+          <a href="/projects/yoloshii/ClawMem" class="related-chip">ClawMem <span class="related-stars">86</span></a>
+          <a href="/projects/plur-ai/plur" class="related-chip">plur <span class="related-stars">31</span></a>
+          <a href="/projects/amanning3390/flowstate-qmd" class="related-chip">flowstate-qmd <span class="related-stars">5</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/best-memory-providers">See all Memory &amp; Context projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

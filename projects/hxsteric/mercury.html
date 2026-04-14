@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mercury — Hermes Agent Domain Applications | Hermes Atlas</title>
+<meta name="description" content="Mercury — Blockchain Cash Flow Analyzer | Hermes Agent Skill for multi-chain analysis, fraud detection, trading strategy &amp; interactive WebGL dashboard">
+<link rel="canonical" href="https://hermesatlas.com/projects/hxsteric/mercury">
+<meta property="og:title" content="mercury — Hermes Atlas">
+<meta property="og:description" content="Mercury — Blockchain Cash Flow Analyzer | Hermes Agent Skill for multi-chain analysis, fraud detection, trading strategy &amp; interactive WebGL dashboard">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/hxsteric/mercury">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mercury — Hermes Atlas">
+<meta name="twitter:description" content="Mercury — Blockchain Cash Flow Analyzer | Hermes Agent Skill for multi-chain analysis, fraud detection, trading strategy &amp; interactive WebGL dashboard">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Domain Applications</a>
+  </div>
+
+  <h1>mercury</h1>
+  <p class="project-desc">Mercury — Blockchain Cash Flow Analyzer | Hermes Agent Skill for multi-chain analysis, fraud detection, trading strategy &amp; interactive WebGL dashboard</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 6</span>
+    <span class="badge badge-lang">Python</span>
+    
+    
+    <span>Updated 3/15/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/hxsteric/mercury" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <h1>Mercury — Blockchain Cash Flow Analyzer</h1>
+<blockquote>
+<p>A Hermes Agent skill for multi-chain blockchain cash flow analysis, fraud detection, trading strategy generation, and real-time interactive dashboards.</p>
+</blockquote>
+<p><img src="https://img.shields.io/badge/Hermes-Skill-blue?style=for-the-badge" alt="Mercury Dashboard">
+<img src="https://img.shields.io/badge/Chains-Ethereum%20%7C%20Base%20%7C%20Solana-green?style=for-the-badge" alt="Chains">
+<img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" alt="License"></p>
+<h2>Features</h2>
+<ul>
+<li><strong>Multi-Chain Support</strong> — Ethereum, Base, and Solana transaction fetching</li>
+<li><strong>Cash Flow Analysis</strong> — Period-by-period inflow/outflow breakdown, token distribution, top counterparties</li>
+<li><strong>Fraud Detection</strong> — 6 pattern detectors (dust attacks, rapid transfers, mixer interaction, address poisoning, dormant activation, high fan-out)</li>
+<li><strong>Trading Strategy</strong> — AI-generated trading insights based on wallet behavior patterns</li>
+<li><strong>Interactive Dashboard</strong> — Three-layer WebGL + Canvas + HTML dashboard with:<ul>
+<li>SpectraNoise-inspired neural network noise background</li>
+<li>Live network particle animation with mouse interaction</li>
+<li>v0-style stat cards, gauges, charts, and risk grid</li>
+</ul>
+</li>
+<li><strong>Hermes Subagents</strong> — Parallel execution with <code>delegate_task</code> for maximum speed</li>
+</ul>
+<h2>Installation</h2>
+<h3>Quick Install (for Hermes Agent users)</h3>
+<pre><code class="language-bash"># Clone into your Hermes skills directory
+git clone https://github.com/YOUR_USERNAME/mercury.git ~/.hermes/skills/data-science/blockchain-cashflow
+</code></pre>
+<h3>API Keys</h3>
+<p>Add your API keys to <code>~/.hermes/.env</code>:</p>
+<pre><code class="language-env">ETHERSCAN_API_KEY=your_etherscan_key    # Free at https://etherscan.io/apis
+BASESCAN_API_KEY=your_basescan_key      # Free at https://basescan.org/apis
+HELIUS_API_KEY=your_helius_key          # Free at https://helius.dev
+</code></pre>
+<p>The scripts auto-load keys from <code>~/.hermes/.env</code> — no manual export needed.</p>
+<h2>Usage</h2>
+<h3>With Hermes Agent (Recommended)</h3>
+<p>Just tell your Hermes agent:</p>
+<pre><code>Analyze wallet 0x8a4ff766a5dfb16d9dbd6a31f950c48a0caf0f54
+</code></pre>
+<p>The agent will automatically:</p>
+<ol>
+<li>Detect the chain (Ethereum/Base/Solana)</li>
+<li>Fetch all transactions using parallel subagents</li>
+<li>Run cash flow analysis + fraud detection simultaneously</li>
+<li>Generate a trading strategy</li>
+<li>Launch the interactive dashboard</li>
+</ol>
+<h3>Standalone Scripts</h3>
+<pre><code class="language-bash"># 1. Fetch transactions
+python3 scripts/fetch_transactions.py \
+  --address 0x8a4ff766a5dfb16d9dbd6a31f950c48a0caf0f54 \
+  --chain ethereum \
+  --include-tokens \
+  --output /tmp/bc_txns.json
+
+# 2. Analyze cash flow
+python3 scripts/cashflow_analyzer.py \
+  --input /tmp/bc_txns.json \
+  --address 0x8a4ff766a5dfb16d9dbd6a31f950c48a0caf0f54 \
+  --output /tmp/bc_cashflow.json
+
+# 3. Detect fraud patterns
+python3 scripts/fraud_detector.py \
+  --input /tmp/bc_txns.json \
+  --address 0x8a4ff766a5dfb16d9dbd6a31f950c48a0caf0f54 \
+  --output /tmp/bc_fraud.json
+
+# 4. Generate trading strategy
+python3 scripts/trading_strategy.py \
+  --cashflow /tmp/bc_cashflow.json \
+  --fraud /tmp/bc_fraud.json \
+  --output /tmp/bc_strategy.json
+
+# 5. Launch dashboard
+python3 scripts/dashboard_server.py \
+  --cashflow /tmp/bc_cashflow.json \
+  --fraud /tmp/bc_fraud.json
+</code></pre>
+<h2>Architecture</h2>
+<pre><code>Mercury Skill
+├── SKILL.md                    # Hermes skill definition (YAML frontmatter + instructions)
+├── scripts/
+│   ├── fetch_transactions.py   # Multi-chain transaction fetcher (Etherscan V2 / Helius)
+│   ├── cashflow_analyzer.py    # Period-by-period cash flow analysis
+│   ├── fraud_detector.py       # 6-pattern fraud detection engine
+│   ├── trading_strategy.py     # Trading strategy generator
+│   ├── visualizer.py           # Terminal-based ASCII visualization
+│   ├── dashboard_server.py     # Python HTTP server for the dashboard
+│   └── dashboard.html          # Three-layer interactive dashboard
+└── README.md
+</code></pre>
+<h2>Dashboard Preview</h2>
+<p>The dashboard features three animation layers:</p>
+<ul>
+<li><strong>Layer 0</strong>: WebGL fragment shader with fbm noise, domain warping, scanlines, and film grain</li>
+<li><strong>Layer 1</strong>: Canvas 2D network particles with proximity connections and mouse attraction</li>
+<li><strong>Layer 2</strong>: Dashboard UI with stat cards, flow network map, circular gauges, charts, and risk grid</li>
+</ul>
+<h2>Fraud Detection Patterns</h2>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Severity</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Dust Attacks</td>
+<td>Medium</td>
+<td>Tiny unsolicited token transfers</td>
+</tr>
+<tr>
+<td>Rapid Transfers</td>
+<td>Medium</td>
+<td>Burst activity suggesting bots or wash trading</td>
+</tr>
+<tr>
+<td>Mixer Interaction</td>
+<td>Critical</td>
+<td>Transfers to/from known mixing services</td>
+</tr>
+<tr>
+<td>Address Poisoning</td>
+<td>High</td>
+<td>Dust from addresses mimicking legitimate ones</td>
+</tr>
+<tr>
+<td>Dormant Activation</td>
+<td>Medium</td>
+<td>Long-inactive wallet suddenly active</td>
+</tr>
+<tr>
+<td>High Fan-Out</td>
+<td>High</td>
+<td>Single-block mass distribution</td>
+</tr>
+</tbody></table>
+<h2>Requirements</h2>
+<ul>
+<li>Python 3.8+</li>
+<li>No external dependencies (stdlib only!)</li>
+<li>Hermes Agent (for subagent orchestration)</li>
+</ul>
+<h2>License</h2>
+<p>MIT</p>
+<h2>Credits</h2>
+<p>Built for the <a href="https://nousresearch.com">Nous Research Hermes Agent Hackathon</a> — March 2026</p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Domain Applications</h2>
+    <div class="related-grid">
+      <a href="/projects/ucsandman/DashClaw" class="related-chip">DashClaw <span class="related-stars">204</span></a>
+          <a href="/projects/Lethe044/hermes-incident-commander" class="related-chip">hermes-incident-commander <span class="related-stars">11</span></a>
+          <a href="/projects/Christabel337/job-scout-agent" class="related-chip">job-scout-agent <span class="related-stars">11</span></a>
+          <a href="/projects/rodmarkun/anihermes" class="related-chip">anihermes <span class="related-stars">9</span></a>
+          <a href="/projects/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit" class="related-chip">infra-monitoring-toolkit <span class="related-stars">9</span></a>
+          <a href="/projects/bigph00t/hermescraft" class="related-chip">hermescraft <span class="related-stars">8</span></a>
+          <a href="/projects/bryercowan/hermes-embodied" class="related-chip">hermes-embodied <span class="related-stars">2</span></a>
+    </div>
+    
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

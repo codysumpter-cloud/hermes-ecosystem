@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hermes-blockchain-oracle — Hermes Agent Integrations &amp; Bridges | Hermes Atlas</title>
+<meta name="description" content="🔮 Hermes Blockchain Oracle - A Solana blockchain intelligence MCP server for Hermes Agent. Query wallets, track whales, analyze tokens, explore NFTs, and monit">
+<link rel="canonical" href="https://hermesatlas.com/projects/gizdusum/hermes-blockchain-oracle">
+<meta property="og:title" content="hermes-blockchain-oracle — Hermes Atlas">
+<meta property="og:description" content="🔮 Hermes Blockchain Oracle - A Solana blockchain intelligence MCP server for Hermes Agent. Query wallets, track whales, analyze tokens, explore NFTs, and monit">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/gizdusum/hermes-blockchain-oracle">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hermes-blockchain-oracle — Hermes Atlas">
+<meta name="twitter:description" content="🔮 Hermes Blockchain Oracle - A Solana blockchain intelligence MCP server for Hermes Agent. Query wallets, track whales, analyze tokens, explore NFTs, and monit">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Integrations &amp; Bridges</a>
+  </div>
+
+  <h1>hermes-blockchain-oracle</h1>
+  <p class="project-desc">🔮 Hermes Blockchain Oracle - A Solana blockchain intelligence MCP server for Hermes Agent. Query wallets, track whales, analyze tokens, explore NFTs, and monitor network health through natural language.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 3</span>
+    <span class="badge badge-lang">Python</span>
+    <span class="badge badge-lang">MIT</span>
+    
+    <span>Updated 2/27/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/gizdusum/hermes-blockchain-oracle" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    <a href="https://nousresearch.com" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
+  </div>
+
+  <section class="readme">
+    <pre><code>    ╦ ╦╔═╗╦═╗╔╦╗╔═╗╔═╗
+    ╠═╣║╣ ╠╦╝║║║║╣ ╚═╗
+    ╩ ╩╚═╝╩╚═╩ ╩╚═╝╚═╝
+    ╔╗ ╦  ╔═╗╔═╗╦╔═╔═╗╦ ╦╔═╗╦╔╗╔
+    ╠╩╗║  ║ ║║  ╠╩╗║  ╠═╣╠═╣║║║║
+    ╚═╝╩═╝╚═╝╚═╝╩ ╩╚═╝╩ ╩╩ ╩╩╝╚╝
+    ╔═╗╦═╗╔═╗╔═╗╦  ╔═╗
+    ║ ║╠╦╝╠═╣║  ║  ║╣
+    ╚═╝╩╚═╩ ╩╚═╝╩═╝╚═╝
+</code></pre>
+<div align="center">
+
+<h1>🔮 Hermes Blockchain Oracle</h1>
+<h3><em>Giving Hermes Agent superpowers on the Solana blockchain</em></h3>
+<p><a href="https://github.com/NousResearch"><img src="https://img.shields.io/badge/MCP-Compatible-blueviolet?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIDJMMiA3bDEwIDUgMTAtNS0xMC01ek0yIDE3bDEwIDUgMTAtNS0xMC01LTEwIDV6TTIgMTJsMTAgNSAxMC01LTEwLTUtMTAgNXoiIGZpbGw9IndoaXRlIi8+PC9zdmc+" alt="MCP Compatible"></a>
+<a href="https://solana.com"><img src="https://img.shields.io/badge/Solana-Mainnet-00FFA3?style=for-the-badge&logo=solana" alt="Solana"></a>
+<a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" alt="License: MIT"></a>
+<a href="https://nousresearch.com"><img src="https://img.shields.io/badge/Nous-Research-ff6b35?style=for-the-badge" alt="Nous Research"></a></p>
+<hr>
+<p><em>A Model Context Protocol (MCP) server that connects <a href="https://github.com/NousResearch">Hermes Agent</a> to the Solana blockchain — enabling natural language queries for wallets, tokens, NFTs, transactions, whale movements, and network health.</em></p>
+</div>
+
+<hr>
+<h2>🌟 What Is This?</h2>
+<p><strong>Hermes Blockchain Oracle</strong> is an MCP server plugin for <strong>Hermes Agent</strong> by <a href="https://nousresearch.com">Nous Research</a>. It acts as a bridge between conversational AI and the Solana blockchain, letting you ask questions in plain English and get rich, real-time on-chain data back.</p>
+<p>No more copy-pasting wallet addresses into block explorers. No more decoding raw transaction logs. Just <em>ask Hermes</em>.</p>
+<blockquote>
+<p><strong>&quot;What&#39;s the SOL balance of <code>7xKXtg...</code>?&quot;</strong> → Hermes knows.</p>
+<p><strong>&quot;Are there any whale movements right now?&quot;</strong> → Hermes is watching.</p>
+<p><strong>&quot;Show me the NFTs in this wallet.&quot;</strong> → Hermes delivers.</p>
+</blockquote>
+<hr>
+<h2>⚡ Features</h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>🏦 <strong><code>solana_wallet_info</code></strong></td>
+<td>Query any wallet&#39;s SOL balance, token holdings, and portfolio value</td>
+</tr>
+<tr>
+<td>🔍 <strong><code>solana_transaction</code></strong></td>
+<td>Look up full transaction details by signature — instructions, fees, status</td>
+</tr>
+<tr>
+<td>🪙 <strong><code>solana_token_info</code></strong></td>
+<td>Get token metadata, total/circulating supply, decimals, and holder count</td>
+</tr>
+<tr>
+<td>📜 <strong><code>solana_recent_activity</code></strong></td>
+<td>Fetch recent transactions for any wallet with human-readable summaries</td>
+</tr>
+<tr>
+<td>🎨 <strong><code>solana_nft_portfolio</code></strong></td>
+<td>List all NFTs in a wallet — collections, floor prices, and metadata</td>
+</tr>
+<tr>
+<td>🐋 <strong><code>whale_detector</code></strong></td>
+<td>Detect large transfers on Solana in real-time — configurable thresholds</td>
+</tr>
+<tr>
+<td>📊 <strong><code>solana_network_stats</code></strong></td>
+<td>Get current Solana network health, TPS, slot height, and epoch info</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>🚀 Quick Start</h2>
+<h3>1. Install</h3>
+<pre><code class="language-bash">pip install hermes-blockchain-oracle
+</code></pre>
+<p>Or install from source:</p>
+<pre><code class="language-bash">git clone https://github.com/NousResearch/hermes-blockchain-oracle.git
+cd hermes-blockchain-oracle
+pip install -e .
+</code></pre>
+<h3>2. Configure (Optional)</h3>
+<p>Set your preferred Solana RPC endpoint for best performance:</p>
+<pre><code class="language-bash">export SOLANA_RPC_URL=&quot;https://api.mainnet-beta.solana.com&quot;
+</code></pre>
+<blockquote>
+<p>💡 <strong>Tip:</strong> For production use, consider a dedicated RPC provider like <a href="https://helius.dev">Helius</a>, <a href="https://quicknode.com">QuickNode</a>, or <a href="https://triton.one">Triton</a> for higher rate limits and reliability.</p>
+</blockquote>
+<h3>3. Launch with Hermes Agent</h3>
+<pre><code class="language-bash">hermes-agent --mcp blockchain=hermes-blockchain-oracle
+</code></pre>
+<p>That&#39;s it. Hermes Agent now has full Solana blockchain awareness. 🧠⛓️</p>
+<hr>
+<h2>💬 Usage Examples</h2>
+<p>Once the oracle is connected, just talk to Hermes naturally:</p>
+<h3>🏦 Wallet Lookup</h3>
+<pre><code>You: &quot;Check the SOL balance of GsBd49...2kMp&quot;
+Hermes: That wallet holds 1,247.83 SOL (~$285,000 USD) along with 
+        12 token holdings including 50,000 BONK and 2.4 JTO...
+</code></pre>
+<h3>🔍 Transaction Investigation</h3>
+<pre><code>You: &quot;What happened in transaction 4sGjMW...x9Qv?&quot;
+Hermes: This transaction was a token swap on Jupiter Aggregator.
+        2.5 SOL was swapped for 125,000 BONK. Fee: 0.000005 SOL.
+        Status: Confirmed (finalized). Block: 248,391,042.
+</code></pre>
+<h3>🐋 Whale Detection</h3>
+<pre><code>You: &quot;Are there any whale movements happening right now?&quot;
+Hermes: 🐋 Alert! Detected 3 large transfers in the last 10 minutes:
+        • 50,000 SOL moved from Binance hot wallet → unknown wallet
+        • 2.1M USDC transferred between two whale wallets
+        • 180,000 JTO unstaked and moved to a fresh address
+</code></pre>
+<h3>🎨 NFT Portfolio</h3>
+<pre><code>You: &quot;Show me what NFTs are in wallet Fxn7...kL9m&quot;
+Hermes: That wallet contains 23 NFTs across 5 collections:
+        • Mad Lads (3) — Floor: 85 SOL
+        • Tensorians (7) — Floor: 12 SOL
+        • Claynosaurz (2) — Floor: 28 SOL
+        ...
+</code></pre>
+<h3>📊 Network Health</h3>
+<pre><code>You: &quot;How&#39;s the Solana network doing right now?&quot;
+Hermes: Solana is operating normally.
+        • TPS: 3,847 (avg last 5 min)
+        • Current Slot: 248,392,105
+        • Epoch: 578 (63% complete)
+        • Active Validators: 1,847
+        • Network Version: 1.17.28
+</code></pre>
+<h3>🪙 Token Research</h3>
+<pre><code>You: &quot;Tell me about the JTO token&quot;
+Hermes: Jito (JTO)
+        • Mint: jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL
+        • Supply: 1,000,000,000 (11.6% circulating)
+        • Holders: 148,293
+        • Decimals: 9
+        • Description: Governance token for the Jito Network...
+</code></pre>
+<hr>
+<h2>🏗️ Architecture</h2>
+<pre><code>┌─────────────────────────────────────────────────────────┐
+│                      USER                               │
+│              &quot;Check this wallet...&quot;                     │
+└──────────────────────┬──────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────┐
+│                  HERMES AGENT                           │
+│           (Nous Research LLM Runtime)                   │
+│                                                         │
+│   ┌─────────────────────────────────────────────────┐   │
+│   │         Model Context Protocol (MCP)            │   │
+│   │     Tool Discovery · Schema Negotiation         │   │
+│   │      Request Routing · Response Formatting      │   │
+│   └──────────────────────┬──────────────────────────┘   │
+└──────────────────────────┼──────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────┐
+│            HERMES BLOCKCHAIN ORACLE                     │
+│              (This MCP Server)                          │
+│                                                         │
+│   ┌───────────┐ ┌───────────┐ ┌───────────────────┐    │
+│   │  Wallet   │ │   Token   │ │   Transaction     │    │
+│   │  Tools    │ │   Tools   │ │   Tools           │    │
+│   └─────┬─────┘ └─────┬─────┘ └────────┬──────────┘    │
+│   ┌─────┴─────┐ ┌─────┴─────┐ ┌────────┴──────────┐    │
+│   │   NFT     │ │   Whale   │ │   Network         │    │
+│   │   Tools   │ │  Detector │ │   Stats           │    │
+│   └─────┬─────┘ └─────┬─────┘ └────────┬──────────┘    │
+│         └──────────────┼────────────────┘               │
+└────────────────────────┼────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────┐
+│               SOLANA BLOCKCHAIN                         │
+│     RPC Nodes · Mainnet-Beta · On-Chain Programs        │
+└─────────────────────────────────────────────────────────┘
+</code></pre>
+<h3>How MCP Integration Works</h3>
+<p>The <strong>Model Context Protocol (MCP)</strong> is a standardized interface that allows LLM agents to discover and invoke external tools. Here&#39;s the flow:</p>
+<ol>
+<li><p><strong>Registration</strong> — When Hermes Agent starts with <code>--mcp blockchain=hermes-blockchain-oracle</code>, the oracle registers its 7 tools with the agent, including full JSON schemas describing each tool&#39;s parameters and return types.</p>
+</li>
+<li><p><strong>Discovery</strong> — Hermes Agent understands what tools are available and what they can do. When a user asks a blockchain-related question, the LLM autonomously decides which tool(s) to call.</p>
+</li>
+<li><p><strong>Invocation</strong> — The agent constructs a structured tool call (e.g., <code>solana_wallet_info(address=&quot;GsBd49...&quot;)</code>) and sends it to the oracle server via the MCP transport layer.</p>
+</li>
+<li><p><strong>Execution</strong> — The oracle queries the Solana RPC, processes the raw data, and returns a structured response.</p>
+</li>
+<li><p><strong>Synthesis</strong> — Hermes Agent incorporates the on-chain data into a natural language response for the user.</p>
+</li>
+</ol>
+<p>This architecture means the oracle is <strong>stateless</strong>, <strong>composable</strong>, and <strong>independently deployable</strong> — upgrade the oracle without touching the agent, or swap in a different blockchain oracle entirely.</p>
+<hr>
+<h2>🔧 Configuration</h2>
+<table>
+<thead>
+<tr>
+<th>Environment Variable</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SOLANA_RPC_URL</code></td>
+<td><code>https://api.mainnet-beta.solana.com</code></td>
+<td>Solana RPC endpoint</td>
+</tr>
+<tr>
+<td><code>ORACLE_PORT</code></td>
+<td><code>8420</code></td>
+<td>Port for the MCP server</td>
+</tr>
+<tr>
+<td><code>WHALE_THRESHOLD_SOL</code></td>
+<td><code>1000</code></td>
+<td>Minimum SOL transfer to trigger whale alerts</td>
+</tr>
+<tr>
+<td><code>WHALE_THRESHOLD_USD</code></td>
+<td><code>100000</code></td>
+<td>Minimum USD value to trigger whale alerts</td>
+</tr>
+<tr>
+<td><code>CACHE_TTL_SECONDS</code></td>
+<td><code>30</code></td>
+<td>Cache duration for repeated queries</td>
+</tr>
+<tr>
+<td><code>LOG_LEVEL</code></td>
+<td><code>INFO</code></td>
+<td>Logging verbosity (<code>DEBUG</code>, <code>INFO</code>, <code>WARN</code>, <code>ERROR</code>)</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>🧪 Development</h2>
+<pre><code class="language-bash"># Clone the repo
+git clone https://github.com/NousResearch/hermes-blockchain-oracle.git
+cd hermes-blockchain-oracle
+
+# Create a virtual environment
+python -m venv venv
+source venv/bin/activate
+
+# Install dev dependencies
+pip install -e &quot;.[dev]&quot;
+
+# Run tests
+pytest tests/ -v
+
+# Run the server standalone (for debugging)
+python -m hermes_blockchain_oracle --debug
+
+# Lint &amp; format
+ruff check .
+ruff format .
+</code></pre>
+<hr>
+<h2>🤝 Contributing</h2>
+<p>We welcome contributions from the community! Here&#39;s how to get involved:</p>
+<ol>
+<li><strong>Fork</strong> the repository</li>
+<li><strong>Create</strong> a feature branch (<code>git checkout -b feat/amazing-new-tool</code>)</li>
+<li><strong>Write</strong> tests for your changes</li>
+<li><strong>Ensure</strong> all tests pass (<code>pytest tests/ -v</code>)</li>
+<li><strong>Lint</strong> your code (<code>ruff check . &amp;&amp; ruff format .</code>)</li>
+<li><strong>Commit</strong> with clear messages (<code>git commit -m &quot;feat: add defi protocol analytics tool&quot;</code>)</li>
+<li><strong>Push</strong> your branch and open a <strong>Pull Request</strong></li>
+</ol>
+<h3>Ideas for Contributions</h3>
+<ul>
+<li>🆕 New tools (DeFi protocol stats, staking info, program analytics)</li>
+<li>🌐 Support for additional Solana programs (Marinade, Raydium, Orca, etc.)</li>
+<li>⚡ Performance optimizations and caching improvements</li>
+<li>📖 Documentation and usage examples</li>
+<li>🧪 Test coverage expansion</li>
+<li>🐛 Bug fixes and error handling improvements</li>
+</ul>
+<p>Please read our <a href="CODE_OF_CONDUCT.md">Code of Conduct</a> before contributing.</p>
+<hr>
+<h2>📄 License</h2>
+<p>This project is licensed under the <strong>MIT License</strong> — see the <a href="LICENSE">LICENSE</a> file for details.</p>
+<pre><code>MIT License
+
+Copyright (c) 2025 Nous Research
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+</code></pre>
+<hr>
+<div align="center">
+
+<h3>Built with 🧠 by <a href="https://nousresearch.com">Nous Research</a></h3>
+<p><em>Hermes sees all. On-chain and off.</em></p>
+<p>⭐ <strong>Star this repo</strong> if you find it useful — it helps us know what the community wants!</p>
+<p><a href="https://github.com/NousResearch/hermes-blockchain-oracle/issues">Report Bug</a> · <a href="https://github.com/NousResearch/hermes-blockchain-oracle/issues">Request Feature</a> · <a href="https://discord.gg/nousresearch">Join Discord</a></p>
+</div>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Integrations &amp; Bridges</h2>
+    <div class="related-grid">
+      <a href="/projects/raulvidis/hermes-android" class="related-chip">hermes-android <span class="related-stars">38</span></a>
+          <a href="/projects/teknium1/hermes-miniverse" class="related-chip">hermes-miniverse <span class="related-stars">8</span></a>
+          <a href="/projects/Ridwannurudeen/hermes-council" class="related-chip">hermes-council <span class="related-stars">6</span></a>
+          <a href="/projects/marlandoj/zouroboros-swarm-executors" class="related-chip">zouroboros-swarm-executors <span class="related-stars">4</span></a>
+    </div>
+    
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

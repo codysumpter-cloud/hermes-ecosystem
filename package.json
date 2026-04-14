@@ -5,6 +5,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "marked": "^15.0.12",
     "openai": "^4.73.0",
     "redis": "^4.7.0"
   }

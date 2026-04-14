@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>honcho-self-hosted — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
+<meta name="description" content="Self-host Honcho memory layer for Hermes Agent — OpenRouter + Venice, no code changes">
+<link rel="canonical" href="https://hermesatlas.com/projects/elkimek/honcho-self-hosted">
+<meta property="og:title" content="honcho-self-hosted — Hermes Atlas">
+<meta property="og:description" content="Self-host Honcho memory layer for Hermes Agent — OpenRouter + Venice, no code changes">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/elkimek/honcho-self-hosted">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="honcho-self-hosted — Hermes Atlas">
+<meta name="twitter:description" content="Self-host Honcho memory layer for Hermes Agent — OpenRouter + Venice, no code changes">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Memory &amp; Context</a>
+  </div>
+
+  <h1>honcho-self-hosted</h1>
+  <p class="project-desc">Self-host Honcho memory layer for Hermes Agent — OpenRouter + Venice, no code changes</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 147</span>
+    <span class="badge badge-lang">Shell</span>
+    <span class="badge badge-lang">GPL-3.0</span>
+    
+    <span>Updated 4/9/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/elkimek/honcho-self-hosted" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <h1>Self-Hosted Honcho for Hermes Agent</h1>
+<p>Self-host <a href="https://github.com/plastic-labs/honcho">Honcho</a> (Plastic Labs&#39; memory layer) on your own server instead of using their cloud. Works with <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> out of the box.</p>
+<p><strong>No fork required</strong> — just 3 config files on top of upstream Honcho.</p>
+<h2>Background: Hermes L4 Memory</h2>
+<p>Hermes Agent has a 4-layer memory system. The cross-session memory layer is powered by <a href="https://github.com/plastic-labs/honcho">Honcho</a>, which builds a deepening model of the user across conversations — extracting observations, recalling context, and consolidating memories over time.</p>
+<p>By default, Hermes uses Plastic Labs&#39; managed cloud (<a href="https://honcho.dev">honcho.dev</a>) + their <a href="https://plasticlabs.ai/neuromancer">Neuromancer</a> models. This works out of the box but means your conversation data and user profile live on their servers.</p>
+<h3>What are Neuromancer models?</h3>
+<p><a href="https://blog.plasticlabs.ai/research/Introducing-Neuromancer-XR">Neuromancer XR</a> is a specialized 8B model fine-tuned from Qwen3-8B specifically for extracting logical conclusions from conversations. Unlike general-purpose LLMs which are optimized for plausible text generation, Neuromancer is trained on ~10,000 curated social reasoning traces to follow formal logic — extracting both explicit facts (&quot;user said they like Python&quot;) and deductive conclusions (&quot;user is likely a developer&quot;).</p>
+<p>It scores 86.9% on the LoCoMo memory benchmark vs. 69.6% for base Qwen3-8B and 80.0% for Claude 4 Sonnet.</p>
+<p><strong>Tradeoff of not using it:</strong> General-purpose models work well for observation extraction and memory recall — Honcho&#39;s prompts and tool-calling pipeline compensate for much of the gap. You may get slightly less precise deductive reasoning, but capable models (GLM-5, Grok 4.1) with strong function calling largely close the difference. The main advantage of self-hosting is data sovereignty, not matching Neuromancer&#39;s exact reasoning quality.</p>
+<h2>Deployment Options</h2>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Privacy</th>
+<th>Data location</th>
+<th>LLM for memory</th>
+<th>Setup</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Managed cloud</strong> (default)</td>
+<td>Low — data + inference on 3rd party</td>
+<td>Plastic Labs servers</td>
+<td>Neuromancer (Plastic Labs)</td>
+<td>None — built into Hermes</td>
+<td>Free tier / paid</td>
+</tr>
+<tr>
+<td><strong>Self-hosted + API</strong> (this repo)</td>
+<td>Medium — data on your machine, inference via API</td>
+<td>Your machine</td>
+<td>Any OpenAI-compatible API</td>
+<td>~3 minutes</td>
+<td>API usage only</td>
+</tr>
+<tr>
+<td><strong>Self-hosted + local model</strong></td>
+<td>High — nothing leaves your network</td>
+<td>Your machine</td>
+<td>Local LLM (Ollama, vLLM)</td>
+<td>More setup</td>
+<td>Hardware only</td>
+</tr>
+</tbody></table>
+<p><strong>Managed cloud</strong> — Zero setup. Best for getting started. Your data is on Plastic Labs&#39; infrastructure.</p>
+<p><strong>Self-hosted + API</strong> — This repo. Your data stays on your machine. LLM calls go to a cloud API for inference only — the provider sees request content but doesn&#39;t store your memory data. Best balance of privacy and capability.</p>
+<p><strong>Self-hosted + local model</strong> — Maximum privacy. No data leaves your network. Requires a GPU or capable CPU on your LAN running an inference server (Ollama, vLLM, llama.cpp). Set <code>LLM_VLLM_BASE_URL</code> to your local server. Trade-off: smaller models may produce lower quality observations and reasoning than cloud APIs.</p>
+<h2>What this does</h2>
+<ul>
+<li>Runs Honcho&#39;s full memory stack (API, Deriver, PostgreSQL, Redis) on your machine</li>
+<li>Routes LLM calls through any OpenAI-compatible provider (primary + backup)</li>
+<li>All your data stays on your machine — no third-party cloud storage</li>
+<li>Works with OpenRouter, Venice, Routstr, Together, Ollama, or any other provider</li>
+</ul>
+<h2>Architecture</h2>
+<pre><code>Hermes Agent ──► localhost:8000 (self-hosted Honcho API)
+                      │
+                      ├── PostgreSQL + pgvector (your machine)
+                      ├── Redis cache (your machine)
+                      │
+                      └── Deriver/Dialectic/Dream workers
+                              │
+                              ├── Primary LLM provider (any OpenAI-compatible API)
+                              └── Backup LLM provider (optional)
+</code></pre>
+<h2>Prerequisites</h2>
+<ul>
+<li>Ubuntu 22.04+ (VM, VPS, bare metal, or any Linux server — tested on 22.04, 6GB RAM, 80GB disk)</li>
+<li>Docker Engine + Compose plugin</li>
+<li>API key from any OpenAI-compatible provider (<a href="https://openrouter.ai">openrouter.ai</a>, <a href="https://venice.ai">venice.ai</a>, <a href="https://together.ai">together.ai</a>, etc.)</li>
+<li>Second API key for backup (optional)</li>
+</ul>
+<h2>Quick Start</h2>
+<pre><code class="language-bash">curl -sL https://raw.githubusercontent.com/elkimek/honcho-self-hosted/main/setup.sh -o /tmp/setup.sh
+bash /tmp/setup.sh
+</code></pre>
+<p>This installs Docker (if needed), clones Honcho, copies configs, prompts for API keys, starts everything, configures Hermes, and optionally sets up the MCP server. ~3 minutes.</p>
+<h2>Manual Setup</h2>
+<h3>1. Install Docker</h3>
+<pre><code class="language-bash">sudo apt-get update &amp;&amp; sudo apt-get install -y ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+echo &quot;deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] \
+  https://download.docker.com/linux/ubuntu $(. /etc/os-release &amp;&amp; echo $VERSION_CODENAME) stable&quot; \
+  | sudo tee /etc/apt/sources.list.d/docker.list
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo usermod -aG docker $USER
+</code></pre>
+<p>Log out and back in for the group change to take effect.</p>
+<h3>2. Clone repos + copy configs</h3>
+<pre><code class="language-bash"># Clone this config repo
+git clone https://github.com/elkimek/honcho-self-hosted.git ~/honcho-self-hosted
+
+# Clone upstream Honcho
+git clone --depth 1 https://github.com/plastic-labs/honcho.git ~/honcho
+
+# Copy config files into the Honcho clone
+cp ~/honcho-self-hosted/docker-compose.yml ~/honcho/
+cp ~/honcho-self-hosted/config.toml ~/honcho/
+cp ~/honcho-self-hosted/env.example ~/honcho/.env
+</code></pre>
+<h3>3. Set your API keys</h3>
+<p>Edit <code>~/honcho/.env</code>:</p>
+<pre><code class="language-bash">nano ~/honcho/.env
+</code></pre>
+<p>Replace the placeholder values with your actual API keys:</p>
+<ul>
+<li><code>LLM_VLLM_API_KEY</code> — primary LLM provider</li>
+<li><code>LLM_VLLM_BASE_URL</code> — primary provider&#39;s API URL</li>
+<li><code>LLM_EMBEDDING_API_KEY</code> — embedding provider (can be same as primary)</li>
+<li><code>LLM_EMBEDDING_BASE_URL</code> — embedding provider&#39;s API URL</li>
+<li><code>LLM_EMBEDDING_MODEL</code> — embedding model name (default: <code>openai/text-embedding-3-small</code>)</li>
+<li><code>LLM_OPENAI_COMPATIBLE_API_KEY</code> — backup LLM provider (optional)</li>
+<li><code>LLM_OPENAI_API_KEY</code> — same as your primary key (needed for client init)</li>
+</ul>
+<p>Any OpenAI-compatible provider works (OpenRouter, Venice, Routstr, Together, etc.) — just set the key and URL. See <a href="#using-different-providers">Using different providers</a> for details.</p>
+<p><strong>Embedding fallback:</strong> if <code>LLM_EMBEDDING_API_KEY</code> or <code>LLM_EMBEDDING_BASE_URL</code> is left empty, Honcho falls back to the backup provider credentials (<code>LLM_OPENAI_COMPATIBLE_*</code>). This is useful if your backup provider (e.g. Venice) supports embeddings at negligible cost.</p>
+<p><strong>If you don&#39;t want a backup provider:</strong> remove all <code>BACKUP_PROVIDER</code> and <code>BACKUP_MODEL</code> lines from <code>config.toml</code>, and set <code>LLM_OPENAI_COMPATIBLE_API_KEY</code> + <code>OPENAI_COMPATIBLE_BASE_URL</code> to the same values as your primary. The setup script handles this automatically.</p>
+<h3>4. Start Honcho</h3>
+<pre><code class="language-bash">cd ~/honcho
+docker compose up -d
+</code></pre>
+<p>First run builds images and runs DB migrations (~2 minutes). Check status:</p>
+<pre><code class="language-bash">docker compose ps
+docker compose logs -f api deriver
+</code></pre>
+<p>Wait ~10 seconds for the API to start, then verify:</p>
+<pre><code class="language-bash">curl -s http://localhost:8000/openapi.json | head -1
+</code></pre>
+<h3>5. Configure Hermes</h3>
+<pre><code class="language-bash">mkdir -p ~/.honcho
+cp ~/honcho-self-hosted/honcho-config.json ~/.honcho/config.json
+hermes gateway restart
+</code></pre>
+<p>Hermes will now use your local Honcho instead of <code>api.honcho.dev</code>.</p>
+<h2>Model Configuration</h2>
+<p>Honcho has 4 background components that use LLM calls:</p>
+<ul>
+<li><strong>Deriver</strong> — Reads every message and extracts observations about the user (&quot;prefers Python&quot;, &quot;privacy-focused&quot;). Memory formation.</li>
+<li><strong>Dialectic</strong> — Answers questions about the user on demand, with 5 reasoning levels (minimal → max). Memory recall.</li>
+<li><strong>Summary</strong> — Compresses long sessions into short/long summaries to keep context manageable.</li>
+<li><strong>Dream</strong> — Runs every ~8 hours. Merges redundant observations, deletes outdated ones, infers higher-level patterns. Memory consolidation.</li>
+</ul>
+<p>LLM calls are tiered by task complexity. Defaults are chosen for <strong>function-calling reliability</strong> (the primary requirement for Honcho&#39;s tool-using agents):</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Default model</th>
+<th>Tier</th>
+<th>When it runs</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Deriver</strong></td>
+<td><code>z-ai/glm-4.7-flash</code></td>
+<td>Light — fast, cheap, 79.5% tau-bench</td>
+<td>Every message</td>
+</tr>
+<tr>
+<td><strong>Summary</strong></td>
+<td><code>z-ai/glm-4.7-flash</code></td>
+<td>Light</td>
+<td>Every 20/60 messages</td>
+</tr>
+<tr>
+<td><strong>Dialectic</strong> (low)</td>
+<td><code>z-ai/glm-4.7-flash</code></td>
+<td>Light</td>
+<td>Per Hermes turn</td>
+</tr>
+<tr>
+<td><strong>Dialectic</strong> (med/high)</td>
+<td><code>x-ai/grok-4.1-fast</code></td>
+<td>Medium — built for tool use, 2M context</td>
+<td>Complex queries</td>
+</tr>
+<tr>
+<td><strong>Dialectic</strong> (max)</td>
+<td><code>z-ai/glm-5</code></td>
+<td>Heavy — 89.7% tau2-bench</td>
+<td>Hardest queries</td>
+</tr>
+<tr>
+<td><strong>Dream</strong></td>
+<td><code>z-ai/glm-5</code></td>
+<td>Heavy</td>
+<td>Every ~8 hours</td>
+</tr>
+</tbody></table>
+<p>These are <a href="https://openrouter.ai">OpenRouter</a> model IDs. Any model your provider supports will work — just change the name in <code>config.toml</code>. Each component also has a backup provider that fires automatically if the primary fails on the last retry.</p>
+<p>To change models, edit <code>~/honcho/config.toml</code> and rebuild:</p>
+<pre><code class="language-bash">cd ~/honcho
+docker compose up -d --build
+</code></pre>
+<h2>Using different providers</h2>
+<p>Honcho supports these provider slots natively:</p>
+<table>
+<thead>
+<tr>
+<th>Slot</th>
+<th>Config key</th>
+<th>How to use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>custom</code></td>
+<td><code>OPENAI_COMPATIBLE_BASE_URL</code> + <code>OPENAI_COMPATIBLE_API_KEY</code></td>
+<td>Any OpenAI-compatible API</td>
+</tr>
+<tr>
+<td><code>vllm</code></td>
+<td><code>VLLM_BASE_URL</code> + <code>VLLM_API_KEY</code></td>
+<td>Any OpenAI-compatible API</td>
+</tr>
+<tr>
+<td><code>openai</code></td>
+<td><code>OPENAI_API_KEY</code></td>
+<td>OpenAI direct</td>
+</tr>
+<tr>
+<td><code>anthropic</code></td>
+<td><code>ANTHROPIC_API_KEY</code></td>
+<td>Anthropic direct</td>
+</tr>
+<tr>
+<td><code>google</code></td>
+<td><code>GEMINI_API_KEY</code></td>
+<td>Google Gemini</td>
+</tr>
+<tr>
+<td><code>groq</code></td>
+<td><code>GROQ_API_KEY</code></td>
+<td>Groq</td>
+</tr>
+</tbody></table>
+<p>You can mix providers per component in <code>config.toml</code>:</p>
+<pre><code class="language-toml">[deriver]
+PROVIDER = &quot;groq&quot;          # fast for frequent tasks
+MODEL = &quot;llama-3.3-70b&quot;
+
+[dream]
+PROVIDER = &quot;anthropic&quot;     # best reasoning for rare tasks
+MODEL = &quot;claude-sonnet-4-6&quot;
+</code></pre>
+<h2>Local / LAN Inference</h2>
+<p>For maximum privacy, run a local model instead of a cloud API. Any server with an OpenAI-compatible endpoint works.</p>
+<p>Local servers have different model catalogs than cloud APIs, so model names will differ. The setup script asks you for the model name your server provides.</p>
+<p>Recommended local models for reliable function calling:</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Params</th>
+<th>Ollama name</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>GLM-4.7 Flash</strong></td>
+<td>30B MoE</td>
+<td><code>glm-4.7-flash</code></td>
+<td>Same family as cloud default, best tool use in 30B class</td>
+</tr>
+<tr>
+<td><strong>Llama 3.3</strong></td>
+<td>70B</td>
+<td><code>llama3.3:70b</code></td>
+<td>Battle-tested tools, needs ~40GB VRAM</td>
+</tr>
+</tbody></table>
+<h3>Ollama (easiest)</h3>
+<pre><code class="language-bash"># Install Ollama on this machine or another on your LAN
+curl -fsSL https://ollama.com/install.sh | sh
+
+# Pull a model with strong function calling
+ollama pull glm-4.7-flash
+</code></pre>
+<p>Then run the setup script and choose option 2 (Local / LAN):</p>
+<pre><code>Server URL: http://localhost:11434/v1
+Model name for light tasks: glm-4.7-flash
+Model name for heavy tasks: glm-4.7-flash
+</code></pre>
+<p>For a separate LAN machine, use its IP: <code>http://192.168.x.x:11434/v1</code></p>
+<h3>vLLM</h3>
+<pre><code class="language-bash"># Serve a model with tool calling support
+vllm serve THUDM/GLM-4.7-Flash --port 8001 --enable-auto-tool-choice
+</code></pre>
+<p>Setup: <code>http://localhost:8001/v1</code> with model name <code>THUDM/GLM-4.7-Flash</code></p>
+<h3>Considerations</h3>
+<ul>
+<li><strong>Model size matters</strong> — Honcho&#39;s agents need reliable function calling and structured JSON. Models under 14B may miss tool calls or malform output. 32B+ recommended.</li>
+<li><strong>Embeddings need a cloud API</strong> — local servers typically can&#39;t serve embedding models. The setup script asks for a separate cloud API key, URL, and model name for embeddings (e.g. OpenRouter with <code>openai/text-embedding-3-small</code>, or Venice with <code>text-embedding-bge-m3</code>), or lets you disable embeddings entirely (Honcho works but without vector search).</li>
+<li><strong>Same model for all tiers</strong> — locally you&#39;ll typically run one model. The script sets it for all components. You can differentiate later in <code>config.toml</code> if you serve multiple models.</li>
+<li><strong>No backup provider</strong> — local mode uses a single server. If it goes down, Honcho&#39;s deriver queues work until it&#39;s back.</li>
+</ul>
+<h2>MCP Server (optional)</h2>
+<p>Honcho includes an MCP server that exposes memory tools (search, chat, observations, peer cards) to any MCP-compatible client like Claude Code or Claude Desktop.</p>
+<p>The hosted version at <code>mcp.honcho.dev</code> points at Plastic Labs&#39; cloud. For self-hosted, run the MCP server locally and point it at your Honcho instance.</p>
+<p>The setup script offers to configure MCP automatically. To set it up manually:</p>
+<h3>Setup</h3>
+<p>Requires Node.js 22+ and Bun on the server:</p>
+<pre><code class="language-bash">cd ~/honcho/mcp
+
+# Patch to use local Honcho instead of honcho.dev
+sed -i &#39;s|https://api.honcho.dev|http://localhost:8000|&#39; src/config.ts
+
+bun install
+</code></pre>
+<h3>Run as a service</h3>
+<p>Create <code>/etc/systemd/system/honcho-mcp.service</code>:</p>
+<pre><code class="language-ini">[Unit]
+Description=Honcho MCP Server
+After=network.target docker.service
+
+[Service]
+Type=simple
+User=your-username
+WorkingDirectory=/home/your-username/honcho/mcp
+ExecStart=/usr/bin/npx wrangler dev --port 8787 --ip 0.0.0.0
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<p>Then:</p>
+<pre><code class="language-bash">sudo systemctl daemon-reload
+sudo systemctl enable --now honcho-mcp
+</code></pre>
+<h3>Connect Claude Code</h3>
+<p>If the MCP server is on a remote machine, tunnel the port over SSH:</p>
+<pre><code class="language-bash">ssh -f -N -L 8787:localhost:8787 user@your-server
+</code></pre>
+<p>Then add to Claude Code:</p>
+<pre><code class="language-bash">claude mcp add --transport http honcho http://localhost:8787 \
+  --header &quot;Authorization: Bearer local&quot; \
+  --header &quot;X-Honcho-User-Name: your-name&quot; \
+  --header &quot;X-Honcho-Workspace-ID: hermes&quot;
+</code></pre>
+<h3>Connect Claude Desktop</h3>
+<p>Add to your Claude Desktop config (<code>claude_desktop_config.json</code>):</p>
+<pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;honcho&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [
+        &quot;mcp-remote&quot;,
+        &quot;http://localhost:8787&quot;,
+        &quot;--header&quot;, &quot;Authorization:${AUTH_HEADER}&quot;,
+        &quot;--header&quot;, &quot;X-Honcho-User-Name:${USER_NAME}&quot;
+      ],
+      &quot;env&quot;: {
+        &quot;AUTH_HEADER&quot;: &quot;Bearer local&quot;,
+        &quot;USER_NAME&quot;: &quot;your-name&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<h2>Maintenance</h2>
+<p><strong>Update Honcho:</strong></p>
+<pre><code class="language-bash">cd ~/honcho
+docker compose down
+git checkout mcp/src/config.ts  # restore upstream MCP file if patched
+git pull
+docker compose up -d --build
+</code></pre>
+<p>If you use the MCP server, re-apply the patch after pulling:</p>
+<pre><code class="language-bash">sed -i &#39;s|https://api.honcho.dev|http://localhost:8000|&#39; mcp/src/config.ts
+sudo systemctl restart honcho-mcp
+</code></pre>
+<p><strong>View logs:</strong></p>
+<pre><code class="language-bash">docker compose logs -f api deriver
+</code></pre>
+<p><strong>Check queue status:</strong></p>
+<pre><code class="language-bash">curl -s http://localhost:8000/v3/workspaces/hermes/queue/status | python3 -m json.tool
+</code></pre>
+<p><strong>Backup data:</strong></p>
+<pre><code class="language-bash">docker compose exec database pg_dump -U honcho honcho &gt; backup.sql
+</code></pre>
+<h2>Known Limitations</h2>
+<ul>
+<li><strong>Embedding fallback shares backup config</strong> — if <code>LLM_EMBEDDING_API_KEY</code> / <code>LLM_EMBEDDING_BASE_URL</code> are empty, Honcho falls back to <code>LLM_OPENAI_COMPATIBLE_*</code> (backup provider). This is intentional and works well when your backup supports embeddings (e.g. Venice with <code>text-embedding-bge-m3</code>). Set the embedding env vars explicitly if you want embeddings routed separately.</li>
+<li><strong>One backup per component</strong> — Honcho supports primary + one backup provider, not a full failover chain. Using a multi-provider router (e.g. OpenRouter) as primary mitigates this.</li>
+<li><strong>No E2EE</strong> — Honcho&#39;s agents use function calling, which isn&#39;t compatible with end-to-end encryption. LLM request content is visible to the provider, but your stored data (sessions, observations, embeddings) stays on your machine.</li>
+</ul>
+<h2>Files</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>docker-compose.yml</code></td>
+<td>Docker deployment — API, Deriver, PostgreSQL, Redis</td>
+</tr>
+<tr>
+<td><code>config.toml</code></td>
+<td>Honcho config — providers, models, feature flags</td>
+</tr>
+<tr>
+<td><code>env.example</code></td>
+<td>API keys template — copy to <code>~/honcho/.env</code> and fill in</td>
+</tr>
+<tr>
+<td><code>honcho-config.json</code></td>
+<td>Hermes-side config — tells Hermes to use localhost:8000</td>
+</tr>
+<tr>
+<td><code>setup.sh</code></td>
+<td>One-command installer — handles everything</td>
+</tr>
+</tbody></table>
+<h2>License</h2>
+<p>GPL-3.0</p>
+<h2>Credits</h2>
+<ul>
+<li><a href="https://github.com/plastic-labs/honcho">Honcho</a> by Plastic Labs</li>
+<li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</li>
+</ul>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Memory &amp; Context</h2>
+    <div class="related-grid">
+      <a href="/projects/vectorize-io/hindsight" class="related-chip">hindsight <span class="related-stars">8.4K</span></a>
+          <a href="/projects/greyhaven-ai/autocontext" class="related-chip">autocontext <span class="related-stars">711</span></a>
+          <a href="/projects/yoloshii/ClawMem" class="related-chip">ClawMem <span class="related-stars">86</span></a>
+          <a href="/projects/plur-ai/plur" class="related-chip">plur <span class="related-stars">31</span></a>
+          <a href="/projects/amanning3390/flowstate-qmd" class="related-chip">flowstate-qmd <span class="related-stars">5</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/best-memory-providers">See all Memory &amp; Context projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

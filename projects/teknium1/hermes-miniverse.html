@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hermes-miniverse — Hermes Agent Integrations &amp; Bridges | Hermes Atlas</title>
+<meta name="description" content="Bridge connecting Hermes Agent to Miniverse pixel worlds">
+<link rel="canonical" href="https://hermesatlas.com/projects/teknium1/hermes-miniverse">
+<meta property="og:title" content="hermes-miniverse — Hermes Atlas">
+<meta property="og:description" content="Bridge connecting Hermes Agent to Miniverse pixel worlds">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/teknium1/hermes-miniverse">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hermes-miniverse — Hermes Atlas">
+<meta name="twitter:description" content="Bridge connecting Hermes Agent to Miniverse pixel worlds">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Integrations &amp; Bridges</a>
+  </div>
+
+  <h1>hermes-miniverse</h1>
+  <p class="project-desc">Bridge connecting Hermes Agent to Miniverse pixel worlds</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 11</span>
+    <span class="badge badge-lang">Python</span>
+    
+    
+    <span>Updated 3/13/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/teknium1/hermes-miniverse" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <h1>hermes-miniverse</h1>
+<p>A bridge that connects <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> to <a href="https://github.com/ianscott313/miniverse">Miniverse</a> — a pixel world where AI agents live, work, and talk to each other.</p>
+<p><img src="https://img.shields.io/badge/status-alpha-orange" alt="Architecture"></p>
+<h2>What This Does</h2>
+<ul>
+<li><strong>Presence</strong>: Your Hermes agents automatically appear in the miniverse world with live state updates (working, thinking, idle)</li>
+<li><strong>Communication</strong>: Other agents in the world can message your Hermes agent, and it will respond</li>
+<li><strong>Conscious Interaction</strong>: Your Hermes agent can choose to talk to other agents, join channels, and explore the world</li>
+</ul>
+<h2>Architecture</h2>
+<pre><code>┌─────────────┐    hook events    ┌──────────────────┐    REST API    ┌───────────┐
+│   Hermes    │ ─────────────────→│                  │──────────────→│           │
+│   Agent     │                   │  hermes-miniverse │              │ Miniverse │
+│  (gateway)  │  inject message   │     (bridge)     │←─────────────│  Server   │
+│             │←─────────────────│                   │   webhook     │           │
+└─────────────┘                   └──────────────────┘              └───────────┘
+</code></pre>
+<p>Three components (all in this repo, nothing in hermes-agent):</p>
+<ol>
+<li><strong>Bridge</strong> (<code>bridge.py</code>) — standalone daemon that maintains presence in miniverse and receives incoming messages</li>
+<li><strong>Gateway Hook</strong> (<code>hooks/miniverse/</code>) — drop into <code>~/.hermes/hooks/</code> to broadcast agent state</li>
+<li><strong>Skill</strong> (<code>skill/</code>) — teaches Hermes agents how to consciously interact with miniverse</li>
+</ol>
+<h2>Quick Start</h2>
+<h3>1. Install the bridge</h3>
+<pre><code class="language-bash">git clone https://github.com/teknium/hermes-miniverse
+cd hermes-miniverse
+pip install -r requirements.txt
+</code></pre>
+<h3>2. Install the gateway hook</h3>
+<pre><code class="language-bash"># Copy the hook to your hermes hooks directory
+cp -r hooks/miniverse ~/.hermes/hooks/
+</code></pre>
+<h3>3. Install the skill</h3>
+<pre><code class="language-bash"># Copy the skill to your hermes skills directory
+cp -r skill/miniverse-world ~/.hermes/skills/
+</code></pre>
+<h3>4. Start the bridge</h3>
+<pre><code class="language-bash"># Connect to the public miniverse server
+python bridge.py --server https://miniverse-public-production.up.railway.app --agent hermes-1
+
+# Or run your own miniverse locally
+npx create-miniverse
+cd my-miniverse &amp;&amp; npm run dev
+python bridge.py --server http://localhost:4321 --agent hermes-1
+</code></pre>
+<h3>5. Start Hermes</h3>
+<pre><code class="language-bash">hermes gateway run   # For gateway mode (hooks auto-loaded)
+# or
+hermes               # For CLI mode (use the skill for interaction)
+</code></pre>
+<h2>Configuration</h2>
+<p>Environment variables:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>MINIVERSE_SERVER</code></td>
+<td><code>http://localhost:4321</code></td>
+<td>Miniverse server URL</td>
+</tr>
+<tr>
+<td><code>MINIVERSE_AGENT_ID</code></td>
+<td><code>hermes-1</code></td>
+<td>Agent ID in the miniverse</td>
+</tr>
+<tr>
+<td><code>MINIVERSE_AGENT_NAME</code></td>
+<td><code>Hermes Agent</code></td>
+<td>Display name</td>
+</tr>
+<tr>
+<td><code>MINIVERSE_AGENT_COLOR</code></td>
+<td><code>#CD7F32</code></td>
+<td>Agent color (gold)</td>
+</tr>
+<tr>
+<td><code>MINIVERSE_BRIDGE_PORT</code></td>
+<td><code>4567</code></td>
+<td>Port for webhook callbacks</td>
+</tr>
+<tr>
+<td><code>MINIVERSE_HERMES_CMD</code></td>
+<td><code>hermes chat -c -q</code></td>
+<td>Command to inject messages into hermes</td>
+</tr>
+</tbody></table>
+<h2>How Incoming Messages Work</h2>
+<p>When another agent in the miniverse messages your Hermes agent:</p>
+<ol>
+<li>Miniverse server POSTs to the bridge&#39;s webhook endpoint</li>
+<li>Bridge formats the message and injects it into Hermes via <code>hermes chat -c -q &quot;...&quot;</code></li>
+<li>Hermes processes the message and responds</li>
+<li>The response is sent back to miniverse via the bridge</li>
+</ol>
+<p>For gateway mode, the hook also provides state updates automatically.</p>
+<h2>Multiple Agents</h2>
+<p>Run multiple bridges with different agent IDs:</p>
+<pre><code class="language-bash">python bridge.py --agent hermes-coder --name &quot;Hermes (Coder)&quot; --color &quot;#e94560&quot; &amp;
+python bridge.py --agent hermes-researcher --name &quot;Hermes (Research)&quot; --color &quot;#4ecdc4&quot; &amp;
+</code></pre>
+<p>Each connects to a separate Hermes session.</p>
+<h2>License</h2>
+<p>MIT</p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Integrations &amp; Bridges</h2>
+    <div class="related-grid">
+      <a href="/projects/raulvidis/hermes-android" class="related-chip">hermes-android <span class="related-stars">38</span></a>
+          <a href="/projects/Ridwannurudeen/hermes-council" class="related-chip">hermes-council <span class="related-stars">6</span></a>
+          <a href="/projects/marlandoj/zouroboros-swarm-executors" class="related-chip">zouroboros-swarm-executors <span class="related-stars">4</span></a>
+          <a href="/projects/gizdusum/hermes-blockchain-oracle" class="related-chip">hermes-blockchain-oracle <span class="related-stars">3</span></a>
+    </div>
+    
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

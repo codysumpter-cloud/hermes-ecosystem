@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>pydantic-ai-skills — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
+<meta name="description" content="This package implements Agent Skills (https://agentskills.io) support with progressive disclosure for Pydantic AI. Supports filesystem and programmatic skills.">
+<link rel="canonical" href="https://hermesatlas.com/projects/DougTrajano/pydantic-ai-skills">
+<meta property="og:title" content="pydantic-ai-skills — Hermes Atlas">
+<meta property="og:description" content="This package implements Agent Skills (https://agentskills.io) support with progressive disclosure for Pydantic AI. Supports filesystem and programmatic skills.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/DougTrajano/pydantic-ai-skills">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="pydantic-ai-skills — Hermes Atlas">
+<meta name="twitter:description" content="This package implements Agent Skills (https://agentskills.io) support with progressive disclosure for Pydantic AI. Supports filesystem and programmatic skills.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Skills &amp; Skill Registries</a>
+  </div>
+
+  <h1>pydantic-ai-skills</h1>
+  <p class="project-desc">This package implements Agent Skills (https://agentskills.io) support with progressive disclosure for Pydantic AI. Supports filesystem and programmatic skills.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 237</span>
+    <span class="badge badge-lang">Python</span>
+    <span class="badge badge-lang">MIT</span>
+    
+    <span>Updated 4/12/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/DougTrajano/pydantic-ai-skills" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    <a href="https://dougtrajano.github.io/pydantic-ai-skills/" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
+  </div>
+
+  <section class="readme">
+    <h1>pydantic-ai-skills</h1>
+<p>A standardized, composable framework for building and managing Agent Skills within the Pydantic AI ecosystem.</p>
+<p><strong>Agent Skills</strong> are modular collections of instructions, scripts, tools, and resources that enable AI agents to progressively discover, load, and execute specialized capabilities for domain-specific tasks.</p>
+<p>This package implements the <a href="https://agentskills.io/home">Agent Skills specification</a> for Pydantic AI using a tool-calling approach, maintaining full compatibility with the specification while adapting the loading mechanism for Pydantic AI&#39;s architecture. Agent Skills is an open format maintained by Anthropic and open to contributions from the community.</p>
+<p><a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.10+-blue.svg" alt="Python 3.10+"></a>
+<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+<a href="https://sonarcloud.io/summary/new_code?id=DougTrajano_pydantic-ai-skills"><img src="https://sonarcloud.io/api/project_badges/measure?project=DougTrajano_pydantic-ai-skills&metric=alert_status" alt="Quality Gate Status"></a></p>
+<h2>Features</h2>
+<ul>
+<li><strong>Progressive Disclosure</strong> - Load skill information only when needed, reducing token usage</li>
+<li><strong>Agent Skills Spec</strong> - Fully compatible with the <a href="https://agentskills.io/home">Agent Skills</a> open format</li>
+<li><strong>Filesystem Skills</strong> - Define skills as filesystem directories with Markdown files and scripts</li>
+<li><strong>Programmatic Skills</strong> - Create skills dynamically in Python code using decorators or dataclasses</li>
+<li><strong>Type-Safe</strong> - Built with Python dataclasses and type hints</li>
+<li><strong>Validation</strong> - Automatic validation of skill metadata and structure</li>
+<li><strong>Multiple Directories</strong> - Load skills from multiple sources</li>
+<li><strong>Security</strong> - Path traversal prevention and safe script execution</li>
+</ul>
+<p>Full documentation available at: <a href="https://dougtrajano.github.io/pydantic-ai-skills">https://dougtrajano.github.io/pydantic-ai-skills</a></p>
+<h2>Installation</h2>
+<pre><code class="language-bash">pip install pydantic-ai-skills
+</code></pre>
+<p>For development:</p>
+<pre><code class="language-bash">pip install pydantic-ai-skills[test]  # Includes pytest and coverage tools
+</code></pre>
+<h2>Video Tutorials</h2>
+<p>Learn how to use pydantic-ai-skills through these video tutorials:</p>
+<h3>Basic Usage</h3>
+<p>Get started with your first skill and agent:</p>
+<video controls style="max-width:100%; border-radius:8px">
+  <source src="docs/assets/basic_usage.mp4" type="video/mp4">
+</video>
+
+<h3>Advanced Usage</h3>
+<p>Master advanced integration patterns:</p>
+<video controls style="max-width:100%; border-radius:8px">
+  <source src="docs/assets/advanced_usage.mp4" type="video/mp4">
+</video>
+
+<h3>Programmatic Skills</h3>
+<p>Create dynamic skills with Python:</p>
+<video controls style="max-width:100%; border-radius:8px">
+  <source src="docs/assets/programmatic_skills.mp4" type="video/mp4">
+</video>
+
+<h2>Quick Start</h2>
+<p>If you are using <code>pydantic-ai&gt;=1.71</code>, we recommend using <code>SkillsCapability</code>, which is based on the Pydantic AI <a href="https://ai.pydantic.dev/capabilities/">Capabilities API</a>. It bundles the skills tools and instructions into a single object that can be added to agents. This provides a more streamlined and integrated way to use agent skills.</p>
+<pre><code class="language-python">from pydantic_ai import Agent
+from pydantic_ai_skills import SkillsCapability
+
+agent = Agent(
+  model=&#39;gateway/openai:gpt-5.2&#39;,
+  instructions=&#39;You are a helpful research assistant.&#39;,
+  capabilities=[SkillsCapability(directories=[&#39;./skills&#39;])],
+)
+</code></pre>
+<p>For earlier versions of Pydantic AI, you can use the <code>SkillsToolset</code>.</p>
+<pre><code class="language-python">from pydantic_ai import Agent, RunContext
+from pydantic_ai_skills import SkillsToolset
+
+# Initialize Skills Toolset with one or more skill directories
+skills_toolset = SkillsToolset(directories=[&quot;./skills&quot;])
+
+# Create agent with skills as a toolset
+agent = Agent(
+    model=&#39;gateway/openai:gpt-5.2&#39;,
+    instructions=&#39;You are a helpful research assistant.&#39;,
+    toolsets=[skills_toolset]
+)
+
+# For pydantic-ai&lt;1.74, you must add an instructions hook to inject the skills instructions into the agent&#39;s context
+# On pydantic-ai &gt;= 1.74, this is automatic and you can omit the following instructions hook
+# @agent.instructions
+# async def add_skills(ctx: RunContext) -&gt; str | None:
+#     &quot;&quot;&quot;Add skills instructions to the agent&#39;s context.&quot;&quot;&quot;
+#     return await skills_toolset.get_instructions(ctx)
+
+# Use agent - skills tools are available for the agent to call
+user_prompt = &quot;What are the last 3 papers on arXiv about machine learning?&quot;
+
+nodes = []
+async with agent.iter(user_prompt) as agent_run:
+    async for node in agent_run:
+        nodes.append(node)
+        print(node)
+</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code class="language-python">UserPromptNode(user_prompt=&#39;What are the last 3 papers on arXiv about machine learning?&#39;, instructions_functions=[], system_prompts=(&#39;You are a helpful research assistant.&#39;,), system_prompt_functions=[SystemPromptRunner(function=&lt;function add_skills_to_system_prompt at 0x110e951c0&gt;, dynamic=False, _takes_ctx=False, _is_async=False)], system_prompt_dynamic_functions={})
+ModelRequestNode(request=ModelRequest(parts=[SystemPromptPart(content=&#39;You are a helpful research assistant.&#39;, timestamp=datetime.datetime(2025, 12, 18, 23, 27, 16, 616893, tzinfo=datetime.timezone.utc)), SystemPromptPart(content=&quot;# Skills\n\nYou have access to skills that extend your capabilities. Skills are modular packages\ncontaining instructions, resources, and scripts for specialized tasks.\n\n## Available Skills\n\nThe following skills are available to you. Use them when relevant to the task:\n\n- **arxiv-search**: Search arXiv preprint repository for papers in physics, mathematics, computer science, quantitative biology, and related fields.\n- **pydanticai-docs**: Use this skill for requests related to Pydantic AI framework - building agents, tools, dependencies, structured outputs, and model integrations.\n- **web-research**: Use this skill for requests related to web research; it provides a structured approach to conducting comprehensive web research.\n## How to Use Skills\n\n**Progressive disclosure**: Load skill information only when needed.\n\n1. **When a skill is relevant to the current task**: Use `load_skill(skill_name)` to read the full instructions.\n2. **For additional documentation**: Use `read_skill_resource(skill_name, resource_name)` to read FORMS.md, REFERENCE.md, or other resources.\n3. **To execute skill scripts**: Use `run_skill_script(skill_name, script_name, args)` with appropriate command-line arguments.\n\n**Best practices**:\n- Select skills based on task relevance and descriptions listed above\n- Use progressive disclosure: load only what you need, when you need it, starting with load_skill\n- Follow the skill&#39;s documented usage patterns and examples\n&quot;, timestamp=datetime.datetime(2025, 12, 18, 23, 27, 16, 617375, tzinfo=datetime.timezone.utc)), UserPromptPart(content=&#39;What are the last 3 papers on arXiv about machine learning?&#39;, timestamp=datetime.datetime(2025, 12, 18, 23, 27, 16, 617384, tzinfo=datetime.timezone.utc))]))
+CallToolsNode(model_response=ModelResponse(parts=[ToolCallPart(tool_name=&#39;load_skill&#39;, args=&#39;{&quot;skill_name&quot;:&quot;arxiv-search&quot;}&#39;, tool_call_id=&#39;call_WGBvmGWJQvOliYoG5AeP6BMh&#39;)], usage=RequestUsage(input_tokens=717, output_tokens=17, details={&#39;accepted_prediction_tokens&#39;: 0, &#39;audio_tokens&#39;: 0, &#39;reasoning_tokens&#39;: 0, &#39;rejected_prediction_tokens&#39;: 0}), model_name=&#39;gpt-4o-2024-08-06&#39;, timestamp=datetime.datetime(2025, 12, 18, 23, 27, 16, tzinfo=TzInfo(0)), provider_name=&#39;openai&#39;, provider_details={&#39;finish_reason&#39;: &#39;tool_calls&#39;}, provider_response_id=&#39;chatcmpl-CoHgqj5YugHHE2ZJvnQtXx3U74Uib&#39;, finish_reason=&#39;tool_call&#39;))
+ModelRequestNode(request=ModelRequest(parts=[ToolReturnPart(tool_name=&#39;load_skill&#39;, content=&#39;# Skill: arxiv-search\n**Description:** Search arXiv preprint repository for papers in physics, mathematics, computer science, quantitative biology, and related fields.\n**Path:** /Users/dougtrajano/Library/CloudStorage/OneDrive-Personal/dev/vscode/macbook/GitHub/pydantic-ai-skills/examples/skills/arxiv-search\n\n**Available Scripts:**\n- scripts/arxiv_search.py\n\n---\n\n# arXiv Search Skill\n\nThis skill provides access to arXiv, a free distribution service and open-access archive for scholarly articles in physics, mathematics, computer science, quantitative biology, quantitative finance, statistics, electrical engineering, systems science, and economics.\n\n## When to Use This Skill\n\nUse this skill when you need to:\n\n- Find preprints and recent research papers before journal publication\n- Search for papers in computational biology, bioinformatics, or systems biology\n- Access mathematical or statistical methods papers relevant to biology\n- Find machine learning papers applied to biological problems\n- Get the latest research that may not yet be in PubMed\n\n## Skill Scripts\n\n### scripts/arxiv_search.py\n\nThe `scripts/arxiv_search.py` script accepts the following arguments:\n\n- `--query` (required): Search query string (e.g., &quot;neural networks protein structure&quot;, &quot;single cell RNA-seq&quot;)\n- `--max-papers` (optional): Maximum number of papers to retrieve (default: 10)\n\n### Usage Pattern\n\nUse the `run_skill_script` tool to execute the `scripts/arxiv_search.py` script. For example:\n\n```python\nrun_skill_script(\n    skill_name=&quot;arxiv-search&quot;,\n    script_name=&quot;scripts/arxiv_search.py&quot;,\n    args={&quot;query&quot;: &quot;your search query&quot;, &quot;max-papers&quot;: 5}\n)\n```\n\nSearch for computational biology papers (default 10 results):\n\n```python\nrun_skill_script(\n    skill_name=&quot;arxiv-search&quot;,\n    script_name=&quot;scripts/arxiv_search.py&quot;,\n    args={&quot;query&quot;: &quot;protein folding prediction&quot;}\n)\n```\n\n## Output Format\n\nThe script returns formatted results with:\n\n- **Title**: Paper title\n- **Summary**: Abstract/summary text\n- **URL**: Direct link to the paper on arXiv\n\nEach paper is separated by blank lines for readability.\n\n## Features\n\n- **Relevance sorting**: Results ordered by relevance to query\n- **Fast retrieval**: Direct API access with no authentication required\n- **Simple interface**: Clean, easy-to-parse output\n- **No API key required**: Free access to arXiv database\n\n## Dependencies\n\nThis skill requires the `arxiv` Python package. If not installed, you\&#39;ll see an error message.\n\nTo install the package:\n\n```bash\npip install arxiv\n```\n\nThe package is not included by default since it\&#39;s skill-specific. Install it when you first use this skill.\n\n## Notes\n\n- arXiv is particularly strong for:\n  - Computer science (cs.LG, cs.AI, cs.CV)\n  - Quantitative biology (q-bio)\n  - Statistics (stat.ML)\n  - Physics and mathematics\n- Papers are preprints and may not be peer-reviewed\n- Results include both recent uploads and older papers\n- Best for computational/theoretical work in biology&#39;, tool_call_id=&#39;call_WGBvmGWJQvOliYoG5AeP6BMh&#39;, timestamp=datetime.datetime(2025, 12, 18, 23, 27, 17, 430875, tzinfo=datetime.timezone.utc))]))
+CallToolsNode(model_response=ModelResponse(parts=[ToolCallPart(tool_name=&#39;run_skill_script&#39;, args=&#39;{&quot;skill_name&quot;:&quot;arxiv-search&quot;,&quot;script_name&quot;:&quot;scripts/arxiv_search.py&quot;,&quot;args&quot;:{&quot;query&quot;:&quot;machine learning&quot;,&quot;max-papers&quot;:3}}&#39;, tool_call_id=&#39;call_oDXHSlx4bpoV3Frm8fvWU8j4&#39;)], usage=RequestUsage(input_tokens=1395, output_tokens=38, details={&#39;accepted_prediction_tokens&#39;: 0, &#39;audio_tokens&#39;: 0, &#39;reasoning_tokens&#39;: 0, &#39;rejected_prediction_tokens&#39;: 0}), model_name=&#39;gpt-4o-2024-08-06&#39;, timestamp=datetime.datetime(2025, 12, 18, 23, 27, 17, tzinfo=TzInfo(0)), provider_name=&#39;openai&#39;, provider_details={&#39;finish_reason&#39;: &#39;tool_calls&#39;}, provider_response_id=&#39;chatcmpl-CoHgraqy3S9OKCsFIP0Y3c1Sg6tqC&#39;, finish_reason=&#39;tool_call&#39;))
+ModelRequestNode(request=ModelRequest(parts=[ToolReturnPart(tool_name=&#39;run_skill_script&#39;, content=&#39;Title: Changing Data Sources in the Age of Machine Learning for Official Statistics\nSummary: Data science has become increasingly essential for the production of official statistics, as it enables the automated collection, processing, and analysis of large amounts of data. With such data science practices in place, it enables more timely, more insightful and more flexible reporting. However, the quality and integrity of data-science-driven statistics rely on the accuracy and reliability of the data sources and the machine learning techniques that support them. In particular, changes in data sources are inevitable to occur and pose significant risks that are crucial to address in the context of machine learning for official statistics.\n  This paper gives an overview of the main risks, liabilities, and uncertainties associated with changing data sources in the context of machine learning for official statistics. We provide a checklist of the most prevalent origins and causes of changing data sources; not only on a technical level but also regarding ownership, ethics, regulation, and public perception. Next, we highlight the repercussions of changing data sources on statistical reporting. These include technical effects such as concept drift, bias, availability, validity, accuracy and completeness, but also the neutrality and potential discontinuation of the statistical offering. We offer a few important precautionary measures, such as enhancing robustness in both data sourcing and statistical techniques, and thorough monitoring. In doing so, machine learning-based official statistics can maintain integrity, reliability, consistency, and relevance in policy-making, decision-making, and public discourse.\nURL: http://arxiv.org/abs/2306.04338v1\n\nTitle: DOME: Recommendations for supervised machine learning validation in biology\nSummary: Modern biology frequently relies on machine learning to provide predictions and improve decision processes. There have been recent calls for more scrutiny on machine learning performance and possible limitations. Here we present a set of community-wide recommendations aiming to help establish standards of supervised machine learning validation in biology. Adopting a structured methods description for machine learning based on data, optimization, model, evaluation (DOME) will aim to help both reviewers and readers to better understand and assess the performance and limitations of a method or outcome. The recommendations are formulated as questions to anyone wishing to pursue implementation of a machine learning algorithm. Answers to these questions can be easily included in the supplementary material of published papers.\nURL: http://arxiv.org/abs/2006.16189v4\n\nTitle: Learning Curves for Decision Making in Supervised Machine Learning: A Survey\nSummary: Learning curves are a concept from social sciences that has been adopted in the context of machine learning to assess the performance of a learning algorithm with respect to a certain resource, e.g., the number of training examples or the number of training iterations. Learning curves have important applications in several machine learning contexts, most notably in data acquisition, early stopping of model training, and model selection. For instance, learning curves can be used to model the performance of the combination of an algorithm and its hyperparameter configuration, providing insights into their potential suitability at an early stage and often expediting the algorithm selection process. Various learning curve models have been proposed to use learning curves for decision making. Some of these models answer the binary decision question of whether a given algorithm at a certain budget will outperform a certain reference performance, whereas more complex models predict the entire learning curve of an algorithm. We contribute a framework that categorises learning curve approaches using three criteria: the decision-making situation they address, the intrinsic learning curve question they answer and the type of resources they use. We survey papers from the literature and classify them into this framework.\nURL: http://arxiv.org/abs/2201.12150v2&#39;, tool_call_id=&#39;call_oDXHSlx4bpoV3Frm8fvWU8j4&#39;, timestamp=datetime.datetime(2025, 12, 18, 23, 27, 18, 930364, tzinfo=datetime.timezone.utc))]))
+CallToolsNode(model_response=ModelResponse(parts=[TextPart(content=&#39;Here are the last three papers from arXiv about machine learning:\n\n1. **Title:** Changing Data Sources in the Age of Machine Learning for Official Statistics\n   - **Summary:** This paper discusses the increasing importance of data science in official statistics production, highlighting risks and uncertainties related to changing data sources in machine learning contexts. It covers issues like concept drift, bias, and data validity, and offers measures to maintain the reliability and integrity of machine learning-based statistics.\n   - **URL:** [Link to Paper](http://arxiv.org/abs/2306.04338v1)\n\n2. **Title:** DOME: Recommendations for supervised machine learning validation in biology\n   - **Summary:** The paper provides a set of community-wide recommendations for machine learning validation in biology, emphasizing the importance of a structured methods description using DOME (data, optimization, model, evaluation). These guidelines aim to improve the scrutiny of machine learning performance and facilitate better understanding and assessment of methods.\n   - **URL:** [Link to Paper](http://arxiv.org/abs/2006.16189v4)\n\n3. **Title:** Learning Curves for Decision Making in Supervised Machine Learning: A Survey\n   - **Summary:** This survey covers the concept of learning curves in machine learning, which assess algorithm performance concerning resources like training examples. The paper categorizes learning curve approaches based on decision-making situations, and it surveys literature to classify various models within this framework.\n   - **URL:** [Link to Paper](http://arxiv.org/abs/2201.12150v2)&#39;)], usage=RequestUsage(input_tokens=2177, cache_read_tokens=1408, output_tokens=322, details={&#39;accepted_prediction_tokens&#39;: 0, &#39;audio_tokens&#39;: 0, &#39;reasoning_tokens&#39;: 0, &#39;rejected_prediction_tokens&#39;: 0}), model_name=&#39;gpt-4o-2024-08-06&#39;, timestamp=datetime.datetime(2025, 12, 18, 23, 27, 19, tzinfo=TzInfo(0)), provider_name=&#39;openai&#39;, provider_details={&#39;finish_reason&#39;: &#39;stop&#39;}, provider_response_id=&#39;chatcmpl-CoHgtHBD9LUsRKbILVar99GtAGKHM&#39;, finish_reason=&#39;stop&#39;))
+End(data=FinalResult(output=&#39;Here are the last three papers from arXiv about machine learning:\n\n1. **Title:** Changing Data Sources in the Age of Machine Learning for Official Statistics\n   - **Summary:** This paper discusses the increasing importance of data science in official statistics production, highlighting risks and uncertainties related to changing data sources in machine learning contexts. It covers issues like concept drift, bias, and data validity, and offers measures to maintain the reliability and integrity of machine learning-based statistics.\n   - **URL:** [Link to Paper](http://arxiv.org/abs/2306.04338v1)\n\n2. **Title:** DOME: Recommendations for supervised machine learning validation in biology\n   - **Summary:** The paper provides a set of community-wide recommendations for machine learning validation in biology, emphasizing the importance of a structured methods description using DOME (data, optimization, model, evaluation). These guidelines aim to improve the scrutiny of machine learning performance and facilitate better understanding and assessment of methods.\n   - **URL:** [Link to Paper](http://arxiv.org/abs/2006.16189v4)\n\n3. **Title:** Learning Curves for Decision Making in Supervised Machine Learning: A Survey\n   - **Summary:** This survey covers the concept of learning curves in machine learning, which assess algorithm performance concerning resources like training examples. The paper categorizes learning curve approaches based on decision-making situations, and it surveys literature to classify various models within this framework.\n   - **URL:** [Link to Paper](http://arxiv.org/abs/2201.12150v2)&#39;))
+</code></pre>
+<h2>Creating Skills</h2>
+<p>Skills are filesystem-based directories with a <code>SKILL.md</code> file containing YAML frontmatter and Markdown instructions.</p>
+<h3>Basic Skill Structure</h3>
+<pre><code class="language-md">my-skill/
+└── SKILL.md # Required: Main instructions and metadata
+</code></pre>
+<h3>Extended Skill Structure</h3>
+<pre><code class="language-md">my-skill/
+├── SKILL.md # Required: Main instructions and metadata
+├── FORMS.md # Optional: Form-filling guides
+├── REFERENCE.md # Optional: Detailed API reference
+├── scripts/ # Optional: executable scripts
+│ ├── script1.py
+│ └── script2.sh
+└── resources/ # Optional: Additional files
+├── templates/
+└── data.json
+</code></pre>
+<blockquote>
+<p>Supported filesystem-based scripts include Python (<code>.py</code>), shell scripts (<code>.sh</code>, <code>.bash</code>, <code>.zsh</code>, <code>.fish</code>), and Windows batch files (<code>.bat</code>, <code>.cmd</code>). Extensionless or custom-extension files are supported when they are executable (and typically include a shebang on Unix-like systems).</p>
+<p>The <code>run_skill_script</code> tool accepts named command-line arguments via a dict-style mapping.</p>
+<p>Interpreter selection order for <code>run_skill_script</code> is:</p>
+<ol>
+<li>Shebang line, when present and resolvable</li>
+<li>Extension-based fallback for compatibility</li>
+<li>Direct executable invocation fallback</li>
+</ol>
+<p>For portability, prefer adding a shebang line (for example <code>#!/usr/bin/env python3</code>) and executable permissions when appropriate.</p>
+</blockquote>
+<h3>Minimal SKILL.md</h3>
+<pre><code class="language-markdown">---
+name: my-skill
+description: Brief description of what this skill does and when to use it
+---
+
+# My Skill
+
+## When to Use This Skill
+
+Use this skill when you need to:
+
+- Do specific task A
+- Handle scenario B
+- Process data type C
+
+## Instructions
+
+1. Step 1
+2. Step 2
+3. Step 3
+</code></pre>
+<h3>Metadata Requirements</h3>
+<p>Following the <a href="https://agentskills.io/specification">Agent Skills specification</a>:</p>
+<p><strong>Required fields:</strong></p>
+<ul>
+<li><code>name</code>: Skill identifier (max 64 chars, lowercase letters/numbers/hyphens only)</li>
+<li><code>description</code>: Brief description (max 1024 chars)</li>
+</ul>
+<p>You can also include optional fields to help you manage and categorize skills (<code>version</code>, <code>author</code>, <code>tags</code>, etc.). These are not used by the agent.</p>
+<p><strong>Validation:</strong></p>
+<ul>
+<li>✅ Names must use lowercase letters, numbers, and hyphens only</li>
+<li>✅ Names cannot contain reserved words: &quot;anthropic&quot;, &quot;claude&quot;</li>
+<li>✅ SKILL.md body should be under 500 lines (warning if exceeded)</li>
+<li>✅ Descriptions must be under 1024 characters</li>
+</ul>
+<h2>How Skills Work</h2>
+<h3>Progressive Disclosure</h3>
+<p>Skills implement <strong>progressive disclosure</strong> - loading information in stages:</p>
+<h4>Level 1: Metadata (Always Loaded)</h4>
+<ul>
+<li>All skill names and descriptions are included in the system prompt</li>
+<li>Enables skill discovery without tool calls</li>
+<li>Minimal token overhead</li>
+</ul>
+<h4>Level 2: Instructions (Loaded When Needed)</h4>
+<ul>
+<li>Agent calls <code>load_skill(name)</code> to read full instructions</li>
+<li>Only loaded when skill is relevant to the task</li>
+</ul>
+<h4>Level 3: Resources (Loaded As Needed)</h4>
+<ul>
+<li>Agent calls <code>read_skill_resource(skill_name, resource_name)</code> for additional docs</li>
+<li>Only loaded when referenced or required</li>
+</ul>
+<h3>Tool-Calling Adaptation</h3>
+<p><strong>Anthropic&#39;s Implementation:</strong></p>
+<ul>
+<li>Claude uses <code>bash</code> commands to read files from filesystem</li>
+<li>Skills exist as directories in a VM environment</li>
+</ul>
+<p><strong>Our Implementation:</strong></p>
+<ul>
+<li>Uses tool-calling instead of bash commands</li>
+<li>Skills are discovered and loaded via Pydantic AI tools</li>
+<li>Maintains the same progressive disclosure pattern</li>
+<li>Skills are structurally compatible with Anthropic&#39;s format</li>
+</ul>
+<h2>Available Tools</h2>
+<p>The <code>SkillsToolset</code> provides four tools to agents:</p>
+<h3>1. <code>list_skills()</code></h3>
+<p>List all available skills with descriptions, resources, and scripts.</p>
+<p><strong>Note:</strong> With the enhanced system prompt, this tool is optional since all metadata is pre-loaded.</p>
+<h3>2. <code>load_skill(name)</code></h3>
+<p>Load the full instructions for a specific skill.</p>
+<pre><code class="language-python"># Agent calls this when a skill is relevant
+result = await load_skill(ctx, &quot;arxiv-search&quot;)
+</code></pre>
+<h3>3. <code>read_skill_resource(skill_name, resource_name)</code></h3>
+<p>Read additional resource files (FORMS.md, REFERENCE.md, etc.).</p>
+<pre><code class="language-python"># Agent loads resources only when needed
+result = await read_skill_resource(ctx, &quot;pdf-processing&quot;, &quot;FORMS.md&quot;)
+</code></pre>
+<h3>4. <code>run_skill_script(skill_name, script_name, args)</code></h3>
+<p>Execute a skill script with command-line arguments.</p>
+<pre><code class="language-python"># Agent executes scripts with arguments
+result = await run_skill_script(
+    ctx,
+    &quot;arxiv-search&quot;,
+    &quot;scripts/arxiv_search.py&quot;,
+    {&quot;query&quot;: &quot;machine learning&quot;, &quot;max-papers&quot;: 5}
+)
+</code></pre>
+<h2>System Prompt</h2>
+<p>The <code>SkillsToolset</code> automatically injects skill instructions into the agent&#39;s system prompt via the <code>get_instructions()</code> method. This includes:</p>
+<ul>
+<li>All skill metadata (name + description) for discovery</li>
+<li>Instructions on how to use skill tools effectively</li>
+</ul>
+<p>This follows the Agent Skills approach where all metadata is pre-loaded, enabling agents to select skills without calling <code>list_skills()</code>.</p>
+<p>The automatic injection happens when you add the toolset to an agent - no additional decorator is needed.</p>
+<h2>Security considerations</h2>
+<p>We strongly recommend that you use Skills only from trusted sources: those you created yourself or obtained from trusted sources. Skills provide AI Agents with new capabilities through instructions and code, and while this makes them powerful, it also means a malicious Skill can direct agents to invoke tools or execute code in ways that don&#39;t match the Skill&#39;s stated purpose.</p>
+<blockquote>
+<p>If you must use a Skill from an untrusted or unknown source, exercise extreme caution and thoroughly audit it before use. Depending on what access agents have when executing the Skill, malicious Skills could lead to data exfiltration, unauthorized system access, or other security risks.</p>
+</blockquote>
+<h2>Related Resources</h2>
+<ul>
+<li><a href="https://agentskills.io/specification">Agent Skills Specification</a></li>
+<li><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview">Anthropic Agent Skills Documentation</a></li>
+<li><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices">Anthropic Agent Skills Best Practices</a></li>
+<li><a href="https://ai.pydantic.dev/">Pydantic AI Documentation</a></li>
+<li><a href="https://github.com/anthropics/claude-cookbooks/tree/main/skills">Agent Skills Cookbook</a></li>
+<li><a href="https://www.claude.com/blog/skills">Introducing Agent Skills | Claude</a></li>
+<li><a href="https://blog.langchain.com/using-skills-with-deep-agents/">Using skills with Deep Agents</a></li>
+<li><a href="https://github.com/vstorm-co/pydantic-deepagents">vstorm-co/pydantic-deepagents</a></li>
+</ul>
+<h2>Acknowledgments</h2>
+<ul>
+<li><strong>Anthropic</strong> - For creating and maintaining the <a href="https://agentskills.io/home">Agent Skills</a> open format.</li>
+<li><strong>Pydantic AI Team</strong> - For the excellent agent framework.</li>
+<li><strong>Community</strong> - For feedback and contributions.</li>
+</ul>
+<blockquote>
+<p>This project was highly inspired by <a href="https://github.com/vstorm-co/pydantic-deepagents">pydantic-deepagents</a>, which provided foundational ideas and patterns for agent skill implementation and progressive disclosure in the Pydantic AI. We gratefully acknowledge their work and contributions to the community.</p>
+</blockquote>
+<h2>Contributing</h2>
+<p>Contributions are welcome! Please see <a href="https://dougtrajano.github.io/pydantic-ai-skills/contributing/">Contributing - Pydantic AI - Agent Skills</a>.</p>
+<h2>License</h2>
+<p>MIT License - see <a href="LICENSE">LICENSE</a> file for details.</p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Skills &amp; Skill Registries</h2>
+    <div class="related-grid">
+      <a href="/projects/mukul975/Anthropic-Cybersecurity-Skills" class="related-chip">Anthropic-Cybersecurity-Skills <span class="related-stars">4.1K</span></a>
+          <a href="/projects/conorbronsdon/avoid-ai-writing" class="related-chip">avoid-ai-writing <span class="related-stars">759</span></a>
+          <a href="/projects/wondelai/skills" class="related-chip">wondelai/skills <span class="related-stars">480</span></a>
+          <a href="/projects/Agents365-ai/drawio-skill" class="related-chip">drawio-skill <span class="related-stars">131</span></a>
+          <a href="/projects/smartcontractkit/chainlink-agent-skills" class="related-chip">chainlink-agent-skills <span class="related-stars">85</span></a>
+          <a href="/projects/tlehman/litprog-skill" class="related-chip">litprog-skill <span class="related-stars">81</span></a>
+          <a href="/projects/esaradev/icarus-plugin" class="related-chip">icarus-plugin <span class="related-stars">51</span></a>
+          <a href="/projects/chigwell/skilldock.io" class="related-chip">skilldock.io <span class="related-stars">50</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/top-skills">See all Skills &amp; Skill Registries projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

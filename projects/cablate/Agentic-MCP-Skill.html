@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic-MCP-Skill — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
+<meta name="description" content="Agentic-MCP, Progressive MCP client with three-layer lazy loading. Validates AgentSkills.io pattern for efficient token usage. Use MCP without pre-install &amp; was">
+<link rel="canonical" href="https://hermesatlas.com/projects/cablate/Agentic-MCP-Skill">
+<meta property="og:title" content="Agentic-MCP-Skill — Hermes Atlas">
+<meta property="og:description" content="Agentic-MCP, Progressive MCP client with three-layer lazy loading. Validates AgentSkills.io pattern for efficient token usage. Use MCP without pre-install &amp; was">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/cablate/Agentic-MCP-Skill">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Agentic-MCP-Skill — Hermes Atlas">
+<meta name="twitter:description" content="Agentic-MCP, Progressive MCP client with three-layer lazy loading. Validates AgentSkills.io pattern for efficient token usage. Use MCP without pre-install &amp; was">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Skills &amp; Skill Registries</a>
+  </div>
+
+  <h1>Agentic-MCP-Skill</h1>
+  <p class="project-desc">Agentic-MCP, Progressive MCP client with three-layer lazy loading. Validates AgentSkills.io pattern for efficient token usage. Use MCP without pre-install &amp; wasting full-loading</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 22</span>
+    <span class="badge badge-lang">TypeScript</span>
+    
+    
+    <span>Updated 1/21/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/cablate/Agentic-MCP-Skill" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <div align="center">
+
+<h1>Agentic-MCP with Skill</h1>
+<h3>AgentSkill for MCP - Three-layer progressive disclosure validates AgentSkills.io pattern for efficient MCP token usage</h3>
+  <img src="Banner.png" alt="Agentic-MCP 封面圖" width="100%">
+
+<p>  <a href="https://agentic-mcp-skill.cablate.com/"><img src="https://img.shields.io/badge/Website-AGENTIC_MCP-blue" alt="Website"></a>
+  <a href="https://nodejs.org"><img src="https://img.shields.io/badge/node-%3E=18.0.0-brightgreen" alt="Node.js Version"></a></p>
+<p>  <strong><a href="./README.md">English</a></strong> | <strong><a href="./README_zhTW.md">繁體中文</a></strong></p>
+</div>
+
+<hr>
+<h2>Design Intent</h2>
+<h3>Proven AgentSkills Pattern</h3>
+<p>In the AgentSkills.io ecosystem, <strong>Progressive Disclosure</strong> combined with <strong>Script linkage</strong> has been validated as effective:</p>
+<ul>
+<li>AI only loads specific information when needed, significantly reducing token usage</li>
+<li>Scripts can be invoked via AI commands, providing high customization potential</li>
+<li>Sharing tools via scripts is far less costly than developing and using complex MCP Servers</li>
+</ul>
+<p>The impact of this pattern is <strong>significant and substantial</strong>.</p>
+<h3>Current MCP Skill Dilemma</h3>
+<p>Despite this, many Skills using MCP still face two extreme options:</p>
+<p><strong>Option 1: Install MCP directly in Claude Code, Skill only guides AI to call MCP</strong></p>
+<ul>
+<li>MCP server occupies AI context long-term</li>
+<li>Full tool list loaded every conversation</li>
+<li>Token waste, and MCP itself cannot be progressively explored</li>
+</ul>
+<p><strong>Option 2: Write custom scripts yourself</strong></p>
+<ul>
+<li>Tests user&#39;s programming skills</li>
+<li>High customization but lacks standards</li>
+<li>Each MCP has its own format/specs, high adaptation cost for both open and closed source</li>
+<li>Difficult to maintain and share</li>
+</ul>
+<h3>This Skill&#39;s Goal</h3>
+<p><strong>Validate whether AgentSkills.io pattern applies to improving MCP usage</strong></p>
+<p>This concept validation attempts to port AgentSkills&#39; successful pattern to the MCP domain:</p>
+<ol>
+<li>Can AgentSkills architecture apply to MCP server management?</li>
+<li>Is three-layer progressive disclosure effective in MCP scenarios?</li>
+<li>Is Socket-based daemon architecture more practical than direct MCP usage?</li>
+</ol>
+<h3>Experimental Nature</h3>
+<p>This is not a mature product, but an experiment:</p>
+<ul>
+<li>Test AgentSkills pattern applicability in MCP domain</li>
+<li>Explore actual effectiveness of three-layer loading</li>
+<li>Validate pros/cons of Daemon architecture</li>
+<li>Serve as reference prototype for future development</li>
+</ul>
+<h3>Important Disclaimer</h3>
+<p><strong>This is a very early, rushed AI-assisted demo version</strong> with current goals:</p>
+<ul>
+<li>Validate concept feasibility</li>
+<li>Explore usage patterns</li>
+<li>Collect feedback for improvements</li>
+</ul>
+<p><strong>Not recommended for production use</strong>.
+Expect many issues and optimization opportunities. If you find any problems or have suggestions, please open an Issue or contribute a PR.</p>
+<hr>
+<h2>Core Concepts</h2>
+<h3>Three-Layer Progressive Disclosure</h3>
+<p>Like AgentSkills, you don&#39;t need to load everything at once:</p>
+<p><strong>Layer 1: Know which servers are available</strong></p>
+<pre><code>Load only basic info (name, version, status)
+Usage: ~50-100 tokens
+Use case: Check availability, choose server
+</code></pre>
+<p><strong>Layer 2: Know what tools this server provides</strong></p>
+<pre><code>Load tool list (names + brief descriptions)
+Usage: ~200-400 tokens
+Use case: Browse available tools, decide what to use
+</code></pre>
+<p><strong>Layer 3: Load only the tools you need</strong></p>
+<pre><code>Load complete input format for specific tool
+Usage: ~300-500 tokens/tool
+Use case: Before calling tool
+</code></pre>
+<h3>Why This Approach</h3>
+<p>Assume an MCP server has 20 tools, you only need 2:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Loading Method</th>
+<th align="center">Token Usage</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Load All</td>
+<td align="center">6,000</td>
+<td align="left">20 tools × 300 tokens</td>
+</tr>
+<tr>
+<td align="left">Three-Layer Progressive</td>
+<td align="center">850</td>
+<td align="left">Metadata(50) + List(200) + 2 tools(600)</td>
+</tr>
+<tr>
+<td align="left">Savings</td>
+<td align="center">86%</td>
+<td align="left">Only load what you need</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Development Status</h2>
+<h3>Future Plans</h3>
+<p>Based on concept validation results, future directions include:</p>
+<p><strong>Short-term Goals</strong></p>
+<ul>
+<li>More convenient MCP Servers management (UI, auto-discovery, one-click install)</li>
+<li>Implement Auth features (API Key management, permission control)</li>
+</ul>
+<p><strong>Mid-term Goals</strong></p>
+<ul>
+<li>Enhance MCP Server tool calling experience (better error messages, parameter validation, result formatting)</li>
+<li>Intercept MCP Server output with customizable Script data processing, avoid massive messy data entering conversation memory</li>
+</ul>
+<p>This project&#39;s direction depends on:</p>
+<ul>
+<li>Concept validation results</li>
+<li>Community feedback</li>
+<li>Actual usage needs</li>
+</ul>
+<p>Feedback and suggestions welcome.</p>
+<hr>
+<h2>Quick Start</h2>
+<h3>Prerequisites</h3>
+<ul>
+<li>Node.js &gt;= 18.0.0</li>
+<li>npm</li>
+</ul>
+<h3>1. Install from npm (Recommended)</h3>
+<pre><code class="language-bash"># Install globally
+npm install -g @cablate/agentic-mcp
+
+# Verify installation
+agentic-mcp --version
+
+# Start daemon
+agentic-mcp daemon start
+</code></pre>
+<h3>2. Configure</h3>
+<p>Edit <code>mcp-servers.json</code> in the project root:</p>
+<pre><code class="language-json">{
+  &quot;servers&quot;: {
+    &quot;playwright&quot;: {
+      &quot;description&quot;: &quot;Browser automation tool for web navigation, screenshots, clicks, form filling, and more&quot;,
+      &quot;type&quot;: &quot;stdio&quot;,
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;@playwright/mcp@latest&quot;, &quot;--isolated&quot;]
+    }
+  }
+}
+</code></pre>
+<h3>3. Start Daemon</h3>
+<pre><code class="language-bash">node dist/cli/index.js daemon start --config &lt;config-path&gt;
+</code></pre>
+<h3>4. Test Connection</h3>
+<pre><code class="language-bash"># Check daemon health
+agentic-mcp daemon health
+
+# Layer 1: Check server status
+agentic-mcp metadata playwright
+
+# Layer 2: List available tools
+agentic-mcp list playwright
+
+# Layer 3: View specific tool format
+agentic-mcp schema playwright browser_navigate
+</code></pre>
+<h3>5. Call Tool</h3>
+<pre><code class="language-bash">agentic-mcp call playwright browser_navigate --params &#39;{&quot;url&quot;: &quot;https://example.com&quot;}&#39;
+</code></pre>
+<hr>
+<h2>Testing</h2>
+<p>This project uses Vitest for testing with the following test suites:</p>
+<h3>Running Tests</h3>
+<pre><code class="language-bash"># Run tests in watch mode
+npm test
+
+# Run tests once
+npm run test:run
+
+# Run with coverage report
+npm run test:coverage
+</code></pre>
+<h3>Test Structure</h3>
+<pre><code>tests/
+├── unit/
+│   ├── client.test.ts       # ProgressiveMCPClient tests (12 tests)
+│   ├── socket-client.test.ts # SocketClient tests (7 tests)
+│   └── cli/
+│       └── commands.test.ts  # CLI command tests (6 tests)
+</code></pre>
+<h3>Current Coverage</h3>
+<ul>
+<li><strong>Statements</strong>: 61.71%</li>
+<li><strong>Branches</strong>: 47.29%</li>
+<li><strong>Functions</strong>: 65.85%</li>
+<li><strong>Lines</strong>: 61.53%</li>
+</ul>
+<p>Test coverage focuses on core modules (<code>client.ts</code>, <code>socket-client.ts</code>). Daemon integration tests are deferred to future work.</p>
+<h3>Test Philosophy</h3>
+<p>This project follows a <strong>pragmatic progressive</strong> approach:</p>
+<ul>
+<li>Focus on happy path testing first</li>
+<li>Use real MCP server (<code>@modelcontextprotocol/server-filesystem</code>) for integration</li>
+<li>Mock only where necessary (e.g., <code>net</code> module for SocketClient)</li>
+<li>Defer complex scenarios (daemon socket tests) to keep initial implementation simple</li>
+</ul>
+<hr>
+<h2>Usage Examples</h2>
+<h3>Web Automation</h3>
+<p>Automate browser operations using Playwright MCP server:</p>
+<pre><code class="language-bash"># 1. Navigate to website
+agentic-mcp call playwright browser_navigate --params &#39;{&quot;url&quot;: &quot;https://www.apple.com/tw&quot;}&#39;
+
+# 2. Take screenshot
+agentic-mcp call playwright browser_take_screenshot
+
+# 3. Click element
+agentic-mcp call playwright browser_click --params &#39;{&quot;element&quot;: &quot;Mac link&quot;, &quot;ref&quot;: &quot;e19&quot;}&#39;
+</code></pre>
+<h3>Hot Reload Configuration</h3>
+<p>Reload after modifying <code>mcp-servers.json</code> without restarting daemon:</p>
+<pre><code class="language-bash">agentic-mcp daemon reload
+</code></pre>
+<p>Response example:</p>
+<pre><code>✓ Configuration reloaded
+  Old servers: playwright_global
+  New servers: playwright_global, filesystem_global
+</code></pre>
+<hr>
+<h2>Architecture</h2>
+<h3>System Architecture</h3>
+<pre><code>+-----------------------------+
+|     AI / CLI Layer          |
+|  (CLI commands)              |
+|  - agentic-mcp metadata      |
+|  - agentic-mcp list          |
+|  - agentic-mcp schema        |
+|  - agentic-mcp call          |
++-----------+-----------------+
+            | Socket (newline-delimited JSON)
+            v
++-----------------------------+
+|   MCP Daemon (Long-Running)  |
+|  - Maintain persistent MCP   |
+|    connections               |
+|  - Socket communication      |
+|  - Manage shared sessions    |
+|  - Support Hot Reload        |
++-----------+-----------------+
+            | MCP Protocol
+            v
++-----------------------------+
+|        MCP Servers           |
+|  - playwright (browser)      |
+|  - filesystem (files)        |
+|  - github (Git)              |
+|  - custom servers            |
++-----------------------------+
+</code></pre>
+<hr>
+<h2>Configuration</h2>
+<h3>MCP Servers Configuration</h3>
+<p>Edit <code>mcp-servers.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;servers&quot;: {
+    &quot;playwright&quot;: {
+      &quot;description&quot;: &quot;Browser automation tool for web navigation, screenshots, clicks, and form filling&quot;,
+      &quot;transportType&quot;: &quot;stdio&quot;,
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;@playwright/mcp@latest&quot;, &quot;--isolated&quot;]
+    }
+  }
+}
+</code></pre>
+<p><strong>Configuration Notes</strong>:</p>
+<ul>
+<li><code>description</code> (optional): Server description for AI to understand the MCP server&#39;s purpose. If not provided, Layer 1 metadata will not include this field.</li>
+</ul>
+<hr>
+<h2>Resources</h2>
+<ul>
+<li><a href="./SKILL.md">SKILL.md</a> - Complete usage guide</li>
+<li><a href="./docs/AGENT_BROWSER_DESIGN_PATTERNS.md">docs/AGENT_BROWSER_DESIGN_PATTERNS.md</a> - Design patterns learned from agent-browser</li>
+<li><a href="https://modelcontextprotocol.io">MCP Specification</a></li>
+<li><a href="https://github.com/modelcontextprotocol/typescript-sdk">MCP TypeScript SDK</a></li>
+<li><a href="https://agentskills.io/home">AgentSkills.io</a></li>
+</ul>
+<hr>
+<div align="center">
+
+<p>This is a concept validation project, feedback welcome</p>
+</div>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Skills &amp; Skill Registries</h2>
+    <div class="related-grid">
+      <a href="/projects/mukul975/Anthropic-Cybersecurity-Skills" class="related-chip">Anthropic-Cybersecurity-Skills <span class="related-stars">4.1K</span></a>
+          <a href="/projects/conorbronsdon/avoid-ai-writing" class="related-chip">avoid-ai-writing <span class="related-stars">759</span></a>
+          <a href="/projects/wondelai/skills" class="related-chip">wondelai/skills <span class="related-stars">480</span></a>
+          <a href="/projects/DougTrajano/pydantic-ai-skills" class="related-chip">pydantic-ai-skills <span class="related-stars">220</span></a>
+          <a href="/projects/Agents365-ai/drawio-skill" class="related-chip">drawio-skill <span class="related-stars">131</span></a>
+          <a href="/projects/smartcontractkit/chainlink-agent-skills" class="related-chip">chainlink-agent-skills <span class="related-stars">85</span></a>
+          <a href="/projects/tlehman/litprog-skill" class="related-chip">litprog-skill <span class="related-stars">81</span></a>
+          <a href="/projects/esaradev/icarus-plugin" class="related-chip">icarus-plugin <span class="related-stars">51</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/top-skills">See all Skills &amp; Skill Registries projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>drawio-skill — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
+<meta name="description" content="drawio-skill — From Text to Professional Diagrams. An Agent Skill (SKILL.md) that generates draw.io diagrams from natural language and exports to PNG/SVG/PDF. W">
+<link rel="canonical" href="https://hermesatlas.com/projects/Agents365-ai/drawio-skill">
+<meta property="og:title" content="drawio-skill — Hermes Atlas">
+<meta property="og:description" content="drawio-skill — From Text to Professional Diagrams. An Agent Skill (SKILL.md) that generates draw.io diagrams from natural language and exports to PNG/SVG/PDF. W">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/Agents365-ai/drawio-skill">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="drawio-skill — Hermes Atlas">
+<meta name="twitter:description" content="drawio-skill — From Text to Professional Diagrams. An Agent Skill (SKILL.md) that generates draw.io diagrams from natural language and exports to PNG/SVG/PDF. W">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Skills &amp; Skill Registries</a>
+  </div>
+
+  <h1>drawio-skill</h1>
+  <p class="project-desc">drawio-skill — From Text to Professional Diagrams. An Agent Skill (SKILL.md) that generates draw.io diagrams from natural language and exports to PNG/SVG/PDF. Works with Claude Code, OpenClaw, Hermes Agent, OpenAI Codex, and SkillsMP.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 192</span>
+    <span class="badge badge-lang">Shell</span>
+    
+    
+    <span>Updated 4/6/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/Agents365-ai/drawio-skill" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    <a href="https://agents365-ai.github.io/drawio-skill/" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
+  </div>
+
+  <section class="readme">
+    <h1>drawio-skill — From Text to Professional Diagrams</h1>
+<p><a href="README_CN.md">中文文档</a> | <a href="https://agents365-ai.github.io/drawio-skill/">Online Docs</a></p>
+<h2>What it does</h2>
+<ul>
+<li>Generates <code>.drawio</code> XML files from natural language descriptions</li>
+<li>Exports diagrams to PNG, SVG, PDF, or JPG using the native draw.io desktop CLI</li>
+<li><strong>6 diagram type presets</strong>: ERD, UML Class, Sequence, Architecture, ML/Deep Learning, Flowchart — with preset shapes, styles, and layout conventions</li>
+<li><strong>Animated connectors</strong> (<code>flowAnimation=1</code>) for data-flow and pipeline diagrams (visible in SVG and draw.io desktop)</li>
+<li><strong>ML model diagram support</strong> with tensor shape annotations <code>(B, C, H, W)</code> — ideal for NeurIPS/ICML/ICLR papers</li>
+<li><strong>Grid-aligned layout</strong> — all coordinates snap to 10px multiples for clean alignment</li>
+<li><strong>Browser fallback</strong> — generates diagrams.net URLs when the desktop CLI is unavailable</li>
+<li>Iterative design: preview, get feedback, and refine diagrams until they look right</li>
+<li><strong>Auto-launch</strong> draw.io desktop after export for manual fine-tuning</li>
+<li>Triggers automatically when diagrams would help explain complex systems</li>
+</ul>
+<h2>Multi-Platform Support</h2>
+<p>Works with all major AI coding agents that support the <a href="https://agentskills.io">Agent Skills</a> format:</p>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Status</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Claude Code</strong></td>
+<td>✅ Full support</td>
+<td>Native SKILL.md format</td>
+</tr>
+<tr>
+<td><strong>OpenClaw</strong></td>
+<td>✅ Full support</td>
+<td><code>metadata.openclaw</code> namespace, dependency gating, installer</td>
+</tr>
+<tr>
+<td><strong>Hermes Agent</strong></td>
+<td>✅ Full support</td>
+<td><code>metadata.hermes</code> namespace, tags, tool gating</td>
+</tr>
+<tr>
+<td><strong>OpenAI Codex</strong></td>
+<td>✅ Full support</td>
+<td><code>agents/openai.yaml</code> sidecar file</td>
+</tr>
+<tr>
+<td><strong>SkillsMP</strong></td>
+<td>✅ Indexed</td>
+<td>GitHub topics configured</td>
+</tr>
+</tbody></table>
+<h2>Comparison</h2>
+<h3>vs No Skill (native agent)</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Native agent</th>
+<th>This skill</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Generate draw.io XML</td>
+<td>Yes — LLMs know the format</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Self-check after export</td>
+<td>No</td>
+<td>Yes — reads PNG and auto-fixes 6 issue types</td>
+</tr>
+<tr>
+<td>Iterative review loop</td>
+<td>No — must manually re-prompt</td>
+<td>Yes — targeted edits, 5-round safety valve</td>
+</tr>
+<tr>
+<td>Proactive triggers</td>
+<td>No — only when explicitly asked</td>
+<td>Yes — auto-suggests when 3+ components</td>
+</tr>
+<tr>
+<td>Layout guidelines</td>
+<td>None — varies by run</td>
+<td>Complexity-scaled spacing, routing corridors, hub placement</td>
+</tr>
+<tr>
+<td>Grid alignment</td>
+<td>No</td>
+<td>Yes — all coordinates snap to 10px multiples</td>
+</tr>
+<tr>
+<td>Diagram type presets</td>
+<td>No</td>
+<td>Yes — 6 presets (ERD, UML, Sequence, Architecture, ML/DL, Flowchart)</td>
+</tr>
+<tr>
+<td>Animated connectors</td>
+<td>No</td>
+<td>Yes — <code>flowAnimation=1</code> for data-flow visualization</td>
+</tr>
+<tr>
+<td>ML model diagrams</td>
+<td>No</td>
+<td>Yes — tensor shape annotations, layer-type color coding</td>
+</tr>
+<tr>
+<td>Color palette</td>
+<td>Random/inconsistent</td>
+<td>7-color semantic system (blue=services, green=DB, purple=auth...)</td>
+</tr>
+<tr>
+<td>Edge routing rules</td>
+<td>Basic</td>
+<td>Pin entry/exit points, distribute connections, waypoint corridors</td>
+</tr>
+<tr>
+<td>Container/group patterns</td>
+<td>None</td>
+<td>Swimlane, group, custom container with parent-child nesting</td>
+</tr>
+<tr>
+<td>Embed diagram in export</td>
+<td>No</td>
+<td>Yes — <code>--embed-diagram</code> keeps exported PNG/SVG/PDF editable</td>
+</tr>
+<tr>
+<td>Browser fallback</td>
+<td>No</td>
+<td>Yes — generates diagrams.net URL when CLI unavailable</td>
+</tr>
+<tr>
+<td>Auto-launch desktop app</td>
+<td>No</td>
+<td>Yes — opens <code>.drawio</code> file after export for fine-tuning</td>
+</tr>
+</tbody></table>
+<h3>vs Other draw.io Skills &amp; Tools</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>This skill</th>
+<th><a href="https://github.com/jgraph/drawio-mcp">jgraph/drawio-mcp</a> (official, 1.3k⭐)</th>
+<th><a href="https://github.com/bahayonghang/drawio-skills">bahayonghang/drawio-skills</a> (60⭐)</th>
+<th><a href="https://github.com/GBSOSS/ai-drawio">GBSOSS/ai-drawio</a> (63⭐)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Approach</strong></td>
+<td>Pure SKILL.md</td>
+<td>SKILL.md / MCP / Project</td>
+<td>YAML DSL + MCP</td>
+<td>Plugin + browser</td>
+</tr>
+<tr>
+<td><strong>Dependencies</strong></td>
+<td>draw.io desktop only</td>
+<td>draw.io desktop</td>
+<td>MCP server (<code>npx</code>)</td>
+<td>Browser + local server</td>
+</tr>
+<tr>
+<td><strong>Multi-agent</strong></td>
+<td>✅ 5 platforms</td>
+<td>❌ Claude Code only</td>
+<td>❌ Claude Code only</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>Self-check</strong></td>
+<td>✅ 2-round auto-fix</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌ screenshot</td>
+</tr>
+<tr>
+<td><strong>Iterative review</strong></td>
+<td>✅ 5-round loop</td>
+<td>❌ generate once</td>
+<td>✅ 3 workflows</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>Layout guidance</strong></td>
+<td>✅ complexity-scaled + grid snap</td>
+<td>✅ basic spacing</td>
+<td>❌ relies on MCP</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>Diagram presets</strong></td>
+<td>✅ 6 types (ERD, UML, Seq, Arch, ML, Flow)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>Animated edges</strong></td>
+<td>✅ <code>flowAnimation=1</code></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>ML/DL diagrams</strong></td>
+<td>✅ tensor shapes, layer colors</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>Color system</strong></td>
+<td>✅ 7-color semantic</td>
+<td>❌</td>
+<td>✅ 5 themes</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>Container/group</strong></td>
+<td>✅ swimlane + group</td>
+<td>✅ detailed</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>Embed diagram</strong></td>
+<td>✅ <code>--embed-diagram</code></td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>Edge routing</strong></td>
+<td>✅ corridors + waypoints</td>
+<td>✅ arrowhead rules</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>Browser fallback</strong></td>
+<td>✅ diagrams.net URL</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>Auto-launch</strong></td>
+<td>✅ opens desktop app</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>Cloud icons</strong></td>
+<td>AWS basic</td>
+<td>❌</td>
+<td>✅ AWS/GCP/Azure/K8s</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>Zero-config</strong></td>
+<td>✅ copy SKILL.md</td>
+<td>✅</td>
+<td>❌ needs <code>npx</code></td>
+<td>❌ needs plugin install</td>
+</tr>
+</tbody></table>
+<h3>Key advantages</h3>
+<ol>
+<li><strong>Self-check + iterative loop</strong> — the only pure-SKILL.md solution that reads its own output and auto-fixes before showing the user, then supports multi-round refinement</li>
+<li><strong>6 diagram type presets</strong> — ERD, UML Class, Sequence, Architecture, ML/Deep Learning, Flowchart — each with preset shapes, styles, and layout conventions</li>
+<li><strong>ML/DL model diagrams</strong> — tensor shape annotations, layer-type color coding, encoder/decoder swimlanes — built for academic papers</li>
+<li><strong>Multi-agent, zero-config</strong> — works across 5 platforms with just one <code>SKILL.md</code> file + draw.io desktop. No MCP server, no Python, no Node.js, no browser</li>
+<li><strong>Production-grade layout</strong> — grid-aligned coordinates, complexity-scaled spacing, routing corridors, hub-center strategy, animated connectors</li>
+<li><strong>Browser fallback</strong> — generates diagrams.net URLs when the desktop CLI is unavailable, plus auto-launch for desktop editing</li>
+</ol>
+<h2>Supported diagram types</h2>
+<ul>
+<li><strong>Architecture</strong>: microservices, cloud (AWS/GCP/Azure), network topology, deployment — with tier-based swimlanes and hub-center strategy</li>
+<li><strong>ML / Deep Learning</strong>: Transformer, CNN, LSTM, GRU architectures — with tensor shape annotations and layer-type color coding</li>
+<li><strong>Flowcharts</strong>: business processes, workflows, decision trees, state machines — with semantic shape types (parallelogram I/O, diamond decisions)</li>
+<li><strong>UML</strong>: class diagrams (inheritance/composition/aggregation arrows), sequence diagrams (lifelines, activation boxes)</li>
+<li><strong>Data</strong>: ER diagrams (table containers, PK/FK notation), data flow diagrams (DFD)</li>
+<li><strong>Other</strong>: org charts, mind maps, wireframes</li>
+</ul>
+<h2>How it works</h2>
+<p align="center">
+  <img src="assets/workflow.png" width="420" alt="Workflow">
+</p>
+
+<h2>Prerequisites</h2>
+<p>The draw.io desktop app must be installed for diagram export:</p>
+<h3>macOS</h3>
+<pre><code class="language-bash"># Recommended — Homebrew
+brew install --cask drawio
+
+# Verify
+drawio --version
+</code></pre>
+<h3>Windows</h3>
+<p>Download and install from: <a href="https://github.com/jgraph/drawio-desktop/releases">https://github.com/jgraph/drawio-desktop/releases</a></p>
+<pre><code class="language-powershell"># Verify
+&quot;C:\Program Files\draw.io\draw.io.exe&quot; --version
+</code></pre>
+<h3>Linux</h3>
+<p>Download <code>.deb</code> or <code>.rpm</code> from: <a href="https://github.com/jgraph/drawio-desktop/releases">https://github.com/jgraph/drawio-desktop/releases</a></p>
+<pre><code class="language-bash"># Headless export (required on Linux servers without display)
+sudo apt install xvfb  # Debian/Ubuntu
+xvfb-run -a drawio --version
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Extra step</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>macOS</strong></td>
+<td>No extra steps after Homebrew install</td>
+</tr>
+<tr>
+<td><strong>Windows</strong></td>
+<td>Use full path if not in PATH</td>
+</tr>
+<tr>
+<td><strong>Linux</strong></td>
+<td>Wrap commands with <code>xvfb-run -a</code> for headless export</td>
+</tr>
+</tbody></table>
+<h2>Skill Installation</h2>
+<h3>Claude Code</h3>
+<pre><code class="language-bash"># Global install (available in all projects)
+git clone https://github.com/Agents365-ai/drawio-skill.git ~/.claude/skills/drawio-skill
+
+# Project-level install
+git clone https://github.com/Agents365-ai/drawio-skill.git .claude/skills/drawio-skill
+</code></pre>
+<h3>OpenClaw</h3>
+<pre><code class="language-bash"># Via ClawHub
+clawhub install drawio-pro-skill
+
+# Manual install
+git clone https://github.com/Agents365-ai/drawio-skill.git ~/.openclaw/skills/drawio-skill
+
+# Project-level install
+git clone https://github.com/Agents365-ai/drawio-skill.git skills/drawio-skill
+</code></pre>
+<h3>Hermes Agent</h3>
+<pre><code class="language-bash"># Install under design category
+git clone https://github.com/Agents365-ai/drawio-skill.git ~/.hermes/skills/design/drawio-skill
+</code></pre>
+<p>Or add an external directory in <code>~/.hermes/config.yaml</code>:</p>
+<pre><code class="language-yaml">skills:
+  external_dirs:
+    - ~/myskills/drawio-skill
+</code></pre>
+<h3>OpenAI Codex</h3>
+<pre><code class="language-bash"># User-level install
+git clone https://github.com/Agents365-ai/drawio-skill.git ~/.agents/skills/drawio-skill
+
+# Project-level install
+git clone https://github.com/Agents365-ai/drawio-skill.git .agents/skills/drawio-skill
+</code></pre>
+<h3>SkillsMP</h3>
+<p>Browse on <a href="https://skillsmp.com/skills/agents365-ai-drawio-skill-skill-md">SkillsMP</a> or use the CLI:</p>
+<pre><code class="language-bash">skills install drawio-skill
+</code></pre>
+<h3>ClawHub</h3>
+<p>Browse on <a href="https://clawhub.ai/agents365-ai/drawio-pro-skill">ClawHub</a> or use the CLI:</p>
+<pre><code class="language-bash">clawhub install drawio-pro-skill
+</code></pre>
+<h3>Installation paths summary</h3>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Global path</th>
+<th>Project path</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Claude Code</td>
+<td><code>~/.claude/skills/drawio-skill/</code></td>
+<td><code>.claude/skills/drawio-skill/</code></td>
+</tr>
+<tr>
+<td>OpenClaw</td>
+<td><code>~/.openclaw/skills/drawio-skill/</code></td>
+<td><code>skills/drawio-skill/</code></td>
+</tr>
+<tr>
+<td>Hermes Agent</td>
+<td><code>~/.hermes/skills/design/drawio-skill/</code></td>
+<td>Via <code>external_dirs</code> config</td>
+</tr>
+<tr>
+<td>OpenAI Codex</td>
+<td><code>~/.agents/skills/drawio-skill/</code></td>
+<td><code>.agents/skills/drawio-skill/</code></td>
+</tr>
+<tr>
+<td>SkillsMP</td>
+<td>N/A (installed via CLI)</td>
+<td>N/A</td>
+</tr>
+</tbody></table>
+<h2>Updates</h2>
+<p>Check for updates:</p>
+<pre><code class="language-bash"># Run from anywhere — pass your install path
+bash ~/.claude/skills/drawio-skill/scripts/check-update.sh
+
+# Or from the skill directory
+cd ~/.claude/skills/drawio-skill &amp;&amp; bash scripts/check-update.sh
+</code></pre>
+<p>Update to latest version:</p>
+<pre><code class="language-bash">cd &lt;your-install-path&gt;/drawio-skill &amp;&amp; git pull
+</code></pre>
+<p>Platform-specific package managers:</p>
+<pre><code class="language-bash"># OpenClaw
+clawhub update drawio-pro-skill
+
+# SkillsMP
+skills update drawio-skill
+</code></pre>
+<h2>Usage</h2>
+<p>Just describe what you want:</p>
+<pre><code>Create a microservices e-commerce architecture with API Gateway, auth/user/order/product/payment services,
+Kafka message queue, notification service, and separate databases for each service
+</code></pre>
+<p>The agent will generate the <code>.drawio</code> XML file and export it to PNG automatically.</p>
+<h2>Example</h2>
+<p><strong>Prompt:</strong></p>
+<blockquote>
+<p>Create a microservices e-commerce architecture with Mobile/Web/Admin clients, API Gateway,
+Auth/User/Order/Product/Payment services, Kafka message queue, Notification service,
+and User DB / Order DB / Product DB / Redis Cache / Stripe API</p>
+</blockquote>
+<p><strong>Output:</strong></p>
+<p><img src="assets/microservices-example.png" alt="Microservices Architecture"></p>
+<h2>Topology demos</h2>
+<p>The skill handles various diagram topologies with clean edge routing — no lines crossing through shapes.</p>
+<h3>Star topology (7 nodes)</h3>
+<p>Central message broker with 6 microservices radiating outward. Edges enter Kafka from different sides, zero crossings.</p>
+<p><img src="assets/demo-star.png" alt="Star topology"></p>
+<h3>Layered flow (10 nodes, 4 tiers)</h3>
+<p>E-commerce architecture with 2 cross-connections: Order→Product (same-tier horizontal) and Auth→Redis (diagonal via routing corridor). All edges route cleanly.</p>
+<p><img src="assets/demo-layered.png" alt="Layered flow"></p>
+<h3>Ring / cycle (8 nodes)</h3>
+<p>CI/CD pipeline with a closed loop and 2 spur branches. Edges flow along the perimeter without crossing the interior.</p>
+<p><img src="assets/demo-ring.png" alt="Ring cycle"></p>
+<h2>Files</h2>
+<ul>
+<li><code>SKILL.md</code> — <strong>the only required file</strong>. Loaded by all platforms as the skill instructions.</li>
+<li><code>agents/openai.yaml</code> — OpenAI Codex-specific configuration (UI, policy)</li>
+<li><code>scripts/check-update.sh</code> — lightweight update checker (compares local vs remote HEAD)</li>
+<li><code>README.md</code> — this file (English, displayed on GitHub homepage)</li>
+<li><code>README_CN.md</code> — Chinese documentation</li>
+<li><code>assets/</code> — example diagrams and workflow images</li>
+</ul>
+<blockquote>
+<p><strong>Note:</strong> Only <code>SKILL.md</code> is needed for the skill to work. <code>agents/openai.yaml</code> is only needed for Codex. The <code>assets/</code> and README files are documentation only and can be safely deleted to save space.</p>
+</blockquote>
+<blockquote>
+<p>All example diagrams were generated by Claude Opus 4.6 with this skill.</p>
+</blockquote>
+<h2>Known Limitations</h2>
+<ul>
+<li><strong>Command name varies by platform</strong>: macOS Homebrew installs the command as <code>draw.io</code>; some Linux packages use <code>drawio</code>. The skill handles both, but verify which name works on your system with <code>draw.io --version</code> or <code>drawio --version</code></li>
+<li><strong>Linux headless export</strong>: Requires <code>xvfb</code> for display virtualization — without it, CLI export will fail on servers without a display</li>
+<li><strong>Browser fallback requires Python</strong>: The <code>diagrams.net</code> URL generator uses <code>python3</code> for compression/encoding. If neither CLI nor Python is available, the skill generates <code>.drawio</code> XML only</li>
+<li><strong>Self-check requires vision</strong>: The auto-fix step reads exported PNGs using the model&#39;s vision capability. Models without vision support skip this step</li>
+<li><strong>Cloud icons</strong>: Currently supports basic AWS resource icons. GCP, Azure, and Kubernetes icon sets are not yet included</li>
+<li><strong>No source .drawio for microservices example</strong>: The <code>microservices-example.png</code> in assets was generated in a session but the source <code>.drawio</code> was not preserved</li>
+</ul>
+<h2>License</h2>
+<p>MIT</p>
+<h2>Support</h2>
+<p>If this skill helps you, consider supporting the author:</p>
+<table>
+  <tr>
+    <td align="center">
+      <img src="https://raw.githubusercontent.com/Agents365-ai/images_payment/main/qrcode/wechat-pay.png" width="180" alt="WeChat Pay">
+      <br>
+      <b>WeChat Pay</b>
+    </td>
+    <td align="center">
+      <img src="https://raw.githubusercontent.com/Agents365-ai/images_payment/main/qrcode/alipay.png" width="180" alt="Alipay">
+      <br>
+      <b>Alipay</b>
+    </td>
+    <td align="center">
+      <img src="https://raw.githubusercontent.com/Agents365-ai/images_payment/main/qrcode/buymeacoffee.png" width="180" alt="Buy Me a Coffee">
+      <br>
+      <b>Buy Me a Coffee</b>
+    </td>
+  </tr>
+</table>
+
+<h2>Author</h2>
+<p><strong>Agents365-ai</strong></p>
+<ul>
+<li>Bilibili: <a href="https://space.bilibili.com/441831884">https://space.bilibili.com/441831884</a></li>
+<li>GitHub: <a href="https://github.com/Agents365-ai">https://github.com/Agents365-ai</a></li>
+</ul>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Skills &amp; Skill Registries</h2>
+    <div class="related-grid">
+      <a href="/projects/mukul975/Anthropic-Cybersecurity-Skills" class="related-chip">Anthropic-Cybersecurity-Skills <span class="related-stars">4.1K</span></a>
+          <a href="/projects/conorbronsdon/avoid-ai-writing" class="related-chip">avoid-ai-writing <span class="related-stars">759</span></a>
+          <a href="/projects/wondelai/skills" class="related-chip">wondelai/skills <span class="related-stars">480</span></a>
+          <a href="/projects/DougTrajano/pydantic-ai-skills" class="related-chip">pydantic-ai-skills <span class="related-stars">220</span></a>
+          <a href="/projects/smartcontractkit/chainlink-agent-skills" class="related-chip">chainlink-agent-skills <span class="related-stars">85</span></a>
+          <a href="/projects/tlehman/litprog-skill" class="related-chip">litprog-skill <span class="related-stars">81</span></a>
+          <a href="/projects/esaradev/icarus-plugin" class="related-chip">icarus-plugin <span class="related-stars">51</span></a>
+          <a href="/projects/chigwell/skilldock.io" class="related-chip">skilldock.io <span class="related-stars">50</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/top-skills">See all Skills &amp; Skill Registries projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

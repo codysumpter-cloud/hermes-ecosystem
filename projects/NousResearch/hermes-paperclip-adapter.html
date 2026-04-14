@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hermes-paperclip-adapter — Hermes Agent Core &amp; Official | Hermes Atlas</title>
+<meta name="description" content="Paperclip adapter for Hermes Agent — run Hermes as a managed employee in a Paperclip company">
+<link rel="canonical" href="https://hermesatlas.com/projects/NousResearch/hermes-paperclip-adapter">
+<meta property="og:title" content="hermes-paperclip-adapter — Hermes Atlas">
+<meta property="og:description" content="Paperclip adapter for Hermes Agent — run Hermes as a managed employee in a Paperclip company">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/NousResearch/hermes-paperclip-adapter">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hermes-paperclip-adapter — Hermes Atlas">
+<meta name="twitter:description" content="Paperclip adapter for Hermes Agent — run Hermes as a managed employee in a Paperclip company">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Core &amp; Official</a>
+  </div>
+
+  <h1>hermes-paperclip-adapter <span style="font-size:14px;color:var(--brand-purple)">OFFICIAL</span></h1>
+  <p class="project-desc">Paperclip adapter for Hermes Agent — run Hermes as a managed employee in a Paperclip company</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 806</span>
+    <span class="badge badge-lang">TypeScript</span>
+    <span class="badge badge-lang">MIT</span>
+    <span class="badge badge-official">Nous Research</span>
+    <span>Updated 4/4/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/NousResearch/hermes-paperclip-adapter" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <h1>Paperclip Adapter for Hermes Agent</h1>
+<p>A <a href="https://paperclip.ing">Paperclip</a> adapter that lets you run <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> as a managed employee in a Paperclip company.</p>
+<p>Hermes Agent is a full-featured AI agent by <a href="https://nousresearch.com">Nous Research</a> with 30+ native tools, persistent memory, session persistence, 80+ skills, MCP support, and multi-provider model access.</p>
+<h2>Key Features</h2>
+<p>This adapter provides:</p>
+<ul>
+<li><strong>8 inference providers</strong> — Anthropic, OpenRouter, OpenAI, Nous, OpenAI Codex, ZAI, Kimi Coding, MiniMax</li>
+<li><strong>Skills integration</strong> — Scans both Paperclip-managed and Hermes-native skills (<code>~/.hermes/skills/</code>), with sync/list/resolve APIs</li>
+<li><strong>Structured transcript parsing</strong> — Raw Hermes stdout is parsed into typed <code>TranscriptEntry</code> objects so Paperclip renders proper tool cards with status icons and expand/collapse</li>
+<li><strong>Rich post-processing</strong> — Converts Hermes ASCII banners, setext headings, and <code>+--+</code> table borders into clean GFM markdown</li>
+<li><strong>Comment-driven wakes</strong> — Agents wake to respond to issue comments, not just task assignments</li>
+<li><strong>Auto model detection</strong> — Reads <code>~/.hermes/config.yaml</code> to pre-populate the UI with the user&#39;s configured model</li>
+<li><strong>Session codec</strong> — Structured validation and migration of session state across heartbeats</li>
+<li><strong>Benign stderr reclassification</strong> — MCP init messages and structured logs are reclassified so they don&#39;t appear as errors in the UI</li>
+<li><strong>Session source tagging</strong> — Sessions are tagged as <code>tool</code> source so they don&#39;t clutter the user&#39;s interactive history</li>
+<li><strong>Filesystem checkpoints</strong> — Optional <code>--checkpoints</code> for rollback safety</li>
+<li><strong>Thinking effort control</strong> — Passes <code>--reasoning-effort</code> for thinking/reasoning models</li>
+</ul>
+<h3>Hermes Agent Capabilities</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Claude Code</th>
+<th>Codex</th>
+<th>Hermes Agent</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Persistent memory</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅ Remembers across sessions</td>
+</tr>
+<tr>
+<td>Native tools</td>
+<td>~5</td>
+<td>~5</td>
+<td>30+ (terminal, file, web, browser, vision, git, etc.)</td>
+</tr>
+<tr>
+<td>Skills system</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅ 80+ loadable skills</td>
+</tr>
+<tr>
+<td>Session search</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅ FTS5 search over past conversations</td>
+</tr>
+<tr>
+<td>Sub-agent delegation</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅ Parallel sub-tasks</td>
+</tr>
+<tr>
+<td>Context compression</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅ Auto-compresses long conversations</td>
+</tr>
+<tr>
+<td>MCP client</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅ Connect to any MCP server</td>
+</tr>
+<tr>
+<td>Multi-provider</td>
+<td>Anthropic only</td>
+<td>OpenAI only</td>
+<td>✅ 8 providers out of the box</td>
+</tr>
+</tbody></table>
+<h2>Installation</h2>
+<pre><code class="language-bash">npm install hermes-paperclip-adapter
+</code></pre>
+<h3>Prerequisites</h3>
+<ul>
+<li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> installed (<code>pip install hermes-agent</code>)</li>
+<li>Python 3.10+</li>
+<li>At least one LLM API key (Anthropic, OpenRouter, or OpenAI)</li>
+</ul>
+<h2>Quick Start</h2>
+<h3>1. Register the adapter in your Paperclip server</h3>
+<p>Add to your Paperclip server&#39;s adapter registry (<code>server/src/adapters/registry.ts</code>):</p>
+<pre><code class="language-typescript">import * as hermesLocal from &quot;hermes-paperclip-adapter&quot;;
+import {
+  execute,
+  testEnvironment,
+  detectModel,
+  listSkills,
+  syncSkills,
+  sessionCodec,
+} from &quot;hermes-paperclip-adapter/server&quot;;
+
+registry.set(&quot;hermes_local&quot;, {
+  ...hermesLocal,
+  execute,
+  testEnvironment,
+  detectModel,
+  listSkills,
+  syncSkills,
+  sessionCodec,
+});
+</code></pre>
+<h3>2. Create a Hermes agent in Paperclip</h3>
+<p>In the Paperclip UI or via API, create an agent with adapter type <code>hermes_local</code>:</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;Hermes Engineer&quot;,
+  &quot;adapterType&quot;: &quot;hermes_local&quot;,
+  &quot;adapterConfig&quot;: {
+    &quot;model&quot;: &quot;anthropic/claude-sonnet-4&quot;,
+    &quot;maxIterations&quot;: 50,
+    &quot;timeoutSec&quot;: 300,
+    &quot;persistSession&quot;: true,
+    &quot;enabledToolsets&quot;: [&quot;terminal&quot;, &quot;file&quot;, &quot;web&quot;]
+  }
+}
+</code></pre>
+<h3>3. Assign work</h3>
+<p>Create issues in Paperclip and assign them to your Hermes agent. On each heartbeat, Hermes will:</p>
+<ol>
+<li>Receive the task instructions</li>
+<li>Use its full tool suite to complete the work</li>
+<li>Report results back to Paperclip</li>
+<li>Persist session state for continuity</li>
+</ol>
+<h2>Configuration Reference</h2>
+<h3>Core</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>model</code></td>
+<td>string</td>
+<td><code>anthropic/claude-sonnet-4</code></td>
+<td>Model in <code>provider/model</code> format</td>
+</tr>
+<tr>
+<td><code>provider</code></td>
+<td>string</td>
+<td><em>(auto-detected)</em></td>
+<td>API provider: <code>auto</code>, <code>openrouter</code>, <code>nous</code>, <code>openai-codex</code>, <code>zai</code>, <code>kimi-coding</code>, <code>minimax</code>, <code>minimax-cn</code></td>
+</tr>
+<tr>
+<td><code>timeoutSec</code></td>
+<td>number</td>
+<td><code>300</code></td>
+<td>Execution timeout in seconds</td>
+</tr>
+<tr>
+<td><code>graceSec</code></td>
+<td>number</td>
+<td><code>10</code></td>
+<td>Grace period before SIGKILL</td>
+</tr>
+</tbody></table>
+<h3>Tools</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>toolsets</code></td>
+<td>string</td>
+<td><em>(all)</em></td>
+<td>Comma-separated toolsets to enable (e.g. <code>&quot;terminal,file,web&quot;</code>)</td>
+</tr>
+</tbody></table>
+<p>Available toolsets: <code>terminal</code>, <code>file</code>, <code>web</code>, <code>browser</code>, <code>code_execution</code>, <code>vision</code>, <code>mcp</code>, <code>creative</code>, <code>productivity</code></p>
+<h3>Session &amp; Workspace</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>persistSession</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>Resume sessions across heartbeats</td>
+</tr>
+<tr>
+<td><code>worktreeMode</code></td>
+<td>boolean</td>
+<td><code>false</code></td>
+<td>Git worktree isolation</td>
+</tr>
+<tr>
+<td><code>checkpoints</code></td>
+<td>boolean</td>
+<td><code>false</code></td>
+<td>Enable filesystem checkpoints for rollback</td>
+</tr>
+</tbody></table>
+<h3>Advanced</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>hermesCommand</code></td>
+<td>string</td>
+<td><code>hermes</code></td>
+<td>Custom CLI binary path</td>
+</tr>
+<tr>
+<td><code>verbose</code></td>
+<td>boolean</td>
+<td><code>false</code></td>
+<td>Enable verbose output</td>
+</tr>
+<tr>
+<td><code>quiet</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>Quiet mode (clean output, no banner/spinner)</td>
+</tr>
+<tr>
+<td><code>extraArgs</code></td>
+<td>string[]</td>
+<td><code>[]</code></td>
+<td>Additional CLI arguments</td>
+</tr>
+<tr>
+<td><code>env</code></td>
+<td>object</td>
+<td><code>{}</code></td>
+<td>Extra environment variables</td>
+</tr>
+<tr>
+<td><code>promptTemplate</code></td>
+<td>string</td>
+<td><em>(built-in)</em></td>
+<td>Custom prompt template</td>
+</tr>
+<tr>
+<td><code>paperclipApiUrl</code></td>
+<td>string</td>
+<td><code>http://127.0.0.1:3100/api</code></td>
+<td>Paperclip API base URL</td>
+</tr>
+</tbody></table>
+<h3>Prompt Template Variables</h3>
+<p>Use <code>{{variable}}</code> syntax in <code>promptTemplate</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>{{agentId}}</code></td>
+<td>Paperclip agent ID</td>
+</tr>
+<tr>
+<td><code>{{agentName}}</code></td>
+<td>Agent display name</td>
+</tr>
+<tr>
+<td><code>{{companyId}}</code></td>
+<td>Company ID</td>
+</tr>
+<tr>
+<td><code>{{companyName}}</code></td>
+<td>Company name</td>
+</tr>
+<tr>
+<td><code>{{runId}}</code></td>
+<td>Current heartbeat run ID</td>
+</tr>
+<tr>
+<td><code>{{taskId}}</code></td>
+<td>Assigned task/issue ID</td>
+</tr>
+<tr>
+<td><code>{{taskTitle}}</code></td>
+<td>Task title</td>
+</tr>
+<tr>
+<td><code>{{taskBody}}</code></td>
+<td>Task instructions</td>
+</tr>
+<tr>
+<td><code>{{projectName}}</code></td>
+<td>Project name</td>
+</tr>
+<tr>
+<td><code>{{paperclipApiUrl}}</code></td>
+<td>Paperclip API base URL</td>
+</tr>
+<tr>
+<td><code>{{commentId}}</code></td>
+<td>Comment ID (when woken by a comment)</td>
+</tr>
+<tr>
+<td><code>{{wakeReason}}</code></td>
+<td>Reason this run was triggered</td>
+</tr>
+</tbody></table>
+<p>Conditional sections:</p>
+<ul>
+<li><code>{{#taskId}}...{{/taskId}}</code> — included only when a task is assigned</li>
+<li><code>{{#noTask}}...{{/noTask}}</code> — included only when no task (heartbeat check)</li>
+<li><code>{{#commentId}}...{{/commentId}}</code> — included only when woken by a comment</li>
+</ul>
+<h2>Architecture</h2>
+<pre><code>Paperclip                          Hermes Agent
+┌──────────────────┐               ┌──────────────────┐
+│  Heartbeat       │               │                  │
+│  Scheduler       │───execute()──▶│  hermes chat -q  │
+│                  │               │                  │
+│  Issue System    │               │  30+ Tools       │
+│  Comment Wakes   │◀──results─────│  Memory System   │
+│                  │               │  Session DB      │
+│  Cost Tracking   │               │  Skills          │
+│                  │               │  MCP Client      │
+│  Skill Sync      │◀──snapshot────│  ~/.hermes/skills│
+│  Org Chart       │               │                  │
+└──────────────────┘               └──────────────────┘
+</code></pre>
+<p>The adapter spawns Hermes Agent&#39;s CLI in single-query mode (<code>-q</code>). Hermes
+processes the task using its full tool suite, then exits. The adapter:</p>
+<ol>
+<li><strong>Captures</strong> stdout/stderr and parses token usage, session IDs, and cost</li>
+<li><strong>Parses</strong> raw output into structured <code>TranscriptEntry</code> objects (tool cards with status icons)</li>
+<li><strong>Post-processes</strong> Hermes ASCII formatting (banners, setext headings, table borders) into clean GFM markdown</li>
+<li><strong>Reclassifies</strong> benign stderr (MCP init, structured logs) so they don&#39;t show as errors</li>
+<li><strong>Tags</strong> sessions as <code>tool</code> source to keep them separate from interactive usage</li>
+<li><strong>Reports</strong> results back to Paperclip with cost, usage, and session state</li>
+</ol>
+<p>Session persistence works via Hermes&#39;s <code>--resume</code> flag — each run picks
+up where the last one left off, maintaining conversation context,
+memories, and tool state across heartbeats. The <code>sessionCodec</code> validates
+and migrates session state between runs.</p>
+<h3>Skills Integration</h3>
+<p>The adapter scans two skill sources and merges them:</p>
+<ul>
+<li><strong>Paperclip-managed skills</strong> — bundled with the adapter, togglable from the UI</li>
+<li><strong>Hermes-native skills</strong> — from <code>~/.hermes/skills/</code>, read-only, always loaded</li>
+</ul>
+<p>The <code>listSkills</code> / <code>syncSkills</code> APIs expose a unified snapshot so the
+Paperclip UI can display both managed and native skills in one view.</p>
+<h2>Development</h2>
+<pre><code class="language-bash">git clone https://github.com/NousResearch/hermes-paperclip-adapter
+cd hermes-paperclip-adapter
+npm install
+npm run build
+</code></pre>
+<h2>License</h2>
+<p>MIT — see <a href="LICENSE">LICENSE</a></p>
+<h2>Links</h2>
+<ul>
+<li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — The AI agent this adapter runs</li>
+<li><a href="https://github.com/paperclipai/paperclip">Paperclip</a> — The orchestration platform</li>
+<li><a href="https://nousresearch.com">Nous Research</a> — The team behind Hermes</li>
+<li><a href="https://paperclip.ing/docs">Paperclip Docs</a> — Paperclip documentation</li>
+</ul>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Core &amp; Official</h2>
+    <div class="related-grid">
+      <a href="/projects/NousResearch/hermes-agent" class="related-chip">hermes-agent <span class="related-stars">83.3K</span></a>
+          <a href="/projects/NousResearch/Hermes-Function-Calling" class="related-chip">Hermes-Function-Calling <span class="related-stars">1.2K</span></a>
+          <a href="/projects/NousResearch/atropos" class="related-chip">atropos <span class="related-stars">997</span></a>
+          <a href="/projects/NousResearch/hermes-agent-self-evolution" class="related-chip">hermes-agent-self-evolution <span class="related-stars">778</span></a>
+          <a href="/projects/NousResearch/autonovel" class="related-chip">autonovel <span class="related-stars">401</span></a>
+    </div>
+    
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

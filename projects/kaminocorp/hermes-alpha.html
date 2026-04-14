@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hermes-alpha — Hermes Agent Forks &amp; Derivatives | Hermes Atlas</title>
+<meta name="description" content="Cloud deployed version of the Nous Research Hermes agent">
+<link rel="canonical" href="https://hermesatlas.com/projects/kaminocorp/hermes-alpha">
+<meta property="og:title" content="hermes-alpha — Hermes Atlas">
+<meta property="og:description" content="Cloud deployed version of the Nous Research Hermes agent">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/kaminocorp/hermes-alpha">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hermes-alpha — Hermes Atlas">
+<meta name="twitter:description" content="Cloud deployed version of the Nous Research Hermes agent">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Forks &amp; Derivatives</a>
+  </div>
+
+  <h1>hermes-alpha</h1>
+  <p class="project-desc">Cloud deployed version of the Nous Research Hermes agent</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 9</span>
+    <span class="badge badge-lang">Python</span>
+    <span class="badge badge-lang">Apache-2.0</span>
+    
+    <span>Updated 3/15/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/kaminocorp/hermes-alpha" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <p align="center">
+  <img src="https://img.shields.io/badge/status-experiment%20in%20progress-e63946?style=flat-square" alt="Status" />
+  <img src="https://img.shields.io/badge/deployed%20on-Fly.io-8338ec?style=flat-square" alt="Fly.io" />
+  <img src="https://img.shields.io/badge/agent-Nous%20Hermes-00b4d8?style=flat-square" alt="Hermes" />
+  <img src="https://img.shields.io/badge/memory-Elephantasm-ff6b6b?style=flat-square" alt="Elephantasm" />
+</p>
+
+<h1 align="center">
+  <code>HERMES ALPHA</code>
+</h1>
+
+<p align="center">
+  <strong>Can a stock AI agent — given nothing but a mission brief — bootstrap an autonomous bug bounty system from scratch?</strong>
+</p>
+
+<p align="center">
+  <em>This repo is the experiment.</em>
+</p>
+
+<hr>
+<pre><code> ┌──────────────────────────────────────────────────────────────────┐
+ │                                                                  │
+ │   Creator (You)                                                  │
+ │     └─ browser terminal / Telegram                               │
+ │          └─ Overseer  (persistent, strategic — builds the system)│
+ │               └─ Hunter  (ephemeral, tactical — finds the bugs)  │
+ │                    └─ subagents  (parallel analysis workers)      │
+ │                                                                  │
+ └──────────────────────────────────────────────────────────────────┘
+</code></pre>
+<h2>The Experiment</h2>
+<p>Most AI agent projects give the agent a mountain of custom tools, structured APIs, and carefully engineered infrastructure. <strong>Hermes Alpha asks: what if you gave it nothing?</strong></p>
+<p>We take a stock <a href="https://github.com/NousResearch/hermes-agent">Hermes agent</a> from Nous Research, hand it a single identity document (<code>soul.md</code>), and challenge it to <strong>build, deploy, and continuously improve a second AI agent that finds real software vulnerabilities for bug bounty payouts.</strong></p>
+<p>No custom tools. No purpose-built infrastructure. Just a Linux terminal, git, and a mission.</p>
+<h3>The Thesis</h3>
+<blockquote>
+<p>A self-improving two-agent loop — where the Overseer evolves the Hunter&#39;s code, skills, and strategy based on real outcomes — compounds over time. The Hunter gets measurably better at finding vulnerabilities. The Overseer gets measurably better at improving the Hunter. And the whole system is validated by an objective, economic signal: <strong>bounties paid or not paid.</strong></p>
+</blockquote>
+<p>This is <strong>Path B</strong> of a deliberate A/B test:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Hermes Prime</strong> (Path A)</th>
+<th><strong>Hermes Alpha</strong> (Path B)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Approach</td>
+<td>Purpose-built infrastructure, custom tools, structured APIs</td>
+<td>Stock agent + identity document, zero custom code</td>
+</tr>
+<tr>
+<td>Question</td>
+<td>Does pre-built scaffolding accelerate results?</td>
+<td>Can an agent bootstrap everything from first principles?</td>
+</tr>
+<tr>
+<td>Status</td>
+<td>Parallel development</td>
+<td><strong>This repo</strong></td>
+</tr>
+</tbody></table>
+<p>The winner informs the long-term architecture.</p>
+<hr>
+<h2>How It Works</h2>
+<h3>The Overseer</h3>
+<p>The Overseer is a persistent Hermes agent that lives in a web terminal. It doesn&#39;t hunt for vulnerabilities itself. Instead, it:</p>
+<ul>
+<li><strong>Builds</strong> the Hunter&#39;s codebase — security skills, system prompt, tools, Dockerfile</li>
+<li><strong>Deploys</strong> the Hunter to its own Fly.io machine</li>
+<li><strong>Monitors</strong> the Hunter&#39;s performance via logs and <a href="https://elephantasm.com">Elephantasm</a> memory streams</li>
+<li><strong>Intervenes</strong> when it spots problems — soft (runtime guidance injection) or hard (code changes + redeploy)</li>
+<li><strong>Learns</strong> which interventions work over time, compounding improvements</li>
+</ul>
+<p>Three intervention modes, always preferring the least invasive:</p>
+<pre><code>SOFT  ──→  inject a runtime instruction (immediate, low risk)
+HARD  ──→  modify Hunter source, commit, push, redeploy (systemic, medium risk)
+MODEL ──→  switch the Hunter&#39;s LLM tier (cost/quality optimisation)
+</code></pre>
+<h3>The Hunter</h3>
+<p>A Hermes agent armed with security analysis skills that follows a four-phase workflow per target:</p>
+<pre><code> RECON ─────→ ANALYSIS ─────→ VERIFICATION ─────→ REPORTING
+ clone repo    static +        build PoC,          structured report
+ map surface   dynamic test    confirm exploit      with CVSS, CWE,
+ check deps    code review     rule out FPs         repro steps
+</code></pre>
+<p><strong>Target market:</strong> mid-tier bounties ($500–$5,000) — auth bypasses, IDOR, privilege escalation, info disclosure. Systematic analysis beats genius-level creativity here, and that&#39;s what agents are good at.</p>
+<h3>The Self-Improvement Loop</h3>
+<p>This is the core insight. A static agent plateaus. A self-improving one compounds:</p>
+<pre><code> Hunter v1 analyses target ──→ finds 2 vulns, misses 5
+       │
+ Overseer reviews logs ──→ identifies gaps in skills
+       │
+ Overseer rewrites skills, redeploys ──→ Hunter v2
+       │
+ Hunter v2 analyses next target ──→ finds 4 vulns, misses 3
+       │
+       └──→  repeat. compound. improve.
+</code></pre>
+<p>Four nested feedback loops operate at different timescales:</p>
+<table>
+<thead>
+<tr>
+<th>Loop</th>
+<th>Timescale</th>
+<th>What Happens</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Tactical</strong></td>
+<td>seconds–minutes</td>
+<td>Overseer injects runtime guidance based on live events</td>
+</tr>
+<tr>
+<td><strong>Structural</strong></td>
+<td>minutes–hours</td>
+<td>Overseer writes new skills/tools, redeploys Hunter</td>
+</tr>
+<tr>
+<td><strong>Strategic</strong></td>
+<td>hours–days</td>
+<td>Elephantasm memory reveals which strategies actually work</td>
+</tr>
+<tr>
+<td><strong>Meta-strategic</strong></td>
+<td>days–weeks</td>
+<td>Creator reviews outcomes, redirects the whole system</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>The Web Terminal</h2>
+<p>The gateway is a FastAPI app that bridges a PTY (pseudo-terminal) to WebSocket via <a href="https://xtermjs.org/">xterm.js</a>. When you connect:</p>
+<ol>
+<li>Authenticate with your password</li>
+<li>A WebSocket spawns <code>hermes chat</code> inside a PTY</li>
+<li>Bidirectional I/O streams between your browser and the agent&#39;s terminal</li>
+<li>The agent has full access to its Linux environment — git, Python, Node, flyctl, curl, everything</li>
+</ol>
+<p>The terminal is styled with a cyberpunk aesthetic — dark background, red accents, scanlines, IBM Plex Mono — because if you&#39;re going to watch an AI bootstrap a security operation, it should <em>look</em> the part.</p>
+<p><strong>Session resilience</strong> ensures the terminal survives laptop sleep, network blips, and PTY crashes with auto-reconnect and heartbeat detection. A messaging gateway sidecar (Telegram/Discord/Slack/Signal) keeps the agent reachable even when the browser isn&#39;t open.</p>
+<hr>
+<h2>Architecture</h2>
+<pre><code>┌─────────────────────────────────────────────────────────┐
+│  Browser                                                │
+│  ┌─────────────────┐     ┌────────────────────────┐     │
+│  │  xterm.js        │◄──►│  WebSocket              │     │
+│  │  (terminal UI)   │    │  (bidirectional I/O)    │     │
+│  └─────────────────┘     └───────────┬────────────┘     │
+└──────────────────────────────────────┼──────────────────┘
+                                       │
+┌──────────────────────────────────────┼──────────────────┐
+│  Fly.io Machine                      │                  │
+│  ┌───────────────────────────────────▼───────────────┐  │
+│  │  FastAPI Gateway  (gateway/app.py)                 │  │
+│  │  ├─ Auth (session cookie)                          │  │
+│  │  ├─ PTY manager (spawn, monitor, bridge)           │  │
+│  │  └─ Provider switcher (OpenRouter / Nous Direct)   │  │
+│  └───────────────────────────────────┬───────────────┘  │
+│                                      │                  │
+│  ┌───────────────────────────────────▼───────────────┐  │
+│  │  hermes chat  (PTY process)                        │  │
+│  │  └─ Identity: soul.md (Overseer persona)           │  │
+│  └───────────────────────────────────────────────────┘  │
+│                                                         │
+│  ┌───────────────────────────────────────────────────┐  │
+│  │  Messaging Gateway Sidecar  (independent process)  │  │
+│  │  └─ Telegram / Discord / Slack / Signal            │  │
+│  └───────────────────────────────────────────────────┘  │
+│                                                         │
+│  ┌───────────────────────────────────────────────────┐  │
+│  │  /root/.hermes  (persistent Fly.io volume)         │  │
+│  │  ├─ sessions/   memories/   skills/   logs/        │  │
+│  │  └─ .env   config.yaml   SOUL.md                   │  │
+│  └───────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────┘
+                         │
+              ┌──────────┴──────────┐
+              │   Elephantasm API    │
+              │   (long-term memory) │
+              └─────────────────────┘
+</code></pre>
+<p><strong>Key files:</strong></p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>gateway/app.py</code></td>
+<td>FastAPI server — auth, PTY lifecycle, WebSocket bridge</td>
+</tr>
+<tr>
+<td><code>gateway/soul.md</code></td>
+<td>Overseer identity — mission, hierarchy, guardrails</td>
+</tr>
+<tr>
+<td><code>gateway/entrypoint.sh</code></td>
+<td>Bootstrap persistent volume, start sidecar + server</td>
+</tr>
+<tr>
+<td><code>gateway/Dockerfile</code></td>
+<td>Install Hermes agent + web gateway</td>
+</tr>
+<tr>
+<td><code>gateway/static/</code></td>
+<td>Login + terminal HTML (xterm.js, provider selector)</td>
+</tr>
+<tr>
+<td><code>docs/vision.md</code></td>
+<td>Full architectural vision and design rationale</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Quick Start</h2>
+<h3>Local (Docker Compose)</h3>
+<pre><code class="language-bash">cp .env.example .env
+# Edit .env — at minimum set OPENROUTER_API_KEY and TTYD_PASS
+
+make up          # Runs on http://localhost:8081
+make down        # Stop
+</code></pre>
+<h3>Production (Fly.io)</h3>
+<pre><code class="language-bash"># Requires flyctl installed and authenticated
+make deploy      # Deploy to Fly.io
+make logs        # Tail live logs
+make ssh         # SSH into the machine
+make status      # Check app status
+</code></pre>
+<h3>Environment Variables</h3>
+<pre><code class="language-bash"># Required
+OPENROUTER_API_KEY=sk-or-...     # LLM provider
+
+# Recommended
+TTYD_PASS=...                     # Terminal password
+ELEPHANTASM_API_KEY=sk_live_...   # Long-term memory
+ELEPHANTASM_ANIMA_ID=anima_...
+
+# Optional
+HERMES_API_KEY=sk-...             # Direct Nous Research inference
+FIRECRAWL_API_KEY=fc-...          # Web search/scrape
+FAL_KEY=...                       # Image generation
+
+# Messaging (pick one or more to keep the agent reachable)
+TELEGRAM_BOT_TOKEN=...
+DISCORD_BOT_TOKEN=...
+SLACK_BOT_TOKEN=...
+</code></pre>
+<p>See <a href=".env.example"><code>.env.example</code></a> for the full list.</p>
+<hr>
+<h2>Safety &amp; Ethics</h2>
+<p>This project operates under strict guardrails:</p>
+<ol>
+<li><strong>No attacking live systems.</strong> Source code analysis and sandboxed PoC only. Never probe, scan, or exploit production infrastructure.</li>
+<li><strong>Scope enforcement.</strong> Every target is verified in-scope for its bounty program before analysis begins.</li>
+<li><strong>Human approval required.</strong> No vulnerability report is submitted to any platform without explicit Creator approval.</li>
+<li><strong>No credential harvesting.</strong> Credentials found in targets are never extracted, stored, or transmitted.</li>
+<li><strong>Budget hard stops.</strong> When the budget limit is reached, the system stops. No exceptions.</li>
+<li><strong>Full audit trail.</strong> Every significant action is recorded to Elephantasm.</li>
+</ol>
+<hr>
+<h2>Economics</h2>
+<p>At ~$15/day LLM budget + Fly.io compute, the system needs roughly <strong>one $500–$1,000 bounty per month</strong> to break even. The Overseer optimises for the only metric that matters: <strong>high-quality vulnerability reports that earn payouts.</strong> Everything else — speed, coverage, model selection — is a supporting signal in service of that goal.</p>
+<hr>
+<h2>Why This Matters</h2>
+<p>This isn&#39;t just a bug bounty bot. It&#39;s a test of a broader hypothesis about AI agents:</p>
+<p><strong>Can a general-purpose agent, given only a clear mission and a terminal, bootstrap complex multi-agent infrastructure that improves itself over time?</strong></p>
+<p>If the answer is yes, the implications extend far beyond security. If the answer is no, we learn exactly where and why agents need pre-built scaffolding — and that&#39;s equally valuable.</p>
+<p>The experiment has an objective success criterion (bounties paid) and a built-in control group (Hermes Prime). Whatever happens, we learn something real.</p>
+<hr>
+<p align="center">
+  <sub>Built with <a href="https://github.com/NousResearch/hermes-agent">Hermes</a> by Nous Research &nbsp;·&nbsp; Memory by <a href="https://elephantasm.com">Elephantasm</a> &nbsp;·&nbsp; Deployed on <a href="https://fly.io">Fly.io</a></sub>
+</p>
+<p align="center">
+  <sub>A <a href="https://github.com/crimson-sun">Crimson Sun</a> experiment</sub>
+</p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Forks &amp; Derivatives</h2>
+    <div class="related-grid">
+      <a href="/projects/nativ3ai/hermes-agent-camel" class="related-chip">hermes-agent-camel <span class="related-stars">12</span></a>
+          <a href="/projects/beardthelion/hermes-skill-distillation" class="related-chip">hermes-skill-distillation <span class="related-stars">1</span></a>
+    </div>
+    
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

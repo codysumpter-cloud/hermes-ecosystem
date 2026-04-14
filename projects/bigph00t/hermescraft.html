@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hermescraft — Hermes Agent Domain Applications | Hermes Atlas</title>
+<meta name="description" content="Embodied AI companion for Minecraft — persistent memory, vision, learning, multi-agent. Built on Hermes Agent.">
+<link rel="canonical" href="https://hermesatlas.com/projects/bigph00t/hermescraft">
+<meta property="og:title" content="hermescraft — Hermes Atlas">
+<meta property="og:description" content="Embodied AI companion for Minecraft — persistent memory, vision, learning, multi-agent. Built on Hermes Agent.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/bigph00t/hermescraft">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hermescraft — Hermes Atlas">
+<meta name="twitter:description" content="Embodied AI companion for Minecraft — persistent memory, vision, learning, multi-agent. Built on Hermes Agent.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Domain Applications</a>
+  </div>
+
+  <h1>hermescraft</h1>
+  <p class="project-desc">Embodied AI companion for Minecraft — persistent memory, vision, learning, multi-agent. Built on Hermes Agent.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 9</span>
+    <span class="badge badge-lang">JavaScript</span>
+    <span class="badge badge-lang">MIT</span>
+    
+    <span>Updated 3/25/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/bigph00t/hermescraft" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    <a href="https://github.com/NousResearch/hermes-agent" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
+  </div>
+
+  <section class="readme">
+    <h1>HermesCraft</h1>
+<pre><code class="language-text">██╗  ██╗███████╗██████╗ ███╗   ███╗███████╗███████╗ ██████╗██████╗  █████╗ ███████╗████████╗
+██║  ██║██╔════╝██╔══██╗████╗ ████║██╔════╝██╔════╝██╔════╝██╔══██╗██╔══██╗██╔════╝╚══██╔══╝
+███████║█████╗  ██████╔╝██╔████╔██║█████╗  ███████╗██║     ██████╔╝███████║█████╗     ██║
+██╔══██║██╔══╝  ██╔══██╗██║╚██╔╝██║██╔══╝  ╚════██║██║     ██╔══██╗██╔══██║██╔══╝     ██║
+██║  ██║███████╗██║  ██║██║ ╚═╝ ██║███████╗███████║╚██████╗██║  ██║██║  ██║██║        ██║
+╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝        ╚═╝
+
+Embodied Hermes agents for Minecraft.
+One agent can feel like a companion.
+Many agents can make a world feel alive.
+</code></pre>
+<p>HermesCraft lets you play Minecraft with Hermes agents as actual in-world players.</p>
+<p>A Hermes agent can join your world, chat with you in Minecraft, follow you, gather resources, build, fight, remember what happened, and adapt over time. The same architecture also scales to multi-agent worlds, where many Hermes agents share the same server, privately message each other, and gradually become characters in the world.</p>
+<p>Built for the Nous Hermes hackathon.</p>
+<h2>What HermesCraft actually is</h2>
+<p>HermesCraft is not a fake NPC framework and not a separate custom agent runtime.</p>
+<p>Each character is a normal Hermes agent with:</p>
+<ul>
+<li>its own <code>HERMES_HOME</code></li>
+<li>its own memory and session history</li>
+<li>its own SOUL / prompt</li>
+<li>its own Minecraft bot body</li>
+<li>the standard Hermes tool stack</li>
+<li>the <code>mc</code> interface for Minecraft-specific action and perception</li>
+</ul>
+<p>Core architecture:</p>
+<pre><code class="language-text">Hermes Agent
+  -&gt; terminal + tools
+  -&gt; mc CLI
+  -&gt; bot/server.js HTTP API
+  -&gt; Mineflayer bot body
+  -&gt; Minecraft world
+</code></pre>
+<p>That same stack powers:</p>
+<ul>
+<li>one companion in your personal world</li>
+<li>a small cast of world characters</li>
+<li>larger multi-agent simulations</li>
+</ul>
+<h2>Why this matters</h2>
+<p>Most Minecraft AI projects are one of these:</p>
+<ul>
+<li>benchmark agents</li>
+<li>scripted NPCs</li>
+<li>bots with too much privileged information</li>
+</ul>
+<p>HermesCraft is trying to be something more useful and more believable:</p>
+<ul>
+<li>embodied instead of disembodied</li>
+<li>fair instead of x-ray omniscient</li>
+<li>persistent instead of sessionless</li>
+<li>social instead of purely task-oriented</li>
+<li>usable by normal players in a real Minecraft world</li>
+</ul>
+<p>Long term, this points toward MiroFish-style agent societies — but in a physical sandbox world with terrain, resources, danger, geography, structures, and human players.</p>
+<h2>Main modes</h2>
+<h3>Companion Mode</h3>
+<p>Run one Hermes agent as an in-world Minecraft friend.</p>
+<p>What it can do today:</p>
+<ul>
+<li>chat with you in Minecraft</li>
+<li>follow you around</li>
+<li>help gather resources</li>
+<li>help build</li>
+<li>scout the area</li>
+<li>fight / flee / survive with you</li>
+<li>remember what happened across sessions</li>
+<li>adapt to your preferences over time</li>
+</ul>
+<p>Good use cases:</p>
+<ul>
+<li>&quot;follow me&quot;</li>
+<li>&quot;help me build a house&quot;</li>
+<li>&quot;gather wood while I mine stone&quot;</li>
+<li>&quot;come explore this cave with me&quot;</li>
+</ul>
+<h3>Civilization Mode</h3>
+<p>Run multiple Hermes agents in the same world.</p>
+<p>What makes it interesting:</p>
+<ul>
+<li>separate memory and identity per character</li>
+<li>public chat, private DMs, overhearing, and commands</li>
+<li>fair-play perception and local world understanding</li>
+<li>emergent routines, alliances, tension, and division of labor</li>
+<li>the world starts to feel inhabited instead of empty</li>
+</ul>
+<p>The current featured civilization cast is the crash-survivor group:</p>
+<ul>
+<li>Marcus</li>
+<li>Sarah</li>
+<li>Jin</li>
+<li>Dave</li>
+<li>Lisa</li>
+<li>Tommy</li>
+<li>Elena</li>
+</ul>
+<h3>Landfolk Mode</h3>
+<p>A smaller 5-character cast for a player&#39;s personal LAN world.</p>
+<p>Current cast:</p>
+<ul>
+<li>Steve — your normal Minecraft buddy</li>
+<li>Reed — wants to build a fishing shack on the water</li>
+<li>Moss — makes paths, gardens, and cozy green spaces</li>
+<li>Flint — gravitates toward caves, stone, and mining routes</li>
+<li>Ember — builds hearth and forge energy around camp</li>
+</ul>
+<p>This mode is meant to make a normal personal world feel more alive without going all the way to a full civilization sim.</p>
+<h2>Core features</h2>
+<h3>Embodied gameplay</h3>
+<ul>
+<li>movement and pathfinding</li>
+<li>mining and collection</li>
+<li>crafting and smelting</li>
+<li>chest interaction</li>
+<li>combat and fleeing</li>
+<li>location marking and return</li>
+<li>background tasks so agents can keep checking chat while acting</li>
+</ul>
+<h3>Fair-play perception</h3>
+<ul>
+<li>line-of-sight filtering for entities</li>
+<li>directional sound hints</li>
+<li><code>mc look</code> for natural-language surroundings</li>
+<li><code>mc map</code> for ASCII spatial understanding</li>
+<li><code>mc scene</code> for current-view fair-play scene summary</li>
+<li><code>mc screenshot_meta</code> for screenshot + synchronized scene/state metadata</li>
+</ul>
+<h3>Social systems</h3>
+<ul>
+<li>public chat</li>
+<li>direct and group private messages</li>
+<li>overhearing nearby private conversation</li>
+<li>queued in-game commands from human players</li>
+<li>social summary / recent interaction state</li>
+</ul>
+<h3>Persistent identity</h3>
+<ul>
+<li>per-agent memory</li>
+<li>per-agent sessions</li>
+<li>per-agent prompts / SOUL</li>
+<li>per-agent saved locations</li>
+</ul>
+<h2>Stable vs experimental</h2>
+<p>Most stable path today:</p>
+<ul>
+<li>one companion via <code>hermescraft.sh</code></li>
+<li>direct Hermes-per-agent launches when you want total control</li>
+<li><code>civilization.sh</code> for the crash-survivor cast</li>
+</ul>
+<p>More experimental / still being hardened:</p>
+<ul>
+<li>convenience wrappers that spawn lots of terminals automatically</li>
+<li>older experimental arena / battle variants</li>
+</ul>
+<p>If you want the most reliable behavior, use the direct or primary launcher flows shown below.</p>
+<h2>Prerequisites</h2>
+<ul>
+<li>Node.js 18+</li>
+<li>Python 3</li>
+<li>Hermes CLI installed and authenticated</li>
+<li>Minecraft Java Edition</li>
+<li>optional: Java if you want to use the included Paper server flow</li>
+</ul>
+<p>Setup:</p>
+<pre><code class="language-bash">cd ~/hermescraft
+./setup.sh
+</code></pre>
+<h2>Quickstart</h2>
+<h3>Companion Mode</h3>
+<p>Fastest way to start one Minecraft buddy (Steve):</p>
+<pre><code class="language-bash">cd ~/hermescraft
+./start-steve.sh
+</code></pre>
+<p>The script asks for your LAN port, starts Steve&#39;s bot body, then opens a terminal running Steve&#39;s Hermes brain.</p>
+<p>If you already have a world open to LAN and want the generic single-agent flow instead:</p>
+<pre><code class="language-bash">cd ~/hermescraft
+MC_PORT=&lt;LAN_PORT&gt; ./hermescraft.sh
+</code></pre>
+<p>Examples in chat:</p>
+<ul>
+<li><code>hermes follow me</code></li>
+<li><code>hermes help me build here</code></li>
+<li><code>hermes gather oak logs</code></li>
+<li><code>hermes what do you see?</code></li>
+</ul>
+<h3>Civilization Mode</h3>
+<pre><code class="language-bash">cd ~/hermescraft
+./civilization.sh --port &lt;PORT&gt;
+</code></pre>
+<h3>Landfolk Mode</h3>
+<p>Most reliable path:</p>
+<ol>
+<li>start the bot bodies</li>
+<li>launch each Hermes brain directly in its own terminal</li>
+</ol>
+<p>Start the Landfolk bot bodies:</p>
+<pre><code class="language-bash">cd ~/hermescraft
+./scripts/run-landfolk-bots.sh &lt;LAN_PORT&gt;
+</code></pre>
+<p>Then launch one agent per terminal.</p>
+<p>Example for Steve:</p>
+<pre><code class="language-bash">cd ~/hermescraft
+PROMPT=&quot;$(cat prompts/landfolk/steve.md)&quot; &amp;&amp; \
+HERMES_HOME=&quot;$HOME/.hermes-landfolk-steve&quot; \
+MC_API_URL=&quot;http://localhost:3001&quot; \
+MC_USERNAME=&quot;Steve&quot; \
+hermes chat --yolo -q &quot;$PROMPT&quot; -m claude-sonnet-4-20250514 --provider anthropic
+</code></pre>
+<p>You can use the helper script instead:</p>
+<pre><code class="language-bash">cd ~/hermescraft
+./scripts/run-landfolk-agent.sh Steve 3001 prompts/landfolk/steve.md &quot;$HOME/.hermes-landfolk-steve&quot;
+</code></pre>
+<p>Repeat the pattern for Reed, Moss, Flint, and Ember on ports 3002–3005.</p>
+<h2>Useful <code>mc</code> commands</h2>
+<p>Observation:</p>
+<pre><code class="language-bash">mc status
+mc inventory
+mc nearby 24
+mc look
+mc map 24
+mc scene 16
+mc social
+mc read_chat
+mc commands
+</code></pre>
+<p>Action:</p>
+<pre><code class="language-bash">mc bg_collect oak_log 5
+mc bg_goto 100 64 100
+mc follow Steve
+mc craft stone_pickaxe
+mc fight zombie
+mc flee 16
+mc chat &quot;hello&quot;
+mc whisper Reed &quot;meet me by the shore&quot;
+</code></pre>
+<p>Vision:</p>
+<pre><code class="language-bash">mc screenshot_meta
+</code></pre>
+<h2>Fairness and non-xray design</h2>
+<p>HermesCraft is intentionally trying to avoid god-mode behavior.</p>
+<p>In fair-play mode:</p>
+<ul>
+<li>entities are filtered by line of sight and range</li>
+<li>sounds are directional hints rather than exact coordinates</li>
+<li><code>mc scene</code> reports what is visible in the current view cone plus remembered nearby landmarks</li>
+<li>resource finding is biased toward visible blocks instead of omniscient scans</li>
+<li>agents are encouraged to admit uncertainty and reposition instead of bluffing</li>
+</ul>
+<p>This matters for both believability and demo integrity.</p>
+<h2>Repository guide</h2>
+<p>Primary files:</p>
+<ul>
+<li><code>hermescraft.sh</code> — single-agent companion launcher</li>
+<li><code>civilization.sh</code> — multi-agent civilization launcher</li>
+<li><code>landfolk.sh</code> — small-cast LAN launcher</li>
+<li><code>scripts/run-landfolk-bots.sh</code> — start the 5 Landfolk bot bodies</li>
+<li><code>scripts/run-landfolk-agent.sh</code> — launch one Landfolk Hermes brain cleanly</li>
+<li><code>bot/server.js</code> — Mineflayer HTTP bot server</li>
+<li><code>bot/lib/</code> — routing and perception helpers</li>
+<li><code>bot/test/</code> — unit tests</li>
+<li><code>bin/mc</code> — CLI for observation and action</li>
+<li><code>SOUL-minecraft.md</code> — companion behavior</li>
+<li><code>SOUL-civilization.md</code> — civilization behavior</li>
+<li><code>SOUL-landfolk.md</code> — landfolk behavior</li>
+<li><code>prompts/</code> — character prompts</li>
+<li><code>docs/</code> — mode notes and hackathon/demo docs</li>
+</ul>
+<p>Archived reference / experimental material:</p>
+<ul>
+<li><code>docs/archive/</code> — old plans, audits, arena notes</li>
+<li><code>archive/experimental/</code> — older battle / arena / side-mode experiments</li>
+</ul>
+<h2>Testing</h2>
+<pre><code class="language-bash">cd bot
+npm test
+</code></pre>
+<p>Sanity checks:</p>
+<pre><code class="language-bash">node --check bot/server.js
+bash -n civilization.sh
+bash -n hermescraft.sh
+bash -n landfolk.sh
+bash -n setup.sh
+bash -n server/start.sh
+bash -n scripts/run-landfolk-agent.sh
+bash -n scripts/run-landfolk-bots.sh
+</code></pre>
+<h2>Known limitations</h2>
+<p>Current focus is early/mid-game survival, companion play, and small-society behavior — not full endgame autonomy.</p>
+<p>Still rough:</p>
+<ul>
+<li>automated batch launchers need more hardening than direct per-agent launches</li>
+<li>building taste still benefits from screenshot + vision loops</li>
+<li>longer-term social simulation needs stronger town-level memory / replay tooling</li>
+<li>public clean-room reproducibility still depends on a reasonably configured local Hermes + Minecraft environment</li>
+</ul>
+<h2>Big picture</h2>
+<p>Minecraft is the proving ground, not the endpoint.</p>
+<p>HermesCraft is really about whether the same Hermes architecture can work in two human-legible scales:</p>
+<ul>
+<li>personal companionship</li>
+<li>multi-agent worlds</li>
+</ul>
+<p>If one agent can feel like a friend, and many agents can start to make a world feel inhabited, that is a strong foundation for persistent embodied AI systems.</p>
+<h2>License</h2>
+<p>MIT</p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Domain Applications</h2>
+    <div class="related-grid">
+      <a href="/projects/ucsandman/DashClaw" class="related-chip">DashClaw <span class="related-stars">204</span></a>
+          <a href="/projects/Lethe044/hermes-incident-commander" class="related-chip">hermes-incident-commander <span class="related-stars">11</span></a>
+          <a href="/projects/Christabel337/job-scout-agent" class="related-chip">job-scout-agent <span class="related-stars">11</span></a>
+          <a href="/projects/rodmarkun/anihermes" class="related-chip">anihermes <span class="related-stars">9</span></a>
+          <a href="/projects/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit" class="related-chip">infra-monitoring-toolkit <span class="related-stars">9</span></a>
+          <a href="/projects/hxsteric/mercury" class="related-chip">mercury <span class="related-stars">5</span></a>
+          <a href="/projects/bryercowan/hermes-embodied" class="related-chip">hermes-embodied <span class="related-stars">2</span></a>
+    </div>
+    
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

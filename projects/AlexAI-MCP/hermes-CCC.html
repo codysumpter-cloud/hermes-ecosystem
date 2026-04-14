@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hermes-CCC — Hermes Agent Developer Tools | Hermes Atlas</title>
+<meta name="description" content="Hermes Agent ported to Claude Code Channel — 46 native skills, no OAuth, no external process">
+<link rel="canonical" href="https://hermesatlas.com/projects/AlexAI-MCP/hermes-CCC">
+<meta property="og:title" content="hermes-CCC — Hermes Atlas">
+<meta property="og:description" content="Hermes Agent ported to Claude Code Channel — 46 native skills, no OAuth, no external process">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/AlexAI-MCP/hermes-CCC">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hermes-CCC — Hermes Atlas">
+<meta name="twitter:description" content="Hermes Agent ported to Claude Code Channel — 46 native skills, no OAuth, no external process">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Developer Tools</a>
+  </div>
+
+  <h1>hermes-CCC</h1>
+  <p class="project-desc">Hermes Agent ported to Claude Code Channel — 46 native skills, no OAuth, no external process</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 74</span>
+    <span class="badge badge-lang">PowerShell</span>
+    
+    
+    <span>Updated 4/7/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/AlexAI-MCP/hermes-CCC" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <h1>hermes-CCC</h1>
+<blockquote>
+<p>Hermes Agent, faithfully ported to Claude Code Channel (CCC).</p>
+</blockquote>
+<p><strong>hermes-CCC</strong> brings the power of <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by NousResearch into Claude Code&#39;s native skill system — no separate process, no OAuth, no lock-in. Everything runs inside Claude Code.</p>
+<p>Built by <a href="https://github.com/AlexAI-MCP">AlexAI-MCP</a>.</p>
+<hr>
+<h2>What&#39;s Ported</h2>
+<table>
+<thead>
+<tr>
+<th>Hermes Component</th>
+<th>hermes-CCC Equivalent</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>agent/</code> brain</td>
+<td><code>/hermes-route</code>, <code>/hermes-memory</code>, <code>/hermes-skill</code>, <code>/hermes-traj</code>, <code>/hermes-persona</code>, <code>/hermes-compress</code>, <code>/hermes-search</code>, <code>/hermes-insights</code></td>
+</tr>
+<tr>
+<td>Honcho user modeling</td>
+<td><code>/honcho</code></td>
+</tr>
+<tr>
+<td><code>skills/</code> (402)</td>
+<td>46 core skills across 10 categories</td>
+</tr>
+<tr>
+<td><code>tools/</code> (68)</td>
+<td>Claude Code native tools + MCP servers</td>
+</tr>
+<tr>
+<td><code>gateway/</code> platforms</td>
+<td>Discord/Telegram via cc-channel plugin</td>
+</tr>
+<tr>
+<td><code>cron/</code></td>
+<td>CronCreate tool</td>
+</tr>
+<tr>
+<td><code>environments/</code></td>
+<td>Claude Code execution context</td>
+</tr>
+<tr>
+<td><code>plugins/memory/</code></td>
+<td>cc-channel-mem + auto-memory</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Install</h2>
+<pre><code class="language-bash">git clone https://github.com/AlexAI-MCP/hermes-CCC
+cd hermes-CCC
+chmod +x install.sh &amp;&amp; ./install.sh
+</code></pre>
+<p><strong>Windows (PowerShell):</strong></p>
+<pre><code class="language-powershell">git clone https://github.com/AlexAI-MCP/hermes-CCC
+cd hermes-CCC
+.\install.ps1
+</code></pre>
+<p><strong>One-liner (Unix):</strong></p>
+<pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/AlexAI-MCP/hermes-CCC/main/install.sh | bash
+</code></pre>
+<p>Restart Claude Code after install to activate all skills.</p>
+<hr>
+<h2>Skill Catalog (46 skills)</h2>
+<h3>Core Brain (Hermes Identity)</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Invoke</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>hermes-route</td>
+<td><code>/hermes-route</code></td>
+<td>Analyze task complexity → recommend opus/sonnet/haiku</td>
+</tr>
+<tr>
+<td>hermes-memory</td>
+<td><code>/hermes-memory</code></td>
+<td>Memory prefetch/sync/nudge (memory_manager port)</td>
+</tr>
+<tr>
+<td>hermes-skill</td>
+<td><code>/hermes-skill</code></td>
+<td>Skill lifecycle: create, improve, audit</td>
+</tr>
+<tr>
+<td>hermes-traj</td>
+<td><code>/hermes-traj</code></td>
+<td>Log interaction trajectories for analysis/RL</td>
+</tr>
+<tr>
+<td>hermes-persona</td>
+<td><code>/hermes-persona</code></td>
+<td>Switch persona: researcher/coder/analyst/creative/advisor</td>
+</tr>
+<tr>
+<td>hermes-compress</td>
+<td><code>/hermes-compress</code></td>
+<td>Compress context, extract session state</td>
+</tr>
+<tr>
+<td>hermes-search</td>
+<td><code>/hermes-search</code></td>
+<td>Search past sessions, memory files, project history</td>
+</tr>
+<tr>
+<td>hermes-insights</td>
+<td><code>/hermes-insights</code></td>
+<td>Usage analytics and productivity insights</td>
+</tr>
+<tr>
+<td>honcho</td>
+<td><code>/honcho</code></td>
+<td>Cross-session user modeling (dialectic user profile)</td>
+</tr>
+</tbody></table>
+<h3>Software Development</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Invoke</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>systematic-debugging</td>
+<td><code>/systematic-debugging</code></td>
+<td>4-phase root cause investigation</td>
+</tr>
+<tr>
+<td>test-driven-development</td>
+<td><code>/test-driven-development</code></td>
+<td>Red-Green-Refactor TDD cycle</td>
+</tr>
+<tr>
+<td>subagent-driven-development</td>
+<td><code>/subagent-driven-development</code></td>
+<td>Parallel subagent workstreams</td>
+</tr>
+<tr>
+<td>github-code-review</td>
+<td><code>/github-code-review</code></td>
+<td>Full PR code review workflow</td>
+</tr>
+<tr>
+<td>github-pr-workflow</td>
+<td><code>/github-pr-workflow</code></td>
+<td>PR lifecycle automation</td>
+</tr>
+<tr>
+<td>github-issues</td>
+<td><code>/github-issues</code></td>
+<td>Issue management and triage</td>
+</tr>
+</tbody></table>
+<h3>MLOps / AI</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Invoke</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>vllm</td>
+<td><code>/vllm</code></td>
+<td>OpenAI-compatible LLM inference server</td>
+</tr>
+<tr>
+<td>llama-cpp</td>
+<td><code>/llama-cpp</code></td>
+<td>Local GGUF inference (CPU+GPU)</td>
+</tr>
+<tr>
+<td>whisper</td>
+<td><code>/whisper</code></td>
+<td>Speech recognition and transcription</td>
+</tr>
+<tr>
+<td>stable-diffusion</td>
+<td><code>/stable-diffusion</code></td>
+<td>Text-to-image with diffusers</td>
+</tr>
+<tr>
+<td>grpo-rl-training</td>
+<td><code>/grpo-rl-training</code></td>
+<td>GRPO/RL fine-tuning with TRL</td>
+</tr>
+<tr>
+<td>huggingface-hub</td>
+<td><code>/huggingface-hub</code></td>
+<td>Model/dataset download, upload, search</td>
+</tr>
+<tr>
+<td>flash-attention</td>
+<td><code>/flash-attention</code></td>
+<td>2-4x attention speedup, 10-20x memory savings</td>
+</tr>
+<tr>
+<td>instructor</td>
+<td><code>/instructor</code></td>
+<td>Structured Pydantic outputs from any LLM</td>
+</tr>
+<tr>
+<td>chroma</td>
+<td><code>/chroma</code></td>
+<td>Open-source vector DB for local RAG</td>
+</tr>
+<tr>
+<td>qdrant</td>
+<td><code>/qdrant</code></td>
+<td>Production vector search engine</td>
+</tr>
+<tr>
+<td>faiss</td>
+<td><code>/faiss</code></td>
+<td>Ultra-fast in-memory vector similarity search</td>
+</tr>
+<tr>
+<td>pinecone</td>
+<td><code>/pinecone</code></td>
+<td>Managed cloud vector database</td>
+</tr>
+</tbody></table>
+<h3>Research</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Invoke</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>arxiv</td>
+<td><code>/arxiv</code></td>
+<td>arXiv paper search and download</td>
+</tr>
+<tr>
+<td>research-paper-writing</td>
+<td><code>/research-paper-writing</code></td>
+<td>Academic paper workflow with LaTeX</td>
+</tr>
+<tr>
+<td>blogwatcher</td>
+<td><code>/blogwatcher</code></td>
+<td>Monitor RSS feeds and blogs</td>
+</tr>
+<tr>
+<td>duckduckgo-search</td>
+<td><code>/duckduckgo-search</code></td>
+<td>Free web search, no API key needed</td>
+</tr>
+<tr>
+<td>polymarket</td>
+<td><code>/polymarket</code></td>
+<td>Prediction market probability data</td>
+</tr>
+</tbody></table>
+<h3>Productivity</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Invoke</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>google-workspace</td>
+<td><code>/google-workspace</code></td>
+<td>Gmail, Drive, Sheets, Calendar automation</td>
+</tr>
+<tr>
+<td>linear</td>
+<td><code>/linear</code></td>
+<td>Linear issue and project management</td>
+</tr>
+<tr>
+<td>jupyter-live-kernel</td>
+<td><code>/jupyter-live-kernel</code></td>
+<td>Notebook execution and kernel management</td>
+</tr>
+</tbody></table>
+<h3>Creative</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Invoke</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>excalidraw</td>
+<td><code>/excalidraw</code></td>
+<td>Diagrams and whiteboard sketches via MCP</td>
+</tr>
+<tr>
+<td>manim-video</td>
+<td><code>/manim-video</code></td>
+<td>Mathematical animations with Manim</td>
+</tr>
+</tbody></table>
+<h3>Infrastructure</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Invoke</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>docker-management</td>
+<td><code>/docker-management</code></td>
+<td>Container, image, Compose management</td>
+</tr>
+<tr>
+<td>native-mcp</td>
+<td><code>/native-mcp</code></td>
+<td>MCP server integration in Claude Code</td>
+</tr>
+<tr>
+<td>mcporter</td>
+<td><code>/mcporter</code></td>
+<td>Convert any CLI tool into an MCP server</td>
+</tr>
+</tbody></table>
+<h3>Security / OSINT</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Invoke</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>sherlock</td>
+<td><code>/sherlock</code></td>
+<td>Username search across 400+ social networks</td>
+</tr>
+<tr>
+<td>oss-forensics</td>
+<td><code>/oss-forensics</code></td>
+<td>Supply chain risk and dependency analysis</td>
+</tr>
+<tr>
+<td>one-password</td>
+<td><code>/one-password</code></td>
+<td>1Password CLI secret management</td>
+</tr>
+</tbody></table>
+<h3>Blockchain</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Invoke</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>base-blockchain</td>
+<td><code>/base-blockchain</code></td>
+<td>Base (Ethereum L2) on-chain data queries</td>
+</tr>
+<tr>
+<td>solana</td>
+<td><code>/solana</code></td>
+<td>Solana blockchain data via JSON RPC</td>
+</tr>
+</tbody></table>
+<h3>Media</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Invoke</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>youtube-content</td>
+<td><code>/youtube-content</code></td>
+<td>Download, transcript, and research YouTube</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Relationship to Hermes Agent</h2>
+<p>This is a Claude Code-native reinterpretation of Hermes operational patterns, not a byte-for-byte clone. The key differences:</p>
+<ul>
+<li><strong>No separate process</strong> — everything runs inside Claude Code</li>
+<li><strong>No OAuth</strong> — uses Claude Code&#39;s native auth</li>
+<li><strong>No gateway</strong> — uses existing Discord/Telegram MCP plugins</li>
+<li><strong>No model dependency</strong> — works with any Claude model</li>
+</ul>
+<p>See <a href="./docs/migration-guide.md"><code>docs/migration-guide.md</code></a> for migration guidance from Hermes Agent.</p>
+<hr>
+<h2>Package Layout</h2>
+<pre><code>hermes-CCC/
+├── README.md
+├── install.sh          ← Unix/WSL installer
+├── install.ps1         ← Windows PowerShell installer
+├── CLAUDE.md           ← Maintainer notes
+├── LICENSE             ← MIT
+├── docs/
+│   ├── migration-guide.md
+│   └── tool-mapping.md
+├── .github/
+│   └── workflows/
+│       └── validate.yml
+└── skills/             ← 46 skill directories
+    ├── hermes-route/
+    ├── hermes-memory/
+    └── ...
+</code></pre>
+<hr>
+<h2>Contributors</h2>
+<table>
+<thead>
+<tr>
+<th>Contributor</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://github.com/AlexAI-MCP">AlexAI-MCP</a></td>
+<td>Creator &amp; Maintainer</td>
+</tr>
+<tr>
+<td>Claude (Anthropic)</td>
+<td>Skill design, porting, and architecture</td>
+</tr>
+<tr>
+<td>Codex (OpenAI)</td>
+<td>Parallel skill generation and build automation</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Acknowledgements</h2>
+<p>hermes-CCC is built on top of the excellent work done by the <a href="https://nousresearch.com">NousResearch</a> team on <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>. The original framework&#39;s design — its brain architecture, skill system, memory management, and platform integrations — served as the direct blueprint for this port.</p>
+<p>A sincere thank you to the Hermes Agent community and all contributors who made the original project what it is. This package exists because of your work.</p>
+<p>hermes-CCC is an independent port. Not affiliated with NousResearch.</p>
+<hr>
+<h2>License</h2>
+<p>MIT © 2026 AlexAI-MCP</p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Developer Tools</h2>
+    <div class="related-grid">
+      <a href="/projects/junhoyeo/tokscale" class="related-chip">tokscale <span class="related-stars">1.7K</span></a>
+          <a href="/projects/joeynyc/hermes-skins" class="related-chip">hermes-skins <span class="related-stars">76</span></a>
+          <a href="/projects/unmodeled-tyler/vessel-browser" class="related-chip">vessel-browser <span class="related-stars">44</span></a>
+          <a href="/projects/Abruptive/Ankh.md" class="related-chip">Ankh.md <span class="related-stars">25</span></a>
+          <a href="/projects/roli-lpci/lintlang" class="related-chip">lintlang <span class="related-stars">24</span></a>
+          <a href="/projects/0xNyk/openclaw-to-hermes" class="related-chip">openclaw-to-hermes <span class="related-stars">21</span></a>
+          <a href="/projects/42-evey/evey-setup" class="related-chip">evey-setup <span class="related-stars">7</span></a>
+          <a href="/projects/rookiemann/portable-hermes-agent" class="related-chip">portable-hermes <span class="related-stars">7</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/developer-tools">See all Developer Tools projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

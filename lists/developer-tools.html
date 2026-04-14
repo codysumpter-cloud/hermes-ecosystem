@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Developer Tools for Hermes Agent | Hermes Atlas</title>
+<meta name="description" content="CLI tools, linters, migration helpers, token trackers, and other utilities that make developing with Hermes easier.">
+<link rel="canonical" href="https://hermesatlas.com/lists/developer-tools">
+<meta property="og:title" content="Developer Tools for Hermes Agent">
+<meta property="og:description" content="CLI tools, linters, migration helpers, token trackers, and other utilities that make developing with Hermes easier.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hermesatlas.com/lists/developer-tools">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Developer Tools for Hermes Agent">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-medium: rgba(20,20,40,0.08);
+  }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg-base); color: var(--text-primary); font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased; transition: background 0.2s; }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+  .nav { padding: 16px 24px; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; max-width: 960px; margin: 0 auto; }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle { width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card); border: 1px solid var(--border-subtle); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .list-page { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+  .list-page h1 { font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px; }
+  .list-page .intro { font-size: 15px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px; }
+  .list-page table { width: 100%; border-collapse: collapse; }
+  .list-page th { text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-tertiary); border-bottom: 1px solid var(--border-subtle); background: var(--overlay-medium); }
+  .list-page td { padding: 10px 12px; border-bottom: 1px solid var(--border-subtle); }
+  .list-page tr:hover td { background: var(--overlay-medium); }
+  .back-link { margin-top: 24px; font-size: 13px; }
+  .page-footer { text-align: center; margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border-subtle); font-size: 11px; color: var(--text-muted); }
+  .page-footer a { color: var(--text-link); }
+  @media (max-width: 600px) { .list-page { padding: 24px 16px 60px; } .list-page h1 { font-size: 22px; } }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+<article class="list-page">
+  <h1>Developer Tools for Hermes Agent</h1>
+  <p class="intro">CLI tools, linters, migration helpers, token trackers, and other utilities that make developing with Hermes easier.</p>
+  <table>
+    <thead><tr><th>#</th><th>Project</th><th>Stars</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr>
+        <td style="font-weight:700;color:var(--text-tertiary)">1</td>
+        <td><a href="/projects/junhoyeo/tokscale"><strong>tokscale</strong></a></td>
+        <td style="color:var(--brand-star);font-weight:700">★ 1.9K</td>
+        <td style="color:var(--text-secondary);font-size:13px">🛰️ A CLI tool for tracking token usage from OpenCode, Claude Code, 🦞OpenClaw (Clawdbot/Moltbot), Pi, Codex, Gemini, Cu</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700;color:var(--text-tertiary)">2</td>
+        <td><a href="/projects/joeynyc/hermes-skins"><strong>hermes-skins</strong></a></td>
+        <td style="color:var(--brand-star);font-weight:700">★ 170</td>
+        <td style="color:var(--text-secondary);font-size:13px">Custom skins (visual themes) for the Hermes CLI agent</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700;color:var(--text-tertiary)">3</td>
+        <td><a href="/projects/AlexAI-MCP/hermes-CCC"><strong>hermes-CCC</strong></a></td>
+        <td style="color:var(--brand-star);font-weight:700">★ 74</td>
+        <td style="color:var(--text-secondary);font-size:13px">Hermes Agent ported to Claude Code Channel — 46 native skills, no OAuth, no external process</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700;color:var(--text-tertiary)">4</td>
+        <td><a href="/projects/unmodeled-tyler/vessel-browser"><strong>vessel-browser</strong></a></td>
+        <td style="color:var(--brand-star);font-weight:700">★ 49</td>
+        <td style="color:var(--text-secondary);font-size:13px">Built from the ground-up for agents, Vessel Browser is an open source AI browser for Linux/Windows that provides a durab</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700;color:var(--text-tertiary)">5</td>
+        <td><a href="/projects/Abruptive/Ankh.md"><strong>Ankh.md</strong></a></td>
+        <td style="color:var(--brand-star);font-weight:700">★ 32</td>
+        <td style="color:var(--text-secondary);font-size:13px">A mysterious multi-agent swarm framework summoned by TAW Agent from 1971 to help you craft a better future towards 2133 </td>
+      </tr>
+      <tr>
+        <td style="font-weight:700;color:var(--text-tertiary)">6</td>
+        <td><a href="/projects/roli-lpci/lintlang"><strong>lintlang</strong></a></td>
+        <td style="color:var(--brand-star);font-weight:700">★ 24</td>
+        <td style="color:var(--text-secondary);font-size:13px">lintlang by Hermes Labs — static linter for AI agent configs, tool descriptions, and system prompts. HERM v1.1 scoring.</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700;color:var(--text-tertiary)">7</td>
+        <td><a href="/projects/0xNyk/openclaw-to-hermes"><strong>openclaw-to-hermes</strong></a></td>
+        <td style="color:var(--brand-star);font-weight:700">★ 22</td>
+        <td style="color:var(--text-secondary);font-size:13px">Migrate from OpenClaw to Hermes Agent — complete, battle-tested migration tool</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700;color:var(--text-tertiary)">8</td>
+        <td><a href="/projects/rookiemann/portable-hermes-agent"><strong>portable-hermes</strong></a></td>
+        <td style="color:var(--brand-star);font-weight:700">★ 20</td>
+        <td style="color:var(--text-secondary);font-size:13px">Hermes Agent made portable desktop for Windows — 100 tools, GUI, local models via LM Studio, TTS, Music, ComfyUI, workfl</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700;color:var(--text-tertiary)">9</td>
+        <td><a href="/projects/42-evey/evey-setup"><strong>evey-setup</strong></a></td>
+        <td style="color:var(--brand-star);font-weight:700">★ 9</td>
+        <td style="color:var(--text-secondary);font-size:13px">Get a hermes-agent stack running in minutes. Free models, 29 plugins, zero cost.</td>
+      </tr></tbody>
+  </table>
+  <p class="back-link"><a href="/">← Back to Ecosystem Map</a></p>
+</article>
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

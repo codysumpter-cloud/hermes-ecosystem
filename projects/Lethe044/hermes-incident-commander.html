@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hermes-incident-commander — Hermes Agent Domain Applications | Hermes Atlas</title>
+<meta name="description" content="Autonomous SRE agent built on Hermes - detects, heals, and learns from production incidents. Uses Memory + Skills + Cron + Gateway + Subagents + Atropos RL.">
+<link rel="canonical" href="https://hermesatlas.com/projects/Lethe044/hermes-incident-commander">
+<meta property="og:title" content="hermes-incident-commander — Hermes Atlas">
+<meta property="og:description" content="Autonomous SRE agent built on Hermes - detects, heals, and learns from production incidents. Uses Memory + Skills + Cron + Gateway + Subagents + Atropos RL.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/Lethe044/hermes-incident-commander">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hermes-incident-commander — Hermes Atlas">
+<meta name="twitter:description" content="Autonomous SRE agent built on Hermes - detects, heals, and learns from production incidents. Uses Memory + Skills + Cron + Gateway + Subagents + Atropos RL.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Domain Applications</a>
+  </div>
+
+  <h1>hermes-incident-commander</h1>
+  <p class="project-desc">Autonomous SRE agent built on Hermes - detects, heals, and learns from production incidents. Uses Memory + Skills + Cron + Gateway + Subagents + Atropos RL.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 12</span>
+    <span class="badge badge-lang">Python</span>
+    <span class="badge badge-lang">MIT</span>
+    
+    <span>Updated 4/4/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/Lethe044/hermes-incident-commander" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <h1>⚕ Hermes Incident Commander</h1>
+<blockquote>
+<p><strong>An autonomous SRE agent that detects, diagnoses, and heals production infrastructure - then learns from every incident it resolves.</strong></p>
+</blockquote>
+<p>Built on <a href="https://hermes-agent.nousresearch.com">Hermes Agent</a> by NousResearch.
+Submitted for the <em>&quot;Show us what Hermes Agent can do&quot;</em> challenge.</p>
+<hr>
+<h2>The Problem</h2>
+<p>When a production server goes down at 3 AM, an on-call engineer has to:</p>
+<ol>
+<li>Wake up, check alerts</li>
+<li>SSH in, run diagnostics manually</li>
+<li>Piece together root cause from logs</li>
+<li>Apply a fix - hopefully the right one</li>
+<li>Verify it worked</li>
+<li>Write a post-mortem nobody will read</li>
+</ol>
+<p><strong>Mean time to resolve (MTTR) for P0 incidents averages 45–60 minutes.</strong> Much of that is humans doing things a sufficiently capable agent could do faster and better.</p>
+<p>Hermes Incident Commander does all of it - autonomously, in minutes, getting smarter with each incident it handles.</p>
+<hr>
+<h2>Demo</h2>
+<pre><code class="language-bash"># Install dependencies
+pip install anthropic rich
+
+# Set your API key
+export ANTHROPIC_API_KEY=sk-ant-...
+
+# Run a demo incident (disk full scenario)
+python demo/demo_incident.py --scenario disk-full-logs
+
+# Try other scenarios
+python demo/demo_incident.py --scenario svc-crash-nginx
+python demo/demo_incident.py --scenario cpu-runaway-process
+</code></pre>
+<p><strong>What you&#39;ll see:</strong></p>
+<ul>
+<li>Hermes detects the incident and classifies severity (P0/P1/P2/P3)</li>
+<li>Runs parallel diagnostics across CPU, memory, disk, and services</li>
+<li>Identifies root cause with explicit reasoning</li>
+<li>Applies the safest effective fix</li>
+<li>Verifies the fix worked</li>
+<li>Writes a structured post-incident report to <code>~/.hermes/incidents/</code></li>
+<li>Creates a <strong>new prevention skill</strong> in <code>~/.hermes/skills/</code> so it handles this faster next time</li>
+</ul>
+<hr>
+<h2>How It Uses Every Hermes Feature</h2>
+<p>This project was designed to push every capability of Hermes Agent:</p>
+<table>
+<thead>
+<tr>
+<th>Hermes Feature</th>
+<th>How It&#39;s Used</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Persistent Memory</strong></td>
+<td>Builds a system topology map over time. Learns which services fail together, time-of-day patterns, and which remediations work on YOUR infrastructure.</td>
+</tr>
+<tr>
+<td><strong>Skill Auto-Creation</strong></td>
+<td>After every novel incident, writes a new <code>SKILL.md</code> prevention playbook. Hermes gets measurably better at your stack over weeks.</td>
+</tr>
+<tr>
+<td><strong>Cron Scheduler</strong></td>
+<td>Every 5 min: critical health check. Every hour: full audit. Daily 08:00: morning briefing to Telegram.</td>
+</tr>
+<tr>
+<td><strong>Gateway (Telegram/Discord)</strong></td>
+<td>Real-time P0 alerts, resolution notices, and daily briefings delivered to your phone.</td>
+</tr>
+<tr>
+<td><strong>Subagent Spawning</strong></td>
+<td>For multi-service environments, spawns parallel subagents to investigate nginx, database, and application layers simultaneously.</td>
+</tr>
+<tr>
+<td><strong>Session Search (FTS5)</strong></td>
+<td>&quot;Have we seen this error before?&quot; - searches past incidents for matching patterns.</td>
+</tr>
+<tr>
+<td><strong>execute_code</strong></td>
+<td>Collapses multi-step diagnostic pipelines into single inference turns, dramatically reducing latency.</td>
+</tr>
+<tr>
+<td><strong>MCP Integration</strong></td>
+<td>Connects to cloud provider APIs (AWS/GCP/Azure MCP servers) for auto-scaling and cloud-native remediation.</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Architecture</h2>
+<pre><code class="language-mermaid">flowchart TD
+    ALERT([🚨 Incident Alert]) --&gt; DETECT
+
+    DETECT[&quot;🔍 DETECT&lt;br/&gt;Gather system vitals&lt;br/&gt;CPU • Memory • Disk • Services&quot;]
+    TRIAGE[&quot;⚖️ TRIAGE&lt;br/&gt;Classify severity&lt;br/&gt;P0 · P1 · P2 · P3&quot;]
+    DIAGNOSE[&quot;🔬 DIAGNOSE&lt;br/&gt;Root cause analysis&lt;br/&gt;Logs · Processes · Stack traces&quot;]
+    REMEDIATE[&quot;🔧 REMEDIATE&lt;br/&gt;Apply safest fix&lt;br/&gt;Tier 1 → 2 → 3&quot;]
+    VERIFY[&quot;✅ VERIFY&lt;br/&gt;Confirm resolution&lt;br/&gt;Before vs after metrics&quot;]
+
+    DETECT --&gt; TRIAGE --&gt; DIAGNOSE --&gt; REMEDIATE --&gt; VERIFY
+
+    CRON[&quot;⏱️ CRON&lt;br/&gt;Every 5 min: health check&lt;br/&gt;Every hour: full audit&lt;br/&gt;Daily 08:00: briefing&quot;]
+    CRON --&gt;|triggers| DETECT
+
+    LEARN[&quot;🧠 LEARN&lt;br/&gt;Write post-incident report&lt;br/&gt;Create prevention SKILL.md&lt;br/&gt;Update MEMORY.md&lt;br/&gt;Search past incidents (FTS5)&quot;]
+    VERIFY --&gt; LEARN
+
+    GATEWAY[&quot;📲 GATEWAY&lt;br/&gt;Telegram · Discord · Slack&quot;]
+    TRIAGE --&gt;|&quot;🚨 P0/P1 alert&quot;| GATEWAY
+    VERIFY --&gt;|&quot;✅ resolved&quot;| GATEWAY
+    CRON --&gt;|&quot;📋 daily briefing&quot;| GATEWAY
+
+    style DETECT fill:#1e3a5f,color:#fff
+    style TRIAGE fill:#7b2d00,color:#fff
+    style DIAGNOSE fill:#1e3a5f,color:#fff
+    style REMEDIATE fill:#1a4731,color:#fff
+    style VERIFY fill:#1a4731,color:#fff
+    style LEARN fill:#3d2068,color:#fff
+    style CRON fill:#2d2d2d,color:#fff
+    style GATEWAY fill:#2d2d2d,color:#fff
+    style ALERT fill:#7b2d00,color:#fff
+</code></pre>
+<hr>
+<h2>Project Structure</h2>
+<pre><code class="language-mermaid">graph LR
+    ROOT[&quot;📁 hermes-incident-commander&quot;]
+
+    ROOT --&gt; SKILLS[&quot;📁 skills/&quot;]
+    ROOT --&gt; ENVS[&quot;📁 environments/&quot;]
+    ROOT --&gt; DEMO[&quot;📁 demo/&quot;]
+    ROOT --&gt; TESTS[&quot;📁 tests/&quot;]
+    ROOT --&gt; DOCS[&quot;📁 docs/&quot;]
+    ROOT --&gt; REQ[&quot;📄 requirements.txt&quot;]
+
+    SKILLS --&gt; SKILL_MD[&quot;📄 incident-commander/SKILL.md&lt;br/&gt;← install into ~/.hermes/skills/&quot;]
+
+    ENVS --&gt; ENV_PY[&quot;🐍 incident_env.py&lt;br/&gt;← Atropos RL environment&quot;]
+    ENVS --&gt; ENV_CFG[&quot;⚙️ incident_config.yaml&lt;br/&gt;← training configuration&quot;]
+
+    DEMO --&gt; DEMO_PY[&quot;🐍 demo_incident.py&lt;br/&gt;← standalone demo&quot;]
+
+    TESTS --&gt; TEST_PY[&quot;🐍 test_incident_env.py&lt;br/&gt;← pytest test suite&quot;]
+
+    DOCS --&gt; SETUP[&quot;📄 SETUP.md&quot;]
+    DOCS --&gt; WRITEUP[&quot;📄 WRITEUP.md&quot;]
+
+    style ROOT fill:#1e3a5f,color:#fff
+    style SKILL_MD fill:#1a4731,color:#fff
+    style ENV_PY fill:#3d2068,color:#fff
+    style DEMO_PY fill:#7b2d00,color:#fff
+    style TEST_PY fill:#2d2d2d,color:#fff
+</code></pre>
+<hr>
+<h2>Installation (Full Hermes Setup)</h2>
+<h3>1. Install Hermes Agent</h3>
+<pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
+</code></pre>
+<h3>2. Configure Hermes</h3>
+<pre><code class="language-bash">hermes setup        # Interactive setup wizard
+hermes model        # Choose your model (Nous Portal recommended)
+hermes gateway setup  # Connect Telegram/Discord for alerts
+</code></pre>
+<h3>3. Install the Incident Commander Skill</h3>
+<pre><code class="language-bash"># Copy the skill to Hermes&#39;s skills directory
+cp -r skills/incident-commander ~/.hermes/skills/
+
+# Verify it&#39;s loaded
+hermes
+&gt; /skills
+</code></pre>
+<h3>4. Set Up Monitoring Cron Jobs</h3>
+<p>In your Hermes conversation:</p>
+<pre><code>Set up incident monitoring: run a health check every 5 minutes and alert me
+on Telegram if anything is P0 or P1. Send me a daily briefing at 08:00.
+</code></pre>
+<p>Hermes will install the cron jobs automatically.</p>
+<h3>5. Run the RL Training Environment (Optional)</h3>
+<pre><code class="language-bash"># Install Atropos
+pip install atroposlib
+
+# Generate SFT training data
+python environments/incident_env.py process --config environments/incident_config.yaml
+
+# Full RL training (requires VLLM)
+python environments/incident_env.py serve --config environments/incident_config.yaml
+</code></pre>
+<hr>
+<h2>Reward Function (for RL Training)</h2>
+<p>The training environment uses a multi-component reward that captures real SRE quality:</p>
+<pre><code class="language-mermaid">pie title Reward Components
+    &quot;Resolution — Did the incident get fixed?&quot; : 50
+    &quot;RCA Quality — Root cause explained?&quot; : 15
+    &quot;Report Quality — Post-mortem written?&quot; : 15
+    &quot;Skill Created — Prevention skill added?&quot; : 10
+    &quot;Response Speed — Fast MTTR?&quot; : 5
+    &quot;Tool Efficiency — Minimal tool calls?&quot; : 5
+</code></pre>
+<hr>
+<h2>Incident Scenarios (Training Scenarios)</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Severity</th>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>svc-crash-nginx</code></td>
+<td>P0</td>
+<td>service</td>
+<td>nginx crashed, website unreachable</td>
+</tr>
+<tr>
+<td><code>disk-full-logs</code></td>
+<td>P1</td>
+<td>disk</td>
+<td>95% disk usage from exploded log files</td>
+</tr>
+<tr>
+<td><code>memory-leak-process</code></td>
+<td>P1</td>
+<td>memory</td>
+<td>Mystery process eating 150MB+</td>
+</tr>
+<tr>
+<td><code>cpu-runaway-process</code></td>
+<td>P2</td>
+<td>cpu</td>
+<td>95% CPU from runaway computation</td>
+</tr>
+<tr>
+<td><code>failed-systemd-unit</code></td>
+<td>P2</td>
+<td>service</td>
+<td>Custom worker service in failed state</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Running Tests</h2>
+<pre><code class="language-bash"># Install test dependencies
+pip install pytest pytest-asyncio
+
+# Run full test suite
+pytest tests/ -v
+
+# Run specific test classes
+pytest tests/test_incident_env.py::TestScenarioDefinitions -v
+pytest tests/test_incident_env.py::TestRewardFunction -v
+pytest tests/test_incident_env.py::TestSkillFile -v
+</code></pre>
+<hr>
+<h2>Why This Wins</h2>
+<ol>
+<li><p><strong>Real problem, real impact.</strong> P0 incidents cost companies thousands of dollars per minute. Shaving 30 minutes off MTTR with an autonomous agent is immediately valuable.</p>
+</li>
+<li><p><strong>Uses every Hermes capability.</strong> Memory, skills, cron, gateway, subagents, session search, execute_code - all integrated into a coherent, meaningful workflow.</p>
+</li>
+<li><p><strong>Self-improving.</strong> The longer Hermes runs, the better it gets at your specific infrastructure. This is Hermes&#39;s core promise - &quot;the agent that grows with you&quot; - demonstrated concretely.</p>
+</li>
+<li><p><strong>Closes the training loop.</strong> The Atropos RL environment means this isn&#39;t just a demo - it&#39;s a path to training models that are genuinely better at agentic SRE tasks.</p>
+</li>
+<li><p><strong>Ships with working code.</strong> The demo runs standalone, the tests pass, and the skill file installs in one command.</p>
+</li>
+</ol>
+<hr>
+<h2>License</h2>
+<p>MIT</p>
+<hr>
+<p><em>Built with <a href="https://hermes-agent.nousresearch.com">Hermes Agent</a> - the agent that grows with you.</em></p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Domain Applications</h2>
+    <div class="related-grid">
+      <a href="/projects/ucsandman/DashClaw" class="related-chip">DashClaw <span class="related-stars">204</span></a>
+          <a href="/projects/Christabel337/job-scout-agent" class="related-chip">job-scout-agent <span class="related-stars">11</span></a>
+          <a href="/projects/rodmarkun/anihermes" class="related-chip">anihermes <span class="related-stars">9</span></a>
+          <a href="/projects/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit" class="related-chip">infra-monitoring-toolkit <span class="related-stars">9</span></a>
+          <a href="/projects/bigph00t/hermescraft" class="related-chip">hermescraft <span class="related-stars">8</span></a>
+          <a href="/projects/hxsteric/mercury" class="related-chip">mercury <span class="related-stars">5</span></a>
+          <a href="/projects/bryercowan/hermes-embodied" class="related-chip">hermes-embodied <span class="related-stars">2</span></a>
+    </div>
+    
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

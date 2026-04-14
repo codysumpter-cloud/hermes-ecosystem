@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>awesome-hermes-agent — Hermes Agent Guides &amp; Docs | Hermes Atlas</title>
+<meta name="description" content="A curated list of awesome skills, tools, integrations, and resources for Hermes Agent by Nous Research">
+<link rel="canonical" href="https://hermesatlas.com/projects/0xNyk/awesome-hermes-agent">
+<meta property="og:title" content="awesome-hermes-agent — Hermes Atlas">
+<meta property="og:description" content="A curated list of awesome skills, tools, integrations, and resources for Hermes Agent by Nous Research">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/0xNyk/awesome-hermes-agent">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="awesome-hermes-agent — Hermes Atlas">
+<meta name="twitter:description" content="A curated list of awesome skills, tools, integrations, and resources for Hermes Agent by Nous Research">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Guides &amp; Docs</a>
+  </div>
+
+  <h1>awesome-hermes-agent</h1>
+  <p class="project-desc">A curated list of awesome skills, tools, integrations, and resources for Hermes Agent by Nous Research</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 1.3K</span>
+    
+    
+    
+    <span>Updated 4/3/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/0xNyk/awesome-hermes-agent" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <p align="center">
+  <picture>
+    <img src="https://raw.githubusercontent.com/NousResearch/hermes-agent/main/assets/banner.png" alt="Awesome Hermes Agent" width="600">
+  </picture>
+</p>
+
+<h1>Awesome Hermes Agent</h1>
+<p><a href="https://awesome.re"><img src="https://awesome.re/badge.svg" alt="Awesome"></a></p>
+<blockquote>
+<p>A curated list of skills, tools, integrations, and resources for enhancing your <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> workflow — the self-improving AI agent built by <a href="https://nousresearch.com">Nous Research</a>.</p>
+</blockquote>
+<p>Hermes Agent is the only agent with a built-in learning loop — it creates skills from experience, improves them during use, searches its own past conversations, and builds a deepening model of who you are across sessions. Run it on a $5 VPS, a GPU cluster, or serverless infrastructure. Talk to it from Telegram while it works on a cloud VM.</p>
+<p>This list tracks the growing ecosystem around it.</p>
+<blockquote>
+<p>Ecosystem status (last reviewed: 2026-04-03)</p>
+<ul>
+<li>Hermes Agent: <a href="https://github.com/NousResearch/hermes-agent/releases/tag/v2026.3.30">v0.6.0 (v2026.3.30)</a></li>
+<li>Core repo: <a href="https://github.com/NousResearch/hermes-agent">NousResearch/hermes-agent</a> (23k+ stars)</li>
+<li>Latest release notes: <a href="https://github.com/NousResearch/hermes-agent/releases">Hermes releases</a></li>
+</ul>
+</blockquote>
+<hr>
+<h2>Where Do I Start?</h2>
+<p>New to Hermes? Don&#39;t try to install everything at once. Here&#39;s the three-step path from zero to productive:</p>
+<ol>
+<li><strong>Get running</strong> — Follow the <a href="https://hermes-agent.nousresearch.com/docs/">Official Docs quickstart</a>. It covers installation, CLI, configuration, and your first conversation.</li>
+<li><strong>Add your first skills</strong> — Install <a href="https://github.com/wondelai/skills">wondelai/skills</a> (380+ stars, actively maintained) — a cross-platform skills library that works with Hermes and other agents. Or try <a href="https://github.com/tlehman/litprog-skill">litprog-skill</a> (75+ stars) for literate programming across Claude Code, OpenCode, and Hermes.</li>
+<li><strong>Get a GUI</strong> — Set up <a href="https://github.com/outsourc-e/hermes-workspace">hermes-workspace</a> (500+ stars) for a Hermes-native workspace with chat, terminal, and skills manager. Or use <a href="https://github.com/builderz-labs/mission-control">mission-control</a> (3.7k+ stars) for a broader agent orchestration dashboard with fleet management, task dispatch, and cost tracking.</li>
+</ol>
+<p>Once you&#39;re comfortable, explore the full list below. Every resource is tagged with a maturity level so you know what you&#39;re getting into:</p>
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>production</strong></td>
+<td>Stable, documented, actively maintained — safe to build on</td>
+</tr>
+<tr>
+<td><strong>beta</strong></td>
+<td>Works but still evolving — expect some rough edges</td>
+</tr>
+<tr>
+<td><strong>experimental</strong></td>
+<td>Proof of concept or early-stage — learn from it, don&#39;t depend on it</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Contents</h2>
+<ul>
+<li><a href="#where-do-i-start">Where Do I Start?</a></li>
+<li><a href="#official-resources">Official Resources</a></li>
+<li><a href="#skills--plugins">Skills &amp; Plugins</a><ul>
+<li><a href="#community-skills">Community Skills</a></li>
+<li><a href="#plugins">Plugins</a></li>
+<li><a href="#agentskillsio-ecosystem">agentskills.io Ecosystem</a></li>
+<li><a href="#skill-registries--discovery">Skill Registries &amp; Discovery</a></li>
+</ul>
+</li>
+<li><a href="#tools--utilities">Tools &amp; Utilities</a><ul>
+<li><a href="#deployment">Deployment</a></li>
+</ul>
+</li>
+<li><a href="#integrations--bridges">Integrations &amp; Bridges</a></li>
+<li><a href="#multi-agent--swarms">Multi-Agent &amp; Swarms</a></li>
+<li><a href="#domain-applications">Domain Applications</a></li>
+<li><a href="#forks--derivatives">Forks &amp; Derivatives</a></li>
+<li><a href="#guides--documentation">Guides &amp; Documentation</a></li>
+<li><a href="#operational-playbooks">Operational Playbooks</a></li>
+<li><a href="#contributing">Contributing</a></li>
+<li><a href="#license">License</a></li>
+</ul>
+<hr>
+<h2>Official Resources</h2>
+<blockquote>
+<p>Core repositories and resources maintained by Nous Research.</p>
+</blockquote>
+<ul>
+<li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by <a href="https://nousresearch.com">Nous Research</a> - The core project. Self-improving AI agent with a closed learning loop, multi-platform gateway (Telegram, Discord, Slack, WhatsApp, Signal, Feishu/Lark, WeCom), six terminal backends, cron scheduling, MCP integration, profiles (multi-instance), and fallback providers. 23k+ stars. Includes automatic migration from OpenClaw.</li>
+<li><a href="https://github.com/NousResearch/autonovel">autonovel</a> by <a href="https://nousresearch.com">Nous Research</a> - Autonomous novel-writing pipeline built on Hermes. Generates long-form manuscripts (100k+ words) end-to-end using the agent loop.</li>
+<li><a href="https://github.com/NousResearch/hermes-paperclip-adapter">hermes-paperclip-adapter</a> by <a href="https://nousresearch.com">Nous Research</a> - Run Hermes as a managed employee in Paperclip companies. Connects the agent to Paperclip&#39;s task management and governance system.</li>
+<li><a href="https://github.com/NousResearch/hermes-agent-self-evolution">hermes-agent-self-evolution</a> by <a href="https://nousresearch.com">Nous Research</a> - Evolutionary self-improvement using DSPy and GEPA (Genetic Evolution of Prompt Architectures). The research pipeline for optimizing Hermes&#39;s own prompts and behaviors.</li>
+<li><a href="https://hermes-agent.nousresearch.com/docs/">Official Documentation</a> - Comprehensive docs covering quickstart, CLI, configuration, messaging gateway, security, tools, skills, memory, MCP, cron, ACP, API server, and architecture.</li>
+<li><a href="https://github.com/NousResearch/hermes-agent/releases">Release Notes</a> - Official changelog with feature highlights, migration notes, and reliability fixes for each Hermes version.</li>
+<li><a href="https://github.com/NousResearch/tinker-atropos">tinker-atropos</a> by <a href="https://nousresearch.com">Nous Research</a> - Standalone Atropos integration with Thinking Machines Tinker API. RL training infrastructure for fine-tuning tool-calling models on real agent trajectories.</li>
+<li><a href="https://agentskills.io">Skills Hub</a> - The open standard for agent skills. Compatible across Hermes, Claude Code, Cursor, Codex, and other agents.</li>
+<li><a href="https://discord.gg/NousResearch">Discord</a> - The Nous Research community. Bug reports, feature requests, and general discussion.</li>
+</ul>
+<br>
+
+<h2>Skills &amp; Plugins</h2>
+<blockquote>
+<p>Skills are procedural memory — reusable capabilities that Hermes creates from experience and improves during use. Plugins extend core functionality.</p>
+</blockquote>
+<h3>Community Skills</h3>
+<ul>
+<li><strong>[beta]</strong> <a href="https://github.com/42-evey/hermes-plugins">hermes-plugins</a> by <a href="https://github.com/42-evey">42-evey</a> - Goal management, inter-agent bridge, model selection, and cost control. Four plugins covering the most common operational needs. The inter-agent bridge is useful if you run multiple Hermes instances.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/Romanescu11/hermes-skill-factory">hermes-skill-factory</a> by <a href="https://github.com/Romanescu11">Romanescu11</a> - Meta-skill that auto-generates reusable skills from your workflows. Point it at a task you repeat and it creates a skill for it.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/tlehman/litprog-skill">litprog-skill</a> by <a href="https://github.com/tlehman">tlehman</a> - Literate programming skill that works across Claude Code, OpenCode, and Hermes. Weaves code and prose into documented, executable notebooks.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/Hmbown/Wizards-of-the-Ghosts">Wizards-of-the-Ghosts</a> by <a href="https://github.com/Hmbown">Hmbown</a> - Fantasy spell-themed skill pack. Wraps real development operations (refactoring, linting, testing) in a tabletop RPG interface.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/Cranot/super-hermes">super-hermes</a> by <a href="https://github.com/Cranot">Cranot</a> - Teaches Hermes to write its own analytical prompts. Adds a meta-reasoning layer where the agent generates better prompts for itself before executing tasks.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/Lethe044/hermes-life-os">hermes-life-os</a> by <a href="https://github.com/Lethe044">Lethe044</a> - Personal OS agent that detects daily patterns and learns your routines over time. Uses Hermes&#39;s memory system for lifestyle tracking, not just code.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/Lethe044/hermes-incident-commander">hermes-incident-commander</a> by <a href="https://github.com/Lethe044">Lethe044</a> - Autonomous SRE agent for production incident detection and self-healing. Monitors services, diagnoses failures, and applies fixes. Works well with Hermes&#39;s cron scheduling.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/Yonkoo11/hermes-dojo">hermes-dojo</a> by <a href="https://github.com/Yonkoo11">Yonkoo11</a> - Self-improvement system that monitors agent performance, identifies weak skills, and iterates on them automatically.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/Lethe044/hermes-skill-marketplace">hermes-skill-marketplace</a> by <a href="https://github.com/Lethe044">Lethe044</a> - Agent that writes, tests, and publishes new skills autonomously. Automates the skill creation and distribution lifecycle.</li>
+</ul>
+<h3>agentskills.io Ecosystem</h3>
+<blockquote>
+<p>Skills built on the <a href="https://agentskills.io">agentskills.io</a> open standard — compatible across Hermes and other agent platforms.</p>
+</blockquote>
+<ul>
+<li><strong>[production]</strong> <a href="https://github.com/wondelai/skills">wondelai/skills</a> by <a href="https://github.com/wondelai">wondelai</a> - Cross-platform agent skills for Claude Code and agentskills.io-compatible platforms.</li>
+<li><strong>[production]</strong> <a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills">Anthropic-Cybersecurity-Skills</a> by <a href="https://github.com/mukul975">mukul975</a> - 753+ structured cybersecurity skills mapped to MITRE ATT&amp;CK. The most comprehensive security skills collection available. 4k+ stars.</li>
+<li><strong>[production]</strong> <a href="https://github.com/smartcontractkit/chainlink-agent-skills">chainlink-agent-skills</a> by <a href="https://github.com/smartcontractkit">Chainlink</a> - Official Chainlink agent skills on the agentskills.io spec. Oracle network data, CCIP, and smart contract interaction.</li>
+<li><strong>[production]</strong> <a href="https://github.com/black-forest-labs/skills">black-forest-labs/skills</a> by <a href="https://github.com/black-forest-labs">Black Forest Labs</a> - Official FLUX model skills for image generation. First-party skills from the FLUX creators.</li>
+<li><strong>[production]</strong> <a href="https://github.com/DougTrajano/pydantic-ai-skills">pydantic-ai-skills</a> by <a href="https://github.com/DougTrajano">DougTrajano</a> - Pydantic AI with agentskills.io support. Adds type-safe schema validation to agent skill inputs and outputs.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/Yarmoluk/cognify-skills">cognify-skills</a> by <a href="https://github.com/Yarmoluk">Yarmoluk</a> - 19 business operations skills covering CRM, invoicing, and project management.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/tiann/execplan-skill">execplan-skill</a> by <a href="https://github.com/tiann">tiann</a> - Manages complex, long-running task execution with proper lifecycle handling — progress tracking, checkpoints, and failure recovery.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/ReinaMacCredy/maestro">maestro</a> by <a href="https://github.com/ReinaMacCredy">ReinaMacCredy</a> - Skill orchestration with Conductor planning and Beads tracking. Structures multi-step skill execution into observable pipelines.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/armelhbobdad/bmad-module-skill-forge">bmad-module-skill-forge</a> by <a href="https://github.com/armelhbobdad">armelhbobdad</a> - Transforms repos and docs into agentskills.io-compliant skills. Input a codebase, output installable skills.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/cablate/Agentic-MCP-Skill">Agentic-MCP-Skill</a> by <a href="https://github.com/cablate">cablate</a> - MCP client with agentskills.io validation. Bridges MCP tool servers with the skills standard.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/KYC-rip/ripley-xmr-gateway">ripley-xmr-gateway</a> by <a href="https://github.com/KYC-rip">KYC-rip</a> - Monero (XMR) blockchain gateway for agents. Enables private cryptocurrency transactions from agent workflows.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/PederHP/skillsdotnet">skillsdotnet</a> by <a href="https://github.com/PederHP">PederHP</a> - C# implementation of agentskills.io with MCP integration. .NET alternative to the Python/TypeScript SDKs.</li>
+</ul>
+<h3>Plugins</h3>
+<ul>
+<li><strong>[beta]</strong> <a href="https://github.com/plur-ai/plur">plur</a> by <a href="https://github.com/plur-ai">plur-ai</a> - Shared memory layer for AI agents with open engram format (YAML). Useful for persistent learning patterns in Hermes workflows.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/nativ3ai/hermes-payguard">hermes-payguard</a> by <a href="https://github.com/nativ3ai">nativ3ai</a> - Safe USDC and x402 payment plugin. Lets Hermes send and receive payments with configurable spending limits and approval flows.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/robbyczgw-cla/hermes-web-search-plus">hermes-web-search-plus</a> by <a href="https://github.com/robbyczgw-cla">robbyczgw-cla</a> - Multi-provider web search with intelligent routing across Serper, Tavily, Exa, and more. Replaces the built-in search with better result quality and source diversity.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/FahrenheitResearch/hermes-weather-plugin">hermes-weather-plugin</a> by <a href="https://github.com/FahrenheitResearch">FahrenheitResearch</a> - Professional-grade weather plugin with NWS model imagery, NEXRAD radar, and meteorological calculations.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/FahrenheitResearch/hermes-wxtrain-plugin">hermes-wxtrain-plugin</a> by <a href="https://github.com/FahrenheitResearch">FahrenheitResearch</a> - ML pipeline plugin for building training datasets from HRRR/GFS/ERA5 weather models. Companion to the weather plugin for building weather ML pipelines.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/anpicasso/hermes-plugin-chrome-profiles">hermes-plugin-chrome-profiles</a> by <a href="https://github.com/anpicasso">anpicasso</a> - Switch browser tools between Chrome profiles via CDP. Useful for multi-account testing or browsing with different saved sessions.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/raulvidis/hermes-cloudflare">hermes-cloudflare</a> by <a href="https://github.com/raulvidis">raulvidis</a> - Cloudflare browser rendering plugin. Headless browsing through Cloudflare&#39;s infrastructure instead of local browser automation.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/42-evey/evey-bridge-plugin">evey-bridge-plugin</a> by <a href="https://github.com/42-evey">42-evey</a> - Claude Code plugin for bridging with Evey (hermes-agent). Lets Claude Code and Hermes share context and hand off tasks between each other.</li>
+</ul>
+<h3>Skill Registries &amp; Discovery</h3>
+<ul>
+<li><strong>[beta]</strong> <a href="https://github.com/amanning3390/hermeshub">hermeshub</a> by <a href="https://github.com/amanning3390">amanning3390</a> - Browse, share, and install community skills for Hermes. Community hub for skill discovery, still early but growing.</li>
+<li><strong>[production]</strong> <a href="https://github.com/chigwell/skilldock.io">skilldock.io</a> by <a href="https://github.com/chigwell">chigwell</a> - Registry of reusable AI skills compatible with OpenClaw, Claude Code, and Hermes. Established cross-platform skills marketplace with an active catalog.</li>
+</ul>
+<br>
+
+<h2>Tools &amp; Utilities</h2>
+<blockquote>
+<p>Applications, CLIs, and utilities built on top of or alongside Hermes Agent.</p>
+</blockquote>
+<ul>
+<li><strong>[production]</strong> <a href="https://github.com/outsourc-e/hermes-workspace">hermes-workspace</a> by <a href="https://github.com/outsourc-e">outsourc-e</a> - Web-based workspace with chat, terminal, memory browser, skills manager, and inspector. The most complete GUI for Hermes. Built during the Nous Hackathon 2026.</li>
+<li><strong>[production]</strong> <a href="https://github.com/builderz-labs/mission-control">mission-control</a> by <a href="https://github.com/builderz-labs">builderz-labs</a> - Open-source dashboard for AI agent orchestration. Manage agent fleets, dispatch tasks, track costs, and coordinate multi-agent workflows. Self-hosted, SQLite-powered. 3.7k+ stars.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/Tranquil-Flow/hermes-neurovision">hermes-neurovision</a> by <a href="https://github.com/Tranquil-Flow">Tranquil-Flow</a> - Terminal neurovisualizer with 42 animated themes. Decorative terminal overlays for agent activity.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/roli-lpci/lintlang">lintlang</a> by <a href="https://github.com/roli-lpci">roli-lpci</a> - Static linter for AI agent configs and prompts with HERM v1.1 scoring. Catches config mistakes that silently degrade agent behavior.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/0xrsydn/nix-hermes-agent">nix-hermes-agent</a> by <a href="https://github.com/0xrsydn">0xrsydn</a> - Nix package and NixOS module for Hermes. Fully reproducible deployments via Nix flakes.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/0xNyk/openclaw-to-hermes">openclaw-to-hermes</a> by <a href="https://github.com/0xNyk">0xNyk</a> - Community migration tool from OpenClaw to Hermes. Built when the native <code>hermes-migrate</code> had critical bugs. For Hermes v0.3.0+, prefer the native <code>hermes claw migrate</code> command — it now covers the full migration path.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/unmodeled-tyler/vessel-browser">vessel-browser</a> by <a href="https://github.com/unmodeled-tyler">unmodeled-tyler</a> - AI-native Linux browser with MCP control and autonomous browsing. Full browser built for agent use, not a headless wrapper.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/rookiemann/portable-hermes-agent">portable-hermes-agent</a> by <a href="https://github.com/rookiemann">rookiemann</a> - Windows desktop app bundling 100 tools, GUI, local models, ComfyUI, and workflows in a single portable package.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/sanchomuzax/hermes-webui">hermes-webui</a> by <a href="https://github.com/sanchomuzax">sanchomuzax</a> - Lightweight process monitoring and configuration dashboard. Simpler alternative to hermes-workspace, focused on ops.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/42-evey/evey-setup">evey-setup</a> by <a href="https://github.com/42-evey">42-evey</a> - One-command setup for the full hermes-agent stack with free models and 29 plugins. Opinionated defaults that cover most use cases.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/amanning3390/flowstate-qmd">flowstate-qmd</a> by <a href="https://github.com/amanning3390">amanning3390</a> - Anticipatory memory for AI agents with RAG and vector search. Pre-fetches relevant context before queries hit the agent.</li>
+</ul>
+<h3>Deployment</h3>
+<ul>
+<li><strong>[beta]</strong> <a href="https://github.com/xmbshwll/hermes-agent-docker">hermes-agent-docker</a> by <a href="https://github.com/xmbshwll">xmbshwll</a> - Minimal Docker sandbox image for Hermes. Pull, run, done.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/Crustocean/hermes-agent-template">hermes-agent-template</a> by <a href="https://github.com/Crustocean">Crustocean</a> - Production-ready Docker image for cloud Hermes deployments on Crustocean. Infrastructure wiring pre-configured.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/ellickjohnson/portainer-stack-hermes">portainer-stack-hermes</a> by <a href="https://github.com/ellickjohnson">ellickjohnson</a> - Docker Compose + Portainer + ttyd web terminal. Deploy Hermes and access it from any browser.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/JackTheGit/hermes-autonomous-server">hermes-autonomous-server</a> by <a href="https://github.com/JackTheGit">JackTheGit</a> - Headless Hermes deployment with systemd and cron on Linux servers. Runs unattended.</li>
+</ul>
+<br>
+
+<h2>Integrations &amp; Bridges</h2>
+<blockquote>
+<p>Connect Hermes to other platforms, devices, and services.</p>
+</blockquote>
+<ul>
+<li><strong>[beta]</strong> <a href="https://github.com/raulvidis/hermes-android">hermes-android</a> by <a href="https://github.com/raulvidis">raulvidis</a> - Android device bridge with a full Python toolset. Lets Hermes interact with and control Android devices.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/teknium1/hermes-miniverse">hermes-miniverse</a> by <a href="https://github.com/teknium1">teknium1</a> - Bridge to Miniverse pixel worlds. By a Nous Research co-founder.</li>
+<li><strong>[production]</strong> <a href="https://github.com/vectorize-io/hindsight">hindsight</a> by <a href="https://github.com/vectorize-io">Vectorize</a> - Long-term memory layer for agents with retain/recall/reflect workflows. Integrates with Hermes via plugin or MCP and supports semantic, graph, and temporal retrieval.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/elkimek/honcho-self-hosted">honcho-self-hosted</a> by <a href="https://github.com/elkimek">elkimek</a> - Self-hosted Honcho memory backend setup for Hermes. Useful when you need stronger cross-session memory behavior with local control.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/marlandoj/zouroboros-swarm-executors">zouroboros-swarm-executors</a> by <a href="https://github.com/marlandoj">marlandoj</a> - Local executor bridge for Claude Code + Hermes integration. Enables task handoff between both agents.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/Crustocean/reina">reina</a> by <a href="https://github.com/Crustocean">Crustocean</a> - Autonomous AI agent for the Crustocean platform. Deep integration of Hermes into Crustocean&#39;s product.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/Rainhoole/hermes-agent-acp-skill">hermes-agent-acp-skill</a> by <a href="https://github.com/Rainhoole">Rainhoole</a> - Multi-agent delegation skill bridging Hermes, Codex, and Claude Code. Routes subtasks to the best-suited agent automatically.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/gizdusum/hermes-blockchain-oracle">hermes-blockchain-oracle</a> by <a href="https://github.com/gizdusum">gizdusum</a> - Solana blockchain intelligence MCP server. Provides on-chain analytics and wallet data to Hermes via MCP.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/Ridwannurudeen/hermes-council">hermes-council</a> by <a href="https://github.com/Ridwannurudeen">Ridwannurudeen</a> - Adversarial multi-perspective council MCP server. Multiple AI viewpoints debate before the agent commits to a decision.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/Hmbown/NemoHermes">NemoHermes</a> by <a href="https://github.com/Hmbown">Hmbown</a> - NVIDIA capability registry and Spark-aware routing layer. Routes compute-heavy tasks to available GPU infrastructure.</li>
+</ul>
+<br>
+
+<h2>Multi-Agent &amp; Swarms</h2>
+<blockquote>
+<p>Frameworks and tools for running multiple Hermes agents, or Hermes alongside other agents.</p>
+</blockquote>
+<ul>
+<li><strong>[experimental]</strong> <a href="https://github.com/Abruptive/Ankh.md">Ankh.md</a> by <a href="https://github.com/Abruptive">Abruptive</a> - TAW Agent x Hermes multi-agent swarm framework. Coordinates multiple agents with shared goals and distributed task execution.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/runtimenoteslabs/gladiator">gladiator</a> by <a href="https://github.com/runtimenoteslabs">runtimenoteslabs</a> - Two autonomous AI companies compete for GitHub stars. Hackathon project exploring autonomous agent competition dynamics.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/supermodeltools/bigiron">bigiron</a> by <a href="https://github.com/supermodeltools">supermodeltools</a> - AI-native SDLC with Hermes and Supermodel code graph. Full software development lifecycle driven by coordinated agents.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/1ilkhamov/opencode-hermes-multiagent">opencode-hermes-multiagent</a> by <a href="https://github.com/1ilkhamov">1ilkhamov</a> - 17 specialized agents for OpenCode AI. Each agent has a defined role and they communicate through structured interfaces.</li>
+</ul>
+<br>
+
+<h2>Domain Applications</h2>
+<blockquote>
+<p>Purpose-built applications using Hermes for specific domains.</p>
+</blockquote>
+<ul>
+<li><strong>[experimental]</strong> <a href="https://github.com/bryercowan/hermes-embodied">hermes-embodied</a> by <a href="https://github.com/bryercowan">bryercowan</a> - Self-improving robotics via VLA model fine-tuning. Applies the Hermes learning loop to physical robot control. Nous Hackathon project.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/bigph00t/hermescraft">hermescraft</a> by <a href="https://github.com/bigph00t">bigph00t</a> - Embodied AI companion for Minecraft with persistent memory. Tracks inventory, learns building preferences, and retains context across sessions.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/Snehal707/Hermes-mars-rover">Hermes-mars-rover</a> by <a href="https://github.com/Snehal707">Snehal707</a> - Mars rover simulator with ROS2 and Gazebo. Uses Hermes&#39;s skill creation loop to improve navigation over time.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/rodmarkun/anihermes">anihermes</a> by <a href="https://github.com/rodmarkun">rodmarkun</a> - Local anime server and tracker with natural language interface. Browse, track, and get recommendations via conversation.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/Christabel337/job-scout-agent">job-scout-agent</a> by <a href="https://github.com/Christabel337">Christabel337</a> - Autonomous job hunting agent. Searches listings, tracks applications, and manages the job search pipeline.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit">hermes-ai-infrastructure-monitoring-toolkit</a> by <a href="https://github.com/JackTheGit">JackTheGit</a> - Infrastructure monitoring, cost forecasting, and alerting via Telegram. Uses cron scheduling for continuous checks.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/Ridwannurudeen/hermes-genesis">hermes-genesis</a> by <a href="https://github.com/Ridwannurudeen">Ridwannurudeen</a> - Autonomous living world engine with procedural generation. Creates and maintains virtual worlds that grow in complexity over time.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/Lethe044/hermes-legal">hermes-legal</a> by <a href="https://github.com/Lethe044">Lethe044</a> - Contract risk analysis with English and Turkish support. Identifies risky clauses and summarizes legal obligations.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/dlkakbs/hermes-startup-architect">hermes-startup-architect</a> by <a href="https://github.com/dlkakbs">dlkakbs</a> - Generates investor-ready kits from startup ideas — market analysis, pitch deck, and financial projections.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/hxsteric/mercury">mercury</a> by <a href="https://github.com/hxsteric">hxsteric</a> - Multi-chain blockchain cash flow analyzer with WebGL dashboard. On-chain forensics and flow visualization.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/Aum08Desai/hermes-research-agent">hermes-research-agent</a> by <a href="https://github.com/Aum08Desai">Aum08Desai</a> - Autonomous LLM research agent. Handles literature review, hypothesis generation, and experiment design end-to-end.</li>
+</ul>
+<br>
+
+<h2>Forks &amp; Derivatives</h2>
+<blockquote>
+<p>Notable forks and derivative projects that take Hermes in new directions.</p>
+</blockquote>
+<ul>
+<li><strong>[beta]</strong> <a href="https://github.com/nativ3ai/hermes-agent-camel">hermes-agent-camel</a> by <a href="https://github.com/nativ3ai">nativ3ai</a> - Hermes with integrated CaMeL trust boundaries. Adds formal trust verification to the agent loop for safety-critical deployments.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/jasperan/orahermes-agent">orahermes-agent</a> by <a href="https://github.com/jasperan">jasperan</a> - Oracle AI Agent Harness — OCI GenAI and Oracle 26ai integration. Enterprise on-ramp for Oracle environments.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/kaminocorp/hermes-alpha">hermes-alpha</a> by <a href="https://github.com/kaminocorp">kaminocorp</a> - Cloud-deployed Hermes with pre-configured infrastructure templates. Skips local setup.</li>
+<li><strong>[experimental]</strong> <a href="https://github.com/beardthelion/hermes-skill-distillation">hermes-skill-distillation</a> by <a href="https://github.com/beardthelion">beardthelion</a> - Generates agentic training trajectories from real-world tasks. Hackathon project for producing fine-tuning data at scale.</li>
+</ul>
+<br>
+
+<h2>Guides &amp; Documentation</h2>
+<blockquote>
+<p>Tutorials, documentation, and learning resources.</p>
+</blockquote>
+<ul>
+<li><strong>[beta]</strong> <a href="https://github.com/mudrii/hermes-agent-docs">hermes-agent-docs</a> by <a href="https://github.com/mudrii">mudrii</a> - Comprehensive community documentation for Hermes Agent. Covers v0.2.0 in detail, useful supplement to the official docs for deployment patterns.</li>
+<li><strong>[production]</strong> <a href="https://github.com/metantonio/hermes-wsl-ubuntu">hermes-wsl-ubuntu</a> by <a href="https://github.com/metantonio">metantonio</a> - Step-by-step WSL2 Ubuntu setup instructions for running Hermes on Windows.</li>
+<li><strong>[beta]</strong> <a href="https://github.com/martymcenroe/HermesWiki">HermesWiki</a> by <a href="https://github.com/martymcenroe">martymcenroe</a> - Community-maintained wiki with practical patterns and deployment advice for building autonomous agents with Hermes.</li>
+</ul>
+<hr>
+<h2>Operational Playbooks</h2>
+<blockquote>
+<p>Practical workflow patterns that repeatedly help Hermes teams in production.</p>
+</blockquote>
+<ul>
+<li><strong>Nightly self-evolution + guardrail evaluation</strong> — Run <a href="https://github.com/NousResearch/hermes-agent-self-evolution">hermes-agent-self-evolution</a> on a schedule, then run a second verification cron to score quality and block optimization-loop gaming.</li>
+<li><strong>Memory pressure handling with Honcho/Hindsight</strong> — If you are repeating context or losing long-term recall, review <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/honcho">Honcho Memory docs</a>, and evaluate <a href="https://github.com/vectorize-io/hindsight">hindsight</a> or self-hosted memory backends.</li>
+<li><strong>Tune session timeout/expiry early</strong> — Use <a href="https://hermes-agent.nousresearch.com/docs/user-guide/configuration/">configuration docs</a> to adjust session retention for slower-moving threads so context is kept when needed.</li>
+<li><strong>OpenClaw side-by-side migration</strong> — Keep both systems running during migration using <a href="https://github.com/0xNyk/openclaw-to-hermes">openclaw-to-hermes</a> and native Hermes migration paths, then cut over once cron and routing behavior match.</li>
+<li><strong>Curate USER.md and MEMORY.md intentionally</strong> — Treat profile memory as high-signal infrastructure. Keep entries concise, durable, and preference-focused instead of dumping raw notes.</li>
+</ul>
+<hr>
+<h2>Contributing</h2>
+<p><a href="https://github.com/0xNyk/awesome-hermes-agent/issues/new">Recommend a new resource here!</a></p>
+<p>Before submitting, please ensure:</p>
+<ol>
+<li>The resource is directly related to the Hermes Agent ecosystem or the <a href="https://agentskills.io">agentskills.io</a> standard</li>
+<li>The resource has a clear README and is reasonably maintained</li>
+<li>You&#39;ve checked the list to avoid duplicates</li>
+</ol>
+<p>For suggestions about the repository itself, please <a href="https://github.com/0xNyk/awesome-hermes-agent/issues/new">open an issue</a>.</p>
+<p>Please read <a href="CONTRIBUTING.md">CONTRIBUTING.md</a> before submitting.</p>
+<hr>
+<div align="center">
+
+<p><strong>Need agent infrastructure, trading systems, or Solana applications built for your team?</strong></p>
+<p><a href="https://builderz.dev">Builderz</a> ships production AI systems — 32+ products across 15 countries.</p>
+<p><a href="https://builderz.dev">Get in touch</a> | <a href="https://x.com/nyk_builderz">@nyk_builderz</a></p>
+</div>
+
+<h2>License</h2>
+<p><a href="https://creativecommons.org/licenses/by/4.0/"><img src="https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg" alt="CC BY 4.0"></a></p>
+<p>This list is licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International</a>. You are free to share and adapt this material for any purpose, provided you give appropriate attribution.</p>
+<p>All resources included in this list have their own license terms.</p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Guides &amp; Docs</h2>
+    <div class="related-grid">
+      <a href="/projects/alchaincyf/hermes-agent-orange-book" class="related-chip">hermes-agent-orange-book <span class="related-stars">315</span></a>
+          <a href="/projects/OnlyTerp/hermes-optimization-guide" class="related-chip">hermes-optimization-guide <span class="related-stars">51</span></a>
+          <a href="/projects/metantonio/hermes-wsl-ubuntu" class="related-chip">hermes-wsl-ubuntu <span class="related-stars">8</span></a>
+          <a href="/projects/mudrii/hermes-agent-docs" class="related-chip">hermes-agent-docs <span class="related-stars">6</span></a>
+          <a href="/projects/martymcenroe/HermesWiki" class="related-chip">HermesWiki <span class="related-stars">2</span></a>
+    </div>
+    
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

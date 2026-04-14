@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hermes-agent-self-evolution — Hermes Agent Core &amp; Official | Hermes Atlas</title>
+<meta name="description" content="⚒ Evolutionary self-improvement for Hermes Agent — optimize skills, prompts, and code using DSPy + GEPA">
+<link rel="canonical" href="https://hermesatlas.com/projects/NousResearch/hermes-agent-self-evolution">
+<meta property="og:title" content="hermes-agent-self-evolution — Hermes Atlas">
+<meta property="og:description" content="⚒ Evolutionary self-improvement for Hermes Agent — optimize skills, prompts, and code using DSPy + GEPA">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/NousResearch/hermes-agent-self-evolution">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hermes-agent-self-evolution — Hermes Atlas">
+<meta name="twitter:description" content="⚒ Evolutionary self-improvement for Hermes Agent — optimize skills, prompts, and code using DSPy + GEPA">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Core &amp; Official</a>
+  </div>
+
+  <h1>hermes-agent-self-evolution <span style="font-size:14px;color:var(--brand-purple)">OFFICIAL</span></h1>
+  <p class="project-desc">⚒ Evolutionary self-improvement for Hermes Agent — optimize skills, prompts, and code using DSPy + GEPA</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 1.7K</span>
+    <span class="badge badge-lang">Python</span>
+    
+    <span class="badge badge-official">Nous Research</span>
+    <span>Updated 3/29/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/NousResearch/hermes-agent-self-evolution" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <h1>🧬 Hermes Agent Self-Evolution</h1>
+<p><strong>Evolutionary self-improvement for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>.</strong></p>
+<p>Hermes Agent Self-Evolution uses DSPy + GEPA (Genetic-Pareto Prompt Evolution) to automatically evolve and optimize Hermes Agent&#39;s skills, tool descriptions, system prompts, and code — producing measurably better versions through reflective evolutionary search.</p>
+<p><strong>No GPU training required.</strong> Everything operates via API calls — mutating text, evaluating results, and selecting the best variants. ~$2-10 per optimization run.</p>
+<h2>How It Works</h2>
+<pre><code>Read current skill/prompt/tool ──► Generate eval dataset
+                                        │
+                                        ▼
+                                   GEPA Optimizer ◄── Execution traces
+                                        │                    ▲
+                                        ▼                    │
+                                   Candidate variants ──► Evaluate
+                                        │
+                                   Constraint gates (tests, size limits, benchmarks)
+                                        │
+                                        ▼
+                                   Best variant ──► PR against hermes-agent
+</code></pre>
+<p>GEPA reads execution traces to understand <em>why</em> things fail (not just that they failed), then proposes targeted improvements. ICLR 2026 Oral, MIT licensed.</p>
+<h2>Quick Start</h2>
+<pre><code class="language-bash"># Install
+git clone https://github.com/NousResearch/hermes-agent-self-evolution.git
+cd hermes-agent-self-evolution
+pip install -e &quot;.[dev]&quot;
+
+# Point at your hermes-agent repo
+export HERMES_AGENT_REPO=~/.hermes/hermes-agent
+
+# Evolve a skill (synthetic eval data)
+python -m evolution.skills.evolve_skill \
+    --skill github-code-review \
+    --iterations 10 \
+    --eval-source synthetic
+
+# Or use real session history from Claude Code, Copilot, and Hermes
+python -m evolution.skills.evolve_skill \
+    --skill github-code-review \
+    --iterations 10 \
+    --eval-source sessiondb
+</code></pre>
+<h2>What It Optimizes</h2>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Target</th>
+<th>Engine</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Phase 1</strong></td>
+<td>Skill files (SKILL.md)</td>
+<td>DSPy + GEPA</td>
+<td>✅ Implemented</td>
+</tr>
+<tr>
+<td><strong>Phase 2</strong></td>
+<td>Tool descriptions</td>
+<td>DSPy + GEPA</td>
+<td>🔲 Planned</td>
+</tr>
+<tr>
+<td><strong>Phase 3</strong></td>
+<td>System prompt sections</td>
+<td>DSPy + GEPA</td>
+<td>🔲 Planned</td>
+</tr>
+<tr>
+<td><strong>Phase 4</strong></td>
+<td>Tool implementation code</td>
+<td>Darwinian Evolver</td>
+<td>🔲 Planned</td>
+</tr>
+<tr>
+<td><strong>Phase 5</strong></td>
+<td>Continuous improvement loop</td>
+<td>Automated pipeline</td>
+<td>🔲 Planned</td>
+</tr>
+</tbody></table>
+<h2>Engines</h2>
+<table>
+<thead>
+<tr>
+<th>Engine</th>
+<th>What It Does</th>
+<th>License</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong><a href="https://github.com/stanfordnlp/dspy">DSPy</a> + <a href="https://github.com/gepa-ai/gepa">GEPA</a></strong></td>
+<td>Reflective prompt evolution — reads execution traces, proposes targeted mutations</td>
+<td>MIT</td>
+</tr>
+<tr>
+<td><strong><a href="https://github.com/imbue-ai/darwinian_evolver">Darwinian Evolver</a></strong></td>
+<td>Code evolution with Git-based organisms</td>
+<td>AGPL v3 (external CLI only)</td>
+</tr>
+</tbody></table>
+<h2>Guardrails</h2>
+<p>Every evolved variant must pass:</p>
+<ol>
+<li><strong>Full test suite</strong> — <code>pytest tests/ -q</code> must pass 100%</li>
+<li><strong>Size limits</strong> — Skills ≤15KB, tool descriptions ≤500 chars</li>
+<li><strong>Caching compatibility</strong> — No mid-conversation changes</li>
+<li><strong>Semantic preservation</strong> — Must not drift from original purpose</li>
+<li><strong>PR review</strong> — All changes go through human review, never direct commit</li>
+</ol>
+<h2>Full Plan</h2>
+<p>See <a href="PLAN.md">PLAN.md</a> for the complete architecture, evaluation data strategy, constraints, benchmarks integration, and phased timeline.</p>
+<h2>License</h2>
+<p>MIT — © 2026 Nous Research</p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Core &amp; Official</h2>
+    <div class="related-grid">
+      <a href="/projects/NousResearch/hermes-agent" class="related-chip">hermes-agent <span class="related-stars">83.3K</span></a>
+          <a href="/projects/NousResearch/Hermes-Function-Calling" class="related-chip">Hermes-Function-Calling <span class="related-stars">1.2K</span></a>
+          <a href="/projects/NousResearch/atropos" class="related-chip">atropos <span class="related-stars">997</span></a>
+          <a href="/projects/NousResearch/hermes-paperclip-adapter" class="related-chip">hermes-paperclip-adapter <span class="related-stars">663</span></a>
+          <a href="/projects/NousResearch/autonovel" class="related-chip">autonovel <span class="related-stars">401</span></a>
+    </div>
+    
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

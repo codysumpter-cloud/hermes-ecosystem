@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>skillsdotnet — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
+<meta name="description" content="C# implementation of agent skills (agentskills.io) with MCP integration and convenience.">
+<link rel="canonical" href="https://hermesatlas.com/projects/PederHP/skillsdotnet">
+<meta property="og:title" content="skillsdotnet — Hermes Atlas">
+<meta property="og:description" content="C# implementation of agent skills (agentskills.io) with MCP integration and convenience.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/PederHP/skillsdotnet">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="skillsdotnet — Hermes Atlas">
+<meta name="twitter:description" content="C# implementation of agent skills (agentskills.io) with MCP integration and convenience.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Skills &amp; Skill Registries</a>
+  </div>
+
+  <h1>skillsdotnet</h1>
+  <p class="project-desc">C# implementation of agent skills (agentskills.io) with MCP integration and convenience.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 7</span>
+    <span class="badge badge-lang">C#</span>
+    
+    
+    <span>Updated 3/8/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/PederHP/skillsdotnet" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <h1>SkillsDotNet</h1>
+<p><a href="https://www.nuget.org/packages/SkillsDotNet"><img src="https://img.shields.io/nuget/v/SkillsDotNet.svg" alt="NuGet"></a>
+<a href="https://www.nuget.org/packages/SkillsDotNet.Mcp"><img src="https://img.shields.io/nuget/v/SkillsDotNet.Mcp.svg" alt="NuGet"></a></p>
+<p>Agent skills (<a href="https://agentskills.io">agentskills.io</a>) for the C# MCP SDK.</p>
+<blockquote>
+<p><strong>Experimental:</strong> This package is under active development and its API is subject to change.</p>
+</blockquote>
+<p>Skills provide &quot;context-as-progressive-disclosure&quot; via <code>SKILL.md</code> files. This library uses a <code>skill://</code> URI convention to distribute skills as MCP resources -- clients can load frontmatter for discovery (~50-100 tokens), full SKILL.md on demand, and supporting files as needed.</p>
+<h2>Installation</h2>
+<pre><code>dotnet add package SkillsDotNet.Mcp
+</code></pre>
+<p>Requires the official <a href="https://github.com/modelcontextprotocol/csharp-sdk">C# MCP SDK</a> (<code>ModelContextProtocol</code> package).</p>
+<p>If you only need the core skill types (parsing, validation, scanning) without the MCP transport layer:</p>
+<pre><code>dotnet add package SkillsDotNet
+</code></pre>
+<h2>Server-Side Usage</h2>
+<h3>Register a single skill directory</h3>
+<pre><code class="language-csharp">builder.Services
+    .AddMcpServer()
+    .WithSkill(&quot;/path/to/my-skill&quot;);
+</code></pre>
+<h3>Register all skills from a directory</h3>
+<p>Each subdirectory containing a <code>SKILL.md</code> is registered as a skill:</p>
+<pre><code class="language-csharp">builder.Services
+    .AddMcpServer()
+    .WithSkillsDirectory(&quot;/path/to/skills&quot;);
+</code></pre>
+<h3>Vendor shortcuts</h3>
+<p>Register skills from well-known agent directories:</p>
+<pre><code class="language-csharp">builder.Services
+    .AddMcpServer()
+    .WithClaudeSkills()    // ~/.claude/skills/
+    .WithCursorSkills()    // ~/.cursor/skills/
+    .WithCopilotSkills()   // ~/.copilot/skills/
+    .WithCodexSkills()     // /etc/codex/skills/ + ~/.codex/skills/
+    .WithGeminiSkills()    // ~/.gemini/skills/
+    .WithGooseSkills()     // ~/.config/agents/skills/
+    .WithOpenCodeSkills(); // ~/.config/opencode/skills/
+</code></pre>
+<h3>Options</h3>
+<pre><code class="language-csharp">builder.Services
+    .AddMcpServer()
+    .WithSkillsDirectory(&quot;/path/to/skills&quot;, new SkillOptions
+    {
+        // List every file as a separate resource (default: Template)
+        SupportingFiles = SkillFileMode.Resources,
+
+        // Custom main file name (default: &quot;SKILL.md&quot;)
+        MainFileName = &quot;SKILL.md&quot;
+    });
+</code></pre>
+<h2>Client-Side Usage</h2>
+<h3>Discover skills on a server</h3>
+<pre><code class="language-csharp">var skills = await client.ListSkillsAsync();
+foreach (var skill in skills)
+{
+    Console.WriteLine($&quot;{skill.Name}: {skill.Description}&quot;);
+}
+</code></pre>
+<h3>Read a skill&#39;s manifest</h3>
+<pre><code class="language-csharp">var manifest = await client.GetSkillManifestAsync(&quot;code-review&quot;);
+foreach (var file in manifest.Files)
+{
+    Console.WriteLine($&quot;  {file.Path} ({file.Size} bytes, {file.Hash})&quot;);
+}
+</code></pre>
+<h3>Download a skill locally</h3>
+<pre><code class="language-csharp">var path = await client.DownloadSkillAsync(&quot;code-review&quot;, targetDirectory: &quot;./skills&quot;);
+</code></pre>
+<h3>Sync all skills from a server</h3>
+<pre><code class="language-csharp">var paths = await client.SyncSkillsAsync(targetDirectory: &quot;./skills&quot;);
+</code></pre>
+<h3>Using skills with <code>IChatClient</code></h3>
+<p><code>SkillCatalog</code> discovers skills from one or more MCP servers and provides two things for use with <a href="https://learn.microsoft.com/en-us/dotnet/ai/microsoft-extensions-ai"><code>Microsoft.Extensions.AI</code></a>: context blocks (frontmatter summaries for the system prompt) and a <code>load_skill</code> tool the model can call to load a skill&#39;s full content on demand.</p>
+<pre><code class="language-csharp">// Build a catalog from one or more MCP servers
+var catalog = new SkillCatalog();
+await catalog.AddClientAsync(mcpClient1);
+await catalog.AddClientAsync(mcpClient2);
+
+// Get frontmatter context blocks — add to the system message so the
+// model knows what skills are available (~50-100 tokens each)
+var contexts = catalog.GetSkillContexts(); // IReadOnlyList&lt;TextContent&gt;
+
+var messages = new List&lt;ChatMessage&gt;
+{
+    new(ChatRole.System, [
+        new TextContent(&quot;You are a helpful assistant. The following skills are available:&quot;),
+        .. contexts
+    ]),
+    new(ChatRole.User, &quot;Help me review this pull request&quot;),
+};
+
+// Get the load_skill tool — add to ChatOptions.Tools so the model
+// can load a skill&#39;s full SKILL.md content when it decides to use one
+var options = new ChatOptions
+{
+    Tools = [catalog.LoadSkillTool],
+};
+
+var response = await chatClient.GetResponseAsync(messages, options);
+</code></pre>
+<p>If a server disconnects, remove its skills from the catalog:</p>
+<pre><code class="language-csharp">catalog.RemoveClient(mcpClient1);
+</code></pre>
+<h3>Handling skill dependencies</h3>
+<p>Skills can declare MCP server dependencies in their frontmatter:</p>
+<pre><code class="language-markdown">---
+name: explore-everything
+description: Explores an MCP server
+dependencies: [everything-server]
+---
+</code></pre>
+<p>When a skill with dependencies is loaded via the <code>load_skill</code> tool, the <code>OnDependenciesRequired</code> callback fires so the client host can connect to the required servers on demand:</p>
+<pre><code class="language-csharp">catalog.OnDependenciesRequired = async (request, cancellationToken) =&gt;
+{
+    Console.WriteLine($&quot;Skill &#39;{request.SkillName}&#39; requires: {string.Join(&quot;, &quot;, request.ServerNames)}&quot;);
+
+    foreach (var serverName in request.ServerNames)
+    {
+        // Look up and connect to the server using your own configuration
+        var client = await ConnectToServerAsync(serverName, cancellationToken);
+        if (client is null)
+            return false; // Signal failure — LoadSkillAsync will throw
+    }
+
+    return true; // All dependencies satisfied
+};
+</code></pre>
+<p>The callback receives a <code>SkillDependencyRequest</code> with the skill name and the list of required server names. Return <code>true</code> when all servers are connected, or <code>false</code> to abort (which causes <code>LoadSkillAsync</code> to throw <code>InvalidOperationException</code>). If the callback is not set, skills with dependencies load silently without notification.</p>
+<p>See the <a href="samples/DynamicMcpServers/">DynamicMcpServers sample</a> for a complete example.</p>
+<h2>URI Convention</h2>
+<p>Each skill exposes three resources following the <a href="https://github.com/jlowin/fastmcp">FastMCP</a> convention:</p>
+<table>
+<thead>
+<tr>
+<th>URI</th>
+<th>Type</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>skill://{name}/SKILL.md</code></td>
+<td>Resource (listed)</td>
+<td>Full SKILL.md content</td>
+</tr>
+<tr>
+<td><code>skill://{name}/_manifest</code></td>
+<td>Resource (listed)</td>
+<td>JSON manifest with file listing</td>
+</tr>
+<tr>
+<td><code>skill://{name}/{+path}</code></td>
+<td>ResourceTemplate</td>
+<td>Supporting files on demand</td>
+</tr>
+</tbody></table>
+<h3>Manifest format</h3>
+<pre><code class="language-json">{
+  &quot;skill&quot;: &quot;code-review&quot;,
+  &quot;files&quot;: [
+    { &quot;path&quot;: &quot;SKILL.md&quot;, &quot;size&quot;: 512, &quot;hash&quot;: &quot;sha256:abc123...&quot; },
+    { &quot;path&quot;: &quot;references/checklist.md&quot;, &quot;size&quot;: 256, &quot;hash&quot;: &quot;sha256:def456...&quot; }
+  ]
+}
+</code></pre>
+<h2>Writing a Skill</h2>
+<p>A skill is a directory containing a <code>SKILL.md</code> file with YAML frontmatter:</p>
+<pre><code>my-skill/
+  SKILL.md
+  references/
+    example.md
+</code></pre>
+<pre><code class="language-markdown">---
+name: my-skill
+description: What this skill does
+license: MIT
+compatibility: claude, cursor
+metadata:
+  author: your-name
+  version: &quot;1.0&quot;
+---
+
+# My Skill
+
+Instructions for the agent go here.
+</code></pre>
+<h3>Frontmatter fields</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>name</code></td>
+<td>Yes</td>
+<td>1-64 chars, lowercase alphanumeric + hyphens, must match directory name</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>Yes</td>
+<td>1-1024 chars</td>
+</tr>
+<tr>
+<td><code>license</code></td>
+<td>No</td>
+<td>License identifier</td>
+</tr>
+<tr>
+<td><code>compatibility</code></td>
+<td>No</td>
+<td>Comma-separated list of compatible agents (max 500 chars)</td>
+</tr>
+<tr>
+<td><code>dependencies</code></td>
+<td>No</td>
+<td>List of required MCP server names (connected on demand via <code>OnDependenciesRequired</code>)</td>
+</tr>
+<tr>
+<td><code>allowed-tools</code></td>
+<td>No</td>
+<td>Experimental tool restrictions</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td>No</td>
+<td>Arbitrary key-value pairs for client-specific data</td>
+</tr>
+</tbody></table>
+<h3>Name rules</h3>
+<p>Per the <a href="https://agentskills.io">agentskills.io spec</a>:</p>
+<ul>
+<li>Lowercase letters, digits, and hyphens only</li>
+<li>No leading, trailing, or consecutive hyphens</li>
+<li>NFKC normalized, max 64 characters</li>
+<li>Must match the directory name</li>
+</ul>
+<h2>Packages</h2>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SkillsDotNet</code></td>
+<td>Core library: <code>FrontmatterParser</code>, <code>SkillValidator</code>, <code>SkillDirectoryScanner</code>, <code>SkillInfo</code>, <code>SkillFileInfo</code>, <code>SkillContextExtensions</code>. Depends on <code>Microsoft.Extensions.AI.Abstractions</code>.</td>
+</tr>
+<tr>
+<td><code>SkillsDotNet.Mcp</code></td>
+<td>MCP transport layer: <code>SkillResourceFactory</code>, <code>SkillCatalog</code>, builder extensions, client extensions. Depends on <code>SkillsDotNet</code> and <code>ModelContextProtocol</code>.</td>
+</tr>
+</tbody></table>
+<h2>Target Frameworks</h2>
+<ul>
+<li>.NET 10</li>
+<li>.NET 9</li>
+<li>.NET 8</li>
+</ul>
+<h2>Acknowledgements</h2>
+<p>Many conventions and especially the server-side resource implementations in this library are inspired by <a href="https://github.com/jlowin/fastmcp">FastMCP 3.0</a>. We&#39;ve tried to align with FastMCP whenever possible.</p>
+<h2>License</h2>
+<p>MIT</p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Skills &amp; Skill Registries</h2>
+    <div class="related-grid">
+      <a href="/projects/mukul975/Anthropic-Cybersecurity-Skills" class="related-chip">Anthropic-Cybersecurity-Skills <span class="related-stars">4.1K</span></a>
+          <a href="/projects/conorbronsdon/avoid-ai-writing" class="related-chip">avoid-ai-writing <span class="related-stars">759</span></a>
+          <a href="/projects/wondelai/skills" class="related-chip">wondelai/skills <span class="related-stars">480</span></a>
+          <a href="/projects/DougTrajano/pydantic-ai-skills" class="related-chip">pydantic-ai-skills <span class="related-stars">220</span></a>
+          <a href="/projects/Agents365-ai/drawio-skill" class="related-chip">drawio-skill <span class="related-stars">131</span></a>
+          <a href="/projects/smartcontractkit/chainlink-agent-skills" class="related-chip">chainlink-agent-skills <span class="related-stars">85</span></a>
+          <a href="/projects/tlehman/litprog-skill" class="related-chip">litprog-skill <span class="related-stars">81</span></a>
+          <a href="/projects/esaradev/icarus-plugin" class="related-chip">icarus-plugin <span class="related-stars">51</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/top-skills">See all Skills &amp; Skill Registries projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

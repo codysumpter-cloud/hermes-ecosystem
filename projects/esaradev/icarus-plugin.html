@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>icarus-plugin — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
+<meta name="description" content="Self-memory and replacement models for Hermes agents. Remember your work. Train your replacement.">
+<link rel="canonical" href="https://hermesatlas.com/projects/esaradev/icarus-plugin">
+<meta property="og:title" content="icarus-plugin — Hermes Atlas">
+<meta property="og:description" content="Self-memory and replacement models for Hermes agents. Remember your work. Train your replacement.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/esaradev/icarus-plugin">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="icarus-plugin — Hermes Atlas">
+<meta name="twitter:description" content="Self-memory and replacement models for Hermes agents. Remember your work. Train your replacement.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Skills &amp; Skill Registries</a>
+  </div>
+
+  <h1>icarus-plugin</h1>
+  <p class="project-desc">Self-memory and replacement models for Hermes agents. Remember your work. Train your replacement.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 54</span>
+    <span class="badge badge-lang">Python</span>
+    <span class="badge badge-lang">MIT</span>
+    
+    <span>Updated 4/1/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/esaradev/icarus-plugin" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <pre><code class="language-diff">+                      .
++                     /|\
++                    / | \
++                   /  |  \
++                  /   |   \
++                 / ,--+--, \
++                /,&#39;   |   &#39;,\
+!               //  ,--+--,  \\
+!              //__/    |    \__\\
+-                 \     |     /
+-                  \  __|__  /
+-                   \/     \/
+!                    &#39;.   .&#39;
+!                  ____&#39;.&#39;____
+!                 /           \
++                /  I C A R U S  \
++               /                 \
++              &#39;~~~~~~~~~~~~~~~~~~~&#39;
+</code></pre>
+<blockquote>
+<p><strong>Self-memory and replacement models for Hermes agents.</strong></p>
+<p><em>Remember your work. Train your replacement.</em></p>
+</blockquote>
+<h2>What this is</h2>
+<p>Icarus is a <strong>Hermes plugin</strong>. It runs inside Hermes and gives agents shared memory, training data extraction, and a model replacement pipeline.</p>
+<p>Icarus is <strong>not</strong> an Obsidian plugin. Obsidian is an optional viewer/editor for the markdown files Icarus writes. You don&#39;t need Obsidian to use Icarus.</p>
+<h2>What this is not</h2>
+<ul>
+<li>Not an orchestration framework</li>
+<li>Not an agent router</li>
+<li>Not a dashboard</li>
+<li>Not an Obsidian community plugin</li>
+<li>Not a standalone app</li>
+</ul>
+<h2>Architecture</h2>
+<pre><code>┌──────────────────────────────────────────────────────────┐
+│  Hermes Agent                                            │
+│  ├── Icarus plugin (this repo)                           │
+│  │   ├── hooks: auto-capture decisions, inject context   │
+│  │   ├── tools: recall, write, search, train, switch     │
+│  │   └── scoring: session quality, export weighting      │
+│  │                                                       │
+│  │         writes/reads                                  │
+│  │            │                                          │
+│  ▼            ▼                                          │
+│  ~/my-vault/icarus/          (FABRIC_DIR)                │
+│  ├── agent-decision-chose-fastify-abc1.md                │
+│  ├── agent-review-rate-limiter-race-d4e2.md              │
+│  ├── daily/2026-04-01.md     (Obsidian daily notes)      │
+│  └── cold/                   (archived entries)          │
+│                                                          │
+│  ~/my-vault/                 (OBSIDIAN_VAULT_PATH)       │
+│  └── .obsidian/app.json     (vault config)               │
+│                                                          │
+│  export-training.py ──► together.jsonl ──► Together AI   │
+│                              │                           │
+│                              ▼                           │
+│                     fine-tuned replacement model          │
+└──────────────────────────────────────────────────────────┘
+</code></pre>
+<h2>2-minute quickstart</h2>
+<h3>1. Install the plugin</h3>
+<pre><code class="language-bash">git clone https://github.com/esaradev/icarus-plugin.git
+mkdir -p ~/.hermes/plugins/icarus
+cp -r icarus-plugin/* ~/.hermes/plugins/icarus/
+</code></pre>
+<h3>2. Set environment variables</h3>
+<p>Add to your Hermes profile <code>.env</code> (e.g. <code>~/.hermes/.env</code>):</p>
+<pre><code class="language-bash"># required: where Icarus writes notes
+FABRIC_DIR=~/Documents/my-vault/icarus
+
+# optional: enable Obsidian wikilinks and daily notes
+ICARUS_OBSIDIAN=1
+
+# optional: vault root (if icarus notes are a subfolder)
+OBSIDIAN_VAULT_PATH=~/Documents/my-vault
+
+# optional: for training/eval tools
+TOGETHER_API_KEY=tok-...
+</code></pre>
+<h3>3. Start Hermes and verify</h3>
+<pre><code class="language-bash">hermes chat
+</code></pre>
+<p>Type <code>/plugins</code> to verify:</p>
+<pre><code>Plugins (1):
+  ✓ icarus v0.3.0 (16 tools, 4 hooks)
+</code></pre>
+<h3>4. Initialize Obsidian (optional)</h3>
+<p>Inside your Hermes chat, say:</p>
+<blockquote>
+<p>Set up Obsidian for my notes</p>
+</blockquote>
+<p>The agent will call <code>fabric_init_obsidian</code>, which creates <code>.obsidian/app.json</code> at your vault root and <code>daily/</code> inside your notes directory.</p>
+<h3>5. Write a test note and verify</h3>
+<p>Inside Hermes:</p>
+<blockquote>
+<p>Write a fabric note about testing the setup</p>
+</blockquote>
+<p>Then open your vault in Obsidian. You should see:</p>
+<ul>
+<li>A new <code>.md</code> file in your notes directory with a readable title</li>
+<li>A daily note at <code>daily/2026-04-01.md</code> with a wikilink to it</li>
+<li>YAML frontmatter visible in the note</li>
+</ul>
+<h2>What Icarus adds to Hermes</h2>
+<p>Hermes already has per-instance memory and a capable runtime. Icarus adds:</p>
+<ul>
+<li><strong>Cross-instance shared memory</strong> -- agents on different profiles read each other&#39;s work through a shared <code>FABRIC_DIR</code></li>
+<li><strong>Decision-quality tagging</strong> -- entries carry <code>training_value</code> (high/normal/low) so noise doesn&#39;t pollute training data</li>
+<li><strong>Training data extraction</strong> -- fabric entries become fine-tuning pairs with quality filtering and pair weighting</li>
+<li><strong>Model replacement pipeline</strong> -- fine-tune a cheaper model from your agent&#39;s own history, eval it, switch to it</li>
+</ul>
+<h2>Tools</h2>
+<h3>Memory</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>fabric_recall</code></td>
+<td>Ranked retrieval from shared memory</td>
+</tr>
+<tr>
+<td><code>fabric_write</code></td>
+<td>Write entries with linking, evidence, and handoff fields</td>
+</tr>
+<tr>
+<td><code>fabric_search</code></td>
+<td>Keyword grep across all entries</td>
+</tr>
+<tr>
+<td><code>fabric_pending</code></td>
+<td>Show work assigned to this agent</td>
+</tr>
+<tr>
+<td><code>fabric_curate</code></td>
+<td>Set training value (high/normal/low) on an entry</td>
+</tr>
+</tbody></table>
+<h3>Training</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>fabric_export</code></td>
+<td>Export training pairs. Modes: high-precision, normal, high-volume</td>
+</tr>
+<tr>
+<td><code>fabric_train</code></td>
+<td>Start fine-tune, auto-selects best quality mode with enough pairs</td>
+</tr>
+<tr>
+<td><code>fabric_train_status</code></td>
+<td>Check job progress, updates model registry</td>
+</tr>
+</tbody></table>
+<h3>Replacement models</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>fabric_models</code></td>
+<td>List all trained models with eval scores</td>
+</tr>
+<tr>
+<td><code>fabric_eval</code></td>
+<td>Compare candidate vs base model on fabric-derived prompts</td>
+</tr>
+<tr>
+<td><code>fabric_switch_model</code></td>
+<td>Activate a replacement model if eval passes threshold</td>
+</tr>
+<tr>
+<td><code>fabric_rollback_model</code></td>
+<td>Emergency rollback to previous model</td>
+</tr>
+</tbody></table>
+<h3>Operational</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>fabric_brief</code></td>
+<td>Daily brief: pending work, recent activity, suggested action</td>
+</tr>
+<tr>
+<td><code>fabric_telemetry</code></td>
+<td>Recall/usage stats: what gets recalled, what gets used</td>
+</tr>
+<tr>
+<td><code>fabric_report</code></td>
+<td>Corpus health: entries by type, training value, trainable estimate</td>
+</tr>
+<tr>
+<td><code>fabric_init_obsidian</code></td>
+<td>One-time Obsidian vault setup (Hermes tool, not a shell command)</td>
+</tr>
+</tbody></table>
+<h2>Hooks</h2>
+<p>4 automatic hooks fire without the agent calling anything:</p>
+<ul>
+<li><strong>on_session_start</strong> -- loads SOUL, pending handoffs, recent context</li>
+<li><strong>pre_llm_call</strong> -- injects relevant memories when the topic changes</li>
+<li><strong>post_llm_call</strong> -- captures high-value decisions (decision + outcome + substantial user request)</li>
+<li><strong>on_session_end</strong> -- scores session quality, writes structured note if threshold met</li>
+</ul>
+<h2>Obsidian setup</h2>
+<p>Icarus is a <strong>Hermes plugin</strong>, not an Obsidian plugin. Obsidian just reads the markdown files.</p>
+<p><strong>How it works:</strong></p>
+<ul>
+<li><code>FABRIC_DIR</code> is where Icarus writes <code>.md</code> files (your notes directory)</li>
+<li><code>OBSIDIAN_VAULT_PATH</code> is where <code>.obsidian/</code> lives (your vault root)</li>
+<li><code>ICARUS_OBSIDIAN=1</code> enables wikilinks in note bodies and daily note linking</li>
+<li><code>fabric_init_obsidian</code> is a Hermes tool -- call it from inside Hermes, not from the terminal</li>
+</ul>
+<p><strong>Two setups:</strong></p>
+<p>Dedicated vault (Icarus IS the vault):</p>
+<pre><code>FABRIC_DIR=~/icarus-vault
+# OBSIDIAN_VAULT_PATH not needed
+</code></pre>
+<p>Subfolder in existing vault:</p>
+<pre><code>FABRIC_DIR=~/my-vault/icarus-notes
+OBSIDIAN_VAULT_PATH=~/my-vault
+</code></pre>
+<h2>Builder -&gt; reviewer -&gt; fix</h2>
+<pre><code># builder finishes work, hands off
+fabric_write(type=&quot;code-session&quot;, summary=&quot;rate limiter ready&quot;,
+             status=&quot;open&quot;, assigned_to=&quot;daedalus&quot;)
+
+# reviewer sees it at session start, writes linked review
+fabric_write(type=&quot;review&quot;, summary=&quot;found race condition&quot;,
+             review_of=&quot;icarus:a3f29b01&quot;)
+
+# builder sees the review, writes linked fix
+fabric_write(type=&quot;code-session&quot;, summary=&quot;fixed race condition&quot;,
+             revises=&quot;icarus:a3f29b01&quot;)
+</code></pre>
+<h2>Memory -&gt; training -&gt; replacement model</h2>
+<pre><code>1. Work normally. The plugin captures decisions and completions automatically.
+
+2. Check readiness:
+   fabric_export(mode=&quot;high-precision&quot;)
+
+3. Fine-tune:
+   fabric_train(suffix=&quot;my-agent-v2&quot;)
+
+4. Check progress:
+   fabric_train_status()
+
+5. Evaluate:
+   fabric_eval(candidate_model=&quot;user/my-agent-v2-abc123&quot;)
+
+6. Switch:
+   fabric_switch_model(model_id=&quot;user/my-agent-v2-abc123&quot;)
+</code></pre>
+<h2>Training value</h2>
+<p>Entries carry a <code>training_value</code> field: <code>high</code>, <code>normal</code>, or <code>low</code>.</p>
+<ul>
+<li><strong>high</strong> -- decisions with outcomes, completed reviews, successful fixes</li>
+<li><strong>normal</strong> -- default for most entries</li>
+<li><strong>low</strong> -- generic session summaries, conversational exchanges</li>
+</ul>
+<p>Export modes:</p>
+<ul>
+<li><code>high-precision</code> -- only grounded entries: high-value, verified, linked reviews, structured sessions, or completed entries with evidence</li>
+<li><code>normal</code> -- excludes low-value and skips noisy unstructured session notes unless grounded</li>
+<li><code>high-volume</code> -- everything</li>
+</ul>
+<h2>Profiles (Hermes v0.6.0)</h2>
+<pre><code class="language-bash">hermes profile create coder
+hermes profile create reviewer --clone
+mkdir -p ~/.hermes-coder/plugins/icarus ~/.hermes-reviewer/plugins/icarus
+cp -r icarus-plugin/* ~/.hermes-coder/plugins/icarus/
+cp -r icarus-plugin/* ~/.hermes-reviewer/plugins/icarus/
+hermes -p coder chat
+</code></pre>
+<p>Both profiles write to the same <code>FABRIC_DIR</code>, so the reviewer sees the coder&#39;s work.</p>
+<h2>Fallback models</h2>
+<p>After switching to a replacement model, set the original as fallback in <code>config.yaml</code>:</p>
+<pre><code class="language-yaml">model: user/my-agent-v2-abc123
+fallback_model:
+  provider: openrouter
+  model: anthropic/claude-sonnet-4
+</code></pre>
+<h2>Troubleshooting</h2>
+<p><strong>&quot;tool not found&quot; when calling fabric_write or fabric_recall</strong></p>
+<ul>
+<li>Run <code>/plugins</code> in Hermes. If Icarus isn&#39;t listed, the plugin isn&#39;t installed in the right directory.</li>
+<li>Check: <code>ls ~/.hermes/plugins/icarus/__init__.py</code> (global) or <code>ls ~/.hermes-YOUR_PROFILE/plugins/icarus/__init__.py</code> (profile-specific Hermes home).</li>
+<li>The plugin needs <code>__init__.py</code>, <code>plugin.yaml</code>, and all <code>.py</code> files in the same directory.</li>
+<li>If you copied the repo twice, make sure you do <strong>not</strong> have a nested path like <code>~/.hermes/plugins/icarus/icarus-plugin/__init__.py</code>.</li>
+</ul>
+<p><strong>Notes not showing in Obsidian</strong></p>
+<ul>
+<li>Check <code>FABRIC_DIR</code> points to a directory inside your Obsidian vault.</li>
+<li>Open the vault root (not the notes subdirectory) in Obsidian.</li>
+<li>If you set <code>OBSIDIAN_VAULT_PATH</code>, make sure <code>FABRIC_DIR</code> is inside it.</li>
+</ul>
+<p><strong>&quot;I pointed FABRIC_DIR at the wrong directory&quot;</strong></p>
+<ul>
+<li>Change <code>FABRIC_DIR</code> in your <code>.env</code> and restart Hermes. Existing notes stay where they were. Move them manually if needed.</li>
+</ul>
+<p><strong>&quot;.obsidian ended up in the wrong place&quot;</strong></p>
+<ul>
+<li>Delete the misplaced <code>.obsidian/</code> directory.</li>
+<li>Set <code>OBSIDIAN_VAULT_PATH</code> to your actual vault root.</li>
+<li>Call <code>fabric_init_obsidian</code> again inside Hermes.</li>
+</ul>
+<p><strong>&quot;I expected an Obsidian plugin&quot;</strong></p>
+<ul>
+<li>Icarus is a Hermes plugin, not an Obsidian community plugin. There is nothing to install in Obsidian. Obsidian reads the markdown files directly -- no plugin needed.</li>
+</ul>
+<p><strong>Wikilinks not appearing in notes</strong></p>
+<ul>
+<li>Set <code>ICARUS_OBSIDIAN=1</code> in your <code>.env</code> and restart Hermes. Links are only added when this flag is set.</li>
+</ul>
+<h2>Validation</h2>
+<p>After setup, verify everything works:</p>
+<pre><code>1. In Hermes: &quot;write a test note about validating the setup&quot;
+2. Check: ls $FABRIC_DIR/*.md (should show a new file)
+3. Check: ls $FABRIC_DIR/daily/ (should show today&#39;s date)
+4. Open vault in Obsidian: note should appear with frontmatter
+5. In Hermes: fabric_brief() (should show the note in recent work)
+</code></pre>
+<h2>Smoke test</h2>
+<pre><code class="language-bash">bash scripts/smoke-handoff.sh
+bash scripts/test-plugin.sh
+</code></pre>
+<h2>Requirements</h2>
+<ul>
+<li><a href="https://github.com/NousResearch/hermes-agent">Hermes</a> v0.6.0+</li>
+<li>Python 3.10+</li>
+<li><code>TOGETHER_API_KEY</code> in <code>.env</code> (for training/eval tools)</li>
+<li><code>FABRIC_DIR</code> set in <code>.env</code> (defaults to <code>~/fabric/</code>)</li>
+</ul>
+<h2>Files</h2>
+<pre><code>__init__.py           registration (16 tools, 4 hooks)
+plugin.yaml           manifest
+schemas.py            tool schemas (what the LLM sees)
+tools.py              tool handlers
+hooks.py              lifecycle hooks
+state.py              fabric I/O, session scoring, model registry
+obsidian.py           opt-in Obsidian formatting
+fabric-retrieve.py    ranked retrieval with scoring
+export-training.py    training pair extraction with quality filtering
+scripts/
+  eval-replacement.py model comparison eval
+  smoke-handoff.sh    end-to-end handoff proof
+  test-plugin.sh      66-test fixture suite
+</code></pre>
+<h2>License</h2>
+<p>MIT</p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Skills &amp; Skill Registries</h2>
+    <div class="related-grid">
+      <a href="/projects/mukul975/Anthropic-Cybersecurity-Skills" class="related-chip">Anthropic-Cybersecurity-Skills <span class="related-stars">4.1K</span></a>
+          <a href="/projects/conorbronsdon/avoid-ai-writing" class="related-chip">avoid-ai-writing <span class="related-stars">759</span></a>
+          <a href="/projects/wondelai/skills" class="related-chip">wondelai/skills <span class="related-stars">480</span></a>
+          <a href="/projects/DougTrajano/pydantic-ai-skills" class="related-chip">pydantic-ai-skills <span class="related-stars">220</span></a>
+          <a href="/projects/Agents365-ai/drawio-skill" class="related-chip">drawio-skill <span class="related-stars">131</span></a>
+          <a href="/projects/smartcontractkit/chainlink-agent-skills" class="related-chip">chainlink-agent-skills <span class="related-stars">85</span></a>
+          <a href="/projects/tlehman/litprog-skill" class="related-chip">litprog-skill <span class="related-stars">81</span></a>
+          <a href="/projects/chigwell/skilldock.io" class="related-chip">skilldock.io <span class="related-stars">50</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/top-skills">See all Skills &amp; Skill Registries projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

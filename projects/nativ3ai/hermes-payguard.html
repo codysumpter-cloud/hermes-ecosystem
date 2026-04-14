@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hermes-payguard — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
+<meta name="description" content="Safe-by-design USDC and x402 payment plugin for Hermes Agent">
+<link rel="canonical" href="https://hermesatlas.com/projects/nativ3ai/hermes-payguard">
+<meta property="og:title" content="hermes-payguard — Hermes Atlas">
+<meta property="og:description" content="Safe-by-design USDC and x402 payment plugin for Hermes Agent">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/nativ3ai/hermes-payguard">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hermes-payguard — Hermes Atlas">
+<meta name="twitter:description" content="Safe-by-design USDC and x402 payment plugin for Hermes Agent">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Plugins &amp; Extensions</a>
+  </div>
+
+  <h1>hermes-payguard</h1>
+  <p class="project-desc">Safe-by-design USDC and x402 payment plugin for Hermes Agent</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 4</span>
+    <span class="badge badge-lang">Python</span>
+    <span class="badge badge-lang">MIT</span>
+    
+    <span>Updated 3/20/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/nativ3ai/hermes-payguard" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <h1>Hermes PayGuard</h1>
+<p>Hermes PayGuard is a standalone Hermes plugin for safe-by-design USDC and x402 payments.</p>
+<p>It does not patch Hermes core. It installs as an add-on and gives Hermes payment tools with an explicit operator boundary:</p>
+<ul>
+<li>Hermes can prepare payment intents.</li>
+<li>Hermes can inspect payment status.</li>
+<li>Hermes can execute only if policy allows it.</li>
+<li>Larger transfers require a separate human approval stamp via <code>payguard approve &lt;intent-id&gt;</code>.</li>
+<li>Tiny x402 micropayments can auto-run below a configured threshold.</li>
+<li>Mainnet is the default profile; testnet is an explicit override.</li>
+</ul>
+<h2>Documentation</h2>
+<ul>
+<li>Install: <a href="docs/installation.md"><code>docs/installation.md</code></a></li>
+<li>Operator flow: <a href="docs/operator-guide.md"><code>docs/operator-guide.md</code></a></li>
+<li>CCTP executor boundary: <a href="docs/cctp-executor.md"><code>docs/cctp-executor.md</code></a></li>
+<li>Architecture: <a href="docs/architecture.md"><code>docs/architecture.md</code></a></li>
+</ul>
+<h2>What it supports</h2>
+<ul>
+<li>Circle developer-controlled USDC transfers</li>
+<li>Circle user-controlled transfer challenges</li>
+<li>Circle CCTP cross-chain USDC route quoting and attestation-aware execution flow</li>
+<li>x402 paid HTTP fetches, including micropayments and nanopayments</li>
+<li>Local audit ledger and replayable intent state</li>
+</ul>
+<h2>Security model</h2>
+<p>PayGuard follows the same trust-boundary philosophy as CaMeL Guard, but adapted to payments.</p>
+<ul>
+<li>Trusted control: operator-approved payment intent, local policy, explicit approval stamps</li>
+<li>Untrusted data: webpages, invoices, PDFs, chat text, scraped addresses, model proposals</li>
+<li>Gated execution: payment tools re-check policy and approval state before moving money</li>
+</ul>
+<p>The key implementation detail is that approval is external to the model loop. Hermes can stage payment intents, but a separate operator command creates the approval stamp:</p>
+<pre><code class="language-bash">payguard approve &lt;intent-id&gt;
+</code></pre>
+<p>That avoids the weakest version of “agent-approved its own payment.”</p>
+<h2>Install</h2>
+<h3>Repo plugin mode</h3>
+<p>Clone the repo and symlink it into Hermes&#39; plugin directory:</p>
+<pre><code class="language-bash">git clone https://github.com/nativ3ai/hermes-payguard.git
+mkdir -p ~/.hermes/plugins
+ln -sfn /path/to/hermes-payguard ~/.hermes/plugins/hermes-payguard
+pip install -e /path/to/hermes-payguard
+</code></pre>
+<h3>Pip plugin mode</h3>
+<pre><code class="language-bash">pip install hermes-payguard
+</code></pre>
+<p>Quick path:</p>
+<pre><code class="language-bash">git clone https://github.com/nativ3ai/hermes-payguard.git
+cd hermes-payguard
+pip install -e .
+payguard install-plugin
+payguard init-policy
+payguard doctor
+</code></pre>
+<h2>Configure</h2>
+<p>Create <code>~/.hermes/payguard/policy.yaml</code>:</p>
+<pre><code class="language-yaml">mode: enforce
+network_profile: mainnet
+asset: USDC
+default_chain: BASE
+per_payment_limit_usdc: 100
+micro_auto_approve_limit_usdc: 0.05
+allowed_circle_recipients:
+  - &quot;0x1111111111111111111111111111111111111111&quot;
+allowed_cctp_destination_chains: []
+allowed_x402_hosts:
+  - 127.0.0.1
+  - localhost
+allow_unlisted_cctp_destinations: true
+</code></pre>
+<p>Then set the relevant env vars.</p>
+<h3>Profile selection</h3>
+<p>Mainnet is the default. To force testnet defaults instead:</p>
+<pre><code class="language-bash">export PAYGUARD_ENV=&quot;testnet&quot;
+</code></pre>
+<p>That switches the default Circle and x402 profiles to:</p>
+<ul>
+<li><code>default_chain=BASE-SEPOLIA</code></li>
+<li><code>CIRCLE_API_BASE_URL=https://api-sandbox.circle.com</code></li>
+<li><code>CIRCLE_CCTP_API_BASE_URL=https://iris-api-sandbox.circle.com</code></li>
+<li><code>PAYGUARD_X402_NETWORK=eip155:84532</code></li>
+</ul>
+<h3>Circle developer-controlled</h3>
+<pre><code class="language-bash">export CIRCLE_API_KEY=&quot;...&quot;
+export CIRCLE_ENTITY_SECRET_CIPHERTEXT=&quot;...&quot;
+export CIRCLE_WALLET_ID=&quot;...&quot;
+export CIRCLE_TOKEN_ID=&quot;...&quot;
+</code></pre>
+<h3>Circle user-controlled</h3>
+<pre><code class="language-bash">export CIRCLE_API_KEY=&quot;...&quot;
+export CIRCLE_X_USER_TOKEN=&quot;...&quot;
+</code></pre>
+<h3>Circle CCTP</h3>
+<pre><code class="language-bash">export CCTP_EXECUTOR_URL=&quot;https://your-burn-executor.internal/execute-cctp&quot;
+</code></pre>
+<p><code>CCTP_EXECUTOR_URL</code> is the boundary between PayGuard and the actual source-chain burn signer. PayGuard handles:</p>
+<ul>
+<li>route fee lookup</li>
+<li>source/destination domain resolution</li>
+<li>intent staging</li>
+<li>approval gating</li>
+<li>message/attestation tracking</li>
+</ul>
+<p>The executor is responsible for submitting the actual burn transaction and returning a <code>transactionHash</code>.</p>
+<h3>x402 buyer</h3>
+<pre><code class="language-bash">export PAYGUARD_EVM_PRIVATE_KEY=&quot;0x...&quot;
+export PAYGUARD_X402_NETWORK=&quot;eip155:8453&quot;
+</code></pre>
+<h2>Operator flow</h2>
+<ol>
+<li>Hermes prepares a transfer with <code>payguard_prepare_usdc_transfer</code>.</li>
+<li>The tool writes a pending intent into the local ledger.</li>
+<li>If approval is required, Hermes tells you to run:</li>
+</ol>
+<pre><code class="language-bash">payguard approve &lt;intent-id&gt;
+</code></pre>
+<ol start="4">
+<li>Hermes then calls <code>payguard_execute_payment_intent</code>.</li>
+</ol>
+<p>For tiny x402 payments below the configured threshold, <code>payguard_fetch_paid_url</code> can auto-pay without a separate approval stamp.</p>
+<h2>Hermes examples</h2>
+<p>Natural prompts Hermes can handle once the plugin is installed:</p>
+<pre><code class="language-text">Prepare a 12.5 USDC transfer to 0xabc... on Circle developer-controlled wallets for vendor invoice March-20.
+</code></pre>
+<pre><code class="language-text">Prepare a 50 USDC CCTP transfer from BASE to ARBITRUM for 0xabc..., use standard finality, and stage it for approval.
+</code></pre>
+<pre><code class="language-text">Fetch the paid x402 URL https://example.com/premium if the micropayment is below policy limits.
+</code></pre>
+<h2>Test coverage</h2>
+<p>Verified locally:</p>
+<ul>
+<li>mainnet profile defaults</li>
+<li>Circle developer-controlled transfer intent -&gt; CLI approval -&gt; execution</li>
+<li>Circle user-controlled transfer intent -&gt; CLI approval -&gt; challenge creation</li>
+<li>CCTP transfer intent -&gt; CLI approval -&gt; executor call -&gt; Circle message/attestation tracking</li>
+<li>x402 micropayment auto-pay flow</li>
+<li>x402 over-limit intent -&gt; CLI approval -&gt; paid fetch</li>
+<li>Hermes plugin discovery and tool registration</li>
+</ul>
+<p>Detailed notes:</p>
+<ul>
+<li><a href="docs/architecture.md"><code>docs/architecture.md</code></a></li>
+<li><a href="docs/installation.md"><code>docs/installation.md</code></a></li>
+<li><a href="docs/operator-guide.md"><code>docs/operator-guide.md</code></a></li>
+<li><a href="docs/cctp-executor.md"><code>docs/cctp-executor.md</code></a></li>
+</ul>
+<h2>Tool summary</h2>
+<ul>
+<li><code>payguard_prepare_usdc_transfer</code></li>
+<li><code>payguard_prepare_cctp_transfer</code></li>
+<li><code>payguard_execute_payment_intent</code></li>
+<li><code>payguard_get_payment_intent</code></li>
+<li><code>payguard_list_payment_intents</code></li>
+<li><code>payguard_fetch_paid_url</code></li>
+</ul>
+<h2>Tests</h2>
+<pre><code class="language-bash">pip install -e .[test]
+pytest -q
+</code></pre>
+<p>The test suite includes:</p>
+<ul>
+<li>mainnet profile default selection</li>
+<li>Circle developer-controlled mock transfer flow</li>
+<li>Circle user-controlled challenge flow</li>
+<li>CCTP route/attestation flow with local executor and Circle API mocks</li>
+<li>x402 paid fetch flow with auto-approved micropayments</li>
+<li>x402 over-limit flow with explicit operator approval</li>
+<li>Hermes plugin discovery and tool registration</li>
+</ul>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Plugins &amp; Extensions</h2>
+    <div class="related-grid">
+      <a href="/projects/robbyczgw-cla/hermes-web-search-plus" class="related-chip">hermes-web-search-plus <span class="related-stars">21</span></a>
+          <a href="/projects/42-evey/hermes-plugins" class="related-chip">hermes-plugins <span class="related-stars">16</span></a>
+          <a href="/projects/FahrenheitResearch/hermes-weather-plugin" class="related-chip">hermes-weather-plugin <span class="related-stars">7</span></a>
+          <a href="/projects/42-evey/evey-bridge-plugin" class="related-chip">evey-bridge-plugin <span class="related-stars">4</span></a>
+          <a href="/projects/raulvidis/hermes-cloudflare" class="related-chip">hermes-cloudflare <span class="related-stars">1</span></a>
+    </div>
+    
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>llm-agents.nix — Hermes Agent Deployment &amp; Infra | Hermes Atlas</title>
+<meta name="description" content="Nix packages for AI coding agents and development tools. Automatically updated daily.">
+<link rel="canonical" href="https://hermesatlas.com/projects/numtide/llm-agents.nix">
+<meta property="og:title" content="llm-agents.nix — Hermes Atlas">
+<meta property="og:description" content="Nix packages for AI coding agents and development tools. Automatically updated daily.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/numtide/llm-agents.nix">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="llm-agents.nix — Hermes Atlas">
+<meta name="twitter:description" content="Nix packages for AI coding agents and development tools. Automatically updated daily.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Deployment &amp; Infra</a>
+  </div>
+
+  <h1>llm-agents.nix</h1>
+  <p class="project-desc">Nix packages for AI coding agents and development tools. Automatically updated daily.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 1.0K</span>
+    <span class="badge badge-lang">Nix</span>
+    <span class="badge badge-lang">MIT</span>
+    
+    <span>Updated 4/14/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/numtide/llm-agents.nix" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <img alt="llm-agents.nix" src="https://banner.numtide.com/banner/numtide/llm-agents.nix.svg">
+
+<p>Nix packages for AI coding agents and development tools. Automatically updated daily.</p>
+<h2>Available Tools</h2>
+<!-- BEGIN GENERATED PACKAGE DOCS -->
+
+<h3>AI Coding Agents</h3>
+<details>
+<summary><strong>amp</strong> - CLI for Amp, an agentic coding tool in research preview from Sourcegraph</summary>
+
+<ul>
+<li><strong>Source</strong>: binary</li>
+<li><strong>License</strong>: unfree</li>
+<li><strong>Homepage</strong>: <a href="https://ampcode.com/">https://ampcode.com/</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#amp -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/amp/package.nix">packages/amp/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>bernstein</strong> - Multi-agent orchestrator for CLI coding agents — spawn, coordinate, and manage parallel AI agents</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/chernistry/bernstein">https://github.com/chernistry/bernstein</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#bernstein -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/bernstein/package.nix">packages/bernstein/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>claude-code</strong> - Agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster</summary>
+
+<ul>
+<li><strong>Source</strong>: binary</li>
+<li><strong>License</strong>: unfree</li>
+<li><strong>Homepage</strong>: <a href="https://claude.ai/code">https://claude.ai/code</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#claude-code -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/claude-code/package.nix">packages/claude-code/package.nix</a></li>
+<li><strong>Documentation</strong>: See <a href="packages/claude-code/README.md">packages/claude-code/README.md</a> for detailed usage</li>
+</ul>
+</details>
+<details>
+<summary><strong>claw-code</strong> - Claude Code rewrite CLI built from the official claw-code Rust workspace</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/ultraworkers/claw-code">https://github.com/ultraworkers/claw-code</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#claw-code -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/claw-code/package.nix">packages/claw-code/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>cli-proxy-api</strong> - Unified proxy providing OpenAI/Gemini/Claude/Codex compatible APIs for AI coding CLI tools</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/router-for-me/CLIProxyAPI">https://github.com/router-for-me/CLIProxyAPI</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#cli-proxy-api -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/cli-proxy-api/package.nix">packages/cli-proxy-api/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>code</strong> - Fork of codex. Orchestrate agents from OpenAI, Claude, Gemini or any provider.</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/just-every/code/">https://github.com/just-every/code/</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#code -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/code/package.nix">packages/code/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>codex</strong> - OpenAI Codex CLI - a coding agent that runs locally on your computer</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/openai/codex">https://github.com/openai/codex</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#codex -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/codex/package.nix">packages/codex/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>copilot-cli</strong> - GitHub Copilot CLI brings the power of Copilot coding agent directly to your terminal.</summary>
+
+<ul>
+<li><strong>Source</strong>: bytecode</li>
+<li><strong>License</strong>: unfree</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/github/copilot-cli">https://github.com/github/copilot-cli</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#copilot-cli -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/copilot-cli/package.nix">packages/copilot-cli/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>crush</strong> - The glamourous AI coding agent for your favourite terminal</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/charmbracelet/crush">https://github.com/charmbracelet/crush</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#crush -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/crush/package.nix">packages/crush/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>cursor-agent</strong> - Cursor Agent - CLI tool for Cursor AI code editor</summary>
+
+<ul>
+<li><strong>Source</strong>: binary</li>
+<li><strong>License</strong>: unfree</li>
+<li><strong>Homepage</strong>: <a href="https://cursor.com/">https://cursor.com/</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#cursor-agent -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/cursor-agent/package.nix">packages/cursor-agent/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>droid</strong> - Factory AI's Droid - AI-powered development agent for your terminal</summary>
+
+<ul>
+<li><strong>Source</strong>: binary</li>
+<li><strong>License</strong>: unfree</li>
+<li><strong>Homepage</strong>: <a href="https://factory.ai">https://factory.ai</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#droid -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/droid/package.nix">packages/droid/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>eca</strong> - Editor Code Assistant (ECA) - AI pair programming capabilities agnostic of editor</summary>
+
+<ul>
+<li><strong>Source</strong>: binary</li>
+<li><strong>License</strong>: Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/editor-code-assistant/eca">https://github.com/editor-code-assistant/eca</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#eca -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/eca/package.nix">packages/eca/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>forge</strong> - AI-Enhanced Terminal Development Environment - A comprehensive coding agent that integrates AI capabilities with your development environment</summary>
+
+<ul>
+<li><strong>Source</strong>: binary</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/antinomyhq/forge">https://github.com/antinomyhq/forge</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#forge -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/forge/package.nix">packages/forge/package.nix</a></li>
+<li><strong>Documentation</strong>: See <a href="packages/forge/README.md">packages/forge/README.md</a> for detailed usage</li>
+</ul>
+</details>
+<details>
+<summary><strong>gemini-cli</strong> - AI agent that brings the power of Gemini directly into your terminal</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/google-gemini/gemini-cli">https://github.com/google-gemini/gemini-cli</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#gemini-cli -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/gemini-cli/package.nix">packages/gemini-cli/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>gitnexus</strong> - Graph-powered code intelligence for AI agents</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: unfree</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/abhigyanpatwari/GitNexus">https://github.com/abhigyanpatwari/GitNexus</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#gitnexus -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/gitnexus/package.nix">packages/gitnexus/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>goose-cli</strong> - CLI for Goose - a local, extensible, open source AI agent that automates engineering tasks</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/block/goose">https://github.com/block/goose</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#goose-cli -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/goose-cli/package.nix">packages/goose-cli/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>iflow-cli</strong> - AI coding agent for the terminal with free model access via the iFlow platform</summary>
+
+<ul>
+<li><strong>Source</strong>: bytecode</li>
+<li><strong>License</strong>: Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/iflow-ai/iflow-cli">https://github.com/iflow-ai/iflow-cli</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#iflow-cli -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/iflow-cli/package.nix">packages/iflow-cli/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>jules</strong> - Jules, the asynchronous coding agent from Google, in the terminal</summary>
+
+<ul>
+<li><strong>Source</strong>: binary</li>
+<li><strong>License</strong>: unfree</li>
+<li><strong>Homepage</strong>: <a href="https://jules.google">https://jules.google</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#jules -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/jules/package.nix">packages/jules/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>junie</strong> - Junie, JetBrains AI coding agent CLI</summary>
+
+<ul>
+<li><strong>Source</strong>: binary</li>
+<li><strong>License</strong>: unfree</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/JetBrains/junie">https://github.com/JetBrains/junie</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#junie -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/junie/package.nix">packages/junie/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>kilocode-cli</strong> - The open-source AI coding agent. Now available in your terminal.</summary>
+
+<ul>
+<li><strong>Source</strong>: binary</li>
+<li><strong>License</strong>: Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://kilocode.ai/cli">https://kilocode.ai/cli</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#kilocode-cli -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/kilocode-cli/package.nix">packages/kilocode-cli/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>letta-code</strong> - Memory-first coding agent that learns and evolves across sessions</summary>
+
+<ul>
+<li><strong>Source</strong>: bytecode</li>
+<li><strong>License</strong>: Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/letta-ai/letta-code">https://github.com/letta-ai/letta-code</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#letta-code -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/letta-code/package.nix">packages/letta-code/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>mistral-vibe</strong> - Minimal CLI coding agent by Mistral AI - open-source command-line coding assistant powered by Devstral</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/mistralai/mistral-vibe">https://github.com/mistralai/mistral-vibe</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#mistral-vibe -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/mistral-vibe/package.nix">packages/mistral-vibe/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>nanocoder</strong> - A beautiful local-first coding agent running in your terminal - built by the community for the community ⚒</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/Mote-Software/nanocoder">https://github.com/Mote-Software/nanocoder</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#nanocoder -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/nanocoder/package.nix">packages/nanocoder/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>oh-my-codex</strong> - Multi-agent orchestration layer for OpenAI Codex CLI</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/Yeachan-Heo/oh-my-codex">https://github.com/Yeachan-Heo/oh-my-codex</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#oh-my-codex -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/oh-my-codex/package.nix">packages/oh-my-codex/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>oh-my-opencode</strong> - The Best AI Agent Harness - Multi-Model Orchestration for OpenCode</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: unfree</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/code-yeongyu/oh-my-openagent">https://github.com/code-yeongyu/oh-my-openagent</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#oh-my-opencode -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/oh-my-opencode/package.nix">packages/oh-my-opencode/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>omp</strong> - A terminal-based coding agent with multi-model support</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/can1357/oh-my-pi">https://github.com/can1357/oh-my-pi</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#omp -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/omp/package.nix">packages/omp/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>opencode</strong> - AI coding agent built for the terminal</summary>
+
+<ul>
+<li><strong>Source</strong>: binary</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/anomalyco/opencode">https://github.com/anomalyco/opencode</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#opencode -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/opencode/package.nix">packages/opencode/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>pi</strong> - A terminal-based coding agent with multi-model support</summary>
+
+<ul>
+<li><strong>Source</strong>: bytecode</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/badlogic/pi-mono">https://github.com/badlogic/pi-mono</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#pi -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/pi/package.nix">packages/pi/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>qoder-cli</strong> - Qoder AI CLI tool - Terminal-based AI assistant for code development</summary>
+
+<ul>
+<li><strong>Source</strong>: binary</li>
+<li><strong>License</strong>: unfree</li>
+<li><strong>Homepage</strong>: <a href="https://qoder.com">https://qoder.com</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#qoder-cli -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/qoder-cli/package.nix">packages/qoder-cli/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>qwen-code</strong> - Command-line AI workflow tool for Qwen3-Coder models</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/QwenLM/qwen-code">https://github.com/QwenLM/qwen-code</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#qwen-code -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/qwen-code/package.nix">packages/qwen-code/package.nix</a></li>
+</ul>
+</details>
+
+<h3>AI Assistants</h3>
+<details>
+<summary><strong>hermes-agent</strong> - Self-improving AI agent by Nous Research — creates skills from experience and runs anywhere</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://hermes-agent.nousresearch.com/">https://hermes-agent.nousresearch.com/</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#hermes-agent -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/hermes-agent/package.nix">packages/hermes-agent/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>localgpt</strong> - Local AI assistant with persistent markdown memory, autonomous tasks, and semantic search</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/localgpt-app/localgpt">https://github.com/localgpt-app/localgpt</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#localgpt -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/localgpt/package.nix">packages/localgpt/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>openclaw</strong> - Your own personal AI assistant. Any OS. Any Platform. The lobster way</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://openclaw.ai">https://openclaw.ai</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#openclaw -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/openclaw/package.nix">packages/openclaw/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>picoclaw</strong> - Tiny, fast, and deployable anywhere — automate the mundane, unleash your creativity</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://picoclaw.io">https://picoclaw.io</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#picoclaw -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/picoclaw/package.nix">packages/picoclaw/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>zeroclaw</strong> - Fast, small, and fully autonomous AI assistant infrastructure</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT / Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/zeroclaw-labs/zeroclaw">https://github.com/zeroclaw-labs/zeroclaw</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#zeroclaw -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/zeroclaw/package.nix">packages/zeroclaw/package.nix</a></li>
+</ul>
+</details>
+
+<h3>Claude Code Ecosystem</h3>
+<details>
+<summary><strong>auto-claude</strong> - Autonomous multi-agent coding framework powered by Claude AI</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: AGPL-3.0-only</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/AndyMik90/Auto-Claude">https://github.com/AndyMik90/Auto-Claude</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#auto-claude -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/auto-claude/package.nix">packages/auto-claude/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>catnip</strong> - Developer environment that's like catnip for agentic programming</summary>
+
+<ul>
+<li><strong>Source</strong>: binary</li>
+<li><strong>License</strong>: Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/wandb/catnip">https://github.com/wandb/catnip</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#catnip -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/catnip/package.nix">packages/catnip/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>cc-switch-cli</strong> - CLI version of CC Switch - All-in-One Assistant for Claude Code, Codex & Gemini CLI</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/SaladDay/cc-switch-cli">https://github.com/SaladDay/cc-switch-cli</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#cc-switch-cli -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/cc-switch-cli/package.nix">packages/cc-switch-cli/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>ccstatusline</strong> - A highly customizable status line formatter for Claude Code CLI</summary>
+
+<ul>
+<li><strong>Source</strong>: bytecode</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/sirmalloc/ccstatusline">https://github.com/sirmalloc/ccstatusline</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#ccstatusline -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/ccstatusline/package.nix">packages/ccstatusline/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>claude-code-router</strong> - Use Claude Code without an Anthropics account and route it to another LLM provider</summary>
+
+<ul>
+<li><strong>Source</strong>: bytecode</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/musistudio/claude-code-router">https://github.com/musistudio/claude-code-router</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#claude-code-router -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/claude-code-router/package.nix">packages/claude-code-router/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>claude-plugins</strong> - CLI tool for managing Claude Code plugins</summary>
+
+<ul>
+<li><strong>Source</strong>: bytecode</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/Kamalnrf/claude-plugins">https://github.com/Kamalnrf/claude-plugins</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#claude-plugins -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/claude-plugins/package.nix">packages/claude-plugins/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>claudebox</strong> - Sandboxed environment for Claude Code</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: Check package</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/numtide/claudebox">https://github.com/numtide/claudebox</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#claudebox -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/claudebox/package.nix">packages/claudebox/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>sandbox-runtime</strong> - Lightweight sandboxing tool for enforcing filesystem and network restrictions</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/anthropic-experimental/sandbox-runtime">https://github.com/anthropic-experimental/sandbox-runtime</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#sandbox-runtime -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/sandbox-runtime/package.nix">packages/sandbox-runtime/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>skills-installer</strong> - Install agent skills across multiple AI coding clients</summary>
+
+<ul>
+<li><strong>Source</strong>: bytecode</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/Kamalnrf/claude-plugins">https://github.com/Kamalnrf/claude-plugins</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#skills-installer -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/skills-installer/package.nix">packages/skills-installer/package.nix</a></li>
+</ul>
+</details>
+
+<h3>ACP Ecosystem</h3>
+<details>
+<summary><strong>claude-code-acp</strong> - An ACP-compatible coding agent powered by the Claude Code SDK (TypeScript)</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/zed-industries/claude-code-acp">https://github.com/zed-industries/claude-code-acp</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#claude-code-acp -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/claude-code-acp/package.nix">packages/claude-code-acp/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>codex-acp</strong> - An ACP-compatible coding agent powered by Codex</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/zed-industries/codex-acp">https://github.com/zed-industries/codex-acp</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#codex-acp -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/codex-acp/package.nix">packages/codex-acp/package.nix</a></li>
+<li><strong>Documentation</strong>: See <a href="packages/codex-acp/README.md">packages/codex-acp/README.md</a> for detailed usage</li>
+</ul>
+</details>
+
+<h3>Usage Analytics</h3>
+<details>
+<summary><strong>agentsview</strong> - Local-first viewer and analytics for AI coding agent sessions</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/wesm/agentsview">https://github.com/wesm/agentsview</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#agentsview -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/agentsview/package.nix">packages/agentsview/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>ccusage</strong> - Usage analysis tool for Claude Code</summary>
+
+<ul>
+<li><strong>Source</strong>: bytecode</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/ryoppippi/ccusage">https://github.com/ryoppippi/ccusage</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#ccusage -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/ccusage/package.nix">packages/ccusage/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>ccusage-amp</strong> - Usage analysis tool for Amp CLI sessions</summary>
+
+<ul>
+<li><strong>Source</strong>: bytecode</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/ryoppippi/ccusage">https://github.com/ryoppippi/ccusage</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#ccusage-amp -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/ccusage-amp/package.nix">packages/ccusage-amp/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>ccusage-codex</strong> - Usage analysis tool for OpenAI Codex sessions</summary>
+
+<ul>
+<li><strong>Source</strong>: bytecode</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/ryoppippi/ccusage">https://github.com/ryoppippi/ccusage</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#ccusage-codex -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/ccusage-codex/package.nix">packages/ccusage-codex/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>ccusage-opencode</strong> - Usage analysis tool for OpenCode sessions</summary>
+
+<ul>
+<li><strong>Source</strong>: bytecode</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/ryoppippi/ccusage">https://github.com/ryoppippi/ccusage</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#ccusage-opencode -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/ccusage-opencode/package.nix">packages/ccusage-opencode/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>ccusage-pi</strong> - Pi-agent usage tracking for Claude Max</summary>
+
+<ul>
+<li><strong>Source</strong>: bytecode</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/ryoppippi/ccusage">https://github.com/ryoppippi/ccusage</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#ccusage-pi -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/ccusage-pi/package.nix">packages/ccusage-pi/package.nix</a></li>
+</ul>
+</details>
+
+<h3>Workflow &amp; Project Management</h3>
+<details>
+<summary><strong>agent-deck</strong> - Your AI agent command center</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/asheshgoplani/agent-deck">https://github.com/asheshgoplani/agent-deck</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#agent-deck -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/agent-deck/package.nix">packages/agent-deck/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>backlog-md</strong> - Backlog.md - A tool for managing project collaboration between humans and AI Agents in a git ecosystem</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/MrLesk/Backlog.md">https://github.com/MrLesk/Backlog.md</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#backlog-md -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/backlog-md/package.nix">packages/backlog-md/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>beads</strong> - A distributed issue tracker designed for AI-supervised coding workflows</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/steveyegge/beads">https://github.com/steveyegge/beads</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#beads -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/beads/package.nix">packages/beads/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>beads-rust</strong> - Fast Rust port of beads - a local-first issue tracker for git repositories</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/Dicklesworthstone/beads_rust">https://github.com/Dicklesworthstone/beads_rust</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#beads-rust -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/beads-rust/package.nix">packages/beads-rust/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>beads-viewer</strong> - Graph-aware TUI for the Beads issue tracker</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/Dicklesworthstone/beads_viewer">https://github.com/Dicklesworthstone/beads_viewer</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#beads-viewer -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/beads-viewer/package.nix">packages/beads-viewer/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>but</strong> - GitButler CLI - virtual branches and AI-assisted Git workflow from the terminal</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: Check package</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/gitbutlerapp/gitbutler">https://github.com/gitbutlerapp/gitbutler</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#but -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/but/package.nix">packages/but/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>cc-sdd</strong> - Spec-driven development framework for AI coding agents</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/gotalab/cc-sdd">https://github.com/gotalab/cc-sdd</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#cc-sdd -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/cc-sdd/package.nix">packages/cc-sdd/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>chainlink</strong> - Simple, lean issue tracker CLI designed for AI-assisted development</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/dollspace-gay/chainlink">https://github.com/dollspace-gay/chainlink</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#chainlink -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/chainlink/package.nix">packages/chainlink/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>gitbutler</strong> - Git client for simultaneous branches on top of your existing workflow</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: FSL-1.1-MIT</li>
+<li><strong>Homepage</strong>: <a href="https://gitbutler.com">https://gitbutler.com</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#gitbutler -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/gitbutler/package.nix">packages/gitbutler/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>openspec</strong> - Spec-driven development for AI coding assistants</summary>
+
+<ul>
+<li><strong>Source</strong>: bytecode</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/Fission-AI/OpenSpec">https://github.com/Fission-AI/OpenSpec</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#openspec -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/openspec/package.nix">packages/openspec/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>ralph-tui</strong> - AI Agent Loop Orchestrator TUI</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/subsy/ralph-tui">https://github.com/subsy/ralph-tui</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#ralph-tui -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/ralph-tui/package.nix">packages/ralph-tui/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>sidecar</strong> - Terminal-based development companion for AI coding agents</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/marcus/sidecar">https://github.com/marcus/sidecar</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#sidecar -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/sidecar/package.nix">packages/sidecar/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>spec-kit</strong> - Specify CLI, part of GitHub Spec Kit. A tool to bootstrap your projects for Spec-Driven Development (SDD)</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/github/spec-kit">https://github.com/github/spec-kit</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#spec-kit -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/spec-kit/package.nix">packages/spec-kit/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>vibe-kanban</strong> - Kanban board to orchestrate AI coding agents like Claude Code, Codex, and Gemini CLI</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/BloopAI/vibe-kanban">https://github.com/BloopAI/vibe-kanban</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#vibe-kanban -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/vibe-kanban/package.nix">packages/vibe-kanban/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>workmux</strong> - Git worktrees + tmux windows for zero-friction parallel dev</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/raine/workmux">https://github.com/raine/workmux</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#workmux -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/workmux/package.nix">packages/workmux/package.nix</a></li>
+</ul>
+</details>
+
+<h3>Code Review</h3>
+<details>
+<summary><strong>coderabbit-cli</strong> - AI-powered code review CLI tool</summary>
+
+<ul>
+<li><strong>Source</strong>: binary</li>
+<li><strong>License</strong>: unfree</li>
+<li><strong>Homepage</strong>: <a href="https://coderabbit.ai">https://coderabbit.ai</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#coderabbit-cli -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/coderabbit-cli/package.nix">packages/coderabbit-cli/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>tuicr</strong> - Review AI-generated diffs like a GitHub pull request, right from your terminal</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/agavra/tuicr">https://github.com/agavra/tuicr</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#tuicr -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/tuicr/package.nix">packages/tuicr/package.nix</a></li>
+</ul>
+</details>
+
+<h3>Utilities</h3>
+<details>
+<summary><strong>agent-browser</strong> - Headless browser automation CLI for AI agents</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/vercel-labs/agent-browser">https://github.com/vercel-labs/agent-browser</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#agent-browser -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/agent-browser/package.nix">packages/agent-browser/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>apm</strong> - Agent Package Manager — dependency manager for AI agents</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/microsoft/apm">https://github.com/microsoft/apm</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#apm -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/apm/package.nix">packages/apm/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>ck</strong> - Local first semantic and hybrid BM25 grep / search tool for use by AI and humans!</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/BeaconBay/ck">https://github.com/BeaconBay/ck</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#ck -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/ck/package.nix">packages/ck/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>copilot-language-server</strong> - GitHub Copilot Language Server - AI pair programmer LSP</summary>
+
+<ul>
+<li><strong>Source</strong>: bytecode</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/github/copilot-language-server-release">https://github.com/github/copilot-language-server-release</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#copilot-language-server -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/copilot-language-server/package.nix">packages/copilot-language-server/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>entire</strong> - CLI tool that captures AI agent sessions and links them to code changes</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/entireio/cli">https://github.com/entireio/cli</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#entire -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/entire/package.nix">packages/entire/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>gitagent</strong> - Framework-agnostic, git-native standard for defining AI agents</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/open-gitagent/gitagent">https://github.com/open-gitagent/gitagent</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#gitagent -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/gitagent/package.nix">packages/gitagent/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>gno</strong> - Local-first knowledge engine with hybrid search, RAG Q&A, and MCP server integration</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/gmickel/gno">https://github.com/gmickel/gno</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#gno -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/gno/package.nix">packages/gno/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>handy</strong> - Fast and accurate local transcription app using AI models</summary>
+
+<ul>
+<li><strong>Source</strong>: binary</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://handy.computer/">https://handy.computer/</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#handy -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/handy/package.nix">packages/handy/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>happy-coder</strong> - Mobile and Web client for Codex and Claude Code, with realtime voice and encryption</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/slopus/happy">https://github.com/slopus/happy</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#happy-coder -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/happy-coder/package.nix">packages/happy-coder/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>mcporter</strong> - TypeScript runtime and CLI for the Model Context Protocol</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/steipete/mcporter">https://github.com/steipete/mcporter</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#mcporter -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/mcporter/package.nix">packages/mcporter/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>nono</strong> - Kernel-enforced agent sandbox. Capability-based isolation with secure key management, atomic rollback, cryptographic immutable audit chain of provenance. Run your agents in a zero-trust environment.</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://nono.sh/">https://nono.sh/</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#nono -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/nono/package.nix">packages/nono/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>openskills</strong> - Universal skills loader for AI coding agents - install and load Anthropic SKILL.md format skills in any agent</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/numman-ali/openskills">https://github.com/numman-ali/openskills</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#openskills -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/openskills/package.nix">packages/openskills/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>parallel-cli</strong> - AI-powered web search, extraction, and research CLI from Parallel</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/parallel-web/parallel-web-tools">https://github.com/parallel-web/parallel-web-tools</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#parallel-cli -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/parallel-cli/package.nix">packages/parallel-cli/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>qmd</strong> - mini cli search engine for your docs, knowledge bases, meeting notes, whatever. Tracking current sota approaches while being all local</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/tobi/qmd">https://github.com/tobi/qmd</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#qmd -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/qmd/package.nix">packages/qmd/package.nix</a></li>
+<li><strong>Documentation</strong>: See <a href="packages/qmd/README.md">packages/qmd/README.md</a> for detailed usage</li>
+</ul>
+</details>
+<details>
+<summary><strong>rtk</strong> - CLI proxy that reduces LLM token consumption by 60-90% on common dev commands</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/rtk-ai/rtk">https://github.com/rtk-ai/rtk</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#rtk -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/rtk/package.nix">packages/rtk/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>showboat</strong> - Create executable demo documents showing and proving an agent's work</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: Apache-2.0</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/simonw/showboat">https://github.com/simonw/showboat</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#showboat -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/showboat/package.nix">packages/showboat/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>toon</strong> - Rust implementation of TOON - Token-Oriented Object Notation for LLM prompts</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: MIT</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/toon-format/toon-rust">https://github.com/toon-format/toon-rust</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#toon -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/toon/package.nix">packages/toon/package.nix</a></li>
+</ul>
+</details>
+<details>
+<summary><strong>zat</strong> - Code outline viewer for LLM coding agents — shows exported symbols with line numbers</summary>
+
+<ul>
+<li><strong>Source</strong>: source</li>
+<li><strong>License</strong>: GPL-3.0-only</li>
+<li><strong>Homepage</strong>: <a href="https://github.com/bglgwyng/zat">https://github.com/bglgwyng/zat</a></li>
+<li><strong>Usage</strong>: <code>nix run github:numtide/llm-agents.nix#zat -- --help</code></li>
+<li><strong>Nix</strong>: <a href="packages/zat/package.nix">packages/zat/package.nix</a></li>
+</ul>
+</details>
+<!-- END GENERATED PACKAGE DOCS -->
+
+<h2>Installation</h2>
+<h3>Using Nix Flakes (Recommended)</h3>
+<p>Add to your system configuration:</p>
+<pre><code class="language-nix">{
+  inputs = {
+    llm-agents.url = &quot;github:numtide/llm-agents.nix&quot;;
+  };
+
+  # In your system packages:
+  environment.systemPackages = with inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}; [
+    claude-code
+    opencode
+    gemini-cli
+    qwen-code
+    # ... other tools
+  ];
+}
+</code></pre>
+<blockquote>
+<p>[!NOTE]
+This flake is only built and tested against its pinned <code>nixpkgs-unstable</code>
+input. If you set <code>llm-agents.inputs.nixpkgs.follows = &quot;nixpkgs&quot;</code>, your
+<code>nixpkgs</code> must also track <code>nixpkgs-unstable</code> and be reasonably current —
+using a stable release branch (e.g. <code>nixos-25.05</code>) <strong>will</strong> break eventually.
+Omitting <code>follows</code> costs you a second nixpkgs evaluation but guarantees you
+get the combination we ship in CI — and lets you pull pre-built binaries
+from our <a href="#binary-cache">binary cache</a> instead of rebuilding everything
+against your nixpkgs.</p>
+</blockquote>
+<h3>Using Overlay</h3>
+<p>Alternatively, use the overlay to access packages under the <code>llm-agents</code> namespace:</p>
+<pre><code class="language-nix">{
+  inputs = {
+    nixpkgs.url = &quot;github:NixOS/nixpkgs/nixpkgs-unstable&quot;;
+    llm-agents.url = &quot;github:numtide/llm-agents.nix&quot;;
+  };
+
+  outputs = { nixpkgs, llm-agents, ... }: {
+    # NixOS / nix-darwin configuration
+    nixosConfigurations.myhost = nixpkgs.lib.nixosSystem {
+      system = &quot;x86_64-linux&quot;;
+      modules = [{
+        nixpkgs.overlays = [ llm-agents.overlays.default ];
+        environment.systemPackages = [
+          pkgs.llm-agents.claude-code
+          pkgs.llm-agents.codex
+          pkgs.llm-agents.gemini-cli
+        ];
+      }];
+    };
+  };
+}
+</code></pre>
+<h3>Try Without Installing</h3>
+<p>Browse all available tools with the interactive launcher:</p>
+<pre><code class="language-bash">nix run github:numtide/llm-agents.nix
+</code></pre>
+<p>This opens an fzf picker listing every package with its description.
+Select one and it will be run via <code>nix run</code>.</p>
+<p>Or run a specific tool directly:</p>
+<pre><code class="language-bash">nix run github:numtide/llm-agents.nix#claude-code
+nix run github:numtide/llm-agents.nix#opencode
+nix run github:numtide/llm-agents.nix#gemini-cli
+nix run github:numtide/llm-agents.nix#qwen-code
+# etc...
+</code></pre>
+<h3>Binary Cache</h3>
+<p>Pre-built binaries are available from the Numtide binary cache. All packages are built daily via CI and pushed to the cache, so you can avoid compiling from source.</p>
+<p>This cache is automatically configured when this flake is used directly (e.g <code>nix run github:numtide/llm-agents.nix#claude-code</code>)</p>
+<p>To use the binary cache when using this flake as an input, add <code>nixConfig</code> to your flake:</p>
+<pre><code class="language-nix">{
+  nixConfig = {
+    extra-substituters = [ &quot;https://cache.numtide.com&quot; ];
+    extra-trusted-public-keys = [ &quot;niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=&quot; ];
+  };
+}
+</code></pre>
+<p>Alternatively, you can configure this system-wide in your NixOS configuration:</p>
+<pre><code class="language-nix">nix.settings = {
+  extra-substituters = [ &quot;https://cache.numtide.com&quot; ];
+  extra-trusted-public-keys = [
+    &quot;niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=&quot;
+  ];
+};
+</code></pre>
+<h2>Development</h2>
+<h3>Setup Development Environment</h3>
+<pre><code class="language-bash">nix develop
+</code></pre>
+<h3>Building Packages</h3>
+<pre><code class="language-bash"># Build a specific package
+nix build .#claude-code
+nix build .#opencode
+nix build .#qwen-code
+# etc...
+</code></pre>
+<h3>Code Quality</h3>
+<pre><code class="language-bash"># Format all code
+nix fmt
+
+# Run checks
+nix flake check
+</code></pre>
+<h2>Package Details</h2>
+<h3>Platform Support</h3>
+<p>All packages support:</p>
+<ul>
+<li><code>x86_64-linux</code></li>
+<li><code>aarch64-linux</code></li>
+<li><code>x86_64-darwin</code></li>
+<li><code>aarch64-darwin</code></li>
+</ul>
+<h2>Experimental Features</h2>
+<p>This repository serves as a laboratory for exploring how Nix can enhance AI-powered development:</p>
+<h3>Current Experiments</h3>
+<ul>
+<li><strong>Sandboxed execution</strong>: claudebox demonstrates transparent, sandboxed AI agent execution</li>
+<li><strong>Provider abstraction</strong>: claude-code-router explores decoupling AI interfaces from specific providers</li>
+<li><strong>Tool composition</strong>: Investigating how multiple AI agents can work together in Nix environments</li>
+</ul>
+<h2>Contributing</h2>
+<p>Contributions are welcome! Please:</p>
+<ol>
+<li>Fork the repository</li>
+<li>Create a feature branch</li>
+<li>Run <code>nix fmt</code> before committing</li>
+<li>Submit a pull request</li>
+</ol>
+<h2>See also</h2>
+<ul>
+<li><a href="https://github.com/natsukium/mcp-servers-nix">natsukium/mcp-servers-nix</a> - Nix packages for MCP (Model Context Protocol) servers</li>
+<li><a href="https://github.com/aaddrick/claude-desktop-debian?tab=readme-ov-file#using-nix-flake-nixos">aaddrick/claude-desktop-debian</a> - Claude Desktop for Linux</li>
+<li><a href="https://github.com/nothingnesses/agent-images">nothingnesses/agent-images</a> - Sandboxed OCI container images for AI coding agents</li>
+</ul>
+<h2>License</h2>
+<p>Individual tools are licensed under their respective licenses.</p>
+<p>The Nix packaging code in this repository is licensed under MIT.</p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Deployment &amp; Infra</h2>
+    <div class="related-grid">
+      <a href="/projects/TheAiSingularity/hermesclaw" class="related-chip">hermesclaw <span class="related-stars">16</span></a>
+          <a href="/projects/0xrsydn/nix-hermes-agent" class="related-chip">nix-hermes-agent <span class="related-stars">11</span></a>
+          <a href="/projects/rookiemann/portable-hermes-agent" class="related-chip">portable-hermes-agent <span class="related-stars">7</span></a>
+          <a href="/projects/xmbshwll/hermes-agent-docker" class="related-chip">hermes-agent-docker <span class="related-stars">6</span></a>
+          <a href="/projects/JackTheGit/hermes-autonomous-server" class="related-chip">hermes-autonomous-server <span class="related-stars">2</span></a>
+          <a href="/projects/ellickjohnson/portainer-stack-hermes" class="related-chip">portainer-stack-hermes <span class="related-stars">1</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/deployment-options">See all Deployment &amp; Infra projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

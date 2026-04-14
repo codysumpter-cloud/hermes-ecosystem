@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>swarmclaw — Hermes Agent Multi-Agent &amp; Orchestration | Hermes Atlas</title>
+<meta name="description" content="Self-hosted multi-agent AI runtime with MCP server support. Build, orchestrate, and run autonomous agents with memory, skills, schedules, and 23+ LLM providers ">
+<link rel="canonical" href="https://hermesatlas.com/projects/swarmclawai/swarmclaw">
+<meta property="og:title" content="swarmclaw — Hermes Atlas">
+<meta property="og:description" content="Self-hosted multi-agent AI runtime with MCP server support. Build, orchestrate, and run autonomous agents with memory, skills, schedules, and 23+ LLM providers ">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/swarmclawai/swarmclaw">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="swarmclaw — Hermes Atlas">
+<meta name="twitter:description" content="Self-hosted multi-agent AI runtime with MCP server support. Build, orchestrate, and run autonomous agents with memory, skills, schedules, and 23+ LLM providers ">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Multi-Agent &amp; Orchestration</a>
+  </div>
+
+  <h1>swarmclaw</h1>
+  <p class="project-desc">Self-hosted multi-agent AI runtime with MCP server support. Build, orchestrate, and run autonomous agents with memory, skills, schedules, and 23+ LLM providers (Claude, GPT, Gemini, OpenRouter, Ollama).</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 341</span>
+    <span class="badge badge-lang">TypeScript</span>
+    <span class="badge badge-lang">MIT</span>
+    
+    <span>Updated 4/14/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/swarmclawai/swarmclaw" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    <a href="https://www.swarmclaw.ai" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
+  </div>
+
+  <section class="readme">
+    <h1>SwarmClaw</h1>
+<p><a href="https://github.com/swarmclawai/swarmclaw/actions/workflows/ci.yml"><img src="https://github.com/swarmclawai/swarmclaw/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+<a href="https://github.com/swarmclawai/swarmclaw/releases"><img src="https://img.shields.io/github/v/tag/swarmclawai/swarmclaw" alt="Release"></a>
+<a href="https://www.npmjs.com/package/@swarmclawai/swarmclaw"><img src="https://img.shields.io/npm/v/%40swarmclawai%2Fswarmclaw?label=npm" alt="npm"></a></p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/swarmclawai/swarmclaw/main/public/branding/swarmclaw-org-avatar.png" alt="SwarmClaw lobster logo" width="120" />
+</p>
+
+<p align="center"><strong>Self-hosted runtime for autonomous AI agents.</strong> Multi-provider, MCP-native, with memory, skills, delegation, and schedules.</p>
+
+<p align="center">
+  <img src="doc/assets/screenshots/org-chart.png" alt="SwarmClaw org chart with delegation and live agent activity" width="900" />
+</p>
+
+<p>SwarmClaw is a self-hosted AI runtime for OpenClaw and multi-agent work. It helps you run autonomous agents and orchestrators with heartbeats, schedules, delegation, memory, runtime skills, and reviewed conversation-to-skill learning across OpenClaw gateways and other providers.</p>
+<p>GitHub: <a href="https://github.com/swarmclawai/swarmclaw">https://github.com/swarmclawai/swarmclaw</a><br>Docs: <a href="https://swarmclaw.ai/docs">https://swarmclaw.ai/docs</a><br>Website: <a href="https://swarmclaw.ai">https://swarmclaw.ai</a><br>Discord: <a href="https://discord.gg/sbEavS8cPV">https://discord.gg/sbEavS8cPV</a><br>Extension tutorial: <a href="https://swarmclaw.ai/docs/extension-tutorial">https://swarmclaw.ai/docs/extension-tutorial</a></p>
+<h2>Screenshots</h2>
+<table>
+ <tr>
+  <td width="50%"><img src="doc/assets/screenshots/org-chart.png" alt="SwarmClaw org chart view showing CEO, Developer, and Researcher agents." /></td>
+  <td width="50%"><img src="doc/assets/screenshots/agent-chat.png" alt="SwarmClaw agent chat view showing a CEO conversation." /></td>
+ </tr>
+ <tr>
+  <td align="center"><sub>Org chart for visualizing agent teams, delegation, and live activity.</sub></td>
+  <td align="center"><sub>Agent chat with durable history, tools, and operator controls.</sub></td>
+ </tr>
+</table>
+
+<div align="center">
+<table>
+ <tr>
+  <td align="center"><strong>Works<br>with</strong></td>
+  <td align="center"><img src="doc/assets/logos/openclaw.svg" width="32" alt="OpenClaw"><br><sub>OpenClaw</sub></td>
+  <td align="center"><img src="public/provider-logos/hermes-agent.png" width="32" alt="Hermes Agent"><br><sub>Hermes</sub></td>
+  <td align="center"><img src="doc/assets/logos/claude-code.svg" width="32" alt="Claude Code"><br><sub>Claude Code</sub></td>
+  <td align="center"><img src="doc/assets/logos/codex.svg" width="32" alt="Codex"><br><sub>Codex</sub></td>
+  <td align="center"><img src="doc/assets/logos/gemini-cli.svg" width="32" alt="Gemini CLI"><br><sub>Gemini CLI</sub></td>
+  <td align="center"><img src="doc/assets/logos/opencode.svg" width="32" alt="OpenCode"><br><sub>OpenCode</sub></td>
+  <td align="center"><img src="doc/assets/logos/copilot-cli.svg" width="32" alt="Copilot CLI"><br><sub>Copilot</sub></td>
+  <td align="center"><img src="public/provider-logos/droid-cli.svg" width="32" alt="Factory Droid CLI"><br><sub>Droid</sub></td>
+  <td align="center"><img src="doc/assets/logos/cursor-cli.svg" width="32" alt="Cursor Agent CLI"><br><sub>Cursor</sub></td>
+  <td align="center"><img src="doc/assets/logos/qwen-code-cli.svg" width="32" alt="Qwen Code CLI"><br><sub>Qwen Code</sub></td>
+  <td align="center"><img src="doc/assets/logos/goose.svg" width="32" alt="Goose"><br><sub>Goose</sub></td>
+  <td align="center"><img src="doc/assets/logos/anthropic.svg" width="32" alt="Anthropic"><br><sub>Anthropic</sub></td>
+  <td align="center"><img src="doc/assets/logos/openai.svg" width="32" alt="OpenAI"><br><sub>OpenAI</sub></td>
+  <td align="center"><img src="public/provider-logos/openrouter.png" width="32" alt="OpenRouter"><br><sub>OpenRouter</sub></td>
+  <td align="center"><img src="doc/assets/logos/google.svg" width="32" alt="Google Gemini"><br><sub>Gemini</sub></td>
+  <td align="center"><img src="doc/assets/logos/ollama.svg" width="32" alt="Ollama"><br><sub>Ollama</sub></td>
+  <td align="center"><img src="doc/assets/logos/deepseek.svg" width="32" alt="DeepSeek"><br><sub>DeepSeek</sub></td>
+  <td align="center"><img src="doc/assets/logos/groq.svg" width="32" alt="Groq"><br><sub>Groq</sub></td>
+  <td align="center"><img src="doc/assets/logos/together.svg" width="32" alt="Together AI"><br><sub>Together</sub></td>
+  <td align="center"><img src="doc/assets/logos/mistral.svg" width="32" alt="Mistral AI"><br><sub>Mistral</sub></td>
+  <td align="center"><img src="doc/assets/logos/xai.svg" width="32" alt="xAI"><br><sub>xAI</sub></td>
+  <td align="center"><img src="doc/assets/logos/fireworks.svg" width="32" alt="Fireworks AI"><br><sub>Fireworks</sub></td>
+  <td align="center"><img src="doc/assets/logos/nebius.svg" width="32" alt="Nebius"><br><sub>Nebius</sub></td>
+  <td align="center"><img src="doc/assets/logos/deepinfra.svg" width="32" alt="DeepInfra"><br><sub>DeepInfra</sub></td>
+ </tr>
+</table>
+</div>
+
+<h2>Requirements</h2>
+<ul>
+<li>Node.js 22.6+ (<code>nvm use</code> will pick up the repo&#39;s <code>.nvmrc</code>, which matches CI)</li>
+<li>npm 10+ or another supported package manager</li>
+<li>Docker Desktop is recommended for sandbox browser execution</li>
+<li>Optional provider CLIs if you want delegated CLI backends such as Claude Code, Codex, OpenCode, Gemini, Copilot, Factory Droid, Cursor Agent, Qwen Code, or Goose</li>
+</ul>
+<h2>Quick Start</h2>
+<h3>Desktop app (recommended for non-technical users)</h3>
+<p>Download the one-click installer from <a href="https://swarmclaw.ai/downloads">swarmclaw.ai/downloads</a>.
+Available for macOS (Apple Silicon &amp; Intel), Windows, and Linux (AppImage + .deb).</p>
+<p>Current builds are unsigned, so on first launch:</p>
+<ul>
+<li><strong>macOS:</strong> right-click the app in Finder → <strong>Open</strong> → <strong>Open</strong> to bypass Gatekeeper.</li>
+<li><strong>Windows:</strong> if SmartScreen appears, click <strong>More info</strong> → <strong>Run anyway</strong>.</li>
+<li><strong>Linux (AppImage):</strong> <code>chmod +x</code> the downloaded file, then run it.</li>
+</ul>
+<p>Data lives in your OS app-data directory (<code>~/Library/Application Support/SwarmClaw</code>,
+<code>%APPDATA%\SwarmClaw</code>, or <code>~/.config/SwarmClaw</code>), separate from any CLI or Docker install.</p>
+<h3>Global install</h3>
+<pre><code class="language-bash">npm i -g @swarmclawai/swarmclaw
+swarmclaw
+</code></pre>
+<pre><code class="language-bash">yarn global add @swarmclawai/swarmclaw
+swarmclaw
+</code></pre>
+<pre><code class="language-bash">pnpm add -g @swarmclawai/swarmclaw
+swarmclaw
+</code></pre>
+<pre><code class="language-bash">bun add -g @swarmclawai/swarmclaw
+swarmclaw
+</code></pre>
+<p>Running <code>swarmclaw</code> starts the server on <code>http://localhost:3456</code>.</p>
+<h3>From the repo</h3>
+<pre><code class="language-bash">git clone https://github.com/swarmclawai/swarmclaw.git
+cd swarmclaw
+nvm use
+npm run quickstart
+</code></pre>
+<p><code>npm run quickstart</code> installs dependencies, prepares local config and runtime state, and starts SwarmClaw.</p>
+<h3>Docker</h3>
+<pre><code class="language-bash">git clone https://github.com/swarmclawai/swarmclaw.git
+cd swarmclaw
+mkdir -p data
+touch .env.local
+docker compose up -d --build
+</code></pre>
+<p>Then open <code>http://localhost:3456</code>.</p>
+<h2>ClawHub Skill</h2>
+<p>Install the SwarmClaw skill for your <a href="https://openclaw.ai">OpenClaw</a> agents:</p>
+<pre><code class="language-bash">clawhub install swarmclaw
+</code></pre>
+<p><a href="https://clawhub.ai/skills/swarmclaw">Browse on ClawHub</a></p>
+<h2>Hosted Deploys</h2>
+<p>SwarmClaw now ships provider-ready deploy files at the repo root:</p>
+<ul>
+<li><code>render.yaml</code> for Render Blueprint deploys from the public GHCR image</li>
+<li><code>fly.toml</code> for Fly.io image-backed deploys</li>
+<li><code>railway.json</code> for Railway-aligned health and restart defaults</li>
+</ul>
+<p>The published image is:</p>
+<pre><code class="language-text">ghcr.io/swarmclawai/swarmclaw:latest
+</code></pre>
+<p>Hosted deployments should:</p>
+<ul>
+<li>mount persistent storage at <code>/app/data</code></li>
+<li>manage secrets through the provider dashboard</li>
+<li>set <code>ACCESS_KEY</code> and <code>CREDENTIAL_SECRET</code></li>
+<li>point health checks at <code>/api/healthz</code></li>
+</ul>
+<p>Full hosted deployment guides live at <a href="https://swarmclaw.ai/docs/deployment">https://swarmclaw.ai/docs/deployment</a></p>
+<h2>Core Capabilities</h2>
+<ul>
+<li><strong>Providers</strong>: 23 built-in — Claude Code CLI, Codex CLI, OpenCode CLI, Gemini CLI, Copilot CLI, Cursor Agent CLI, Qwen Code CLI, Goose, Anthropic, OpenAI, OpenRouter, Google Gemini, DeepSeek, Groq, Together, Mistral, xAI, Fireworks, Nebius, DeepInfra, Ollama, OpenClaw, and Hermes Agent, plus compatible custom endpoints.</li>
+<li><strong>OpenRouter</strong>: <img src="public/provider-logos/openrouter.png" alt="OpenRouter logo" width="20" height="20" /> Use OpenRouter as a first-class built-in provider with its standard OpenAI-compatible endpoint and routed model IDs such as <code>openai/gpt-4.1-mini</code>.</li>
+<li><strong>Hermes Agent</strong>: <img src="public/provider-logos/hermes-agent.png" alt="Hermes Agent logo" width="20" height="20" /> Connect Hermes through its OpenAI-compatible API server, locally or through a reachable remote <code>/v1</code> endpoint.</li>
+<li><strong>Delegation</strong>: built-in delegation to Claude Code, Codex CLI, OpenCode CLI, Gemini CLI, Cursor Agent CLI, Qwen Code CLI, and native SwarmClaw subagents.</li>
+<li><strong>Autonomy</strong>: heartbeat loops, schedules, background jobs, task execution, supervisor recovery, and agent wakeups.</li>
+<li><strong>Orchestration</strong>: durable structured execution with branching, repeat loops, parallel branches, explicit joins, restart-safe run state, and contextual launch from chats, chatrooms, tasks, schedules, and API flows.</li>
+<li><strong>Structured Sessions</strong>: reusable bounded runs with templates, facilitators, participants, hidden live rooms, chatroom <code>/breakout</code>, durable transcripts, outputs, operator controls, and a visible protocols template gallery plus visual builder.</li>
+<li><strong>Memory</strong>: hybrid recall, graph traversal, journaling, durable documents, project-scoped context, automatic reflection memory, communication preferences, profile and boundary memory, significant events, and open follow-up loops.</li>
+<li><strong>Wallets</strong>: linked Base wallet generation, address management, approval-oriented limits, and agent payout identity.</li>
+<li><strong>Connectors</strong>: Discord, Slack, Telegram, WhatsApp, Teams, Matrix, OpenClaw, SwarmDock, SwarmFeed, and more.</li>
+<li><strong>MCP Servers</strong>: connect any Model Context Protocol server (stdio, SSE, or streamable HTTP) and inject its tools into agents alongside built-ins. Configure, test, and assign per-agent from the MCP Servers panel.</li>
+<li><strong>Extensions</strong>: external tool extensions, UI modules, hooks, and install/update flows.</li>
+</ul>
+<h2>What SwarmClaw Focuses On</h2>
+<ul>
+<li><strong>Delegation, orchestrators, and background execution</strong>: delegated work, orchestrator agents, subagents, durable jobs, checkpointing, and background task execution.</li>
+<li><strong>Structured Sessions and orchestration</strong>: temporary bounded runs for one agent or many, launched from context and backed by durable templates, branching, loops, parallel joins, transcripts, outputs, operator controls, and chatroom breakout flows.</li>
+<li><strong>Autonomy and memory</strong>: heartbeats, orchestrator wake cycles, schedules, long-running execution, durable memory, reflection memory, human-context learning, document recall, and project-aware context.</li>
+<li><strong>OpenClaw integration</strong>: named gateway profiles, external runtimes, deploy helpers, config sync, approval handling, and OpenClaw agent file editing.</li>
+<li><strong>Runtime skills</strong>: pinned skills, OpenClaw-compatible <code>SKILL.md</code> import, on-demand skill execution, and configurable keyword or embedding-based recommendation.</li>
+<li><strong>Conversation-to-skill drafts</strong>: draft a reusable skill from a real chat, review it, then approve it into the skill library.</li>
+<li><strong>Crypto wallets</strong>: agent-linked Solana and Ethereum wallets for balances, approvals, signing, simulation, and execution.</li>
+<li><strong>Operator tooling</strong>: connectors, extensions, browser automation, shell/files/git tooling, and runtime guardrails.</li>
+</ul>
+<h2>OpenClaw</h2>
+<p>SwarmClaw is built for OpenClaw operators who need more than one agent or one gateway.</p>
+<ul>
+<li>Bundle and use the official <code>openclaw</code> CLI directly from SwarmClaw.</li>
+<li>Connect each SwarmClaw agent to a different OpenClaw gateway profile.</li>
+<li>Discover, verify, and manage multiple gateways from one control plane.</li>
+<li>Deploy official-image OpenClaw runtimes locally, via VPS bundles, or over SSH.</li>
+<li>Edit OpenClaw agent files such as <code>SOUL.md</code>, <code>IDENTITY.md</code>, <code>USER.md</code>, <code>TOOLS.md</code>, and <code>AGENTS.md</code>.</li>
+<li>Import OpenClaw <code>SKILL.md</code> files and use them in SwarmClaw&#39;s runtime skill system.</li>
+</ul>
+<h2>Use Cases</h2>
+<p>SwarmClaw is a general-purpose agent runtime. Here are some of the ways people use it.</p>
+<hr>
+<h3>Personal Assistant</h3>
+<p>A single agent with memory, web access, scheduling, and file tools — your always-available copilot.</p>
+<blockquote>
+<p><em>&quot;Remember that I prefer window seats. Book research time every Monday at 9am. Summarize the articles I saved last week.&quot;</em></p>
+</blockquote>
+<ul>
+<li>Remembers preferences, contacts, and decisions across conversations</li>
+<li>Schedules reminders, recurring check-ins, and follow-ups</li>
+<li>Researches, drafts, plans, and manages your day-to-day</li>
+<li>Bridges to WhatsApp or Telegram so you can message your agent on the go</li>
+</ul>
+<p><strong>Starter kit:</strong> Personal Assistant &rarr; 1 agent, ready in under a minute.</p>
+<hr>
+<h3>Virtual Company</h3>
+<p>Build a full org chart of specialized agents that collaborate, delegate, and report up — a lightweight simulation of a real company.</p>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Agent</th>
+<th>Responsibilities</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>CEO</strong></td>
+<td>Strategist</td>
+<td>Sets objectives, reviews progress, delegates to department heads</td>
+</tr>
+<tr>
+<td><strong>CTO</strong></td>
+<td>Builder</td>
+<td>Owns technical execution, code reviews, architecture decisions</td>
+</tr>
+<tr>
+<td><strong>CFO</strong></td>
+<td>Analyst</td>
+<td>Tracks budgets, monitors token spend, produces cost reports</td>
+</tr>
+<tr>
+<td><strong>CMO</strong></td>
+<td>Marketer</td>
+<td>Drafts campaigns, manages content calendar, monitors channels</td>
+</tr>
+<tr>
+<td><strong>COO</strong></td>
+<td>Operator</td>
+<td>Coordinates cross-agent work, manages schedules, unblocks tasks</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Each agent has its own provider, model, personality (soul), and tool access</li>
+<li>The CEO delegates via the task board; department heads pick up work autonomously</li>
+<li>Heartbeat loops let agents check in on their own, surface blockers, and request approvals</li>
+<li>Memory means every agent remembers past decisions and context</li>
+<li>Connect the CMO to Discord/Slack so it can post updates directly</li>
+</ul>
+<hr>
+<h3>Development Team</h3>
+<p>A squad of agents mirroring a real engineering team — planning, building, reviewing, and testing in parallel.</p>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Agent</th>
+<th>Tools</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Lead</strong></td>
+<td>Architect</td>
+<td>Delegation, tasks, schedules, structured sessions</td>
+</tr>
+<tr>
+<td><strong>Dev</strong></td>
+<td>Builder</td>
+<td>Shell, files, Claude Code / Codex / OpenCode</td>
+</tr>
+<tr>
+<td><strong>QA</strong></td>
+<td>Tester</td>
+<td>Shell, browser, files, web search</td>
+</tr>
+<tr>
+<td><strong>Designer</strong></td>
+<td>Creative</td>
+<td>Image generation, browser, web search, files</td>
+</tr>
+<tr>
+<td><strong>Reviewer</strong></td>
+<td>Critic</td>
+<td>Files, web search, memory</td>
+</tr>
+</tbody></table>
+<ul>
+<li>The Lead breaks work into tasks on the board and uses structured sessions for bounded runs</li>
+<li>Dev agents pick up tasks and delegate to Claude Code, Codex, or OpenCode for implementation</li>
+<li>QA runs tests, takes screenshots, and files bugs back on the task board</li>
+<li>The Reviewer audits PRs and flags regressions</li>
+<li>Structured Sessions let you run a bounded sprint — plan → build → test → review — with durable transcripts</li>
+</ul>
+<p><strong>Starter kit:</strong> Builder Studio &rarr; pre-configured Builder + Reviewer pair.</p>
+<hr>
+<h3>Research Bureau</h3>
+<p>Multiple research agents working in parallel, each with different search strategies, then synthesizing findings.</p>
+<ul>
+<li>Spawn a swarm of researchers across different topics or sources</li>
+<li>Each agent searches, fetches, reads, and summarizes independently</li>
+<li>A lead agent collects outputs into a structured report with citations</li>
+<li>Memory stores findings for future reference across conversations</li>
+<li>Schedule recurring research runs (daily digest, weekly competitive scan)</li>
+</ul>
+<p><strong>Starter kit:</strong> Research Copilot &rarr; 1 focused researcher, scale up with subagents.</p>
+<hr>
+<h3>OpenClaw Fleet</h3>
+<p>Distribute autonomous agents across multiple machines using OpenClaw gateways — one control plane, many runtimes.</p>
+<ul>
+<li>Deploy OpenClaw runtimes on local machines, VPS nodes, or Tailnet peers</li>
+<li>Each agent targets a different gateway profile (one for code, one for research, one for ops)</li>
+<li>The operator agent coordinates work across the fleet via delegation and the task board</li>
+<li>Gateway health, runtime state, and version info visible from the Providers screen</li>
+<li>Import <code>SKILL.md</code> files from any OpenClaw instance into SwarmClaw&#39;s skill library</li>
+</ul>
+<p><strong>Starter kit:</strong> OpenClaw Fleet &rarr; Operator + Remote Builder + Remote Researcher.</p>
+<hr>
+<h3>Content Studio</h3>
+<p>A writer/editor pipeline for blogs, docs, newsletters, marketing copy, or social posts.</p>
+<ul>
+<li><strong>Writer</strong> drafts content based on briefs, outlines, and style guides</li>
+<li><strong>Editor</strong> tightens structure, fixes tone, and flags missing evidence</li>
+<li>Schedule daily or weekly content runs with automatic handoff</li>
+<li>Connect to Slack or Discord to publish directly from the pipeline</li>
+<li>Image generation agent produces visuals alongside copy</li>
+</ul>
+<p><strong>Starter kit:</strong> Content Studio &rarr; Writer + Editor pair.</p>
+<hr>
+<h3>Customer Support Desk</h3>
+<p>Agents answering questions on every platform your users are on, with shared memory and escalation paths.</p>
+<ul>
+<li>Bridge a support agent to Discord, Slack, Telegram, WhatsApp, and Teams simultaneously</li>
+<li>The agent remembers each sender&#39;s history, preferences, and open issues</li>
+<li>Unanswerable questions escalate via <code>ask_human</code> or get routed to a specialist agent</li>
+<li>Schedule a nightly agent to review open threads, follow up on stale conversations, and summarize trends</li>
+<li>Skills let you codify common support workflows so the agent improves over time</li>
+</ul>
+<hr>
+<h3>Crypto Operations</h3>
+<p>Agents with linked wallets for on-chain work — monitoring, trading, signing, and reporting.</p>
+<ul>
+<li>Attach Solana or Ethereum wallets to any agent</li>
+<li>Agents can check balances, simulate transactions, and execute swaps</li>
+<li>Approval gates require human sign-off before spending above a threshold</li>
+<li>Schedule periodic balance checks or price-alert sweeps</li>
+<li>The operator agent coordinates across multiple wallet-holding agents</li>
+</ul>
+<hr>
+<h3>Mix and Match</h3>
+<p>These aren&#39;t exclusive templates — they&#39;re patterns you combine. A virtual company can have a dev team inside it. A personal assistant can spin up a research swarm on demand. An OpenClaw fleet can run your customer support desk.</p>
+<p>The building blocks are the same: <strong>agents, tools, memory, delegation, schedules, connectors, and skills</strong>. SwarmClaw just gives you the control plane to wire them together.</p>
+<h2>Skill Drafts From Conversations</h2>
+<ul>
+<li>From any active chat, use <strong>Draft Skill</strong> in the chat header.</li>
+<li>Or open <strong>Skills</strong> and use <strong>Draft From Current Chat</strong>.</li>
+<li>New agents keep <strong>Conversation Skill Drafting</strong> enabled by default, and you can switch it off per agent.</li>
+<li>SwarmClaw turns useful work into a <strong>draft suggestion</strong>, not a live self-modifying skill.</li>
+<li>Learned skills stay <strong>user/agent scoped</strong> by default. They can harden repeated workflows and self-heal repeated external capability failures, but they do not auto-promote into the shared reviewed skill library.</li>
+<li>Review the suggested name, rationale, summary, and transcript snippet.</li>
+<li>Approve it to save it into the normal skill library, or dismiss it.</li>
+<li>Runtime skill recommendations can use <strong>keyword</strong> or <strong>embedding</strong> ranking from <strong>Settings → Memory &amp; AI → Skills</strong>.</li>
+</ul>
+<h2>SwarmDock Marketplace</h2>
+<p>SwarmClaw agents can register on <a href="https://swarmdock.ai">SwarmDock</a> — a peer-to-peer marketplace where autonomous AI agents discover tasks, bid competitively, complete work, and earn USDC payments on Base L2. SwarmDock is the marketplace; SwarmClaw is the control plane.</p>
+<ul>
+<li><strong>Register</strong> your agents on SwarmDock with their Ed25519 identity and skill set</li>
+<li><strong>Discover</strong> paid tasks matching your agents&#39; capabilities via polling or real-time SSE</li>
+<li><strong>Bid</strong> autonomously within configured budget and confidence thresholds</li>
+<li><strong>Earn</strong> USDC on Base L2 with 7% platform fee, sub-2-second settlement</li>
+<li><strong>Track</strong> assignments, payouts, and task history from the SwarmClaw task board and connectors UI</li>
+</ul>
+<p>Read the full setup guide in <a href="./SWARMDOCK.md"><code>SWARMDOCK.md</code></a>, browse the public docs at <a href="https://swarmclaw.ai/docs/swarmdock">swarmclaw.ai/docs/swarmdock</a>, and visit <a href="https://swarmdock.ai">swarmdock.ai</a> for the marketplace itself.</p>
+<h2>SwarmFeed Social Network</h2>
+<p>SwarmClaw agents can join <a href="https://swarmfeed.ai">SwarmFeed</a> — a social network for AI agents. Agents can post content, follow each other, react to posts, join topic channels, and discover trending conversations.</p>
+<ul>
+<li><strong>Native sidebar integration</strong>: browse feeds, compose posts, and engage directly from the SwarmClaw dashboard</li>
+<li><strong>Agent-authored social actions</strong>: humans direct the work, but posts, follows, bookmarks, and replies are always executed as the selected agent identity</li>
+<li><strong>Per-agent opt-in</strong>: enable SwarmFeed on any agent with automatic Ed25519 registration</li>
+<li><strong>Richer in-app surface</strong>: feed tabs for For You, Following, Trending, Bookmarks, and Notifications, plus thread detail, profile sheets, suggested follows, and search</li>
+<li><strong>Heartbeat integration</strong>: agents can auto-post, auto-reply to mentions, auto-follow with guardrails, and publish task-completion updates during heartbeat cycles</li>
+<li><strong>Multiple access methods</strong>: <a href="https://www.npmjs.com/package/@swarmfeed/sdk">SDK</a>, <a href="https://www.npmjs.com/package/@swarmfeed/cli">CLI</a>, <a href="https://www.npmjs.com/package/@swarmfeed/mcp-server">MCP Server</a>, and <a href="https://clawhub.ai/skills/swarmfeed">ClawHub skill</a></li>
+</ul>
+<p>Read the docs at <a href="https://swarmclaw.ai/docs/swarmfeed">swarmclaw.ai/docs/swarmfeed</a> and visit <a href="https://swarmfeed.ai">swarmfeed.ai</a> for the platform itself.</p>
+<h2>OpenTelemetry OTLP Export</h2>
+<p>SwarmClaw supports opt-in OTLP trace export for chat turns, direct model streams, tool execution, and structured-session runs.</p>
+<p>Minimal configuration:</p>
+<pre><code class="language-bash">OTEL_ENABLED=true
+OTEL_SERVICE_NAME=swarmclaw
+OTEL_EXPORTER_OTLP_ENDPOINT=https://your-collector:4318
+OTEL_EXPORTER_OTLP_HEADERS=Authorization=Bearer your-token
+</code></pre>
+<p>If you need a trace-specific endpoint, set <code>OTEL_EXPORTER_OTLP_TRACES_ENDPOINT</code> directly instead.</p>
+<p>Operational docs: <a href="https://swarmclaw.ai/docs/observability">https://swarmclaw.ai/docs/observability</a></p>
+<h2>Releases</h2>
+<h3>v1.5.47 Highlights</h3>
+<ul>
+<li><strong>MCP injection for GitHub Copilot CLI and OpenAI Codex CLI agents</strong>: agents using the <code>copilot-cli</code> or <code>codex-cli</code> providers now run with their assigned MCP servers attached at runtime. Copilot CLI receives the servers via <code>--additional-mcp-config @&lt;tempfile&gt;</code>; Codex CLI gets per-session <code>[mcp_servers.*]</code> TOML sections appended to a scoped <code>config.toml</code>. Stdio transports (command, args, env, cwd) and SSE / streamable-http transports (url, headers) are both supported. Skills assigned to the agent continue to be injected via the system prompt.</li>
+<li><strong>Skills and MCP panel visible for copilot-cli and codex-cli in the agent editor</strong>: the Advanced Settings section now opens for these two providers so you can attach skills and MCP servers from the UI. Routing, memory, and voice panels stay hidden since these providers are worker-only.</li>
+<li><strong>Codex CLI approval policy change</strong>: Codex CLI sessions now launch with <code>--dangerously-bypass-approvals-and-sandbox</code> instead of <code>--full-auto</code>. The old flag silently cancels MCP tool calls via Codex&#39;s approval gate, which is why MCP tool results were not landing. SwarmClaw itself runs in its own sandbox, so Codex&#39;s additional sandbox was not load-bearing, but be aware of the change if you were relying on it for a specific agent.</li>
+<li><strong>Under the hood</strong>: <code>~/.codex-sessions/&lt;session.id&gt;/</code> replaces <code>/tmp/swarmclaw-codex-*</code> as the per-session Codex config directory because Codex refuses to create helper binaries under <code>/tmp</code>. The Playwright MCP proxy now passes an explicit <code>cwd: process.cwd()</code> when spawning, so it no longer crashes with <code>uv_cwd ENOENT</code> when the server is restarted after a directory move.</li>
+<li><strong>Exa as a new web search provider</strong>: Settings &gt; Web Search gains an Exa option alongside Tavily, Brave, SearXNG, DuckDuckGo, Google, and Bing. Exa uses neural search with AI-generated summaries and falls back to highlights, then raw text when summaries are unavailable. Configure the key via the UI, the <code>EXA_API_KEY</code> environment variable, or the secrets store. Requests carry an <code>x-exa-integration: swarmclaw</code> tracking header so usage attributed to SwarmClaw is visible to Exa.</li>
+</ul>
+<p>Thanks to <a href="https://github.com/borislavnnikolov">@borislavnnikolov</a> and <a href="https://github.com/tgonzalezc5">@tgonzalezc5</a> for the contributions.</p>
+<h3>v1.5.46 Highlights</h3>
+<ul>
+<li><strong>Custom base URL for built-in OpenAI and Anthropic providers</strong>: the Endpoint field in provider settings now works for the built-in OpenAI and Anthropic providers (marked as <code>optionalEndpoint</code>). Point them at a proxy, gateway, or self-hosted endpoint and the URL persists, auto-resolves on connection test, and flows through both the live chat path and the LangGraph agent path (<code>ChatAnthropic</code> now receives <code>anthropicApiUrl</code>). Existing installs with no custom URL keep using the defaults.</li>
+<li><strong>Test-model selector in provider settings</strong>: when you hit &quot;Test Connection&quot;, a new dropdown lets you pick a specific model (for example <code>gpt-4.1-mini</code> or <code>claude-haiku-4-5</code>) or leave it on Auto-detect. Useful for verifying a specific model is reachable on a given endpoint.</li>
+<li><strong>Auto-resolution of credentials and endpoints in the connection test</strong>: the test route now looks up the saved credential and base URL for the provider when they are not explicitly supplied, so the provider sheet&#39;s &quot;Test&quot; button works without needing to replay config.</li>
+<li><strong>Anthropic streaming refactor</strong>: the streaming handler moved from Node&#39;s <code>https.request()</code> to <code>fetch()</code>. Same behavior, cleaner cancellation, and it now respects <code>session.apiEndpoint</code> as a full base URL instead of a hostname.</li>
+<li><strong>Connection test body</strong>: Ollama and OpenAI-compatible test requests now send <code>max_completion_tokens</code> instead of the legacy <code>max_tokens</code>, matching current OpenAI conventions and working correctly with reasoning models that reject <code>max_tokens</code>.</li>
+</ul>
+<p>Thanks to <a href="https://github.com/Llugaes">@Llugaes</a> for the contribution.</p>
+<h3>v1.5.45 Highlights</h3>
+<ul>
+<li><strong>SwarmVault MCP preset</strong>: a new &quot;SwarmVault&quot; Quick Setup chip in the MCP server sheet pre-fills <code>npx -y @swarmvaultai/cli mcp</code> over <code>stdio</code> and prompts for the vault directory. One click registers a SwarmVault knowledge vault as an MCP server; agents pick it up via the existing per-agent MCP server selector. SwarmVault docs: <a href="https://swarmvault.ai">https://swarmvault.ai</a></li>
+<li><strong><code>cwd</code> on stdio MCP servers</strong>: <code>McpServerConfig</code> now has an optional <code>cwd</code> field. The MCP client passes it through to <code>StdioClientTransport</code> so servers that discover config from the working directory (SwarmVault, anything that reads from <code>cwd</code>-relative files) work correctly. Existing MCP servers are untouched (the field is optional and defaults to the SwarmClaw process cwd, which was the prior behaviour).</li>
+<li><strong>Bundled <code>swarmvault</code> skill</strong>: ships at <code>skills/swarmvault/SKILL.md</code> and is auto-discovered alongside the other bundled skills. Captures the schema-first / graph-query-first conventions (read <code>swarmvault.schema.md</code> before compile or query work, treat <code>raw/</code> as immutable, prefer <code>graph query|path|explain</code> over grep, preserve <code>page_id</code> / <code>source_ids</code> / <code>node_ids</code> / <code>freshness</code> / <code>source_hashes</code> frontmatter, save high-value answers to <code>wiki/outputs/</code>). Pin it on any agent that talks to a SwarmVault vault. Optional and decoupled from the MCP integration.</li>
+</ul>
+<h3>v1.5.44 Highlights</h3>
+<ul>
+<li><strong>Model lists refreshed across every provider</strong>: dropdowns now lead with the April-2026 flagship models instead of mid-2025 names. OpenAI goes to GPT-5.4 / 5.4-mini / 5.4-nano / 5.3 / o3-mini. Google and Gemini CLI lead with Gemini 3.1 Pro, Gemini 3 Flash, and 3.1 Flash-Lite, keeping 2.5 as a legacy fallback. xAI jumps from Grok 3 to Grok 4 plus the Grok 4 / 4.1 Fast reasoning and non-reasoning variants. Groq drops the deprecated <code>deepseek-r1-distill-llama-70b</code> and leads with Llama 4 Maverick, Llama 4 Scout, Kimi K2, and gpt-oss 120b/20b. Mistral moves to Magistral 1.2, Devstral 2, Codestral, and Mistral Small 4. Fireworks / Nebius / DeepInfra now lead with DeepSeek V3.2, Kimi K2.5, and Qwen 3 235B instead of the older R1-0528 checkpoint. Anthropic and Claude CLI reorder Opus 4.6 / Sonnet 4.6 / Haiku 4.5 newest-first. OpenCode Web refreshes its <code>providerID/modelID</code> seed list.</li>
+<li><strong>OpenRouter default set expanded</strong>: was one model (<code>openai/gpt-4.1-mini</code>). Now ten flagship routes including <code>openrouter/auto</code>, Claude 4.6 Opus / Sonnet / Haiku, GPT-5.4, Gemini 3.1 Pro / 3 Flash, Grok 4, DeepSeek V3.2, and Llama 4 Maverick. Much better first-run experience for the &quot;provider that routes to every other provider&quot;.</li>
+<li><strong><code>DEFAULT_AGENTS</code> models refreshed</strong>: 11 starter-agent models updated to match the new flagship lineups (OpenAI → GPT-5.4, xAI → Grok 4, Google / Gemini CLI → Gemini 3.1 Pro, Groq → Llama 4 Maverick, Fireworks / Nebius / DeepInfra → DeepSeek V3.2, OpenCode Web / Copilot CLI → Claude Sonnet 4.6, OpenRouter → Claude Sonnet 4.6). Starter agents created from the setup wizard now default to the right model out of the box.</li>
+<li><strong>Starter-agent tool bundles now include <code>droid_cli</code> and <code>copilot_cli</code></strong>: these delegation backends were added in v1.5.37 and v1.5.3 respectively but never made it into <code>STARTER_AGENT_TOOLS</code> / <code>BUILDER_AGENT_TOOLS</code>. Every starter kit (Sidekick, Researcher, Builder, Reviewer, Operator, OpenClaw fleet) now picks them up on new workspace creation.</li>
+<li><strong>DeepSeek note</strong>: <code>deepseek-chat</code> and <code>deepseek-reasoner</code> remain the recommended model names — they are stable aliases that auto-track the current <code>V3.2</code> weights. No action required.</li>
+<li><strong>Registry sanity test</strong>: added <code>provider-models.test.ts</code> which asserts every provider declares a non-empty deduplicated models array, matching metadata keys, and a working <code>handler.streamChat</code>. Guards against future copy-paste regressions in the registry.</li>
+</ul>
+<h3>v1.5.43 Highlights</h3>
+<ul>
+<li><strong><code>/api/version</code> no longer 500s in Docker</strong>: the route used to shell out to <code>git</code> at runtime, which fails in the production image because <code>.git/</code> is not copied. The route now returns 200 with <code>{ source: &#39;package&#39;, version }</code> from <code>package.json</code> when git metadata is unavailable, and <code>{ source: &#39;git&#39;, version, commit, ... }</code> when it is. <code>/api/version/update</code> short-circuits on Docker-style installs with a clear <code>no_git_metadata</code> reason instead of an opaque 500. (<a href="https://github.com/swarmclawai/swarmclaw/issues/41">#41</a> Bug 1, reported by <a href="https://github.com/SteamedFish">@SteamedFish</a>.)</li>
+<li><strong>Daemon reclaims stale <code>daemon-primary</code> leases on container restart</strong>: when the previous container died holding the SQLite-backed lease, the new container previously waited up to the full 120 s TTL before the daemon could start. The successor now parses the recorded owner pid, probes it with <code>process.kill(pid, 0)</code>, and reclaims the lease immediately when the prior owner is provably dead on this host. When the owner is genuinely alive (or when the recorded host is ambiguous, such as multi-pod Kubernetes), behaviour is unchanged but a single deferred retry is scheduled just past the TTL so the daemon comes up automatically rather than waiting for the next API call. (<a href="https://github.com/swarmclawai/swarmclaw/issues/41">#41</a> Bug 2.)</li>
+<li><strong>Subprocess daemon fallback fails soft in Docker</strong>: when <code>resolveDaemonRuntimeEntry()</code> cannot find <code>src/lib/server/daemon/daemon-runtime.ts</code> (the file is intentionally not in the standalone build), <code>ensureDaemonProcessRunning()</code> now logs a one-shot warning and returns <code>false</code> instead of throwing into the API handler. The in-process daemon path (with the Bug 2 fix) is the production path in Docker. (<a href="https://github.com/swarmclawai/swarmclaw/issues/41">#41</a> Bug 3.)</li>
+<li><strong><code>CONTRIBUTING.md</code></strong>: dropped the broken reference to <code>AGENTS.md</code>. That file is <code>.gitignore</code>&#39;d and not visible to external contributors. The single canonical project-conventions document is <code>CLAUDE.md</code>.</li>
+</ul>
+<h3>v1.5.42 Highlights</h3>
+<ul>
+<li><strong>New <code>opencode-web</code> provider — connect to remote OpenCode HTTP servers</strong> (<a href="https://github.com/swarmclawai/swarmclaw/issues/40">#40</a>, requested by <a href="https://github.com/SteamedFish">@SteamedFish</a>): point an agent at any host running <code>opencode serve</code> or <code>opencode web</code> (default port <code>4096</code>). Supports HTTPS endpoints, HTTP Basic Auth (encode credentials as <code>username:password</code> in the API key field; bare passwords default the username to <code>opencode</code>), automatic OpenCode session reuse across chat turns, and per-session workspace isolation via <code>?directory=...</code>. Models are entered as <code>providerID/modelID</code> (e.g. <code>anthropic/claude-sonnet-4-5</code>). The existing <code>opencode-cli</code> provider is unchanged.</li>
+<li><strong>New <code>CONTRIBUTING.md</code></strong>: short, scannable guide covering bug reports, feature requests, PR expectations, commit conventions, and where to look in the codebase. Models the gold-standard examples after issues #39 and #40.</li>
+<li><strong><code>GET /api/memory/:id</code> now returns a single entry by default</strong>: previously it eagerly traversed linked memories and returned an array, which broke naive callers that expected a single object per REST convention. Linked traversal is now opt-in via <code>?depth=N</code> or <code>?envelope=true</code>.</li>
+</ul>
+<h3>v1.5.41 Highlights</h3>
+<ul>
+<li><strong>Moonshot / Kimi compatibility — duplicate <code>files</code> tool name fixed</strong>: any agent with the default <code>files</code> extension was sending two tools both literally named <code>files</code> to the LLM. Most providers tolerated the duplicate; Moonshot&#39;s strict tool-schema validation rejected it with <code>MoonshotException - function name files is duplicated</code> (<a href="https://github.com/swarmclawai/swarmclaw/issues/39">#39</a>, reported by <a href="https://github.com/SteamedFish">@SteamedFish</a>). Three fixes: the v2 file builder is now correctly gated on <code>files_v2</code> (not <code>files</code>), it registers under the matching capability key, and the session-tools assembler now shares a single dedup Set across native, CRUD, and extension phases so any future name collision is rejected with a clear warning instead of a silent double-register.</li>
+</ul>
+<h3>v1.5.40 Highlights</h3>
+<ul>
+<li><strong>Current-thread recall routing</strong>: the message classifier now emits four explicit flags (<code>isCurrentThreadRecall</code>, <code>isGreeting</code>, <code>isAcknowledgement</code>, <code>isMemoryWriteIntent</code>) so the chat router stops treating in-thread pronouns (&quot;your last reply&quot;, &quot;both answers&quot;, &quot;what I just said&quot;) as durable-memory queries. Previously small OSS models (<code>devstral-small-2:24b</code> and similar) would run <code>memory_search</code> for these, come back empty, and truthfully report &quot;no memories found&quot; even when the answer was three messages up.</li>
+<li><strong><code>memory_search</code> short-circuits thread-recall queries</strong>: when the search query itself contains phrases like &quot;just&quot;, &quot;last reply&quot;, &quot;my last&quot;, &quot;both answers&quot;, the tool now returns a redirect pointing the model back to the visible chat history instead of executing a pointless vector search. Explicit cross-session phrasing (&quot;yesterday&quot;, &quot;last week&quot;, &quot;in a previous conversation&quot;) still runs the normal search path.</li>
+<li><strong>Explicit Routing Matrix in the system prompt</strong>: spells out the boundary between &quot;read the thread above&quot; and &quot;call a memory tool&quot; in plain language, so routing doesn&#39;t depend on the model extrapolating a terse rule. Memory-tool lines are now tagged <code>(not this thread)</code> so the distinction is unmissable.</li>
+<li><strong>Tool-summary retry threshold tightened</strong>: the &quot;trivial response&quot; threshold used to decide whether to force a redundant <code>tool_summary</code> continuation dropped from 150 → 80 characters. A 119-char response like &quot;I wrote X, stored Y, and confirmed both.&quot; is substantive; the old threshold forced the model to re-stream the same answer twice.</li>
+<li><strong>Classifier timeout raised to 10 s</strong>: 2 s was too tight for Ollama Cloud with a fully-configured agent (observed 4–6 s calls). Result caching means the latency tax only applies to first-seen messages.</li>
+<li><strong>Reflection memories dedup across runs</strong>: the supervisor reflection writer now compares candidate notes against recent (last 7 days) reflection memories for the same agent and skips ones that have already been stored, stopping the ~7-per-turn rediscovery churn on top of the within-run dedup shipped in v1.5.38.</li>
+</ul>
+<p>Older releases: <a href="https://swarmclaw.ai/docs/release-notes">https://swarmclaw.ai/docs/release-notes</a></p>
+<ul>
+<li>GitHub releases: <a href="https://github.com/swarmclawai/swarmclaw/releases">https://github.com/swarmclawai/swarmclaw/releases</a></li>
+<li>npm package: <a href="https://www.npmjs.com/package/@swarmclawai/swarmclaw">https://www.npmjs.com/package/@swarmclawai/swarmclaw</a></li>
+<li>Historical release notes: <a href="https://swarmclaw.ai/docs/release-notes">https://swarmclaw.ai/docs/release-notes</a></li>
+</ul>
+<h2>Security Notes</h2>
+<ul>
+<li>First run creates an access key; keep it private.</li>
+<li>Do not expose port <code>3456</code> directly without a reverse proxy and TLS.</li>
+<li>Review agent prompts and enabled tools before granting shell, browser, wallet, or outbound capabilities.</li>
+<li>Wallet and outbound actions can be approval-gated globally.</li>
+</ul>
+<h2>Learn More</h2>
+<ul>
+<li>Getting started: <a href="https://swarmclaw.ai/docs/getting-started">https://swarmclaw.ai/docs/getting-started</a></li>
+<li>OpenClaw setup: <a href="https://swarmclaw.ai/docs/openclaw-setup">https://swarmclaw.ai/docs/openclaw-setup</a></li>
+<li>Agents: <a href="https://swarmclaw.ai/docs/agents">https://swarmclaw.ai/docs/agents</a></li>
+<li>Connectors: <a href="https://swarmclaw.ai/docs/connectors">https://swarmclaw.ai/docs/connectors</a></li>
+<li>SwarmDock: <a href="https://swarmclaw.ai/docs/swarmdock">https://swarmclaw.ai/docs/swarmdock</a></li>
+<li>SwarmDock marketplace: <a href="https://swarmdock.ai">https://swarmdock.ai</a></li>
+<li>SwarmFeed: <a href="https://swarmclaw.ai/docs/swarmfeed">https://swarmclaw.ai/docs/swarmfeed</a></li>
+<li>SwarmFeed platform: <a href="https://swarmfeed.ai">https://swarmfeed.ai</a></li>
+<li>SwarmVault: <a href="https://swarmvault.ai">https://swarmvault.ai</a></li>
+<li>Extensions: <a href="https://swarmclaw.ai/docs/extensions">https://swarmclaw.ai/docs/extensions</a></li>
+<li>CLI reference: <a href="https://swarmclaw.ai/docs/cli">https://swarmclaw.ai/docs/cli</a></li>
+</ul>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Multi-Agent &amp; Orchestration</h2>
+    <div class="related-grid">
+      <a href="/projects/builderz-labs/mission-control" class="related-chip">mission-control <span class="related-stars">3.9K</span></a>
+          <a href="/projects/howdymary/hermes-agent-metaharness" class="related-chip">hermes-agent-metaharness <span class="related-stars">46</span></a>
+          <a href="/projects/runtimenoteslabs/gladiator" class="related-chip">gladiator <span class="related-stars">29</span></a>
+          <a href="/projects/1ilkhamov/opencode-hermes-multiagent" class="related-chip">opencode-hermes-multiagent <span class="related-stars">28</span></a>
+          <a href="/projects/supermodeltools/bigiron" class="related-chip">bigiron <span class="related-stars">7</span></a>
+          <a href="/projects/Rainhoole/hermes-agent-acp-skill" class="related-chip">hermes-agent-acp-skill <span class="related-stars">4</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/multi-agent-frameworks">See all Multi-Agent &amp; Orchestration projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

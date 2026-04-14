@@ -1,0 +1,57 @@
+name: Build Project & List Pages
+
+on:
+  schedule:
+    - cron: '30 6 * * *'  # Daily at 06:30 UTC (30 min after release-monitor)
+  push:
+    branches: [main]
+    paths:
+      - 'data/repos.json'
+      - 'data/lists.json'
+      - 'scripts/build-pages.js'
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/build-pages.js
+
+      - name: Check for changes
+        id: diff
+        run: |
+          git add projects/ lists/ sitemap.xml robots.txt
+          if git diff --cached --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            PAGES=$(find projects -name '*.html' | wc -l)
+            LISTS=$(find lists -name '*.html' | wc -l)
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "pages=$PAGES" >> $GITHUB_OUTPUT
+            echo "lists=$LISTS" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit updated pages
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "Hermes Atlas Bot"
+          git config user.email "bot@hermesatlas.com"
+          git commit -m "Rebuild project pages (${{ steps.diff.outputs.pages }} projects, ${{ steps.diff.outputs.lists }} lists)"
+          git push

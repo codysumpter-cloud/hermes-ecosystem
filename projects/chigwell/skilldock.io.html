@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>skilldock.io — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
+<meta name="description" content="SkillDock.io is a registry of reusable AI Skills based on the AgentSkills specification. Discover, install, and publish versioned Skills that work across OpenCl">
+<link rel="canonical" href="https://hermesatlas.com/projects/chigwell/skilldock.io">
+<meta property="og:title" content="skilldock.io — Hermes Atlas">
+<meta property="og:description" content="SkillDock.io is a registry of reusable AI Skills based on the AgentSkills specification. Discover, install, and publish versioned Skills that work across OpenCl">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/chigwell/skilldock.io">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="skilldock.io — Hermes Atlas">
+<meta name="twitter:description" content="SkillDock.io is a registry of reusable AI Skills based on the AgentSkills specification. Discover, install, and publish versioned Skills that work across OpenCl">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Skills &amp; Skill Registries</a>
+  </div>
+
+  <h1>skilldock.io</h1>
+  <p class="project-desc">SkillDock.io is a registry of reusable AI Skills based on the AgentSkills specification. Discover, install, and publish versioned Skills that work across OpenClaw, Claude, and any Skills-compatible agent.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 54</span>
+    <span class="badge badge-lang">Python</span>
+    <span class="badge badge-lang">Apache-2.0</span>
+    
+    <span>Updated 3/3/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/chigwell/skilldock.io" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    <a href="https://skilldock.io/" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
+  </div>
+
+  <section class="readme">
+    <div align="center">
+  <a target="_blank" href="https://skilldock.io/?utm_source=github&utm_medium=readme">
+   <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=200&section=header&text=SkillDock.io&fontSize=50&fontAlignY=35&animation=fadeIn&fontColor=FFFFFF&descAlignY=55&descAlign=62" alt="SkillDock" width="100%" />
+  </a>
+</div>
+
+<p><a href="https://badge.fury.io/py/skilldock"><img src="https://badge.fury.io/py/skilldock.svg" alt="PyPI version"></a>
+<a href="https://opensource.org/license/apache-2-0"><img src="https://img.shields.io/badge/License-Apache2.0-green.svg" alt="License: MIT"></a>
+<a href="https://pepy.tech/project/skilldock"><img src="https://static.pepy.tech/badge/skilldock" alt="Downloads"></a>
+<a href="https://www.linkedin.com/in/eugene-evstafev-716669181/"><img src="https://img.shields.io/badge/LinkedIn-blue" alt="LinkedIn"></a></p>
+<h1>SkillDock Python SDK and CLI</h1>
+<p><code>skilldock</code> is an OpenAPI-driven Python client (and a CLI) for the SkillDock API.</p>
+<p>It loads the OpenAPI spec at runtime and exposes:</p>
+<ul>
+<li>A Python <code>SkilldockClient</code> that can call any <code>operationId</code></li>
+<li>A CLI that can list available operations and call them from your terminal</li>
+</ul>
+<h2>Install</h2>
+<pre><code class="language-bash">pip install skilldock
+</code></pre>
+<h2>Quickstart (CLI)</h2>
+<p>List operations from the OpenAPI spec:</p>
+<pre><code class="language-bash">skilldock ops
+</code></pre>
+<p>The first column is a python-friendly <code>python_name</code> you can use as <code>client.ops.&lt;python_name&gt;(...)</code>.</p>
+<p>Authenticate (browser login + polling):</p>
+<pre><code class="language-bash">skilldock auth login
+</code></pre>
+<p>This starts a CLI auth session on the API, prints an <code>auth_url</code>, opens it in your browser, then polls until it receives an app-issued <code>access_token</code> and saves it as the CLI token.
+After login succeeds, the CLI now also lists your personal API tokens automatically.
+If no active personal tokens exist, it creates one and saves it as your default CLI token for future requests.
+Access tokens are short-lived; if you see auth errors later, run <code>skilldock auth login</code> again.</p>
+<p>Create a long-lived personal API token (recommended for CI and to avoid short-lived JWT expiry):</p>
+<pre><code class="language-bash"># Prints the token (shown only once by the API) and saves it into the CLI config.
+skilldock tokens create --save
+
+# List your tokens
+skilldock tokens list
+</code></pre>
+<p>CLI output is rendered with <a href="https://pypi.org/project/rich/">Rich</a> tables/formatting for better readability.</p>
+<p>Call an endpoint by <code>operationId</code>:</p>
+<pre><code class="language-bash">skilldock call SomeOperationId --param foo=bar --json &#39;{&quot;hello&quot;:&quot;world&quot;}&#39;
+</code></pre>
+<p>Search skills:</p>
+<pre><code class="language-bash">skilldock skills search &quot;docker&quot;
+</code></pre>
+<p><code>skills search</code> uses <code>POST /v2/search</code> and returns the same listing contract shape (<code>page</code>, <code>per_page</code>, <code>items</code>, <code>has_more</code>).</p>
+<p>Search output includes <code>LATEST_VERSIONS</code> from each skill&#39;s embedded <code>latest_releases</code> (up to 5 items).</p>
+<p>Get a single skill (latest metadata + latest description source):</p>
+<pre><code class="language-bash">skilldock skills get acme/my-skill
+</code></pre>
+<p>Get one exact release by version (source of truth for versioned descriptions):</p>
+<pre><code class="language-bash">skilldock skills release acme/my-skill 0.1.0
+</code></pre>
+<p>Browse release history page-by-page:</p>
+<pre><code class="language-bash">skilldock skills releases acme/my-skill --page 1 --per-page 10
+</code></pre>
+<p>Commerce sell/buy flow (TON + Stripe):</p>
+<pre><code class="language-bash"># 1) Seller setup
+# Stripe Connect Express onboarding (first run)
+skilldock skills stripe-connect-start --country US
+# Or resume/check later
+skilldock skills stripe-connect-status
+
+# Payout methods
+skilldock skills set-ton-wallet --ton-wallet-address UQ...
+skilldock skills set-stripe-payout --stripe-account-id acct_1ABCDEF... --stripe-account-label &quot;Stripe Express&quot;
+skilldock skills payout-methods
+
+# Mark the skill as sellable
+skilldock skills set-commerce acme/my-skill --is-for-sale true --visibility private --selling-description-md &quot;What buyer sees&quot;
+
+# Dual-rail pricing (set either or both)
+skilldock skills set-price acme/my-skill --pricing-mode fixed_usd --price-usd 29.00
+skilldock skills set-price acme/my-skill --pricing-mode fixed_ton --price-ton 2.750000000
+
+# 2) Buyer invoice create/reuse
+skilldock skills buy acme/my-skill --payment-provider stripe
+skilldock skills buy acme/my-skill --payment-provider ton --referral-code a
+skilldock skills buy acme/my-skill
+# If omitted, the backend can choose the default payment rail.
+
+# 3) Poll invoice until paid/expired/cancelled
+skilldock skills buy acme/my-skill --payment-provider stripe --poll
+# or check a known invoice id
+skilldock skills invoice &lt;invoice_id&gt;
+
+# 4) Seller balances / payouts
+skilldock skills balance
+skilldock skills balance-transactions --page 1 --per-page 20
+skilldock skills request-payout --amount-usd 25.00 --payout-method-kind stripe
+skilldock skills payout-requests --page 1 --per-page 20
+
+# 5) Confirm inventory
+skilldock skills bought --page 1 --per-page 20
+</code></pre>
+<p>Get author profile details and authored skills (paginated):</p>
+<pre><code class="language-bash">skilldock users get 123 --page 1 --per-page 20
+</code></pre>
+<p>Install a skill locally (default destination is <code>./skills</code>, with recursive dependency resolution):</p>
+<p>Public skills can be installed without auth. If a token is configured, the CLI sends it for skill discovery/install flows so private skills can be resolved when authorized.</p>
+<pre><code class="language-bash"># latest
+skilldock install acme/my-skill
+
+# exact version
+skilldock i acme/my-skill --version 1.2.3
+
+# custom local destination
+skilldock install acme/my-skill --skills-dir /path/to/project/skills
+
+# include chained/underlying causes in error output
+skilldock install acme/my-skill --verbose-errors
+</code></pre>
+<p>When install cannot proceed (for example private/deleted skill, no matching release, paid skill access required), warnings/errors include detailed reasons.</p>
+<p>Uninstall a direct skill and reconcile/remove no-longer-needed dependencies:</p>
+<pre><code class="language-bash">skilldock uninstall acme/my-skill
+</code></pre>
+<p>Verify a local skill folder (packages a zip and prints sha256/size):</p>
+<pre><code class="language-bash">skilldock skill verify .
+</code></pre>
+<p>Upload a new skill release:</p>
+<pre><code class="language-bash">skilldock skill upload --namespace myorg --slug my-skill --version 1.2.3 --path .
+
+# Explicit private publish
+skilldock skill upload --namespace myorg --slug my-skill --version 1.2.3 --path . --visibility private
+</code></pre>
+<p>This packages the folder into a zip and uploads it as multipart form field <code>file</code>.
+For this registry, tags are read by the backend from <code>SKILL.md</code> frontmatter inside the uploaded zip.
+There is no separate upload <code>tags</code> field (or CLI <code>--tag</code> flag) for publish.
+Release versions are immutable: if you change <code>SKILL.md</code> (including description), publish a new version.
+Re-publishing the same version for the same skill returns a conflict.</p>
+<pre><code class="language-md">---
+name: my-skill
+description: Does X
+version: 1.2.0
+tags:
+  - productivity
+  - automation
+  - cli
+---
+</code></pre>
+<p>Tag values should be strings; non-string values are ignored by the backend.
+The CLI packages upload archives with top-level folder name equal to <code>--slug</code>, so keep frontmatter <code>name</code> aligned with your slug.</p>
+<p>If your API supports release dependencies, you can pass them from CLI too:</p>
+<pre><code class="language-bash"># Repeatable string form:
+skilldock skill upload --namespace myorg --slug my-skill --path . \
+  --dependency &quot;core/base-utils@^1.2.0&quot; \
+  --dependency &quot;tools/lint@&gt;=2.0.0 &lt;3.0.0&quot;
+
+# JSON form (array or map), inline or from file:
+skilldock skill upload --namespace myorg --slug my-skill --path . \
+  --dependencies-json @dependencies.json
+</code></pre>
+<p>If you haven&#39;t created the namespace yet:</p>
+<pre><code class="language-bash">skilldock namespaces create myorg
+skilldock namespaces list
+</code></pre>
+<p>Low-level request (method + path, bypassing <code>operationId</code>):</p>
+<pre><code class="language-bash">skilldock request GET /health
+</code></pre>
+<h2>Quickstart (Python)</h2>
+<pre><code class="language-python">from skilldock import SkilldockClient
+
+client = SkilldockClient(
+    # Optional: override if needed
+    openapi_url=&quot;https://api.skilldock.io/openapi.json&quot;,
+    # base_url=&quot;https://api.skilldock.io&quot;,
+    token=None,  # set after `skilldock auth login`
+)
+
+ops = client.operation_ids()
+print(&quot;operations:&quot;, len(ops))
+
+# Call by operationId (params are split into path/query/header based on OpenAPI metadata)
+result = client.call_operation(&quot;SomeOperationId&quot;, params={&quot;id&quot;: &quot;123&quot;})
+print(result)
+
+# Or call by a generated python-friendly name:
+# (see `skilldock ops` output and use the `python_name`-like identifier)
+# result = client.ops.someoperationid(id=&quot;123&quot;)
+
+client.close()
+</code></pre>
+<h2>Description Versioning</h2>
+<p>The registry now stores <code>description_md</code> per release version.</p>
+<ul>
+<li>Publish flow:<ul>
+<li>Build/upload the zip with the intended <code>SKILL.md</code> content for that version.</li>
+<li>Publish a new version each time description changes (for example, <code>0.1.0</code> -&gt; <code>0.1.1</code>).</li>
+</ul>
+</li>
+<li>Read flow:<ul>
+<li>Exact version description: <code>GET /v1/skills/{namespace}/{slug}/releases/{version}</code> and use <code>release.description_md</code>.</li>
+<li>Latest overview: <code>GET /v1/skills/{namespace}/{slug}</code> and prefer <code>latest_release.description_md</code>.</li>
+</ul>
+</li>
+<li>Backward compatibility:<ul>
+<li><code>skill.description_md</code> still reflects current/latest description.</li>
+<li>Fallback order when release description is empty:<ol>
+<li><code>release.description_md</code></li>
+<li><code>skill.description_md</code></li>
+<li>empty state</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h2>Configuration</h2>
+<p>The CLI stores config (including token) in a local JSON file:</p>
+<pre><code class="language-bash">skilldock config path
+skilldock config show
+</code></pre>
+<p>You can set config values:</p>
+<pre><code class="language-bash">skilldock config set --base-url https://api.skilldock.io --openapi-url https://api.skilldock.io/openapi.json
+skilldock config set --token &quot;YOUR_TOKEN&quot;
+</code></pre>
+<p>Environment variables (override config):</p>
+<ul>
+<li><code>SKILLDOCK_OPENAPI_URL</code></li>
+<li><code>SKILLDOCK_BASE_URL</code></li>
+<li><code>SKILLDOCK_TOKEN</code></li>
+<li><code>SKILLDOCK_TIMEOUT_S</code></li>
+</ul>
+<h2>Authentication Notes (Google)</h2>
+<p>This SDK assumes the API accepts a token in an HTTP header (usually <code>Authorization: Bearer &lt;token&gt;</code>).
+The exact details are derived from the OpenAPI <code>securitySchemes</code> when present.</p>
+<p>The SkillDock API can accept (depending on server configuration):</p>
+<ul>
+<li>Google ID token (JWT)</li>
+<li>App-issued access token (JWT, returned by the CLI OAuth flow)</li>
+<li>Personal API token (opaque string, created via <code>skilldock tokens create</code>)</li>
+</ul>
+<p><code>skilldock auth login</code> works like this:</p>
+<ol>
+<li>Creates a CLI auth session via <code>POST /auth/cli/sessions</code></li>
+<li>Prints the returned <code>auth_url</code> and opens it in your browser</li>
+<li>After you complete Google login, the backend approves the session</li>
+<li>The CLI polls <code>GET /auth/cli/sessions/{session_id}</code> until it receives an app-issued <code>access_token</code>, then saves it as the configured API token</li>
+<li>The CLI lists personal API tokens; if none are active, it creates one and saves it as the default token</li>
+</ol>
+<p>If you want to set a token manually:</p>
+<pre><code class="language-bash">skilldock auth set-token &quot;PASTE_TOKEN_HERE&quot;
+</code></pre>
+<p>To create a personal API token (recommended for longer-lived auth):</p>
+<pre><code class="language-bash">skilldock tokens create --save
+</code></pre>
+<h2>Development</h2>
+<p>Run the small unit test suite:</p>
+<pre><code class="language-bash">python -m unittest discover -s tests
+</code></pre>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Skills &amp; Skill Registries</h2>
+    <div class="related-grid">
+      <a href="/projects/mukul975/Anthropic-Cybersecurity-Skills" class="related-chip">Anthropic-Cybersecurity-Skills <span class="related-stars">4.1K</span></a>
+          <a href="/projects/conorbronsdon/avoid-ai-writing" class="related-chip">avoid-ai-writing <span class="related-stars">759</span></a>
+          <a href="/projects/wondelai/skills" class="related-chip">wondelai/skills <span class="related-stars">480</span></a>
+          <a href="/projects/DougTrajano/pydantic-ai-skills" class="related-chip">pydantic-ai-skills <span class="related-stars">220</span></a>
+          <a href="/projects/Agents365-ai/drawio-skill" class="related-chip">drawio-skill <span class="related-stars">131</span></a>
+          <a href="/projects/smartcontractkit/chainlink-agent-skills" class="related-chip">chainlink-agent-skills <span class="related-stars">85</span></a>
+          <a href="/projects/tlehman/litprog-skill" class="related-chip">litprog-skill <span class="related-stars">81</span></a>
+          <a href="/projects/esaradev/icarus-plugin" class="related-chip">icarus-plugin <span class="related-stars">51</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/top-skills">See all Skills &amp; Skill Registries projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

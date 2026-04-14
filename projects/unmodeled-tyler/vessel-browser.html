@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>vessel-browser — Hermes Agent Developer Tools | Hermes Atlas</title>
+<meta name="description" content="Built from the ground-up for agents, Vessel Browser is an open source AI browser for Linux/Windows that provides a durable state, MCP control, and BYOK with ful">
+<link rel="canonical" href="https://hermesatlas.com/projects/unmodeled-tyler/vessel-browser">
+<meta property="og:title" content="vessel-browser — Hermes Atlas">
+<meta property="og:description" content="Built from the ground-up for agents, Vessel Browser is an open source AI browser for Linux/Windows that provides a durable state, MCP control, and BYOK with ful">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/unmodeled-tyler/vessel-browser">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="vessel-browser — Hermes Atlas">
+<meta name="twitter:description" content="Built from the ground-up for agents, Vessel Browser is an open source AI browser for Linux/Windows that provides a durable state, MCP control, and BYOK with ful">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Developer Tools</a>
+  </div>
+
+  <h1>vessel-browser</h1>
+  <p class="project-desc">Built from the ground-up for agents, Vessel Browser is an open source AI browser for Linux/Windows that provides a durable state, MCP control, and BYOK with full autonomous browsing. Use with Hermes Agent, OpenClaw, or connect to your favorite API provider.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 49</span>
+    <span class="badge badge-lang">TypeScript</span>
+    <span class="badge badge-lang">MIT</span>
+    
+    <span>Updated 4/14/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/unmodeled-tyler/vessel-browser" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    <a href="https://quantaintellect.com" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
+  </div>
+
+  <section class="readme">
+    <div align="center">
+  
+<p><img src="https://cdn-uploads.huggingface.co/production/uploads/686c460ba3fc457ad14ab6f8/gB6J60f9Yeyb3Thop2dUa.png" alt="quanta-intellect-logo-transparent"></p>
+<a href="https://snapcraft.io/vessel-browser">
+    <img alt="Get it from the Snap Store" src=https://snapcraft.io/en/dark/install.svg />
+  </a>
+  <a href="https://www.producthunt.com/products/quanta-intellect?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-vessel-browser-from-quanta-intellect" target="_blank" rel="noopener noreferrer"><img alt="Vessel Browser from Quanta Intellect - The browser where agents drive and humans supervise | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1107491&amp;theme=dark&amp;t=1774779141692"></a>
+
+<h1>Vessel: Your Agent&#39;s Browser</h1>
+</div>
+
+
+<p>Open source chromium-based browser for persistent web agents. Linux is the most mature install target today, and macOS release packaging is available from source.</p>
+<p>Vessel gives external agent harnesses a real browser with durable state, MCP control, and a human-visible supervisory UI. It is built for long-running workflows where the agent drives and the human audits, intervenes, and redirects when needed.</p>
+<ul>
+<li><strong>Built for agent harnesses</strong> such as Hermes Agent, OpenClaw, and other MCP clients</li>
+<li><strong>Keeps browser state alive</strong> with named sessions, bookmarks, checkpoints, and structured page visibility</li>
+<li><strong>Keeps humans in the loop</strong> with approvals, runtime controls, and a visible browser instead of a headless black box</li>
+</ul>
+<p><em>Vessel is in active development and currently makes no security assurances. Use and deploy it with care.</em></p>
+<p><a href="https://github.com/user-attachments/assets/0a72b48a-873a-4eb0-b8f2-23e34d8472c4">https://github.com/user-attachments/assets/0a72b48a-873a-4eb0-b8f2-23e34d8472c4</a></p>
+<h2>Quick Start</h2>
+<p>Want the full agent toolkit from day one? <a href="https://vesselpremium.quantaintellect.com/checkout">Start a 7-Day Free Trial of Vessel Premium — $5.99/mo</a>.</p>
+<h3>Fastest Install Today</h3>
+<p>Linux AppImage from GitHub Releases:</p>
+<ol>
+<li>Download the latest <code>Vessel-&lt;version&gt;-x64.AppImage</code></li>
+<li>Mark it executable: <code>chmod +x Vessel-*.AppImage</code></li>
+<li>Launch it: <code>./Vessel-*.AppImage</code></li>
+<li>Open Settings (<code>Ctrl+,</code>) and confirm the MCP endpoint shown there</li>
+</ol>
+<h3>Install via npm</h3>
+<pre><code class="language-bash">npm install -g @quanta-intellect/vessel-browser
+vessel-browser
+</code></pre>
+<p>Or run it directly without installing:</p>
+<pre><code class="language-bash">npx @quanta-intellect/vessel-browser
+</code></pre>
+<h3>Source Install</h3>
+<pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/unmodeled-tyler/quanta-vessel-browser/main/scripts/install.sh | bash
+</code></pre>
+<h3>Development From Source</h3>
+<pre><code class="language-bash">npm install
+npm run dev
+</code></pre>
+<p>If you want extra local AI tracing in development, create an optional <code>src/main/telemetry/trace-logger.local.cjs</code> file. Vessel will load it only in local dev builds, and packaged production builds ignore it.</p>
+<h3>Why Vessel?</h3>
+<p>Most browser automation stacks are either headless, stateless, or designed around a human as the primary operator. Vessel is built around the opposite model: the browser is the agent&#39;s operating surface, and the human stays in the loop through a visible interface with clear supervisory controls.</p>
+<img width="1280" height="800" alt="@quanta-intellectvessel-browser_2026-03-17_200224_6613" src="https://github.com/user-attachments/assets/8e208ee1-cb89-4318-87a2-9561a7d9aecf" />
+<img width="1280" height="800" alt="vessel_2026-03-16_144201_7545" src="https://github.com/user-attachments/assets/da7b28ea-6c5f-4aa7-909e-0a255c80d508" />
+<img width="1280" height="800" alt="@quanta-intellectvessel-browser_2026-03-17_195754_6624" src="https://github.com/user-attachments/assets/3b3d2033-5a59-4806-bbc1-359efb7b43a9" />
+
+
+
+<img width="1280" height="800" alt="vessel_2026-03-17_145154_5389" src="https://github.com/user-attachments/assets/b1c08d6c-bcdf-4c9a-8429-a71a23a61903" />
+
+<p>Vessel is built for persistent web agents that need a real browser, durable state, and a human-visible interface. The agent is the primary operator. The human follows along in the live browser UI, audits what the agent is doing, and steers when needed.</p>
+<p>Today, Vessel provides the browser shell, page visibility, and supervisory surfaces needed to support that model. The long-term goal is not &quot;a browser with AI features,&quot; but a browser runtime for autonomous agents with a clear supervisory experience for humans.</p>
+<h2>Features</h2>
+<ul>
+<li><strong>Agent-first browser model</strong> — Vessel is designed around an agent driving the browser while a human watches, intervenes, and redirects</li>
+<li><strong>Human-visible browser UI</strong> — pages render like a normal browser so agent activity stays legible instead of disappearing into a headless run</li>
+<li><strong>Command Bar</strong> (<code>Ctrl+L</code>) — a secondary operator surface for harness-driven workflows and future runtime commands</li>
+<li><strong>Supervisor Sidebar</strong> (<code>Ctrl+Shift+L</code>) — live supervision across five tabs: Supervisor, Bookmarks, Checkpoints, Chat, and Automate</li>
+<li><strong>Chat Assistant</strong> — built-in conversational AI in the sidebar Chat tab; supports Anthropic, OpenAI, Ollama, llama.cpp, Mistral, xAI, Google Gemini, OpenRouter, and any OpenAI-compatible endpoint; reads the current page automatically; has full access to the same browser tools as external agents; multi-turn session history; configure provider, model, and API key in Settings</li>
+<li><strong>Automation Kits</strong> (Premium) — parameterized workflow templates in the sidebar Automate tab; fill in a short form and the built-in agent executes the workflow autonomously; bundled kits include Research &amp; Collect (multi-source research with bookmark saving) and Price Scout (cross-retailer price comparison); designed for a future kit marketplace</li>
+<li><strong>Dev Tools Panel</strong> (<code>F12</code>) — inspect console output, network requests, and MCP/agent activity in a resizable panel at the bottom of the window; export logs by category and date range as JSON</li>
+<li><strong>Bookmarks for Agents</strong> — save pages into folders, attach one-line folder summaries, and search bookmarks over MCP instead of dumping the entire library</li>
+<li><strong>Named Session Persistence</strong> — save cookies, localStorage, and current tab layout under a reusable name, then reload it after a restart</li>
+<li><strong>Page Highlights</strong> — agents can visually highlight text or elements on any page with labeled, color-coded markers that persist across navigation; highlight count and navigation controls appear in the sidebar; cleared explicitly or via tool call</li>
+<li><strong>Agent Transcript Dock</strong> — floating transcript overlay anchored to the browser chrome; configurable display modes (off, summary, full) set in Settings; shows live agent thinking and status updates without occupying sidebar space</li>
+<li><strong>Workflow Flow Tracking</strong> — agents can declare a named multi-step workflow at runtime using <code>flow_start</code>; progress is tracked step-by-step with <code>flow_advance</code> and visible in the sidebar throughout execution</li>
+<li><strong>Structured Page Visibility Context</strong> — extraction can report in-viewport elements, obscured controls, active overlays, and dormant consent/modal UI</li>
+<li><strong>Popup Recovery Tools</strong> — agents can explicitly dismiss common popups, newsletter gates, and consent walls instead of brute-forcing generic clicks</li>
+<li><strong>Per-Tab Ad Blocking Controls</strong> — tabs default to ad blocking on, but agents can selectively disable and re-enable blocking when a page misbehaves</li>
+<li><strong>Domain Policy</strong> — allowlist or blocklist domains globally in Settings; agents cannot navigate to blocked domains</li>
+<li><strong>Agent Credential Vault</strong> (Premium) — encrypted credential storage for agent-driven logins; credentials are filled directly into login forms via a &quot;blind fill&quot; pattern and are never sent to AI providers; user consent dialog before every use; TOTP 2FA support; domain-scoped access; append-only audit log</li>
+<li><strong>Screenshot &amp; Visual Analysis</strong> (Premium) — take a full-page screenshot and pass the image directly to the AI for visual layout analysis; useful when text extraction fails on heavy or canvas-rendered pages</li>
+<li><strong>Obsidian Memory Hooks</strong> (Premium) — optional vault path for agent-written markdown notes, page captures, and research breadcrumbs</li>
+<li><strong>Runtime Health Checks</strong> — startup warnings for MCP port conflicts, unreadable settings, and user-data write failures</li>
+<li><strong>Reader Mode</strong> — extract article content into a clean, distraction-free view; toggle on and off from the address bar</li>
+<li><strong>Focus Mode</strong> (<code>Ctrl+Shift+F</code>) — hide all chrome, content fills the screen</li>
+<li><strong>Resizable Panels</strong> — drag the sidebar edge to resize; width persists across sessions</li>
+<li><strong>Minimal Dark Theme</strong> — warm dark grays, restrained accent color, and no pure black/white</li>
+</ul>
+<h2>Positioning</h2>
+<p>Most browsers treat automation as secondary and assume a human is the primary actor. Vessel is the opposite: it is the browser for the agent, with a visible interface that keeps the human in the loop.</p>
+<p>That means the product should optimize for:</p>
+<ul>
+<li>persistent browser state across tasks and sessions</li>
+<li>clear visibility into what the agent is doing right now</li>
+<li>lightweight human intervention instead of constant manual driving</li>
+<li>a browser runtime that can serve long-lived agent systems such as Hermes Agent or OpenClaw-style harnesses</li>
+</ul>
+<h2>Stack</h2>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Technology</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Engine</td>
+<td>Chromium (Electron 40)</td>
+</tr>
+<tr>
+<td>UI Framework</td>
+<td>SolidJS</td>
+</tr>
+<tr>
+<td>Language</td>
+<td>TypeScript</td>
+</tr>
+<tr>
+<td>Build</td>
+<td>electron-vite + Vite</td>
+</tr>
+<tr>
+<td>AI Control</td>
+<td>External agent harnesses (Hermes Agent, OpenClaw, MCP clients) + built-in chat (Anthropic, OpenAI, Ollama, llama.cpp, and any OAI-compatible endpoint)</td>
+</tr>
+<tr>
+<td>Content Extraction</td>
+<td>@mozilla/readability</td>
+</tr>
+</tbody></table>
+<h2>Architecture</h2>
+<pre><code>Main Process                              Renderer (SolidJS)
+├── TabManager (WebContentsView[])        ├── TabBar, AddressBar
+├── AgentRuntime (session + supervision)  ├── CommandBar (secondary surface)
+├── MCP server for external agents        ├── AI Sidebar (Supervisor/Bookmarks/Checkpoints/Chat/Automate)
+├── AI providers (Anthropic + OAI-compat) ├── DevTools Panel (Console/Network/Activity)
+├── Supervision, bookmarks, checkpoints   ├── Agent Transcript Dock
+└── IPC Handlers ◄──contextBridge──► ──► └── Signal stores (tabs, ai, ui)
+└── IPC Handlers ◄──contextBridge──► Preload API
+</code></pre>
+<p>Each browser tab is a separate <code>WebContentsView</code> managed by the main process. The browser chrome (SolidJS) runs in its own view layered on top. All communication between renderer and main goes through typed IPC channels via <code>contextBridge</code>.</p>
+<p>The sidebar Automate tab renders kit forms entirely in the renderer and passes the rendered prompt to the built-in agent via the same <code>query()</code> path used by the Chat tab — no additional IPC surface is needed.</p>
+<h2>Getting Started</h2>
+<p>The installer:</p>
+<ul>
+<li>clones or updates Vessel into <code>~/.local/share/vessel-browser</code></li>
+<li>installs dependencies and builds the app</li>
+<li>creates a <code>vessel-browser</code> launcher in <code>~/.local/bin</code></li>
+<li>creates a <code>vessel-browser-launch</code> helper in <code>~/.local/bin</code></li>
+<li>creates a <code>vessel-browser-update</code> helper in <code>~/.local/bin</code></li>
+<li>creates a <code>vessel-browser-status</code> helper in <code>~/.local/bin</code></li>
+<li>creates a desktop entry for Linux app launchers</li>
+<li>writes <code>~/.config/vessel/vessel-settings.json</code> with MCP port <code>3100</code></li>
+<li>writes <code>~/.config/vessel/mcp-stdio-snippet.json</code></li>
+<li>writes <code>~/.config/vessel/mcp-http-snippet.json</code></li>
+<li>installs a <code>vessel-browser-mcp</code> helper that can run as a stdio-to-HTTP proxy (<code>--stdio</code>) or print config snippets</li>
+<li>prints the exact recommended stdio MCP snippet to paste into your harness config</li>
+</ul>
+<p>The packaged AppImage path:</p>
+<ul>
+<li>does not require a local Node/Electron toolchain</li>
+<li>uses the packaged Vessel app icon and metadata</li>
+<li>is the recommended path for early adopters who just want to run Vessel</li>
+</ul>
+<p>After install:</p>
+<pre><code class="language-bash">vessel-browser
+</code></pre>
+<pre><code class="language-bash"># Install dependencies
+npm install
+
+# If Electron download fails, use a mirror:
+ELECTRON_MIRROR=&quot;https://npmmirror.com/mirrors/electron/&quot; npm install
+
+# Development (with HMR)
+npm run dev
+
+# Production build
+npm run build
+
+# Smoke-test the MVP release path
+npm run smoke:test
+
+# Package an unpacked Linux app
+npm run dist:dir
+
+# Package a Linux AppImage
+npm run dist
+
+# Package an unpacked macOS app bundle (run on macOS)
+npm run dist:mac:dir
+
+# Package macOS DMG + ZIP artifacts (run on macOS)
+npm run dist:mac
+
+# Package signed macOS DMG + ZIP artifacts (run on macOS with signing set up)
+npm run dist:mac:signed
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>npm run dev</code> still launches the stock Electron binary, so Linux may continue showing the default Electron gear icon in development</li>
+<li>packaged builds created with <code>npm run dist</code> / <code>npm run dist:dir</code> use the Vessel app icon</li>
+<li><code>npm run build:icon:mac</code> regenerates <code>resources/vessel-icon.icns</code> from <code>resources/vessel-icon.png</code> for macOS packaging</li>
+<li><code>npm run dist:mac</code> and <code>npm run dist:mac:dir</code> intentionally disable auto-signing so local packaging works on any Mac without keychain setup</li>
+<li><code>npm run dist:mac:signed</code> and <code>npm run dist:mac:dir:signed</code> use normal <code>electron-builder</code> signing discovery; if your login keychain has duplicate Apple certs, clean those up or use a dedicated keychain before running the signed path</li>
+<li>signed builds are still not notarized by this repo out of the box, so Gatekeeper warnings remain until notarization is added for release publishing</li>
+<li>the tracked smoke test runs typecheck, build, the MCP stdio proxy regression check, and the Electron navigation regression harness</li>
+<li>for headless CI, run the smoke test under <code>xvfb-run -a npm run smoke:test</code></li>
+</ul>
+<h3>Setting up Vessel for Hermes Agent or OpenClaw</h3>
+<p>Vessel is designed to act as the browser runtime that your external agent harness drives.</p>
+<ol>
+<li>Launch Vessel</li>
+<li>Open Settings (<code>Ctrl+,</code>) to confirm MCP status, copy the endpoint, or change the MCP port</li>
+<li>Optional: set an Obsidian vault path or session preferences</li>
+<li>Start Hermes Agent or OpenClaw and point it at Vessel — the easiest way is <code>vessel-browser-mcp --stdio</code> as the MCP command (auth is resolved automatically), or connect directly to <code>http://127.0.0.1:&lt;mcpPort&gt;/mcp</code> with the bearer token from <code>~/.config/vessel/mcp-auth.json</code></li>
+<li>Use the Supervisor panel in Vessel&#39;s sidebar to pause the agent, change approval mode, review pending approvals, checkpoint, or restore the browser session while the harness runs</li>
+<li>Use the Bookmarks panel to organize saved pages into folders and expose those bookmarks back to the agent over MCP</li>
+</ol>
+<p>Notes:</p>
+<ul>
+<li>Vessel exposes browser control to external agents through its local MCP server</li>
+<li>The default MCP port is <code>3100</code></li>
+<li>Hermes Agent and OpenClaw should treat Vessel as the persistent, human-visible browser rather than launching their own separate browser session</li>
+<li>Vessel supports a built-in Chat tab with configurable AI provider; open Settings (<code>Ctrl+,</code>) and enable Chat Assistant to set a provider and model</li>
+<li><code>llama.cpp (Local)</code> is a first-class chat provider in Settings and targets <code>http://localhost:8080/v1</code> by default; Vessel auto-fetches the active model from <code>llama-server</code></li>
+<li>For <code>llama-server</code>, use <code>--ctx-size 16384</code> minimum and <code>32768</code> recommended for reliable Vessel agent loops; lower values often fail once prompt, tool schema, and tool history accumulate</li>
+<li>Approval policy is controlled live from the sidebar Supervisor panel rather than a separate global settings screen</li>
+<li>Settings now show MCP runtime status, active endpoint, startup warnings, and allow changing the MCP port with an immediate server restart</li>
+<li>Agents can selectively disable ad blocking for a problematic tab, reload, retry the flow, and turn blocking back on later</li>
+<li>Agents can persist authenticated state with named sessions, for example <code>github-logged-in</code>, and reload that state in later runs</li>
+<li>The intended control plane is an external harness driving Vessel through MCP</li>
+<li>If you set an Obsidian vault path in Settings, harnesses can write markdown notes directly into that vault via Vessel memory MCP tools</li>
+</ul>
+<h3>Using llama.cpp as the built-in chat provider</h3>
+<p>Vessel can talk directly to a local <code>llama-server</code> through its OpenAI-compatible API.</p>
+<p>Example:</p>
+<pre><code class="language-bash">llama-server -m /path/to/model.gguf --port 8080 --ctx-size 32768
+</code></pre>
+<p>Then in Vessel:</p>
+<ol>
+<li>Open Settings (<code>Ctrl+,</code>)</li>
+<li>Enable Chat Assistant</li>
+<li>Choose <code>llama.cpp (Local)</code> as the provider</li>
+<li>Click refresh if needed; Vessel will auto-detect the active model from <code>http://localhost:8080/v1</code></li>
+</ol>
+<p>Notes:</p>
+<ul>
+<li><code>--ctx-size 16384</code> is the minimum practical setting for Vessel agent loops</li>
+<li><code>--ctx-size 32768</code> is the recommended default for longer browsing sessions</li>
+<li>Vessel will warn in Settings if it detects a <code>llama-server</code> context size below the recommended floor, or if it cannot detect the ctx size from the running server</li>
+</ul>
+<p>Initial memory tools:</p>
+<ul>
+<li><code>vessel_memory_note_create</code></li>
+<li><code>vessel_memory_append</code></li>
+<li><code>vessel_memory_list</code></li>
+<li><code>vessel_memory_search</code></li>
+<li><code>vessel_memory_page_capture</code></li>
+<li><code>vessel_memory_link_bookmark</code></li>
+</ul>
+<p>Bookmark and folder tools exposed today include:</p>
+<ul>
+<li><code>vessel_bookmark_list</code></li>
+<li><code>vessel_bookmark_search</code></li>
+<li><code>vessel_bookmark_open</code></li>
+<li><code>vessel_bookmark_save</code></li>
+<li><code>vessel_bookmark_remove</code></li>
+<li><code>vessel_create_folder</code></li>
+<li><code>vessel_folder_rename</code></li>
+<li><code>vessel_folder_remove</code></li>
+</ul>
+<p>Page interaction and recovery tools exposed today include:</p>
+<ul>
+<li><code>vessel_extract_content</code></li>
+<li><code>vessel_read_page</code></li>
+<li><code>vessel_scroll</code></li>
+<li><code>vessel_dismiss_popup</code></li>
+<li><code>vessel_set_ad_blocking</code></li>
+<li><code>vessel_wait_for</code></li>
+<li><code>vessel_screenshot</code> (Premium) — capture the full page as an image for visual AI analysis</li>
+</ul>
+<p>Page highlight tools:</p>
+<ul>
+<li><code>vessel_highlight</code> — visually mark text or an element on the page with a labeled, color-coded overlay; persists until cleared</li>
+<li><code>vessel_clear_highlights</code> — remove all highlights from the current page</li>
+</ul>
+<p>Workflow tracking tools:</p>
+<ul>
+<li><code>vessel_flow_start</code> — begin a named multi-step workflow and declare its steps upfront; progress appears in the sidebar throughout execution</li>
+<li><code>vessel_flow_advance</code> — mark the current step complete and advance to the next</li>
+<li><code>vessel_flow_status</code> — check current workflow progress</li>
+<li><code>vessel_flow_end</code> — clear the active workflow tracker</li>
+</ul>
+<p>Data extraction tools (Premium):</p>
+<ul>
+<li><code>vessel_extract_table</code> — extract a page table as structured JSON rows with column headers</li>
+</ul>
+<p>Named session tools exposed today include:</p>
+<ul>
+<li><code>vessel_save_session</code></li>
+<li><code>vessel_load_session</code></li>
+<li><code>vessel_list_sessions</code></li>
+<li><code>vessel_delete_session</code></li>
+</ul>
+<p>Session files are sensitive because they may contain login cookies and tokens. Vessel stores them under the app user-data directory with restrictive file permissions.</p>
+<p>Agent Credential Vault tools (Premium):</p>
+<ul>
+<li><code>vessel_vault_status</code> — check whether stored credentials exist for a domain (returns labels/usernames, never passwords)</li>
+<li><code>vessel_vault_login</code> — fill a login form using stored credentials (blind fill — credentials go directly into the page, never into the AI conversation)</li>
+<li><code>vessel_vault_totp</code> — generate and fill a TOTP 2FA code from a stored secret</li>
+</ul>
+<p>Session performance tools (Premium):</p>
+<ul>
+<li><code>vessel_metrics</code> — show per-tool call counts, average durations, error rates, and total session stats</li>
+</ul>
+<p>Vault security model:</p>
+<ul>
+<li>Credentials are encrypted at rest using AES-256-GCM with a key protected by the OS keychain (Electron safeStorage)</li>
+<li>Credential values are <strong>never</strong> sent to AI providers — they flow only through the main process to the content script</li>
+<li>Every credential use triggers a user consent dialog (&quot;Allow Once&quot; / &quot;Allow for Session&quot; / &quot;Deny&quot;)</li>
+<li>All credential access is recorded in an append-only audit log</li>
+<li>Credentials are domain-scoped — they can only be used on matching domains</li>
+<li>Users manage credentials in Settings &gt; Agent Credential Vault</li>
+</ul>
+<p>Notable extraction modes include:</p>
+<ul>
+<li><code>visible_only</code> — only currently visible, in-viewport, unobstructed interactive elements plus active overlays</li>
+<li><code>results_only</code> — likely primary search/result links only</li>
+<li><code>full</code> / <code>summary</code> / <code>interactives_only</code> / <code>forms_only</code> / <code>text_only</code></li>
+</ul>
+<p>The extraction output can distinguish:</p>
+<ul>
+<li>active blocking overlays</li>
+<li>dormant consent/modal UI present in the DOM but not active for the current session or region</li>
+</ul>
+<p>Stdio proxy MCP config (recommended — resolves auth automatically):</p>
+<pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;vessel&quot;: {
+      &quot;command&quot;: &quot;vessel-browser-mcp&quot;,
+      &quot;args&quot;: [&quot;--stdio&quot;]
+    }
+  }
+}
+</code></pre>
+<p>The stdio proxy reads the bearer token from <code>~/.config/vessel/mcp-auth.json</code> at connection time, so no manual token management is needed.
+Vessel must already be running when your MCP client connects, and <code>~/.config/vessel/mcp-auth.json</code> must exist from install or first launch.</p>
+<p>Generic HTTP MCP config (requires copying the token manually):</p>
+<pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;vessel&quot;: {
+      &quot;type&quot;: &quot;http&quot;,
+      &quot;url&quot;: &quot;http://127.0.0.1:3100/mcp&quot;,
+      &quot;headers&quot;: {
+        &quot;Authorization&quot;: &quot;Bearer &lt;token from ~/.config/vessel/mcp-auth.json&gt;&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<p>Hermes Agent <code>config.yaml</code> MCP config:</p>
+<pre><code class="language-yaml">mcp_servers:
+  vessel:
+    url: &quot;http://127.0.0.1:3100/mcp&quot;
+    headers:
+      Authorization: &quot;Bearer &lt;token from ~/.config/vessel/mcp-auth.json&gt;&quot;
+    timeout: 180
+    connect_timeout: 30
+</code></pre>
+<h2>Configuration</h2>
+<p>The installer writes three snippets to:</p>
+<ul>
+<li><code>~/.config/vessel/mcp-stdio-snippet.json</code></li>
+<li><code>~/.config/vessel/mcp-http-snippet.json</code></li>
+<li><code>~/.config/vessel/mcp-hermes-snippet.yaml</code></li>
+</ul>
+<p>It also installs a helper command:</p>
+<pre><code class="language-bash">vessel-browser-mcp
+</code></pre>
+<p>Helper examples:</p>
+<pre><code class="language-bash"># Run as stdio-to-HTTP proxy (for MCP client integration)
+vessel-browser-mcp --stdio
+
+# Recommended stdio MCP snippet
+vessel-browser-mcp
+
+# Generic JSON snippet with Authorization header
+vessel-browser-mcp --format json
+
+# Hermes-ready YAML snippet with Authorization header
+vessel-browser-mcp --format hermes
+
+# Raw MCP endpoint URL
+vessel-browser-mcp --format url
+
+# Raw MCP bearer token
+vessel-browser-mcp --format token
+</code></pre>
+<p>Source install update helpers:</p>
+<pre><code class="language-bash"># Check whether a source-install update is available
+vessel-browser-update --check
+
+# Fetch, rebuild, and update the local source install
+vessel-browser-update
+</code></pre>
+<p>Status helper:</p>
+<pre><code class="language-bash"># Human-readable local install + MCP status
+vessel-browser-status
+
+# Machine-readable status for harnesses
+vessel-browser-status --json
+</code></pre>
+<p>Smart launch helper:</p>
+<pre><code class="language-bash"># Launch Vessel using the best available local install
+vessel-browser-launch
+
+# Show the chosen launch path without starting anything
+vessel-browser-launch --dry-run
+</code></pre>
+<p><code>vessel-browser-launch</code> prefers a healthy source install and falls back to the newest local AppImage when the source install is likely blocked by Electron sandbox permissions.</p>
+<h2>Keyboard Shortcuts</h2>
+<table>
+<thead>
+<tr>
+<th>Shortcut</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Ctrl+L</code></td>
+<td>AI Command Bar</td>
+</tr>
+<tr>
+<td><code>Ctrl+Shift+L</code></td>
+<td>Toggle AI Sidebar</td>
+</tr>
+<tr>
+<td><code>Ctrl+Shift+F</code></td>
+<td>Toggle Focus Mode</td>
+</tr>
+<tr>
+<td><code>F12</code></td>
+<td>Toggle Dev Tools Panel</td>
+</tr>
+<tr>
+<td><code>Ctrl+T</code></td>
+<td>New Tab</td>
+</tr>
+<tr>
+<td><code>Ctrl+W</code></td>
+<td>Close Tab</td>
+</tr>
+<tr>
+<td><code>Ctrl+,</code></td>
+<td>Settings</td>
+</tr>
+</tbody></table>
+<h2>Project Structure</h2>
+<pre><code>src/
+├── main/                 # Electron main process
+│   ├── ai/               # Agent tools, query flow, and AI provider implementations
+│   ├── tabs/             # Tab + TabManager (WebContentsView)
+│   ├── agent/            # Agent runtime, checkpoints, supervision, flow tracking
+│   ├── content/          # Readability extraction, reader mode, screenshot
+│   ├── config/           # Settings persistence
+│   ├── ipc/              # IPC handler registry
+│   ├── vault/            # Agent Credential Vault (encrypted storage, consent, audit)
+│   ├── mcp/              # MCP server for external agent control
+│   ├── devtools/         # CDP session management for Dev Tools panel
+│   ├── highlights/       # Page highlight capture, injection, and persistence
+│   ├── health/           # Runtime health monitoring (MCP, settings, ports)
+│   ├── premium/          # Subscription management, feature gating, Stripe integration
+│   ├── bookmarks/        # Bookmark and folder persistence
+│   ├── history/          # Browse history
+│   ├── memory/           # Obsidian vault hooks
+│   ├── network/          # Ad blocking, URL safety, link validation, downloads
+│   ├── sessions/         # Named session save/load/delete
+│   ├── startup/          # App initialization, menu, shortcuts, renderer bootstrap
+│   ├── telemetry/        # PostHog analytics (opt-in)
+│   ├── tools/            # Tool definitions, input coercion, pruning
+│   ├── window.ts         # Window layout manager
+│   └── index.ts          # App entry point
+├── preload/              # contextBridge scripts
+│   ├── index.ts          # Chrome UI preload
+│   └── content-script.ts # Web page preload (readability)
+├── renderer/             # SolidJS browser UI
+│   └── src/
+│       ├── components/
+│       │   ├── chrome/   # TitleBar, TabBar, AddressBar, AgentTranscriptDock
+│       │   ├── ai/       # CommandBar, Sidebar (Supervisor/Bookmarks/Checkpoints/Chat/Automate)
+│       │   ├── devtools/ # DevTools panel (Console, Network, Activity)
+│       │   └── shared/   # Settings panel
+│       ├── stores/       # SolidJS signal stores (tabs, ai, ui, runtime, bookmarks, etc.)
+│       ├── styles/       # Theme, global CSS
+│       └── lib/          # Keybindings, markdown, automation kits registry
+└── shared/               # Types + IPC channel constants
+</code></pre>
+<h2>Design Principles</h2>
+<ul>
+<li><strong>Agent first</strong> — the browser is the agent&#39;s operating surface, not just a human tool with automation bolted on</li>
+<li><strong>Human visible</strong> — the UI should make agent behavior easy to follow, audit, and steer</li>
+<li><strong>Persistent by default</strong> — browser state should survive long-running workflows and repeated sessions</li>
+<li><strong>Content first</strong> — chrome is 110px, everything else is your page</li>
+<li><strong>Easy on the eyes</strong> — warm dark grays, muted text, no visual noise</li>
+<li><strong>Linux-native</strong> — frameless window, system font fallbacks, XDG conventions</li>
+</ul>
+<h2>License</h2>
+<p>MIT</p>
+<p><em>Developed by Tyler Williams in Portland, Oregon (2026)</em></p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Developer Tools</h2>
+    <div class="related-grid">
+      <a href="/projects/junhoyeo/tokscale" class="related-chip">tokscale <span class="related-stars">1.7K</span></a>
+          <a href="/projects/joeynyc/hermes-skins" class="related-chip">hermes-skins <span class="related-stars">76</span></a>
+          <a href="/projects/AlexAI-MCP/hermes-CCC" class="related-chip">hermes-CCC <span class="related-stars">56</span></a>
+          <a href="/projects/Abruptive/Ankh.md" class="related-chip">Ankh.md <span class="related-stars">25</span></a>
+          <a href="/projects/roli-lpci/lintlang" class="related-chip">lintlang <span class="related-stars">24</span></a>
+          <a href="/projects/0xNyk/openclaw-to-hermes" class="related-chip">openclaw-to-hermes <span class="related-stars">21</span></a>
+          <a href="/projects/42-evey/evey-setup" class="related-chip">evey-setup <span class="related-stars">7</span></a>
+          <a href="/projects/rookiemann/portable-hermes-agent" class="related-chip">portable-hermes <span class="related-stars">7</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/developer-tools">See all Developer Tools projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

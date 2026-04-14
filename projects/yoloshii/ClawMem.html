@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClawMem — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
+<meta name="description" content="On-device memory layer for AI agents. Claude Code, Hermes and OpenClaw. Hooks + MCP server + hybrid RAG search.">
+<link rel="canonical" href="https://hermesatlas.com/projects/yoloshii/ClawMem">
+<meta property="og:title" content="ClawMem — Hermes Atlas">
+<meta property="og:description" content="On-device memory layer for AI agents. Claude Code, Hermes and OpenClaw. Hooks + MCP server + hybrid RAG search.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/yoloshii/ClawMem">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ClawMem — Hermes Atlas">
+<meta name="twitter:description" content="On-device memory layer for AI agents. Claude Code, Hermes and OpenClaw. Hooks + MCP server + hybrid RAG search.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Memory &amp; Context</a>
+  </div>
+
+  <h1>ClawMem</h1>
+  <p class="project-desc">On-device memory layer for AI agents. Claude Code, Hermes and OpenClaw. Hooks + MCP server + hybrid RAG search.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 112</span>
+    <span class="badge badge-lang">TypeScript</span>
+    <span class="badge badge-lang">MIT</span>
+    
+    <span>Updated 4/13/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/yoloshii/ClawMem" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <h1>ClawMem — On-device memory layer for Claude Code, OpenClaw, and Hermes agents</h1>
+<p align="center">
+  <img src="docs/clawmem_hero.jpg" alt="ClawMem" width="100%">
+</p>
+
+<p><strong>On-device memory for Claude Code, OpenClaw, Hermes, and AI agents.</strong> Retrieval-augmented search, hooks, and an MCP server in a single local system. No API keys, no cloud dependencies.</p>
+<p>ClawMem fuses recent research into a retrieval-augmented memory layer that agents actually use. The hybrid architecture combines <a href="https://github.com/tobi/qmd">QMD</a>-derived multi-signal retrieval (BM25 + vector search + reciprocal rank fusion + query expansion + cross-encoder reranking), <a href="https://github.com/sgx-labs/statelessagent">SAME</a>-inspired composite scoring (recency decay, confidence, content-type half-lives, co-activation reinforcement), <a href="https://arxiv.org/abs/2501.13956">MAGMA</a>-style intent classification with multi-graph traversal (semantic, temporal, and causal beam search), and <a href="https://arxiv.org/abs/2510.02178">A-MEM</a> self-evolving memory notes that enrich documents with keywords, tags, and causal links between entries. Pattern extraction from <a href="https://github.com/Gentleman-Programming/engram">Engram</a> adds deduplication windows, frequency-based durability scoring, and temporal navigation.</p>
+<p>Integrates via Claude Code hooks, an MCP server (works with any MCP-compatible client), a native OpenClaw plugin, or a Hermes Agent <code>MemoryProvider</code> plugin. All paths write to the same local SQLite vault. A decision captured during a Claude Code session shows up immediately when an OpenClaw or Hermes agent picks up the same project.</p>
+<p>TypeScript on Bun. MIT License.</p>
+<h2>What It Does</h2>
+<p>ClawMem turns your markdown notes, project docs, and research dumps into persistent memory for AI coding agents. It automatically:</p>
+<ul>
+<li><strong>Surfaces relevant context</strong> on every prompt (context-surfacing hook)</li>
+<li><strong>Bootstraps sessions</strong> with your profile, latest handoff, recent decisions, and stale notes</li>
+<li><strong>Captures decisions, preferences, milestones, and problems</strong> from session transcripts using a local GGUF observer model</li>
+<li><strong>Imports conversation exports</strong> from Claude Code, ChatGPT, Claude.ai, Slack, and plain text via <code>clawmem mine</code>, with optional post-import LLM fact extraction (<code>--synthesize</code>) that pulls structured decisions / preferences / milestones / problems and cross-fact links out of otherwise full-text conversation dumps (v0.7.2)</li>
+<li><strong>Generates handoffs</strong> at session end so the next session can pick up where you left off</li>
+<li><strong>Learns what matters</strong> via a feedback loop that boosts referenced notes and decays unused ones</li>
+<li><strong>Guards against prompt injection</strong> in surfaced content</li>
+<li><strong>Classifies query intent</strong> (WHY / WHEN / ENTITY / WHAT) to weight search strategies</li>
+<li><strong>Traverses multi-graphs</strong> (semantic, temporal, causal) via adaptive beam search</li>
+<li><strong>Evolves memory metadata</strong> as new documents create or refine connections</li>
+<li><strong>Infers causal relationships</strong> between facts extracted from session observations</li>
+<li><strong>Detects contradictions</strong> between new and prior decisions, auto-decaying superseded ones (with an additional merge-time contradiction gate in the consolidation worker that blocks cross-observation contradictions before they land, v0.7.1)</li>
+<li><strong>Guards against cross-entity merges</strong> during consolidation — name-aware dual-threshold merge safety compares entity anchors before merging similar observations, preventing &quot;Alice decided X&quot; from merging into &quot;Bob decided X&quot; (v0.7.1)</li>
+<li><strong>Prevents context bleed in derived insights</strong> — the Phase 3 deductive synthesis pipeline validates every draft against an anti-contamination wrapper (deterministic entity contamination check + LLM validator + dedupe) before writing cross-session deductive observations (v0.7.1)</li>
+<li><strong>Frames surfaced facts as background knowledge</strong> — <code>context-surfacing</code> wraps injected content in <code>&lt;instruction&gt;</code> + <code>&lt;facts&gt;</code> + <code>&lt;relationships&gt;</code> blocks, telling the model to treat facts as already-known and exposing memory-graph edges between surfaced docs directly in-prompt (v0.7.1)</li>
+<li><strong>Injects knowledge-graph facts as structured triples</strong> — when the user&#39;s prompt mentions entities already known to the vault, <code>context-surfacing</code> resolves them via a three-path prompt-only extractor (canonical IDs, proper nouns, lowercased n-grams), queries the SPO graph for current-state triples, and appends a <code>&lt;vault-facts&gt;</code> block of raw <code>subject predicate object</code> lines to <code>&lt;vault-context&gt;</code> — off for <code>speed</code>, 200 tokens on <code>balanced</code>, 250 on <code>deep</code>, token-truncated at the triple boundary (v0.9.0)</li>
+<li><strong>Session-scoped focus topic boost</strong> — <code>clawmem focus set &quot;&lt;topic&gt;&quot; --session-id &lt;id&gt;</code> writes a per-session focus file that steers query expansion, reranking, chunk selection, snippet extraction, and post-composite-score topic boosting (1.4× match / 0.75× demote) for that session only — session-isolated, fail-open, never writes to SQLite or lifecycle columns (v0.9.0)</li>
+<li><strong>Scores document quality</strong> using structure, keywords, and metadata richness signals</li>
+<li><strong>Boosts co-accessed documents</strong> — notes frequently surfaced together get retrieval reinforcement</li>
+<li><strong>Decomposes complex queries</strong> into typed retrieval clauses (BM25/vector/graph) for multi-topic questions</li>
+<li><strong>Cleans stale embeddings</strong> automatically before embed runs, removing orphans from deleted/changed documents</li>
+<li><strong>Transaction-safe indexing</strong> — crash mid-index leaves zero partial state (atomic commit with rollback)</li>
+<li><strong>Deduplicates hook-generated observations</strong> within a 30-minute window using normalized content hashing, preventing memory bloat from repeated hook output</li>
+<li><strong>Navigates temporal neighborhoods</strong> around any document via the <code>timeline</code> tool — progressive disclosure from search to chronological context to full content</li>
+<li><strong>Boosts frequently-revised memories</strong> — documents with higher revision counts get a durability signal in composite scoring (capped at 10%)</li>
+<li><strong>Supports pin/snooze lifecycle</strong> for persistent boosts and temporary suppression</li>
+<li><strong>Manages document lifecycle</strong> — policy-driven archival sweeps with restore capability</li>
+<li><strong>Auto-routes queries</strong> via <code>memory_retrieve</code> — classifies intent and dispatches to the optimal search backend</li>
+<li><strong>Syncs project issues</strong> from Beads issue trackers into searchable memory</li>
+<li><strong>Runs a quiet-window heavy maintenance lane</strong> — a second consolidation worker, off by default behind <code>CLAWMEM_HEAVY_LANE=true</code>, that runs on a longer interval only inside a configurable hour window. Gated by <code>context_usage</code> query-rate so it never competes for CPU/GPU with interactive sessions, scoped exclusively via DB-backed <code>worker_leases</code>, stale-first by default with an optional surprisal selector, and journals every attempt in <code>maintenance_runs</code> for operator visibility (v0.8.0)</li>
+</ul>
+<p>Runs fully local with no API keys and no cloud services. Integrates via Claude Code hooks and MCP tools, as a native OpenClaw plugin, or as a Hermes Agent <code>MemoryProvider</code> plugin. All modes share the same vault for cross-runtime memory. Works with any MCP-compatible client.</p>
+<p>Full version history is in <a href="RELEASE_NOTES.md">RELEASE_NOTES.md</a>. Upgrade instructions for existing vaults are in <a href="docs/guides/upgrading.md">docs/guides/upgrading.md</a>.</p>
+<h2>Architecture</h2>
+<p align="center">
+  <img src="docs/clawmem-architecture.png" alt="ClawMem Architecture" width="100%">
+</p>
+
+<h2>Install</h2>
+<h3>Platform Support</h3>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Linux</strong></td>
+<td>Full support</td>
+<td>Primary target. systemd services for watcher + embed timer.</td>
+</tr>
+<tr>
+<td><strong>macOS</strong></td>
+<td>Full support</td>
+<td>Homebrew SQLite handled automatically. GPU via Metal (llama.cpp).</td>
+</tr>
+<tr>
+<td><strong>Windows (WSL2)</strong></td>
+<td>Full support</td>
+<td>Recommended for Windows users. Install Bun + ClawMem inside WSL2.</td>
+</tr>
+<tr>
+<td><strong>Windows (native)</strong></td>
+<td>Not recommended</td>
+<td>Bun and sqlite-vec work, but <code>bin/clawmem</code> wrapper is bash, hooks expect bash commands, and systemd services have no equivalent. Use WSL2 instead.</td>
+</tr>
+</tbody></table>
+<h3>Prerequisites</h3>
+<p><strong>Required:</strong></p>
+<ul>
+<li><a href="https://bun.sh">Bun</a> v1.0+ — runtime for ClawMem. On Linux, install via <code>curl -fsSL https://bun.sh/install | bash</code> (not snap — snap Bun cannot read stdin, which breaks hooks).</li>
+<li>SQLite with FTS5 — included with Bun. On macOS, install <code>brew install sqlite</code> for extension loading support (ClawMem detects and uses Homebrew SQLite automatically).</li>
+</ul>
+<p><strong>Optional (for better performance):</strong></p>
+<ul>
+<li><a href="https://github.com/ggml-org/llama.cpp">llama.cpp</a> (<code>llama-server</code>) — for dedicated GPU inference. Without it, <code>node-llama-cpp</code> runs models in-process (auto-downloads on first use). GPU servers give better throughput and prevent silent CPU fallback.</li>
+<li>systemd (Linux) or launchd (macOS) — for persistent background services (watcher, embed timer, GPU servers). ClawMem ships systemd unit templates; macOS users can create equivalent launchd plists. See <a href="docs/guides/systemd-services.md">systemd services</a>.</li>
+</ul>
+<p><strong>Optional integrations:</strong></p>
+<ul>
+<li><a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a> — for hooks + MCP integration</li>
+<li><a href="https://github.com/openclaw/openclaw">OpenClaw</a> — for native plugin integration</li>
+<li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — for <code>MemoryProvider</code> plugin integration</li>
+<li><a href="https://github.com/dolthub/dolt">bd CLI</a> v0.58.0+ — for Beads issue tracker sync (only if using Beads)</li>
+</ul>
+<h3>Install from npm (recommended)</h3>
+<pre><code class="language-bash">npm install -g clawmem
+</code></pre>
+<p>If you use Bun as your package manager:</p>
+<pre><code class="language-bash">bun add -g clawmem
+</code></pre>
+<h3>Install from source</h3>
+<pre><code class="language-bash">git clone https://github.com/yoloshii/clawmem.git ~/clawmem
+cd ~/clawmem &amp;&amp; bun install
+ln -sf ~/clawmem/bin/clawmem ~/.bun/bin/clawmem
+</code></pre>
+<h3>Setup roadmap</h3>
+<p>After installing, here&#39;s the full journey from zero to working memory:</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>What</th>
+<th>How</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>1. Bootstrap</strong></td>
+<td>Create a vault, index your first collection, embed, install hooks and MCP</td>
+<td><code>clawmem bootstrap ~/notes --name notes</code></td>
+<td>One command does it all. Or run each step manually (see below).</td>
+</tr>
+<tr>
+<td><strong>2. Choose models</strong></td>
+<td>Pick embedding + reranker models based on your hardware</td>
+<td>12GB+ VRAM → SOTA stack (zembed-1 + zerank-2). Less → QMD native combo. No GPU → cloud embedding or CPU fallback.</td>
+<td><a href="#gpu-services">GPU Services</a></td>
+</tr>
+<tr>
+<td><strong>3. Download models</strong></td>
+<td>Get the GGUF files for your chosen stack</td>
+<td><code>wget</code> from HuggingFace, or let <code>node-llama-cpp</code> auto-download the QMD native models on first use</td>
+<td><a href="#embedding">Embedding</a>, <a href="#llm-server">LLM Server</a>, <a href="#reranker-server">Reranker Server</a></td>
+</tr>
+<tr>
+<td><strong>4. Start services</strong></td>
+<td>Run GPU servers (if using dedicated GPU) and background services. Optionally enable the v0.8.2 background maintenance workers in the watcher unit so consolidation + deductive synthesis run automatically.</td>
+<td><code>llama-server</code> for each model. systemd units for watcher + embed timer. Drop-in for the watcher to enable workers + tune intervals + set the quiet window.</td>
+<td><a href="docs/guides/systemd-services.md">systemd services</a>, <a href="docs/guides/systemd-services.md#background-maintenance-workers-v082">background workers</a></td>
+</tr>
+<tr>
+<td><strong>5. Decide what to index</strong></td>
+<td>Add collections for your projects, notes, research, and domain docs</td>
+<td><code>clawmem collection add ~/project --name project</code></td>
+<td>The more relevant markdown you index, the better retrieval works. See <a href="docs/introduction.md#building-a-rich-context-field">building a rich context field</a>.</td>
+</tr>
+<tr>
+<td><strong>6. Connect your agent</strong></td>
+<td>Hook into Claude Code, OpenClaw, Hermes, or any MCP client</td>
+<td><code>clawmem setup hooks &amp;&amp; clawmem setup mcp</code> for Claude Code. <code>clawmem setup openclaw</code> for OpenClaw. Copy <code>src/hermes/</code> to Hermes plugins for Hermes.</td>
+<td><a href="#integration">Integration</a></td>
+</tr>
+<tr>
+<td><strong>7. Verify</strong></td>
+<td>Confirm everything is working</td>
+<td><code>clawmem doctor</code> (full health check) or <code>clawmem status</code> (quick index stats)</td>
+<td><a href="#verify-installation">Verify Installation</a></td>
+</tr>
+</tbody></table>
+<p><strong>Fastest path:</strong> Step 1 alone gets you a working system with in-process CPU/GPU inference and default models — no manual model downloads or service configuration needed. Steps 2-4 are optional upgrades for better performance. Steps 5-6 are where you customize what gets indexed and how your agent connects.</p>
+<p><strong>Customize what gets indexed:</strong> Each collection has a <code>pattern</code> field in <code>~/.config/clawmem/config.yaml</code> (default: <code>**/*.md</code>). Tailor it per collection — index project docs, research notes, decision records, Obsidian vaults, or anything else your agents should know about. The more relevant content in the vault, the better retrieval works. See the <a href="docs/quickstart.md#customize-index-patterns">quickstart</a> for config examples.</p>
+<h3>Quick start commands</h3>
+<pre><code class="language-bash"># One command: init + index + embed + hooks + MCP
+clawmem bootstrap ~/notes --name notes
+
+# Or step by step:
+clawmem init
+clawmem collection add ~/notes --name notes
+clawmem update --embed
+clawmem setup hooks
+clawmem setup mcp
+
+# Add more collections (the more you index, the richer retrieval gets)
+clawmem collection add ~/projects/myapp --name myapp
+clawmem collection add ~/research --name research
+clawmem update --embed
+
+# Verify
+clawmem doctor
+</code></pre>
+<h3>Upgrading</h3>
+<pre><code class="language-bash">bun update -g clawmem   # or: npm update -g clawmem
+</code></pre>
+<p>Database schema migrates automatically on next startup (new tables and columns are added via <code>CREATE IF NOT EXISTS</code> / <code>ALTER TABLE ADD COLUMN</code>).</p>
+<p>After <strong>major version updates</strong> (e.g. 0.1.x → 0.2.0) that add new enrichment pipelines, run a full enrichment pass to backfill existing documents:</p>
+<pre><code class="language-bash">clawmem reindex --enrich  # Full enrichment: entity extraction + links + evolution for all docs
+clawmem embed             # Re-embed if upgrading embedding models (not needed for most updates)
+</code></pre>
+<p><code>--enrich</code> forces the complete A-MEM pipeline (entity extraction, link generation, memory evolution) on all documents, not just new ones. Without it, reindex only refreshes metadata for existing docs.</p>
+<p>Routine patch updates (e.g. 0.2.0 → 0.2.1) do not require reindexing.</p>
+<p>For version-specific upgrade notes (opt-in features, optional cleanup steps, verification commands), see <a href="docs/guides/upgrading.md">docs/guides/upgrading.md</a>.</p>
+<h3>Integration</h3>
+<h4>Claude Code</h4>
+<p>ClawMem integrates via hooks (<code>settings.json</code>) and an MCP stdio server. Hooks handle 90% of retrieval automatically - the agent never needs to call tools for routine context.</p>
+<pre><code class="language-bash">clawmem setup hooks    # Install lifecycle hooks (SessionStart, UserPromptSubmit, Stop, PreCompact)
+clawmem setup mcp      # Register MCP server in ~/.claude.json (31 tools)
+</code></pre>
+<p><strong>Automatic (90%):</strong> <code>context-surfacing</code> injects relevant memory on every prompt. <code>postcompact-inject</code> re-injects state after compaction. <code>decision-extractor</code>, <code>handoff-generator</code>, <code>feedback-loop</code> capture session state on stop.</p>
+<p><strong>Agent-initiated (10%):</strong> MCP tools (<code>query</code>, <code>intent_search</code>, <code>find_causal_links</code>, <code>timeline</code>, etc.) for targeted retrieval when hooks don&#39;t surface what&#39;s needed.</p>
+<h4>OpenClaw</h4>
+<p>ClawMem registers as a native OpenClaw memory plugin (<code>kind: memory</code>, v0.10.0+). Same 90/10 automatic retrieval, delivered through OpenClaw&#39;s plugin-hook bus instead of Claude Code hooks.</p>
+<pre><code class="language-bash">clawmem setup openclaw   # Installs plugin into ~/.openclaw/extensions/clawmem (copy, not symlink)
+</code></pre>
+<p><strong>What the plugin provides:</strong></p>
+<ul>
+<li><strong><code>before_prompt_build</code> hook (load-bearing)</strong> - prompt-aware retrieval (context-surfacing + session-bootstrap) AND the pre-emptive <code>precompact-extract</code> run when token usage approaches the compaction threshold. This is the authoritative path for precompact state capture because it runs synchronously before the LLM call that would trigger compaction, so it cannot race the compactor.</li>
+<li><strong><code>agent_end</code> hook</strong> - decision extraction, handoff generation, feedback loop (parallel, fire-and-forget at the OpenClaw call site)</li>
+<li><strong><code>before_compaction</code> hook (defense-in-depth fallback)</strong> - fires <code>precompact-extract</code> again for the rare case where <code>before_prompt_build</code>&#39;s proximity heuristic missed a sudden token-count jump. Fire-and-forget at OpenClaw&#39;s call site, so it races the compactor and offers no correctness guarantee on its own — the <code>before_prompt_build</code> path is what actually holds the invariant.</li>
+<li><strong><code>session_start</code> hook</strong> - session registration + cached first-turn bootstrap context</li>
+<li><strong>5 agent tools</strong> - <code>clawmem_search</code>, <code>clawmem_get</code>, <code>clawmem_session_log</code>, <code>clawmem_timeline</code>, <code>clawmem_similar</code></li>
+</ul>
+<p>Disable OpenClaw&#39;s native memory search to avoid duplicate injection:</p>
+<pre><code class="language-bash">openclaw config set agents.defaults.memorySearch.extraPaths &quot;[]&quot;
+</code></pre>
+<p>ClawMem coexists cleanly with OpenClaw&#39;s <a href="https://docs.openclaw.ai/concepts/active-memory">Active Memory</a> plugin (v2026.4.10+). They search different backends and inject into different prompt regions, so both can run simultaneously without conflict. See the <a href="docs/guides/openclaw-plugin.md#coexistence-with-openclaw-active-memory">OpenClaw plugin guide</a> for details.</p>
+<p><strong>Pair ClawMem (memory) with a context-engine plugin (v0.10.0+).</strong> OpenClaw and Hermes maintainers have converged on a two-surface plugin model: one slot for memory plugins (cross-session, retrieval-first) and a separate slot for context-engine plugins (in-session, compression/compaction-first). Under that model ClawMem is a memory layer — it has always been one in Hermes via the <code>MemoryProvider</code> ABC, and v0.10.0 moves the OpenClaw integration to the same semantic slot. You can now run ClawMem in the <code>memory</code> slot alongside an LCM-style compression plugin (for example, <code>lossless-claw</code>) in the <code>context-engine</code> slot. The two plugins do not overlap: one persists across sessions, the other reshapes the live window. See the <a href="docs/guides/openclaw-plugin.md#memory-vs-context-engine--the-dual-plugin-surface">OpenClaw plugin guide — memory vs context engine</a> for the full rationale.</p>
+<blockquote>
+<p><strong>OpenClaw v2026.4.11+ recommended (required for ClawMem v0.10.0+).</strong> v2026.4.11 introduced a new plugin discovery contract that requires each plugin directory to ship a <code>package.json</code> with <code>openclaw.extensions</code> declared, and that rejects symlinked plugin directories. ClawMem v0.10.0 includes both fixes. Older ClawMem versions (&lt; v0.10.0) on OpenClaw v2026.4.11+ will fail to discover silently — upgrade ClawMem, then re-run <code>clawmem setup openclaw</code>. See <a href="docs/guides/upgrading.md#v090--v0100">docs/guides/upgrading.md</a>.</p>
+</blockquote>
+<p><strong>Alternative:</strong> OpenClaw agents can also use ClawMem&#39;s MCP server directly (<code>clawmem setup mcp</code>), with or without hooks. This gives full access to all 31 MCP tools but bypasses OpenClaw&#39;s plugin lifecycle, so you lose token budget awareness, native compaction orchestration, and the <code>agent_end</code> message pipeline. The native OpenClaw plugin is recommended for new setups; MCP is available as an additional or standalone integration.</p>
+<h4>Hermes Agent</h4>
+<p>ClawMem integrates as a native MemoryProvider plugin — Hermes&#39;s pluggable interface for agent memory. Same automatic retrieval and extraction, delivered through Hermes&#39;s memory lifecycle instead of Claude Code hooks.</p>
+<p><strong>Install:</strong></p>
+<pre><code class="language-bash"># Copy or symlink the plugin into Hermes&#39;s plugin directory
+cp -r /path/to/ClawMem/src/hermes /path/to/hermes-agent/plugins/memory/clawmem
+
+# Or symlink for development
+ln -s /path/to/ClawMem/src/hermes /path/to/hermes-agent/plugins/memory/clawmem
+</code></pre>
+<p><strong>Configure</strong> in your Hermes profile&#39;s <code>.env</code> or environment:</p>
+<pre><code class="language-bash">CLAWMEM_BIN=/path/to/clawmem          # Path to clawmem binary (or ensure it&#39;s on PATH)
+CLAWMEM_SERVE_PORT=7438                # REST API port (default: 7438)
+CLAWMEM_SERVE_MODE=external            # &quot;external&quot; (you run clawmem serve) or &quot;managed&quot; (plugin manages it)
+CLAWMEM_PROFILE=balanced               # speed | balanced | deep
+</code></pre>
+<p>Then set <code>memory.provider: clawmem</code> in your Hermes <code>config.yaml</code>, or run <code>hermes memory setup</code> to configure interactively.</p>
+<p><strong>What the plugin provides:</strong></p>
+<ul>
+<li><strong><code>prefetch()</code></strong> — prompt-aware retrieval via <code>context-surfacing</code> hook (automatic every turn)</li>
+<li><strong><code>on_session_end()</code></strong> — decision extraction, handoff generation, feedback loop (parallel)</li>
+<li><strong><code>on_pre_compress()</code></strong> — pre-compaction state preservation</li>
+<li><strong><code>session-bootstrap</code></strong> — session registration + first-turn context injection</li>
+<li><strong>5 agent tools</strong> — <code>clawmem_retrieve</code>, <code>clawmem_get</code>, <code>clawmem_session_log</code>, <code>clawmem_timeline</code>, <code>clawmem_similar</code></li>
+<li><strong>Plugin-managed transcript</strong> — maintains its own JSONL transcript for ClawMem hooks</li>
+</ul>
+<p><strong>Requirements:</strong> <code>clawmem</code> binary on PATH and <code>clawmem serve</code> running (external mode) or the plugin starts it automatically (managed mode). Python 3.10+. No pip dependencies beyond Hermes itself (uses <code>urllib</code> for REST calls, <code>httpx</code> optional for better performance).</p>
+<p><strong>Alternative:</strong> Hermes also has built-in MCP client support. You can add ClawMem as an MCP server in Hermes&#39;s <code>config.yaml</code> under <code>mcp_servers</code> for tool-only access. But this misses the lifecycle hooks (prefetch, session_end, pre_compress), so the native plugin is recommended.</p>
+<p>See <a href="docs/guides/hermes-plugin.md">Hermes plugin guide</a> for architecture details, lifecycle mapping, and troubleshooting.</p>
+<h4>Multi-Framework Operation</h4>
+<p>All three integrations share the same SQLite vault by default. Claude Code, OpenClaw, and Hermes can run simultaneously — decisions captured in one runtime are immediately available in the others, giving agents persistent shared memory across sessions and platforms. WAL mode + busy_timeout handles concurrent access.</p>
+<h4>Multi-Vault (Optional)</h4>
+<p>By default, ClawMem uses a single vault at <code>~/.cache/clawmem/index.sqlite</code>. For users who want separate memory domains (e.g., work vs personal, or isolated vaults per project), ClawMem supports named vaults.</p>
+<p><strong>Configure in <code>~/.config/clawmem/config.yaml</code>:</strong></p>
+<pre><code class="language-yaml">vaults:
+  work: ~/.cache/clawmem/work.sqlite
+  personal: ~/.cache/clawmem/personal.sqlite
+</code></pre>
+<p><strong>Or via environment variable:</strong></p>
+<pre><code class="language-bash">export CLAWMEM_VAULTS=&#39;{&quot;work&quot;:&quot;~/.cache/clawmem/work.sqlite&quot;,&quot;personal&quot;:&quot;~/.cache/clawmem/personal.sqlite&quot;}&#39;
+</code></pre>
+<p><strong>Using vaults with MCP tools:</strong></p>
+<p>All retrieval tools (<code>memory_retrieve</code>, <code>query</code>, <code>search</code>, <code>vsearch</code>, <code>intent_search</code>) accept an optional <code>vault</code> parameter. Omit it to use the default vault.</p>
+<pre><code># Search the default vault (no vault param needed)
+query(&quot;authentication flow&quot;)
+
+# Search a named vault
+query(&quot;project timeline&quot;, vault=&quot;work&quot;)
+
+# List configured vaults
+list_vaults()
+
+# Sync content into a vault
+vault_sync(vault=&quot;work&quot;, content_root=&quot;~/work/docs&quot;)
+</code></pre>
+<p><strong>Single-vault users:</strong> No action needed. Everything works without configuration. The <code>vault</code> parameter is always optional and ignored when no vaults are configured.</p>
+<h3>GPU Services</h3>
+<p>ClawMem uses three <code>llama-server</code> (llama.cpp) instances for neural inference. All three have in-process fallbacks via <code>node-llama-cpp</code> (auto-downloads on first use), so ClawMem works without a dedicated GPU. <code>node-llama-cpp</code> auto-detects the best available backend — Metal on Apple Silicon, Vulkan where available, CPU as last resort. With GPU acceleration (Metal/Vulkan), in-process inference is fast for these small models (0.3B–1.7B); on CPU-only systems it is significantly slower. For production use, run the servers via <a href="docs/guides/systemd-services.md">systemd services</a> to prevent silent fallback.</p>
+<p><strong>GPU with VRAM to spare (12GB+, recommended):</strong> ZeroEntropy&#39;s distillation-paired stack delivers best retrieval quality — total ~10GB VRAM.</p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Port</th>
+<th>Model</th>
+<th>VRAM</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Embedding</td>
+<td>8088</td>
+<td><a href="https://huggingface.co/Abhiray/zembed-1-Q4_K_M-GGUF">zembed-1-Q4_K_M</a></td>
+<td>~4.4GB</td>
+<td>SOTA embedding (2560d, 32K context). Distilled from zerank-2 via zELO.</td>
+</tr>
+<tr>
+<td>LLM</td>
+<td>8089</td>
+<td><a href="https://huggingface.co/tobil/qmd-query-expansion-1.7B-gguf">qmd-query-expansion-1.7B-q4_k_m</a></td>
+<td>~2.2GB</td>
+<td>Intent classification, query expansion, A-MEM</td>
+</tr>
+<tr>
+<td>Reranker</td>
+<td>8090</td>
+<td><a href="https://huggingface.co/keisuke-miyako/zerank-2-gguf-q4_k_m">zerank-2-Q4_K_M</a></td>
+<td>~3.3GB</td>
+<td>SOTA reranker. Outperforms Cohere rerank-3.5. Optimal pairing with zembed-1.</td>
+</tr>
+</tbody></table>
+<p><strong>Important:</strong> zembed-1 and zerank-2 use non-causal attention — <code>-ub</code> must equal <code>-b</code> on llama-server (e.g. <code>-b 2048 -ub 2048</code>). See <a href="#reranker-server">Reranker Server</a> for details.</p>
+<p><strong>License:</strong> zembed-1 and zerank-2 are released under <strong>CC-BY-NC-4.0</strong> — non-commercial only. The QMD native models below have no such restriction.</p>
+<p><strong>No dedicated GPU / GPU without VRAM to spare:</strong> The QMD native combo — total ~4GB VRAM, also runs via <code>node-llama-cpp</code> (Metal on Apple Silicon, Vulkan where available, CPU as last resort). Fast with GPU acceleration; significantly slower on CPU-only.</p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Port</th>
+<th>Model</th>
+<th>VRAM</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Embedding</td>
+<td>8088</td>
+<td><a href="https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF">EmbeddingGemma-300M-Q8_0</a></td>
+<td>~400MB</td>
+<td>Vector search, indexing, context-surfacing (768d, 2K context)</td>
+</tr>
+<tr>
+<td>LLM</td>
+<td>8089</td>
+<td><a href="https://huggingface.co/tobil/qmd-query-expansion-1.7B-gguf">qmd-query-expansion-1.7B-q4_k_m</a></td>
+<td>~2.2GB</td>
+<td>Intent classification, query expansion, A-MEM</td>
+</tr>
+<tr>
+<td>Reranker</td>
+<td>8090</td>
+<td><a href="https://huggingface.co/ggml-org/Qwen3-Reranker-0.6B-Q8_0-GGUF">qwen3-reranker-0.6B-Q8_0</a></td>
+<td>~1.3GB</td>
+<td>Cross-encoder reranking (query, intent_search)</td>
+</tr>
+</tbody></table>
+<p>The <code>bin/clawmem</code> wrapper defaults to <code>localhost:8088/8089/8090</code>. If a server is unreachable (transport error like ECONNREFUSED/ETIMEDOUT), ClawMem sets a 60-second cooldown and falls back to in-process inference via <code>node-llama-cpp</code> (auto-downloads the QMD native models on first use, uses Metal/Vulkan/CPU depending on hardware). HTTP errors (400/500) and user-cancelled requests do not trigger cooldown — the remote server is retried normally on the next call. With GPU acceleration the fallback is fast; on CPU-only it is significantly slower. ClawMem always works either way, but <strong>if you&#39;re running dedicated GPU servers, use <a href="docs/guides/systemd-services.md">systemd services</a> to ensure they stay up</strong>.</p>
+<p>To prevent fallback and fail fast instead, set <code>CLAWMEM_NO_LOCAL_MODELS=true</code>.</p>
+<h4>Remote GPU (optional)</h4>
+<p>If your GPU lives on a separate machine, point the env vars at it:</p>
+<pre><code class="language-bash">export CLAWMEM_EMBED_URL=http://gpu-host:8088
+export CLAWMEM_LLM_URL=http://gpu-host:8089
+export CLAWMEM_RERANK_URL=http://gpu-host:8090
+</code></pre>
+<p>For remote setups, set <code>CLAWMEM_NO_LOCAL_MODELS=true</code> to prevent <code>node-llama-cpp</code> from auto-downloading multi-GB model files if a server is unreachable.</p>
+<h4>No Dedicated GPU (in-process inference)</h4>
+<p>All three QMD native models run locally without a dedicated GPU. <code>node-llama-cpp</code> auto-downloads them on first use (~300MB embedding + ~1.1GB LLM + ~600MB reranker) and auto-detects the best backend — <strong>Metal on Apple Silicon</strong> (fast, uses integrated GPU), <strong>Vulkan where available</strong> (fast, uses discrete or integrated GPU), or <strong>CPU as last resort</strong> (significantly slower). With Metal or Vulkan, in-process inference handles these small models well; CPU-only is functional but noticeably slower.</p>
+<p>Alternatively, use a <a href="#option-c-cloud-embedding-api">cloud embedding provider</a> if you prefer not to run models locally.</p>
+<h3>Embedding</h3>
+<p>ClawMem calls the OpenAI-compatible <code>/v1/embeddings</code> endpoint for all embedding operations. This works with local llama-server instances and cloud providers alike.</p>
+<h4>Option A: GPU with VRAM to spare (recommended)</h4>
+<p>Use <a href="https://huggingface.co/Abhiray/zembed-1-Q4_K_M-GGUF">zembed-1-Q4_K_M</a> — SOTA retrieval quality, distilled from zerank-2 via <a href="https://docs.zeroentropy.dev">ZeroEntropy&#39;s zELO methodology</a>. <strong>CC-BY-NC-4.0</strong> — non-commercial only.</p>
+<ul>
+<li>Size: 2.4GB, Dimensions: 2560, VRAM: ~4.4GB, Context: 32K tokens</li>
+</ul>
+<pre><code class="language-bash">wget https://huggingface.co/Abhiray/zembed-1-Q4_K_M-GGUF/resolve/main/zembed-1-Q4_K_M.gguf
+
+# -ub must match -b for non-causal attention
+llama-server -m zembed-1-Q4_K_M.gguf \
+  --embeddings --port 8088 --host 0.0.0.0 \
+  -ngl 99 -c 8192 -b 2048 -ub 2048
+</code></pre>
+<h4>Option B: No GPU / GPU without VRAM to spare</h4>
+<p>Use <a href="https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF">EmbeddingGemma-300M-Q8_0</a> — the QMD native embedding model. Only 300MB, runs on CPU or any GPU.</p>
+<ul>
+<li>Size: 314MB, Dimensions: 768, VRAM: ~400MB (or CPU), Context: 2048 tokens</li>
+</ul>
+<pre><code class="language-bash">wget https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF/resolve/main/embeddinggemma-300M-Q8_0.gguf
+
+# On GPU (add -ngl 99):
+llama-server -m embeddinggemma-300M-Q8_0.gguf \
+  --embeddings --port 8088 --host 0.0.0.0 \
+  -ngl 99 -c 2048 --batch-size 2048
+
+# On CPU (omit -ngl):
+llama-server -m embeddinggemma-300M-Q8_0.gguf \
+  --embeddings --port 8088 --host 0.0.0.0 \
+  -c 2048 --batch-size 2048
+</code></pre>
+<p>For multilingual corpora, the SOTA zembed-1 (Option A) supports multilingual out of the box. For a lightweight alternative: <a href="https://huggingface.co/bartowski/granite-embedding-278m-multilingual-GGUF">granite-embedding-278m-multilingual-Q6_K</a> (314MB, set <code>CLAWMEM_EMBED_MAX_CHARS=1100</code> due to 512-token context).</p>
+<h4>Option C: Cloud Embedding API</h4>
+<p>Alternatively, use a cloud embedding provider instead of running a local server. Any provider with an OpenAI-compatible <code>/v1/embeddings</code> endpoint works.</p>
+<p><strong>Configuration:</strong> Copy <code>.env.example</code> to <code>.env</code> and set your provider credentials:</p>
+<pre><code class="language-bash">cp .env.example .env
+# Edit .env:
+CLAWMEM_EMBED_URL=https://api.jina.ai
+CLAWMEM_EMBED_API_KEY=jina_your-key-here
+CLAWMEM_EMBED_MODEL=jina-embeddings-v5-text-small
+</code></pre>
+<p>Or export them in your shell. <strong>Precedence:</strong> shell environment &gt; <code>.env</code> file &gt; <code>bin/clawmem</code> wrapper defaults.</p>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th><code>CLAWMEM_EMBED_URL</code></th>
+<th><code>CLAWMEM_EMBED_MODEL</code></th>
+<th>Dimensions</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Jina AI</td>
+<td><code>https://api.jina.ai</code></td>
+<td><code>jina-embeddings-v5-text-small</code></td>
+<td>1024</td>
+<td>32K context, task-specific LoRA adapters</td>
+</tr>
+<tr>
+<td>OpenAI</td>
+<td><code>https://api.openai.com</code></td>
+<td><code>text-embedding-3-small</code></td>
+<td>1536</td>
+<td>8K context, Matryoshka dimensions via <code>CLAWMEM_EMBED_DIMENSIONS</code></td>
+</tr>
+<tr>
+<td>Voyage AI</td>
+<td><code>https://api.voyageai.com</code></td>
+<td><code>voyage-4-large</code></td>
+<td>1024</td>
+<td>32K context</td>
+</tr>
+<tr>
+<td>Cohere</td>
+<td><code>https://api.cohere.com</code></td>
+<td><code>embed-v4.0</code></td>
+<td>1024</td>
+<td>128K context</td>
+</tr>
+</tbody></table>
+<p>Cloud mode auto-detects your provider from the URL and sends the right parameters (Jina <code>task</code>, Voyage/Cohere <code>input_type</code>, OpenAI <code>dimensions</code>). Batch embedding (50 fragments/request), server-side truncation, adaptive TPM-aware pacing, and retry with jitter are all handled automatically. Set <code>CLAWMEM_EMBED_TPM_LIMIT</code> to match your provider tier (default: 100000). See <a href="docs/guides/cloud-embedding.md">docs/guides/cloud-embedding.md</a> for full details.</p>
+<p><strong>Note:</strong> Cloud providers handle their own context window limits — ClawMem skips client-side truncation when an API key is set. Local llama-server truncates at <code>CLAWMEM_EMBED_MAX_CHARS</code> (default: 6000 chars).</p>
+<h4>Verify and embed</h4>
+<pre><code class="language-bash"># Verify endpoint is reachable
+curl $CLAWMEM_EMBED_URL/v1/embeddings \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Authorization: Bearer $CLAWMEM_EMBED_API_KEY&quot; \
+  -d &quot;{\&quot;input\&quot;:\&quot;test\&quot;,\&quot;model\&quot;:\&quot;$CLAWMEM_EMBED_MODEL\&quot;}&quot;
+
+# Embed your vault
+./bin/clawmem embed
+</code></pre>
+<h3>LLM Server</h3>
+<p>Intent classification, query expansion, and A-MEM extraction use <a href="https://huggingface.co/tobil/qmd-query-expansion-1.7B-gguf">qmd-query-expansion-1.7B</a> — a Qwen3-1.7B finetuned by QMD specifically for generating search expansion terms (hyde, lexical, and vector variants). ~1.1GB at q4_k_m quantization, served via <code>llama-server</code> on port 8089.</p>
+<p><strong>Without a server:</strong> If <code>CLAWMEM_LLM_URL</code> is unset, <code>node-llama-cpp</code> auto-downloads the model on first use.</p>
+<p><strong>Performance (RTX 3090):</strong></p>
+<ul>
+<li>Intent classification: <strong>27ms</strong></li>
+<li>Query expansion: <strong>333 tok/s</strong></li>
+<li>VRAM: ~2.2-2.8GB depending on quantization</li>
+</ul>
+<p><strong>Qwen3 /no_think flag:</strong> Qwen3 uses thinking tokens by default. ClawMem appends <code>/no_think</code> to all prompts automatically to get structured output in the <code>content</code> field.</p>
+<p><strong>Intent classification:</strong> Uses a dual-path approach:</p>
+<ol>
+<li><strong>Heuristic regex classifier</strong> (instant) — handles strong signals (why/when/who keywords) with 0.8+ confidence</li>
+<li><strong>LLM refinement</strong> (27ms on GPU) — only for ambiguous queries below 0.8 confidence</li>
+</ol>
+<p><strong>Server setup:</strong></p>
+<pre><code class="language-bash"># Download the finetuned model
+wget https://huggingface.co/tobil/qmd-query-expansion-1.7B-gguf/resolve/main/qmd-query-expansion-1.7B-q4_k_m.gguf
+
+# Start llama-server for LLM inference
+llama-server -m qmd-query-expansion-1.7B-q4_k_m.gguf \
+  --port 8089 --host 0.0.0.0 \
+  -ngl 99 -c 4096 --batch-size 512
+</code></pre>
+<h3>Reranker Server</h3>
+<p>Cross-encoder reranking for <code>query</code> and <code>intent_search</code> pipelines on port 8090. ClawMem calls the <code>/v1/rerank</code> endpoint (or falls back to scoring via <code>/v1/completions</code> for compatible servers).</p>
+<p>Scores each candidate against the original query (cross-encoder architecture). <code>query</code> pipeline: 4000 char context per doc (deep reranking); <code>intent_search</code>: 200 char context per doc (fast reranking).</p>
+<p><strong>GPU with VRAM to spare (recommended):</strong> <a href="https://huggingface.co/keisuke-miyako/zerank-2-gguf-q4_k_m">zerank-2-Q4_K_M</a> (2.4GB, ~3.3GB VRAM). Outperforms Cohere rerank-3.5 and Gemini 2.5 Flash. Optimal pairing with zembed-1 (same distillation architecture via zELO). <strong>CC-BY-NC-4.0</strong> — non-commercial only.</p>
+<pre><code class="language-bash">wget https://huggingface.co/keisuke-miyako/zerank-2-gguf-q4_k_m/resolve/main/zerank-2-Q4_k_m.gguf
+
+# -ub must match -b for non-causal attention
+llama-server -m zerank-2-Q4_K_M.gguf \
+  --reranking --port 8090 --host 0.0.0.0 \
+  -ngl 99 -c 2048 -b 2048 -ub 2048
+</code></pre>
+<p><strong>CPU / GPU without VRAM to spare:</strong> <a href="https://huggingface.co/ggml-org/Qwen3-Reranker-0.6B-Q8_0-GGUF">qwen3-reranker-0.6B-Q8_0</a> (~600MB, ~1.3GB VRAM). The QMD native reranker — auto-downloaded by <code>node-llama-cpp</code> if no server is running.</p>
+<pre><code class="language-bash">wget https://huggingface.co/ggml-org/Qwen3-Reranker-0.6B-Q8_0-GGUF/resolve/main/Qwen3-Reranker-0.6B-Q8_0.gguf
+
+llama-server -m Qwen3-Reranker-0.6B-Q8_0.gguf \
+  --reranking --port 8090 --host 0.0.0.0 \
+  -ngl 99 -c 2048 --batch-size 512
+</code></pre>
+<p><strong>Note:</strong> zerank-2 and zembed-1 use non-causal attention — <code>-ub</code> (ubatch) must equal <code>-b</code> (batch). Omitting <code>-ub</code> or setting it lower causes assertion crashes. qwen3-reranker-0.6B does not have this requirement. See <a href="https://github.com/ggml-org/llama.cpp/issues/12836">llama.cpp#12836</a>.</p>
+<h3>MCP Server</h3>
+<p>ClawMem exposes 31 MCP tools via the <a href="https://modelcontextprotocol.io">Model Context Protocol</a> and an optional HTTP REST API. Any MCP-compatible client or HTTP client can use it.</p>
+<p><strong>Claude Code (automatic):</strong></p>
+<pre><code class="language-bash">./bin/clawmem setup mcp   # Registers in ~/.claude.json
+</code></pre>
+<p><strong>Manual (any MCP client):</strong></p>
+<p>Add to your MCP config (e.g. <code>~/.claude.json</code>, <code>claude_desktop_config.json</code>, or your client&#39;s equivalent):</p>
+<pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;clawmem&quot;: {
+      &quot;command&quot;: &quot;/absolute/path/to/clawmem/bin/clawmem&quot;,
+      &quot;args&quot;: [&quot;mcp&quot;]
+    }
+  }
+}
+</code></pre>
+<p>The server runs via stdio — no network port needed. The <code>bin/clawmem</code> wrapper sets the GPU endpoint env vars automatically.</p>
+<p><strong>Verify:</strong> After registering, your client should see tools including <code>memory_retrieve</code>, <code>search</code>, <code>vsearch</code>, <code>query</code>, <code>query_plan</code>, <code>intent_search</code>, <code>timeline</code>, etc.</p>
+<h3>HTTP REST API (optional)</h3>
+<p>For web dashboards, non-MCP agents, cross-machine access, or programmatic use:</p>
+<pre><code class="language-bash">./bin/clawmem serve                          # localhost:7438, no auth
+./bin/clawmem serve --port 8080              # custom port
+CLAWMEM_API_TOKEN=secret ./bin/clawmem serve # with bearer token auth
+</code></pre>
+<p><strong>Endpoints:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET</td>
+<td><code>/health</code></td>
+<td>Liveness probe + version + doc count</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/stats</code></td>
+<td>Full index statistics</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/search</code></td>
+<td>Unified search (<code>mode</code>: auto/keyword/semantic/hybrid)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/retrieve</code></td>
+<td>Smart retrieve with auto-routing (<code>mode</code>: auto/keyword/semantic/causal/timeline/hybrid)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/documents/:docid</code></td>
+<td>Single document by 6-char hash prefix</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/documents?pattern=...</code></td>
+<td>Multi-get by glob pattern</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/timeline/:docid</code></td>
+<td>Temporal neighborhood (before/after)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/sessions</code></td>
+<td>Recent session history</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/collections</code></td>
+<td>List all collections</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/lifecycle/status</code></td>
+<td>Active/archived/pinned/snoozed counts</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/documents/:docid/pin</code></td>
+<td>Pin/unpin</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/documents/:docid/snooze</code></td>
+<td>Snooze until date</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/documents/:docid/forget</code></td>
+<td>Deactivate</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/lifecycle/sweep</code></td>
+<td>Archive stale docs (dry_run default)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/graph/causal/:docid</code></td>
+<td>Causal chain traversal</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/graph/similar/:docid</code></td>
+<td>k-NN neighbors</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/export</code></td>
+<td>Full vault export as JSON</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/reindex</code></td>
+<td>Trigger re-scan</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/graphs/build</code></td>
+<td>Rebuild temporal + semantic graphs</td>
+</tr>
+</tbody></table>
+<p><strong>Auth:</strong> Set <code>CLAWMEM_API_TOKEN</code> env var to require <code>Authorization: Bearer &lt;token&gt;</code> on all requests. If unset, access is open (localhost-only by default). See <code>.env.example</code>.</p>
+<p><strong>Search example:</strong></p>
+<pre><code class="language-bash">curl -X POST http://localhost:7438/search \
+  -H &#39;Content-Type: application/json&#39; \
+  -d &#39;{&quot;query&quot;: &quot;authentication decisions&quot;, &quot;mode&quot;: &quot;hybrid&quot;, &quot;compact&quot;: true}&#39;
+</code></pre>
+<h3>Verify Installation</h3>
+<pre><code class="language-bash">./bin/clawmem doctor   # Full health check
+./bin/clawmem status   # Quick index status
+bun test               # Run test suite
+</code></pre>
+<h2>Agent Instructions</h2>
+<p>ClawMem ships three instruction files and an optional maintenance agent:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Loaded</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>CLAUDE.md</code></td>
+<td>Automatically (Claude Code, when working in this repo)</td>
+<td>Complete operational reference — hooks, tools, query optimization, scoring, pipeline details, troubleshooting</td>
+</tr>
+<tr>
+<td><code>AGENTS.md</code></td>
+<td>Framework-dependent</td>
+<td>Identical to CLAUDE.md — cross-framework compatibility (Cursor, Windsurf, Codex, etc.)</td>
+</tr>
+<tr>
+<td><code>SKILL.md</code></td>
+<td>On-demand (agent reads when needed)</td>
+<td>Same reference as CLAUDE.md, shipped with the package for cross-project use</td>
+</tr>
+<tr>
+<td><code>agents/clawmem-curator.md</code></td>
+<td>On-demand via <code>clawmem setup curator</code></td>
+<td>Maintenance agent — lifecycle triage, retrieval health checks, dedup sweeps, graph rebuilds</td>
+</tr>
+</tbody></table>
+<p><strong>Working in the ClawMem repo:</strong> No action needed — <code>CLAUDE.md</code> loads automatically.</p>
+<p><strong>Using ClawMem from other projects:</strong> Your agent needs instructions on how to use ClawMem&#39;s hooks and MCP tools. Two options:</p>
+<h3>Option A: Copy instructions into your project</h3>
+<p>Copy the contents of <code>CLAUDE.md</code> (or the relevant sections) into your project&#39;s own <code>CLAUDE.md</code> or <code>AGENTS.md</code>. Simple but requires manual updates when ClawMem changes.</p>
+<h3>Option B: Add a trigger block (recommended)</h3>
+<p>Add this minimal trigger block to your global <code>~/.claude/CLAUDE.md</code>. It gives the agent routing rules always loaded, and tells it how to find the full reference (SKILL.md) shipped with your installation when deeper guidance is needed:</p>
+<pre><code class="language-markdown">## ClawMem
+
+Architecture: hooks (automatic, ~90%) + MCP tools (explicit, ~10%).
+
+Vault: `~/.cache/clawmem/index.sqlite` | Config: `~/.config/clawmem/config.yaml`
+
+### Escalation Gate (3 rules — ONLY escalate to MCP tools when one fires)
+
+1. **Low-specificity injection** — `&lt;vault-context&gt;` is empty or lacks the specific fact needed
+2. **Cross-session question** — &quot;why did we decide X&quot;, &quot;what changed since last time&quot;
+3. **Pre-irreversible check** — before destructive or hard-to-reverse changes
+
+### Tool Routing (once escalated)
+
+**Preferred:** `memory_retrieve(query)` — auto-classifies and routes to the optimal backend.
+
+**Direct routing** (when calling specific tools):
+
+    &quot;why did we decide X&quot;         → intent_search(query)          NOT query()
+    &quot;what happened last session&quot;  → session_log()                 NOT query()
+    &quot;what else relates to X&quot;      → find_similar(file)            NOT query()
+    Complex multi-topic           → query_plan(query)             NOT query()
+    General recall                → query(query, compact=true)
+    Keyword spot check            → search(query, compact=true)
+    Conceptual/fuzzy              → vsearch(query, compact=true)
+    Full content                  → multi_get(&quot;path1,path2&quot;)
+    Lifecycle health              → lifecycle_status()
+    Stale sweep                   → lifecycle_sweep(dry_run=true)
+    Restore archived              → lifecycle_restore(query)
+
+ALWAYS `compact=true` first → review → `multi_get` for full content.
+
+### Proactive Use (no escalation gate needed)
+
+- User says &quot;remember this&quot; / critical decision made → `memory_pin(query)` immediately
+- User corrects a misconception → `memory_pin(query)` the correction
+- `&lt;vault-context&gt;` surfaces irrelevant/noisy content → `memory_snooze(query, until)` for 30 days
+- Need to correct a memory → `memory_forget(query)`
+- After bulk ingestion → `build_graphs`
+
+### Anti-Patterns
+
+- Do NOT use `query()` for everything — match query type to tool, or use `memory_retrieve`
+- Do NOT call query/intent_search every turn — 3 rules above are the only gates
+- Do NOT re-search what&#39;s already in `&lt;vault-context&gt;`
+- Do NOT pin everything — pin is for persistent high-priority items, not routine decisions
+- Do NOT forget memories to &quot;clean up&quot; — let confidence decay handle it
+- Do NOT wait for curator to pin decisions — pin immediately when critical
+
+For detailed operational guidance (query optimization, troubleshooting, collection setup, embedding workflow, graph building, curator), find and read the shipped SKILL.md:
+  Bash: CLAWMEM_ROOT=$(cd &quot;$(dirname &quot;$(which clawmem)&quot;)/..&quot; &amp;&amp; pwd) &amp;&amp; echo &quot;$CLAWMEM_ROOT/SKILL.md&quot;
+  Then: Read the file at that path.
+</code></pre>
+<p>This gives your agent the 3-rule gate, tool routing, and proactive behaviors always loaded. When it needs deeper guidance, it locates and reads the full SKILL.md reference shipped with your installation — no symlinks or skill registration required.</p>
+<hr>
+<h2>CLI Reference</h2>
+<pre><code>clawmem init                                    Create DB + config
+clawmem bootstrap &lt;vault&gt; [--name N] [--skip-embed]  One-command setup
+clawmem collection add &lt;path&gt; --name &lt;name&gt;     Add a collection
+clawmem collection list                         List collections
+clawmem collection remove &lt;name&gt;                Remove a collection
+
+clawmem update [--pull] [--embed]               Incremental re-scan
+clawmem mine &lt;dir&gt; [-c name] [--embed] [--synthesize]  Import conversation exports (--synthesize runs post-import LLM fact extraction, v0.7.2)
+clawmem embed [-f]                              Generate fragment embeddings
+clawmem reindex [--force]                       Full re-index
+clawmem watch                                   File watcher daemon
+
+clawmem search &lt;query&gt; [-n N] [--json]          BM25 keyword search
+clawmem vsearch &lt;query&gt; [-n N] [--json]         Vector semantic search
+clawmem query &lt;query&gt; [-n N] [--json]           Full hybrid pipeline
+
+clawmem profile                                 Show user profile
+clawmem profile rebuild                         Force profile rebuild
+clawmem update-context                          Regenerate per-folder CLAUDE.md
+
+clawmem list [-n/--limit N] [-c col] [--json]   Browse recent documents
+clawmem budget [--session ID]                   Token utilization
+clawmem log [--last N]                          Session history
+clawmem hook &lt;name&gt;                             Manual hook trigger
+clawmem surface --context --stdin               IO6: pre-prompt context injection
+clawmem surface --bootstrap --stdin             IO6: per-session bootstrap injection
+
+clawmem reflect [N]                             Cross-session reflection (last N days, default 14)
+clawmem consolidate [--dry-run] [N]             Find and archive duplicate low-confidence docs
+
+clawmem install-service [--enable] [--remove]   Systemd watcher service
+clawmem setup hooks [--remove]                  Install/remove Claude Code hooks
+clawmem setup mcp [--remove]                    Register/remove MCP server
+clawmem setup curator [--remove]                Install/remove curator maintenance agent
+clawmem mcp                                     Start stdio MCP server
+clawmem serve [--port 7438] [--host 127.0.0.1]  Start HTTP REST API server
+clawmem path                                    Print database path
+clawmem doctor                                  Full health check
+clawmem status                                  Quick index status
+</code></pre>
+<h2>MCP Tools (31)</h2>
+<p>Registered by <code>clawmem setup mcp</code>. Available to any MCP-compatible client.</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>__IMPORTANT</code></td>
+<td>Workflow guide: prefer <code>memory_retrieve</code> → match query type to tool → <code>multi_get</code> for full content</td>
+</tr>
+</tbody></table>
+<h3>Core Search &amp; Retrieval</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>memory_retrieve</code></td>
+<td><strong>Preferred entry point.</strong> Auto-classifies query and routes to optimal backend (query, intent_search, session_log, find_similar, or query_plan). Use instead of manually choosing a search tool.</td>
+</tr>
+<tr>
+<td><code>search</code></td>
+<td>BM25 keyword search — for exact terms, config names, error codes, filenames. Composite scoring + co-activation boost + compact mode. Collection filter supports comma-separated values. Prefer <code>memory_retrieve</code> for auto-routing.</td>
+</tr>
+<tr>
+<td><code>vsearch</code></td>
+<td>Vector semantic search — for conceptual/fuzzy matching when exact keywords are unknown. Composite scoring + co-activation boost + compact mode. Collection filter supports comma-separated values. Prefer <code>memory_retrieve</code> for auto-routing.</td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td>Full hybrid pipeline (BM25 + vector + rerank) — general-purpose when query type is unclear. WRONG for &quot;why&quot; questions (use <code>intent_search</code>) or cross-session queries (use <code>session_log</code>). Prefer <code>memory_retrieve</code> for auto-routing. Intent hint, strong-signal bypass, chunk dedup, candidateLimit, MMR diversity, compact mode.</td>
+</tr>
+<tr>
+<td><code>get</code></td>
+<td>Retrieve single document by path or docid</td>
+</tr>
+<tr>
+<td><code>multi_get</code></td>
+<td>Retrieve multiple docs by glob or comma-separated list</td>
+</tr>
+<tr>
+<td><code>find_similar</code></td>
+<td>USE THIS for &quot;what else relates to X&quot;, &quot;show me similar docs&quot;. Finds k-NN vector neighbors — discovers connections beyond keyword overlap that search/query cannot find.</td>
+</tr>
+</tbody></table>
+<h3>Intent-Aware Search</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>intent_search</code></td>
+<td>USE THIS for &quot;why did we decide X&quot;, &quot;what caused Y&quot;, &quot;who worked on Z&quot;. Classifies intent (WHY/WHEN/ENTITY/WHAT), traverses causal + semantic graph edges. Returns decision chains that <code>query()</code> cannot find.</td>
+</tr>
+<tr>
+<td><code>query_plan</code></td>
+<td>USE THIS for complex multi-topic queries (&quot;tell me about X and also Y&quot;, &quot;compare A with B&quot;). Decomposes into parallel typed clauses (bm25/vector/graph), executes each, merges via RRF. <code>query()</code> searches as one blob — this tool splits topics and routes each optimally.</td>
+</tr>
+</tbody></table>
+<p><strong><code>intent_search</code> pipeline:</strong> Query → Intent Classification → BM25 + Vector → Intent-Weighted RRF → Graph Expansion (WHY/ENTITY intents) → Cross-Encoder Reranking → Composite Scoring</p>
+<p><strong><code>query_plan</code> pipeline:</strong> Query → LLM decomposition into 2-4 typed clauses → Parallel execution (BM25/vector/graph per clause) → RRF merge across clauses → Composite scoring. Falls back to single-query for simple inputs.</p>
+<h3>Multi-Graph &amp; Causal</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>build_graphs</code></td>
+<td>Build temporal and/or semantic graphs from document corpus</td>
+</tr>
+<tr>
+<td><code>find_causal_links</code></td>
+<td>Trace decision chains: &quot;what led to X&quot;, &quot;how we got from A to B&quot;. Follow up <code>intent_search</code> with this tool on a top result to walk the full causal chain. Traverses causes / caused_by / both up to N hops with depth-annotated reasoning.</td>
+</tr>
+<tr>
+<td><code>kg_query</code></td>
+<td>Query the SPO knowledge graph: &quot;what does X relate to?&quot;, &quot;what was true about X when?&quot;. Returns temporal entity-relationship triples with validity windows. Accepts entity name (resolved via <code>searchEntities</code>) or canonical ID in <code>vault:type:slug</code> form. Triples are populated by the decision-extractor hook from observer-emitted <code>&lt;triples&gt;</code> blocks.</td>
+</tr>
+<tr>
+<td><code>memory_evolution_status</code></td>
+<td>Show how a document&#39;s A-MEM metadata evolved over time</td>
+</tr>
+<tr>
+<td><code>timeline</code></td>
+<td>Show the temporal neighborhood around a document — what was created/modified before and after it. Progressive disclosure: search → timeline (context) → get (full content). Supports same-collection scoping and session correlation.</td>
+</tr>
+</tbody></table>
+<h3>Beads Integration</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>beads_sync</code></td>
+<td>Sync Beads issues from Dolt backend (<code>bd</code> CLI) into memory: creates docs, bridges all dep types to <code>memory_relations</code>, runs A-MEM enrichment</td>
+</tr>
+</tbody></table>
+<h3>Vault Management</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>list_vaults</code></td>
+<td>Show configured vault names and paths. Empty in single-vault mode.</td>
+</tr>
+<tr>
+<td><code>vault_sync</code></td>
+<td>Index markdown from a directory into a named vault. Restricted-path validation rejects sensitive directories.</td>
+</tr>
+</tbody></table>
+<h3>Agent Diary</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>diary_write</code></td>
+<td>Write a diary entry. Use for recording important events, decisions, or observations in environments without hook support. Stored as searchable memories.</td>
+</tr>
+<tr>
+<td><code>diary_read</code></td>
+<td>Read recent diary entries. Filter by agent name.</td>
+</tr>
+</tbody></table>
+<h3>Memory Management &amp; Lifecycle</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>memory_forget</code></td>
+<td>Search → deactivate closest match (with audit trail)</td>
+</tr>
+<tr>
+<td><code>memory_pin</code></td>
+<td>Pin a memory for +0.3 composite boost. USE PROACTIVELY when: user states a persistent constraint, makes an architecture decision, or corrects a misconception. Don&#39;t wait for curator — pin critical decisions immediately.</td>
+</tr>
+<tr>
+<td><code>memory_snooze</code></td>
+<td>Temporarily hide a memory from context surfacing until a date. USE PROACTIVELY when <code>&lt;vault-context&gt;</code> repeatedly surfaces irrelevant content — snooze for 30 days instead of ignoring it.</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>Index health with content type distribution</td>
+</tr>
+<tr>
+<td><code>reindex</code></td>
+<td>Trigger vault re-scan</td>
+</tr>
+<tr>
+<td><code>index_stats</code></td>
+<td>Detailed stats: types, staleness, access counts, sessions</td>
+</tr>
+<tr>
+<td><code>session_log</code></td>
+<td>USE THIS for &quot;last time&quot;, &quot;yesterday&quot;, &quot;what happened&quot;, &quot;what did we do&quot;. Returns session history with handoffs and file changes. DO NOT use <code>query()</code> for cross-session questions — this tool has session-specific data that search cannot find.</td>
+</tr>
+<tr>
+<td><code>profile</code></td>
+<td>Current static + dynamic user profile</td>
+</tr>
+<tr>
+<td><code>lifecycle_status</code></td>
+<td>Document lifecycle statistics: active, archived, forgotten, pinned, snoozed counts and policy summary</td>
+</tr>
+<tr>
+<td><code>lifecycle_sweep</code></td>
+<td>Run lifecycle policies: archive stale docs past retention threshold, optionally purge old archives. Defaults to dry_run (preview only)</td>
+</tr>
+<tr>
+<td><code>lifecycle_restore</code></td>
+<td>Restore documents that were auto-archived by lifecycle policies. Filter by query, collection, or restore all</td>
+</tr>
+</tbody></table>
+<h3>Compact Mode</h3>
+<p><code>search</code>, <code>vsearch</code>, and <code>query</code> accept <code>compact: true</code> to return <code>{ id, path, title, score, snippet, content_type, fragment }</code> instead of full content. Saves ~5x tokens for initial filtering.</p>
+<h2>Hooks (Claude Code Integration)</h2>
+<p>Hooks installed by <code>clawmem setup hooks</code>:</p>
+<p>| Hook | Event | Wha</p>
+<hr>
+<p><em>README truncated. <a href="https://github.com/yoloshii/ClawMem#readme">Continue reading on GitHub</a></em></p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Memory &amp; Context</h2>
+    <div class="related-grid">
+      <a href="/projects/vectorize-io/hindsight" class="related-chip">hindsight <span class="related-stars">8.4K</span></a>
+          <a href="/projects/greyhaven-ai/autocontext" class="related-chip">autocontext <span class="related-stars">711</span></a>
+          <a href="/projects/elkimek/honcho-self-hosted" class="related-chip">honcho-self-hosted <span class="related-stars">126</span></a>
+          <a href="/projects/plur-ai/plur" class="related-chip">plur <span class="related-stars">31</span></a>
+          <a href="/projects/amanning3390/flowstate-qmd" class="related-chip">flowstate-qmd <span class="related-stars">5</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/best-memory-providers">See all Memory &amp; Context projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

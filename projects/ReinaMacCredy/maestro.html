@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>maestro — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
+<meta name="description" content="Conductor for cross-agent coding workflows: structured memory, handoffs, plan-approve-execute coordination across external CLIs (Codex, Claude Code, Gemini).">
+<link rel="canonical" href="https://hermesatlas.com/projects/ReinaMacCredy/maestro">
+<meta property="og:title" content="maestro — Hermes Atlas">
+<meta property="og:description" content="Conductor for cross-agent coding workflows: structured memory, handoffs, plan-approve-execute coordination across external CLIs (Codex, Claude Code, Gemini).">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/ReinaMacCredy/maestro">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="maestro — Hermes Atlas">
+<meta name="twitter:description" content="Conductor for cross-agent coding workflows: structured memory, handoffs, plan-approve-execute coordination across external CLIs (Codex, Claude Code, Gemini).">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Skills &amp; Skill Registries</a>
+  </div>
+
+  <h1>maestro</h1>
+  <p class="project-desc">Conductor for cross-agent coding workflows: structured memory, handoffs, plan-approve-execute coordination across external CLIs (Codex, Claude Code, Gemini).</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 30</span>
+    <span class="badge badge-lang">TypeScript</span>
+    
+    
+    <span>Updated 4/14/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/ReinaMacCredy/maestro" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <h1>maestro</h1>
+<p>Maestro is a local-first conductor for multi-agent software engineering. It gives you one CLI and one on-disk state model for missions, features, assertions, handoffs, checkpoints, memory, and project context so separate agent sessions can collaborate without a server, database, or background daemon.</p>
+<p>It is designed for a workflow where a human operator coordinates multiple terminals, while Maestro keeps the shared state disciplined and inspectable.</p>
+<h2>Why Maestro</h2>
+<ul>
+<li>Shared state lives on disk in <code>.maestro/</code>, not in chat history.</li>
+<li>Missions break work into milestones, features, and validation assertions.</li>
+<li>UKI v5.4 handoffs let one agent session pass compact context to another in either <code>plan</code> or <code>execute</code> mode.</li>
+<li>Memory commands turn corrections and learnings into reusable guidance.</li>
+<li>Mission Control gives you a read-only TUI and JSON snapshots of current state.</li>
+<li>The runtime stays local-first: filesystem, git, config, and terminal tools.</li>
+</ul>
+<h2>At A Glance</h2>
+<pre><code class="language-mermaid">flowchart LR
+  human[&quot;Human operator&quot;]
+  maestro[&quot;Maestro CLI + .maestro/ state&quot;]
+  workerA[&quot;Agent terminal A&quot;]
+  workerB[&quot;Agent terminal B&quot;]
+  tui[&quot;Mission Control&quot;]
+
+  human --&gt; maestro
+  maestro --&gt; workerA
+  maestro --&gt; workerB
+  workerA --&gt; maestro
+  workerB --&gt; maestro
+  maestro --&gt; tui
+</code></pre>
+<p>Maestro is the shared state layer in the middle. The human moves between terminals; agents read and write through the same local CLI surface.</p>
+<h2>What Maestro Is Not</h2>
+<ul>
+<li>It does not spawn or supervise LLM agents for you.</li>
+<li>It is not a hosted orchestration service.</li>
+<li>It is not tied to a single model vendor or harness.</li>
+<li>It does not require a database, queue, or network API to work.</li>
+</ul>
+<p>The human operator is the bridge between terminals. Maestro is the shared state layer underneath that workflow.</p>
+<h2>Core Concepts</h2>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mission</td>
+<td>The top-level unit of work with a lifecycle such as <code>draft</code>, <code>approved</code>, or <code>executing</code>.</td>
+</tr>
+<tr>
+<td>Milestone</td>
+<td>A phase within a mission. Milestones can act as work phases or validation gates.</td>
+</tr>
+<tr>
+<td>Feature</td>
+<td>A concrete piece of work assigned to a worker type, with verification steps and optional dependencies.</td>
+</tr>
+<tr>
+<td>Assertion</td>
+<td>A validation target tied to a feature. Assertions are updated to <code>passed</code>, <code>failed</code>, <code>blocked</code>, or <code>waived</code>.</td>
+</tr>
+<tr>
+<td>Handoff</td>
+<td>A structured handoff record with a cached UKI v5.4 transfer string for agent-to-agent resume.</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>Corrections, learnings, and compiled guidance that feed back into future worker prompts.</td>
+</tr>
+<tr>
+<td>Checkpoint</td>
+<td>A timestamped mission snapshot you can save and later restore.</td>
+</tr>
+<tr>
+<td>Mission Control</td>
+<td>A read-only dashboard for previewing mission state interactively or as JSON.</td>
+</tr>
+</tbody></table>
+<h2>Mission Control Preview</h2>
+<p>Mission Control gives you a read-only terminal dashboard over the current Maestro state.</p>
+<p><img src="assets/images/Misson_Control_Preview.png" alt="Mission Control preview"></p>
+<h2>How Work Flows</h2>
+<pre><code class="language-mermaid">flowchart TD
+  init[&quot;Initialize project&quot;] --&gt; plan[&quot;Create mission plan JSON&quot;]
+  plan --&gt; mission[&quot;maestro mission create --file plan.json&quot;]
+  mission --&gt; approve[&quot;maestro mission approve &lt;mission-id&gt;&quot;]
+  approve --&gt; prompt[&quot;maestro feature prompt &lt;feature-id&gt; --mission &lt;mission-id&gt;&quot;]
+  prompt --&gt; handoff[&quot;maestro handoff create ...&quot;]
+  handoff --&gt; worker[&quot;Worker picks up handoff in another terminal&quot;]
+  worker --&gt; progress[&quot;maestro feature update ... --status in-progress/review&quot;]
+  progress --&gt; validate[&quot;maestro validate update ... --result passed|failed|waived&quot;]
+  validate --&gt; checkpoint[&quot;maestro checkpoint save --mission &lt;mission-id&gt;&quot;]
+  checkpoint --&gt; seal[&quot;maestro milestone seal &lt;milestone-id&gt; --mission &lt;mission-id&gt;&quot;]
+</code></pre>
+<p>The loop is deliberately simple: define work, hand it off, update progress, validate the outcome, and checkpoint before sealing the milestone.</p>
+<h2>Installation</h2>
+<h3>Requirements</h3>
+<ul>
+<li><a href="https://bun.sh/">Bun</a></li>
+<li>Git</li>
+<li>A local agent harness in another terminal, such as Claude Code, Codex, Gemini CLI, or Droid CLI</li>
+</ul>
+<h3>Install From Release</h3>
+<p>Install the latest published Maestro binary:</p>
+<pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/ReinaMacCredy/maestro/main/scripts/install.sh | bash
+</code></pre>
+<p>Install a specific published release:</p>
+<pre><code class="language-bash">MAESTRO_VERSION=0.32.0 curl -fsSL https://raw.githubusercontent.com/ReinaMacCredy/maestro/main/scripts/install.sh | bash
+</code></pre>
+<p>After installation, refresh to the latest published release with:</p>
+<pre><code class="language-bash">maestro update
+</code></pre>
+<h3>Build From Source</h3>
+<pre><code class="language-bash">bun install
+bun run build
+</code></pre>
+<p>This produces the compiled binary at <code>./dist/maestro</code>.</p>
+<h3>Install Locally</h3>
+<pre><code class="language-bash">bun run release:local
+command -v maestro
+maestro --version
+</code></pre>
+<p>If you also want to initialize global config and inject supported agent instruction blocks:</p>
+<pre><code class="language-bash">maestro install
+</code></pre>
+<p><code>./dist/maestro</code> is the fresh repo build. <code>maestro</code> on your <code>PATH</code> is the installed local binary.</p>
+<h2>Quick Start</h2>
+<h3>1. Initialize a project</h3>
+<pre><code class="language-bash">maestro init
+</code></pre>
+<p>This creates the local <code>.maestro/</code> workspace for the current repository.</p>
+<h3>2. Create a mission plan file</h3>
+<p><code>mission create</code> expects a JSON plan file. A minimal example:</p>
+<pre><code class="language-json">{
+  &quot;title&quot;: &quot;Add authentication&quot;,
+  &quot;description&quot;: &quot;Ship the first authentication slice&quot;,
+  &quot;milestones&quot;: [
+    {
+      &quot;id&quot;: &quot;plan&quot;,
+      &quot;title&quot;: &quot;Planning&quot;,
+      &quot;description&quot;: &quot;Define the implementation approach&quot;,
+      &quot;order&quot;: 0,
+      &quot;kind&quot;: &quot;work&quot;,
+      &quot;profile&quot;: &quot;planning&quot;
+    },
+    {
+      &quot;id&quot;: &quot;implement&quot;,
+      &quot;title&quot;: &quot;Implementation&quot;,
+      &quot;description&quot;: &quot;Build and verify the feature&quot;,
+      &quot;order&quot;: 1,
+      &quot;kind&quot;: &quot;work&quot;,
+      &quot;profile&quot;: &quot;implementation&quot;
+    }
+  ],
+  &quot;features&quot;: [
+    {
+      &quot;id&quot;: &quot;auth-plan&quot;,
+      &quot;milestoneId&quot;: &quot;plan&quot;,
+      &quot;title&quot;: &quot;Plan the auth flow&quot;,
+      &quot;description&quot;: &quot;Define the login shape, risks, and acceptance criteria&quot;,
+      &quot;workerType&quot;: &quot;codex&quot;,
+      &quot;verificationSteps&quot;: [
+        &quot;Review the proposed flow with the team&quot;
+      ]
+    },
+    {
+      &quot;id&quot;: &quot;auth-impl&quot;,
+      &quot;milestoneId&quot;: &quot;implement&quot;,
+      &quot;title&quot;: &quot;Implement the auth flow&quot;,
+      &quot;description&quot;: &quot;Build the first working authentication slice&quot;,
+      &quot;workerType&quot;: &quot;codex&quot;,
+      &quot;dependsOn&quot;: [
+        &quot;auth-plan&quot;
+      ],
+      &quot;verificationSteps&quot;: [
+        &quot;Run build&quot;,
+        &quot;Run targeted tests&quot;,
+        &quot;Verify the login flow manually&quot;
+      ],
+      &quot;fulfills&quot;: [
+        &quot;auth-login-works&quot;
+      ]
+    }
+  ]
+}
+</code></pre>
+<h3>3. Create and approve the mission</h3>
+<pre><code class="language-bash">maestro mission create --file plan.json
+maestro mission list
+maestro mission approve &lt;mission-id&gt;
+</code></pre>
+<h3>4. Generate a worker prompt</h3>
+<pre><code class="language-bash">maestro feature list --mission &lt;mission-id&gt;
+maestro feature prompt &lt;feature-id&gt; --mission &lt;mission-id&gt; --out worker-prompt.md
+</code></pre>
+<p>This writes the prompt to <code>worker-prompt.md</code> and also stores it under <code>.maestro/missions/&lt;mission-id&gt;/workers/&lt;feature-id&gt;/prompt.md</code>.</p>
+<h3>5. Create and pick up a handoff</h3>
+<p>Create an execute-mode handoff:</p>
+<pre><code class="language-bash">maestro handoff create \
+  --mode execute \
+  --session-core execute_auth_flow \
+  --summary &quot;Auth_flow_ready-handoff_created-low_risk&quot; \
+  --next-action pick_up_auth_impl \
+  --artifact file_src_auth_ts \
+  --read-more file_src_auth_ts \
+  --completed auth_flow_scaffolded \
+  --validation build_green \
+  --confidence-work 0.9
+</code></pre>
+<p>In another terminal, the worker can inspect or claim it:</p>
+<pre><code class="language-bash">maestro handoff list
+maestro handoff pickup
+maestro handoff pickup --json
+maestro handoff pickup --claim --agent codex
+</code></pre>
+<h3>6. Track progress, validate, and seal</h3>
+<pre><code class="language-bash">maestro feature update auth-impl --mission &lt;mission-id&gt; --status in-progress
+maestro feature update auth-impl --mission &lt;mission-id&gt; --status review
+maestro validate show --mission &lt;mission-id&gt;
+maestro validate update auth-login-works --mission &lt;mission-id&gt; --result passed --evidence &quot;bun test&quot;
+maestro checkpoint save --mission &lt;mission-id&gt;
+maestro milestone seal implement --mission &lt;mission-id&gt;
+</code></pre>
+<h2>Handoffs</h2>
+<p>Handoffs are Maestro&#39;s compact transfer format for moving work between terminals. Each handoff is stored on disk as structured JSON and also caches a UKI v5.4 transfer string so another agent can pick it up directly.</p>
+<h3>What a handoff contains</h3>
+<p>A handoff always includes:</p>
+<ul>
+<li><code>mode</code>: either <code>plan</code> or <code>execute</code></li>
+<li><code>currentState</code>: the current baton-pass state</li>
+<li><code>sessionCore</code>: the essence of the work</li>
+<li><code>summary</code>: a short under-140-character summary</li>
+<li><code>nextAction</code>: one concrete next step</li>
+<li><code>readMore</code>: one or more follow-up anchors</li>
+<li>at least one scoped confidence value via <code>--confidence-work</code> or <code>--confidence-summary</code></li>
+</ul>
+<p>It can also include decisions, signal deltas, Maestro references, plan paths, touched files, completed work, validation evidence, boundary state, risks, blind spots, and a metaphor anchor.</p>
+<h3>Handoff status flow</h3>
+<pre><code class="language-mermaid">flowchart LR
+  pending[&quot;pending&quot;] --&gt; picked[&quot;picked-up&quot;]
+  picked --&gt; completed[&quot;completed&quot;]
+</code></pre>
+<ul>
+<li><code>create</code> writes a new handoff with status <code>pending</code></li>
+<li><code>pickup --claim</code> atomically moves a pending handoff to <code>picked-up</code></li>
+<li><code>list --status ...</code> lets you inspect <code>pending</code>, <code>picked-up</code>, or <code>completed</code> handoffs</li>
+</ul>
+<h3>Create output</h3>
+<p>Creating a handoff returns the handoff id, detected agent/session identity, current status, and the compressed UKI string. The CLI prints the UKI payload as one line, but in the README it is wrapped by block here for readability:</p>
+<pre><code class="language-text">[ok] Handoff created: 2026-04-09-001
+  Mode: execute
+  Agent: codex
+  Session: 019d72f5-e4e3-7db3-a693-f7dc34c7d126
+  Status: pending
+
+UKI v5.4 string:
+MODE-execute
+|CURRENT_STATE-execute_in_progress
+|SESSION_CORE-handoff_real_example
+|CAUSAL_DRIVERS-NONE
+|DIVERGENCES-NONE
+|MAESTRO_REFS-NONE
+|DECISIONS-preserve_pickup_clarity
+|SIGNAL_DELTA-NONE
+|TOUCHED_FILES-file_src_auth_ts
+|COMPLETED_WORK-auth_flow_scaffolded
+|VALIDATION-compiled_cli_green
+|ARTIFACTS-file_src_auth_ts
+|READ_MORE-file_src_auth_ts
+|BOUNDARY_STATE-NONE
+|RISKS-green_tests_masked_contract_drift
+|BLIND_SPOT-green_tests_masked_contract_drift
+|METAPHOR-baton_pass_snapshot
+|NEXT_ACTION-pick_up_auth_impl
+|CS-work_0.9
+|SUMMARY-Handoff_real_example-ready-low_risk
+</code></pre>
+<p>If you want only the raw UKI string for piping into another agent or tool, use:</p>
+<pre><code class="language-bash">maestro handoff create \
+  --mode execute \
+  --session-core handoff_real_example \
+  --summary Handoff_real_example-ready-low_risk \
+  --next-action pick_up_auth_impl \
+  --decision preserve_pickup_clarity \
+  --touched-file file_src_auth_ts \
+  --completed auth_flow_scaffolded \
+  --validation compiled_cli_green \
+  --artifact file_src_auth_ts \
+  --read-more file_src_auth_ts \
+  --blind-spot green_tests_masked_contract_drift \
+  --metaphor baton_pass_snapshot \
+  --confidence-work 0.9 \
+  --uki
+</code></pre>
+<p>If you want a paste-ready prompt for another general agent, use <code>--paste</code>. It prepends one short instruction line and then the raw UKI packet:</p>
+<pre><code class="language-bash">maestro handoff pickup --paste
+</code></pre>
+<pre><code class="language-text">Use the following UKI as the canonical handoff packet. Interpret each block literally and continue from NEXT_ACTION.
+
+MODE-execute|CURRENT_STATE-execute_in_progress|SESSION_CORE-handoff_real_example|CAUSAL_DRIVERS-NONE|DIVERGENCES-NONE|MAESTRO_REFS-NONE|DECISIONS-preserve_pickup_clarity|SIGNAL_DELTA-NONE|TOUCHED_FILES-file_src_auth_ts|COMPLETED_WORK-auth_flow_scaffolded|VALIDATION-compiled_cli_green|ARTIFACTS-file_src_auth_ts|READ_MORE-file_src_auth_ts|BOUNDARY_STATE-NONE|RISKS-green_tests_masked_contract_drift|BLIND_SPOT-green_tests_masked_contract_drift|METAPHOR-baton_pass_snapshot|NEXT_ACTION-pick_up_auth_impl|CS-work_0.9|SUMMARY-Handoff_real_example-ready-low_risk
+</code></pre>
+<h3>Pickup output formats</h3>
+<p><code>maestro handoff pickup</code> supports three output modes:</p>
+<ul>
+<li>default output: the raw UKI transfer string</li>
+<li><code>--paste</code>: a paste-ready agent prompt plus the raw UKI packet</li>
+<li><code>--json</code>: the full structured handoff record</li>
+</ul>
+<p>Example default pickup:</p>
+<pre><code class="language-bash">maestro handoff pickup
+</code></pre>
+<pre><code class="language-text">MODE-execute|CURRENT_STATE-execute_in_progress|SESSION_CORE-handoff_real_example|CAUSAL_DRIVERS-NONE|DIVERGENCES-NONE|MAESTRO_REFS-NONE|DECISIONS-preserve_pickup_clarity|SIGNAL_DELTA-NONE|TOUCHED_FILES-file_src_auth_ts|COMPLETED_WORK-auth_flow_scaffolded|VALIDATION-compiled_cli_green|ARTIFACTS-file_src_auth_ts|READ_MORE-file_src_auth_ts|BOUNDARY_STATE-NONE|RISKS-green_tests_masked_contract_drift|BLIND_SPOT-green_tests_masked_contract_drift|METAPHOR-baton_pass_snapshot|NEXT_ACTION-pick_up_auth_impl|CS-work_0.9|SUMMARY-Handoff_real_example-ready-low_risk
+</code></pre>
+<h3>Typical handoff loop</h3>
+<pre><code class="language-bash">maestro handoff create \
+  --mode execute \
+  --session-core execute_auth_flow \
+  --summary Auth_flow_ready-handoff_created-low_risk \
+  --next-action pick_up_auth_impl \
+  --decision preserve_pickup_clarity \
+  --validation cli_example_green \
+  --artifact file_src_auth_ts \
+  --read-more file_src_auth_ts \
+  --confidence-work 0.9
+
+maestro handoff list
+maestro handoff pickup
+maestro handoff pickup --claim --agent codex
+</code></pre>
+<p>Use <code>handoff list</code> when you want a queue view, <code>pickup</code> when another agent should resume directly from the UKI string, <code>pickup --paste</code> when you are pasting into a general agent chat, and <code>pickup --json</code> when a script or debugging session needs the structured record.</p>
+<h2>Common Commands</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Use it when you want to...</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>maestro init</code></td>
+<td>Create local project state.</td>
+</tr>
+<tr>
+<td><code>maestro install</code></td>
+<td>Initialize global config and inject supported agent instruction blocks.</td>
+</tr>
+<tr>
+<td><code>maestro doctor</code></td>
+<td>Check whether the local environment is configured correctly.</td>
+</tr>
+<tr>
+<td><code>maestro status</code></td>
+<td>Inspect the current Maestro state quickly.</td>
+</tr>
+<tr>
+<td><code>maestro mission create --file plan.json</code></td>
+<td>Create a mission from a plan file.</td>
+</tr>
+<tr>
+<td><code>maestro feature prompt &lt;feature-id&gt; --mission &lt;mission-id&gt;</code></td>
+<td>Generate the next worker prompt.</td>
+</tr>
+<tr>
+<td><code>maestro handoff create ...</code></td>
+<td>Package context for another terminal or agent session.</td>
+</tr>
+<tr>
+<td><code>maestro handoff pickup</code></td>
+<td>Get the next pending handoff as the raw UKI transfer string.</td>
+</tr>
+<tr>
+<td><code>maestro mission-control --preview</code></td>
+<td>Render a read-only dashboard preview in the terminal.</td>
+</tr>
+<tr>
+<td><code>maestro mission-control --json</code></td>
+<td>Get a machine-readable snapshot of mission state.</td>
+</tr>
+<tr>
+<td><code>maestro mission-control --render-check --size 120x40</code></td>
+<td>Validate TUI render integrity non-interactively.</td>
+</tr>
+<tr>
+<td><code>maestro memory-correct &lt;rule&gt;</code></td>
+<td>Capture a correction that should influence future runs.</td>
+</tr>
+<tr>
+<td><code>maestro memory-compile</code></td>
+<td>Turn raw learnings into reusable guidance.</td>
+</tr>
+<tr>
+<td><code>maestro ratchet-check</code></td>
+<td>Run the regression ratchet suite.</td>
+</tr>
+</tbody></table>
+<p>Run <code>maestro &lt;command&gt; --help</code> for full flags and examples.</p>
+<h2>Mission Control</h2>
+<p>Mission Control is a read-only dashboard over Maestro state. It supports:</p>
+<ul>
+<li>Interactive TTY mode with <code>maestro mission-control</code></li>
+<li>Single-frame previews with <code>maestro mission-control --preview</code></li>
+<li>Machine-readable snapshots with <code>maestro mission-control --json</code></li>
+<li>Render validation with <code>maestro mission-control --render-check --size 120x40</code></li>
+</ul>
+<p>Available preview screens include:</p>
+<ul>
+<li><code>dashboard</code></li>
+<li><code>features</code></li>
+<li><code>dependencies</code></li>
+<li><code>handoffs</code></li>
+<li><code>config</code></li>
+<li><code>memory</code></li>
+<li><code>graph</code></li>
+</ul>
+<p>For non-interactive environments, prefer <code>--preview</code>, <code>--preview all</code>, or <code>--json</code>.</p>
+<h2>Architecture</h2>
+<pre><code class="language-mermaid">flowchart TD
+  cli[&quot;CLI commands&quot;] --&gt; usecases[&quot;Use cases&quot;]
+  usecases --&gt; domain[&quot;Domain models + validators&quot;]
+  usecases --&gt; ports[&quot;Ports&quot;]
+  ports --&gt; adapters[&quot;Filesystem, git, config, session adapters&quot;]
+  adapters --&gt; state[&quot;.maestro/ state + local environment&quot;]
+  state --&gt; tui[&quot;Mission Control snapshots&quot;]
+</code></pre>
+<p>The codebase follows a hexagonal shape: commands call use cases, use cases depend on domain rules and ports, and adapters implement those ports against the local filesystem and environment.</p>
+<h2>Storage Model</h2>
+<p>Maestro stores project-local state in <code>.maestro/</code> and user-level defaults in <code>~/.maestro/</code>.</p>
+<pre><code class="language-text">.maestro/
+├── config.yaml
+├── handoffs/
+├── memory/
+│   ├── corrections/
+│   ├── learnings/
+│   └── ratchet/
+├── missions/
+│   └── &lt;mission-id&gt;/
+│       ├── mission.json
+│       ├── assertions.json
+│       ├── checkpoints/
+│       ├── features/
+│       └── workers/
+└── notes.json
+
+~/.maestro/
+├── config.yaml
+└── graph/
+    └── projects.json
+</code></pre>
+<p>The design is intentionally transparent: state is inspectable, diffable, and easy to back up.</p>
+<h2>Architecture</h2>
+<p>Maestro is organized as a feature-first hexagonal codebase:</p>
+<ul>
+<li><code>src/features/&lt;name&gt;/</code> -- each feature is a bounded context containing its own <code>commands/</code>, <code>usecases/</code>, <code>domain/</code>, <code>ports/</code>, <code>adapters/</code>, plus a <code>services.ts</code> composition factory and <code>index.ts</code> public surface. Current features: <code>ratchet</code>, <code>handoff</code>, <code>notes</code>, <code>graph</code>, <code>session</code>, <code>memory</code>, <code>mission</code> (with <code>feature/</code>, <code>validation/</code>, <code>checkpoint/</code> subfolders), and <code>worker</code>.</li>
+<li><code>src/infra/</code> -- plumbing that isn&#39;t a feature: init, doctor, status, install, update, uninstall, and mission-control commands, config and git ports/adapters, and infra-owned domain types.</li>
+<li><code>src/shared/</code> -- generic utilities with no domain knowledge: filesystem, YAML, shell, path safety, and output formatting under <code>lib/</code>; cross-cutting primitives like IDs and UI config under <code>domain/</code>; plus top-level <code>errors.ts</code>, <code>version.ts</code>, and <code>version-format.ts</code>.</li>
+<li><code>src/tui/</code> -- read-only rendering and input for Mission Control; consumes features through their public surfaces. See <code>src/tui/README.md</code> for the contributor-oriented TUI architecture walkthrough.</li>
+<li><code>src/services.ts</code> -- composition root that wires every feature&#39;s adapters into a single service object.</li>
+<li><code>src/index.ts</code> -- Commander CLI entry point.</li>
+</ul>
+<p>Cross-feature imports must go through <code>@/features/&lt;name&gt;</code>, which resolves to the feature&#39;s <code>index.ts</code>. Deep imports across feature boundaries are forbidden and enforced by <code>bun run check:boundaries</code> in CI. The only exception is <code>worker</code>, which may legitimately consume the <code>mission</code> and <code>memory</code> public surfaces.</p>
+<p>The runtime is intentionally narrow: filesystem-backed stores, git integration, config handling, and a terminal UI. There is no database adapter or network service in the main workflow.</p>
+<h2>Development</h2>
+<pre><code class="language-bash">bun run build
+bun run typecheck
+bun test
+bun run tui:dev
+bun run release:local
+</code></pre>
+<p>Useful verification commands for CLI and TUI work:</p>
+<pre><code class="language-bash">./dist/maestro --version
+maestro --version
+maestro --help
+maestro mission-control --preview --size 120x40 --format plain
+maestro mission-control --render-check --size 120x40
+</code></pre>
+<h2>Supported Agent Config Injection</h2>
+<p><code>maestro install</code> and <code>maestro update</code> can inject instruction blocks for:</p>
+<ul>
+<li>Claude Code</li>
+<li>Codex</li>
+<li>Gemini CLI</li>
+<li>Droid CLI</li>
+</ul>
+<p>These instruction blocks help each harness read and write shared Maestro state consistently.</p>
+<h2>License</h2>
+<p>MIT</p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Skills &amp; Skill Registries</h2>
+    <div class="related-grid">
+      <a href="/projects/mukul975/Anthropic-Cybersecurity-Skills" class="related-chip">Anthropic-Cybersecurity-Skills <span class="related-stars">4.1K</span></a>
+          <a href="/projects/conorbronsdon/avoid-ai-writing" class="related-chip">avoid-ai-writing <span class="related-stars">759</span></a>
+          <a href="/projects/wondelai/skills" class="related-chip">wondelai/skills <span class="related-stars">480</span></a>
+          <a href="/projects/DougTrajano/pydantic-ai-skills" class="related-chip">pydantic-ai-skills <span class="related-stars">220</span></a>
+          <a href="/projects/Agents365-ai/drawio-skill" class="related-chip">drawio-skill <span class="related-stars">131</span></a>
+          <a href="/projects/smartcontractkit/chainlink-agent-skills" class="related-chip">chainlink-agent-skills <span class="related-stars">85</span></a>
+          <a href="/projects/tlehman/litprog-skill" class="related-chip">litprog-skill <span class="related-stars">81</span></a>
+          <a href="/projects/esaradev/icarus-plugin" class="related-chip">icarus-plugin <span class="related-stars">51</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/top-skills">See all Skills &amp; Skill Registries projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

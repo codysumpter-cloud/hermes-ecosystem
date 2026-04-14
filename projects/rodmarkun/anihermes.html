@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>anihermes — Hermes Agent Domain Applications | Hermes Atlas</title>
+<meta name="description" content="A local anime server &amp; tracker via natural language for Hermes Agent by Nous Research">
+<link rel="canonical" href="https://hermesatlas.com/projects/rodmarkun/anihermes">
+<meta property="og:title" content="anihermes — Hermes Atlas">
+<meta property="og:description" content="A local anime server &amp; tracker via natural language for Hermes Agent by Nous Research">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/rodmarkun/anihermes">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="anihermes — Hermes Atlas">
+<meta name="twitter:description" content="A local anime server &amp; tracker via natural language for Hermes Agent by Nous Research">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Domain Applications</a>
+  </div>
+
+  <h1>anihermes</h1>
+  <p class="project-desc">A local anime server &amp; tracker via natural language for Hermes Agent by Nous Research</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 9</span>
+    <span class="badge badge-lang">Python</span>
+    <span class="badge badge-lang">MIT</span>
+    
+    <span>Updated 3/15/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/rodmarkun/anihermes" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <h1>AniHermes</h1>
+<p><strong>Natural Language Anime Media Server</strong> powered by <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>.</p>
+<p>Talk to your anime server like it&#39;s a person — download episodes, track series, sync with Anilist, identify anime from screenshots, and manage your library. All through natural language, from Telegram, Discord, or CLI.</p>
+<!-- TODO: Add demo video/GIF here
+[![Demo](docs/assets/demo-thumbnail.png)](https://youtube.com/watch?v=YOUR_VIDEO_ID)
+-->
+
+<h2>What It Does</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;Download the latest Frieren&quot;</td>
+<td>Searches SubsPlease, grabs magnet, downloads via qbittorrent, organizes on disk</td>
+</tr>
+<tr>
+<td>&quot;Track One Piece weekly&quot;</td>
+<td>Creates a CRON job that auto-downloads new episodes</td>
+</tr>
+<tr>
+<td>&quot;Sync my Anilist&quot;</td>
+<td>Imports your watchlist, auto-tracks untracked series</td>
+</tr>
+<tr>
+<td>&quot;What anime is this?&quot; + screenshot</td>
+<td>Identifies anime using vision, offers to download</td>
+</tr>
+<tr>
+<td>&quot;Find this on multiple sources&quot;</td>
+<td>Parallel subagent search across SubsPlease &amp; Nyaa</td>
+</tr>
+<tr>
+<td>&quot;What&#39;s in my library?&quot;</td>
+<td>Organized view of your collection with disk stats</td>
+</tr>
+<tr>
+<td>&quot;I dropped Series X&quot;</td>
+<td>Removes CRON, updates Anilist, optionally cleans files</td>
+</tr>
+<tr>
+<td>&quot;Recommend anime like Frieren&quot;</td>
+<td>Anilist-powered recommendations</td>
+</tr>
+</tbody></table>
+<h2>Why Hermes Agent?</h2>
+<p>This isn&#39;t a script with a chatbot wrapper. Each feature uses Hermes Agent capabilities that can&#39;t be replicated with simple automation:</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Hermes Capability</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Natural language commands</td>
+<td>LLM understanding + tool orchestration</td>
+</tr>
+<tr>
+<td>Multi-source download</td>
+<td><code>delegate_task</code> — parallel subagent searches</td>
+</tr>
+<tr>
+<td>Anime identification</td>
+<td><code>vision_analyze</code> — image understanding</td>
+</tr>
+<tr>
+<td>Auto-tracking</td>
+<td><code>schedule_cronjob</code> — NL-defined CRON jobs</td>
+</tr>
+<tr>
+<td>Cross-platform</td>
+<td><code>send_message</code> — Telegram, Discord, CLI</td>
+</tr>
+<tr>
+<td>Taste learning</td>
+<td><code>memory</code> — persistent preferences</td>
+</tr>
+<tr>
+<td>Self-improving</td>
+<td>Skills system — workflows improve over time</td>
+</tr>
+</tbody></table>
+<h2>Quick Start</h2>
+<pre><code class="language-bash"># 1. Install Hermes Agent (if you haven&#39;t)
+# See: https://github.com/NousResearch/hermes-agent
+
+# 2. Clone and install AniHermes
+git clone https://github.com/YOUR_USERNAME/anihermes.git
+cd anihermes
+./install.sh
+
+# 3. Start using it
+hermes &quot;What anime is airing this season?&quot;
+hermes &quot;Download the latest episode of Frieren&quot;
+</code></pre>
+<h2>Requirements</h2>
+<ul>
+<li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a></li>
+<li>Python 3.8+ (stdlib only, no pip packages needed)</li>
+<li><a href="https://www.qbittorrent.org/">qbittorrent</a> with WebUI enabled</li>
+<li>Storage for anime (any directory)</li>
+</ul>
+<h3>Optional</h3>
+<ul>
+<li>Telegram bot (for mobile access) — <a href="docs/TELEGRAM.md">setup guide</a></li>
+<li>Anilist account (for watchlist sync) — <a href="docs/ANILIST.md">setup guide</a></li>
+</ul>
+<h2>Configuration</h2>
+<p><code>install.sh</code> creates <code>~/.hermes/anihermes/config.yaml</code>:</p>
+<pre><code class="language-yaml">storage:
+  anime_path: ~/Anime
+
+torrent:
+  client: qbittorrent
+  webui_url: http://localhost:8081
+
+sources:
+  preferred: subsplease
+  fallbacks: [nyaa]
+  quality: 1080p
+
+anilist:
+  username: &quot;your_username&quot;
+</code></pre>
+<p>Secrets (qbittorrent password, Anilist OAuth token) are stored in <code>~/.hermes/.env</code>, never in config files.</p>
+<p>See <a href="docs/SETUP.md">docs/SETUP.md</a> for full configuration reference.</p>
+<h2>Architecture</h2>
+<pre><code>User (Telegram/CLI/Discord)
+    |
+    v
+Hermes Agent (NL understanding + tool orchestration)
+    |
+    |-- web_search / web_extract --&gt; SubsPlease, Nyaa
+    |-- delegate_task -------------&gt; Parallel source searches
+    |-- vision_analyze ------------&gt; Anime scene identification
+    |-- terminal ------------------&gt; scripts/*.py (config-driven)
+    |-- schedule_cronjob ----------&gt; Weekly episode checks
+    |-- memory --------------------&gt; User preferences
+    |-- send_message --------------&gt; Notifications
+         |
+         v
+    qbittorrent --&gt; Your anime library
+    Anilist API --&gt; Watch progress tracking
+</code></pre>
+<h2>Scripts</h2>
+<p>All scripts are standalone and can be used independently:</p>
+<pre><code class="language-bash"># Search SubsPlease
+python3 ~/.hermes/scripts/anihermes_subsplease.py search &quot;Frieren&quot;
+python3 ~/.hermes/scripts/anihermes_subsplease.py latest &quot;Frieren&quot;
+python3 ~/.hermes/scripts/anihermes_subsplease.py schedule
+
+# Search Anilist
+python3 ~/.hermes/scripts/anihermes_anilist_api.py search &quot;Frieren&quot;
+python3 ~/.hermes/scripts/anihermes_anilist_api.py watchlist your_username
+python3 ~/.hermes/scripts/anihermes_anilist_api.py recommendations 154587
+
+# Manage library
+python3 ~/.hermes/scripts/anihermes_library_manager.py list
+python3 ~/.hermes/scripts/anihermes_library_manager.py stats
+python3 ~/.hermes/scripts/anihermes_library_manager.py info &quot;Frieren&quot;
+
+# Download torrent
+python3 ~/.hermes/scripts/anihermes_add_torrent.py --series &quot;Frieren&quot; --season &quot;S2&quot; --magnet &quot;magnet:...&quot;
+</code></pre>
+<h2>Documentation</h2>
+<ul>
+<li><a href="docs/SETUP.md">Setup Guide</a> — Detailed installation and configuration</li>
+<li><a href="docs/TELEGRAM.md">Telegram Setup</a> — Telegram bot integration</li>
+<li><a href="docs/ANILIST.md">Anilist Setup</a> — Anilist OAuth and watchlist sync</li>
+</ul>
+<h2>Disclaimer</h2>
+<p>AniHermes is provided &quot;as is&quot;, without warranty of any kind. This software is a media management and automation framework intended for use with legally obtained content. The developers do not host, distribute, or provide access to any copyrighted material.</p>
+<p>Users are solely responsible for ensuring that their use of this software complies with all applicable local, state, national, and international laws, including copyright and intellectual property laws. The developers assume no liability for any misuse of this software or for any content downloaded, managed, or distributed by users through this tool.</p>
+<p>By using this software, you agree that the developers shall not be held responsible or liable for any damages, legal actions, or claims arising from your use of the software or the content you obtain through it.</p>
+<p>This project references third-party services and APIs (SubsPlease, Nyaa.si, Anilist, MyAnimeList). These services are independently operated, and the developers of AniHermes have no affiliation with, endorsement from, or responsibility for those services or their content.</p>
+<h2>License</h2>
+<p>MIT</p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Domain Applications</h2>
+    <div class="related-grid">
+      <a href="/projects/ucsandman/DashClaw" class="related-chip">DashClaw <span class="related-stars">204</span></a>
+          <a href="/projects/Lethe044/hermes-incident-commander" class="related-chip">hermes-incident-commander <span class="related-stars">11</span></a>
+          <a href="/projects/Christabel337/job-scout-agent" class="related-chip">job-scout-agent <span class="related-stars">11</span></a>
+          <a href="/projects/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit" class="related-chip">infra-monitoring-toolkit <span class="related-stars">9</span></a>
+          <a href="/projects/bigph00t/hermescraft" class="related-chip">hermescraft <span class="related-stars">8</span></a>
+          <a href="/projects/hxsteric/mercury" class="related-chip">mercury <span class="related-stars">5</span></a>
+          <a href="/projects/bryercowan/hermes-embodied" class="related-chip">hermes-embodied <span class="related-stars">2</span></a>
+    </div>
+    
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>nix-hermes-agent — Hermes Agent Deployment &amp; Infra | Hermes Atlas</title>
+<meta name="description" content="Nix package and NixOS module for Hermes Agent by Nous Research">
+<link rel="canonical" href="https://hermesatlas.com/projects/0xrsydn/nix-hermes-agent">
+<meta property="og:title" content="nix-hermes-agent — Hermes Atlas">
+<meta property="og:description" content="Nix package and NixOS module for Hermes Agent by Nous Research">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/0xrsydn/nix-hermes-agent">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="nix-hermes-agent — Hermes Atlas">
+<meta name="twitter:description" content="Nix package and NixOS module for Hermes Agent by Nous Research">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Deployment &amp; Infra</a>
+  </div>
+
+  <h1>nix-hermes-agent</h1>
+  <p class="project-desc">Nix package and NixOS module for Hermes Agent by Nous Research</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 11</span>
+    <span class="badge badge-lang">Nix</span>
+    
+    
+    <span>Updated 3/30/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/0xrsydn/nix-hermes-agent" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <h1>nix-hermes-agent</h1>
+<p>Declarative Nix package and NixOS module for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research.</p>
+<p>Everything is configured in Nix. Config, documents, secrets, service — one <code>nixos-rebuild switch</code> and it&#39;s live.</p>
+<h2>Quick Start</h2>
+<h3>1. Add to your flake</h3>
+<pre><code class="language-nix">{
+  inputs.nix-hermes.url = &quot;github:0xrsydn/nix-hermes-agent&quot;;
+
+  outputs = { self, nixpkgs, nix-hermes, ... }: {
+    nixosConfigurations.myhost = nixpkgs.lib.nixosSystem {
+      modules = [
+        nix-hermes.nixosModules.hermes-agent
+        ./hermes.nix  # your config (see below)
+      ];
+    };
+  };
+}
+</code></pre>
+<h3>2. Configure declaratively</h3>
+<pre><code class="language-nix"># hermes.nix
+{ ... }:
+{
+  services.hermes-agent = {
+    enable = true;
+
+    # ── Declarative config (renders to cli-config.yaml) ──
+    config = {
+      model = {
+        default = &quot;anthropic/claude-opus-4.6&quot;;
+        provider = &quot;openrouter&quot;;
+      };
+      terminal = {
+        backend = &quot;local&quot;;
+        timeout = 180;
+        lifetime_seconds = 300;
+      };
+      agent = {
+        max_turns = 60;
+        reasoning_effort = &quot;medium&quot;;
+      };
+      memory = {
+        memory_enabled = true;
+        user_profile_enabled = true;
+        memory_char_limit = 2200;
+        nudge_interval = 10;
+      };
+      compression = {
+        enabled = true;
+        threshold = 0.85;
+        summary_model = &quot;google/gemini-3-flash-preview&quot;;
+      };
+      toolsets = [ &quot;all&quot; ];
+    };
+
+    # ── Secrets (not in Nix store) ──
+    environmentFiles = [
+      &quot;/run/secrets/hermes-env&quot;  # ANTHROPIC_API_KEY, TELEGRAM_TOKEN, etc.
+    ];
+
+    # ── Non-secret env vars ──
+    environment = {
+      LLM_MODEL = &quot;anthropic/claude-opus-4.6&quot;;
+    };
+
+    # ── Workspace documents (inline or file paths) ──
+    documents = {
+      &quot;SOUL.md&quot; = &#39;&#39;
+        # SOUL.md
+        You are a sharp, pragmatic AI assistant.
+      &#39;&#39;;
+      &quot;AGENTS.md&quot; = &#39;&#39;
+        # AGENTS.md
+        Read SOUL.md first. Then help the user.
+      &#39;&#39;;
+      &quot;USER.md&quot; = &#39;&#39;
+        # USER.md
+        Name: Your Human
+      &#39;&#39;;
+      # Or reference a file:
+      # &quot;SOUL.md&quot; = ./documents/SOUL.md;
+    };
+
+    # ── Declarative skills (phase 1) ──
+    skills = {
+      bundled.enable = true;
+      optional = [
+        &quot;creative/blender-mcp&quot;
+      ];
+      custom = {
+        repo-watch = {
+          category = &quot;research&quot;;
+          source = ./skills/repo-watch;
+        };
+      };
+    };
+
+    # ── MCP servers ──
+    mcpServers = {
+      context7 = {
+        command = &quot;npx&quot;;
+        args = [ &quot;-y&quot; &quot;@upstash/context7-mcp@latest&quot; ];
+      };
+    };
+
+    # ── Extra tools on PATH ──
+    extraPackages = with pkgs; [ jq ripgrep curl ];
+  };
+}
+</code></pre>
+<h3>Secrets Management</h3>
+<h4>Plain files approach</h4>
+<pre><code class="language-nix">services.hermes-agent = {
+  environmentFiles = [ &quot;/run/secrets/hermes-env&quot; ];
+  authFile = &quot;/run/secrets/hermes-auth.json&quot;;  # optional, for OAuth tokens
+};
+</code></pre>
+<h4>sops-nix approach</h4>
+<pre><code class="language-nix">sops.secrets.&quot;hermes/env&quot; = {
+  sopsFile = ./secrets/hermes.yaml;
+  owner = &quot;hermes&quot;;
+  group = &quot;hermes&quot;;
+};
+
+sops.secrets.&quot;hermes/auth&quot; = {
+  sopsFile = ./secrets/hermes.yaml;
+  owner = &quot;hermes&quot;;
+  group = &quot;hermes&quot;;
+};
+
+services.hermes-agent = {
+  enable = true;
+  environmentFiles = [ config.sops.secrets.&quot;hermes/env&quot;.path ];
+  authFile = config.sops.secrets.&quot;hermes/auth&quot;.path;
+  config.model = {
+    default = &quot;anthropic/claude-opus-4.6&quot;;
+    provider = &quot;openrouter&quot;;
+  };
+};
+</code></pre>
+<h4>Example secrets file structure</h4>
+<pre><code class="language-yaml">hermes/env: |
+    OPENROUTER_API_KEY=sk-or-...
+    ANTHROPIC_API_KEY=sk-ant-...
+    TELEGRAM_TOKEN=123456:ABC...
+    GLM_API_KEY=...
+hermes/auth: |
+    {&quot;nous&quot;: {&quot;token&quot;: &quot;...&quot;, &quot;refresh&quot;: &quot;...&quot;}, &quot;codex&quot;: {&quot;token&quot;: &quot;...&quot;}}
+</code></pre>
+<h3>3. Create secrets file</h3>
+<pre><code class="language-bash"># /run/secrets/hermes-env (or wherever you manage secrets)
+OPENROUTER_API_KEY=sk-or-...
+ANTHROPIC_API_KEY=sk-ant-...
+TELEGRAM_TOKEN=123456:ABC...
+TELEGRAM_ALLOWED_USERS=your_user_id
+</code></pre>
+<h3>4. Deploy</h3>
+<pre><code class="language-bash">nixos-rebuild switch
+systemctl status hermes-agent
+journalctl -u hermes-agent -f
+</code></pre>
+<h2>Architecture</h2>
+<pre><code>You (Telegram/Discord/WhatsApp/Slack) → Gateway → Tools → Machine does things
+</code></pre>
+<h3>How it works</h3>
+<ol>
+<li><code>services.hermes-agent.config</code> attrset is deep-merged and rendered to <code>cli-config.yaml</code></li>
+<li>Documents are installed into the workspace directory</li>
+<li>Secrets stay outside the Nix store via <code>environmentFiles</code></li>
+<li>systemd service runs <code>hermes gateway</code> with everything wired up</li>
+</ol>
+<h3>Directory layout</h3>
+<pre><code>/var/lib/hermes/              # stateDir
+├── .hermes/                  # Hermes home (HERMES_HOME)
+│   ├── cli-config.yaml       # Generated from config option
+│   ├── .env                  # Secrets (from environmentFiles)
+│   ├── memory/               # Agent memory (runtime)
+│   ├── skills/               # Skills (runtime)
+│   └── logs/                 # Session logs
+├── workspace/                # workingDirectory
+│   ├── SOUL.md               # From documents option
+│   ├── AGENTS.md
+│   └── USER.md
+└── logs/
+    └── gateway.log           # Service log
+</code></pre>
+<h2>Declarative Skills vs Native Hermes Skills</h2>
+<p>The <code>skills</code> option is designed to <strong>augment Hermes</strong>, not replace Hermes&#39; native skill workflow.</p>
+<p>Both approaches compose into the same runtime directory:</p>
+<ul>
+<li><code>${stateDir}/.hermes/skills/</code></li>
+</ul>
+<p>That means you can use both:</p>
+<ul>
+<li><strong>declarative skills</strong> from Nix</li>
+<li><strong>interactive/runtime skills</strong> from <code>hermes skills install</code></li>
+</ul>
+<h3>Ownership model</h3>
+<h4>Nix-managed</h4>
+<p>Skills declared via:</p>
+<ul>
+<li><code>services.hermes-agent.skills.bundled</code></li>
+<li><code>services.hermes-agent.skills.optional</code></li>
+<li><code>services.hermes-agent.skills.custom</code></li>
+</ul>
+<p>are reconciled by the module and tracked in:</p>
+<ul>
+<li><code>.nix-managed-skills.json</code></li>
+</ul>
+<p>These paths are considered <strong>owned by Nix</strong>.</p>
+<h4>Hermes-managed</h4>
+<p>Skills installed later via Hermes CLI, plus hub metadata under:</p>
+<ul>
+<li><code>.hermes/skills/.hub/</code></li>
+</ul>
+<p>are left alone by the module <strong>unless they collide with a Nix-managed path</strong>.</p>
+<h3>Collision rule</h3>
+<p>If a Hermes CLI install and a declarative Nix skill target the same installed path,
+<strong>the declarative Nix version wins on the next activation/rebuild</strong>.</p>
+<p>Example:</p>
+<ul>
+<li>Nix declares <code>creative/blender-mcp</code></li>
+<li>user later installs another <code>creative/blender-mcp</code> via Hermes CLI</li>
+</ul>
+<p>On the next rebuild, the Nix-declared version is restored.</p>
+<h3>Recommended workflow</h3>
+<p>Use <strong>Hermes CLI</strong> for:</p>
+<ul>
+<li>experimentation</li>
+<li>hub/community skill discovery</li>
+<li>temporary installs</li>
+<li>trying before keeping</li>
+</ul>
+<p>Use <strong>Nix declarative skills</strong> for:</p>
+<ul>
+<li>stable/reproducible deployments</li>
+<li>bundled upstream skills you always want</li>
+<li>selected optional skills you want pinned to the package revision</li>
+<li>local custom house skills stored in git</li>
+</ul>
+<p>A good pattern is:</p>
+<ol>
+<li>install/try a skill interactively,</li>
+<li>decide it is worth keeping,</li>
+<li>promote it into Nix config if you want it reproducible.</li>
+</ol>
+<p>This keeps <code>nix-hermes-agent</code> useful without interfering with the native Hermes experience.</p>
+<h2>Module Options</h2>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>enable</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Enable Hermes Agent gateway</td>
+</tr>
+<tr>
+<td><code>config</code></td>
+<td>attrset</td>
+<td><code>{}</code></td>
+<td>Declarative config (→ cli-config.yaml)</td>
+</tr>
+<tr>
+<td><code>configFile</code></td>
+<td>path</td>
+<td><code>null</code></td>
+<td>Use existing config file (overrides <code>config</code>)</td>
+</tr>
+<tr>
+<td><code>documents</code></td>
+<td>attrset</td>
+<td><code>{}</code></td>
+<td>Workspace files (string or path values)</td>
+</tr>
+<tr>
+<td><code>skills</code></td>
+<td>attrset</td>
+<td><code>{}</code></td>
+<td>Declarative Hermes skills (bundled, optional, custom local)</td>
+</tr>
+<tr>
+<td><code>environmentFiles</code></td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Secret env files (systemd EnvironmentFile)</td>
+</tr>
+<tr>
+<td><code>environment</code></td>
+<td>attrset</td>
+<td><code>{}</code></td>
+<td>Non-secret env vars</td>
+</tr>
+<tr>
+<td><code>authFile</code></td>
+<td>path</td>
+<td><code>null</code></td>
+<td>OAuth credentials file (auth.json)</td>
+</tr>
+<tr>
+<td><code>mcpServers</code></td>
+<td>attrset</td>
+<td><code>{}</code></td>
+<td>MCP server configs (merged into config)</td>
+</tr>
+<tr>
+<td><code>user</code></td>
+<td>string</td>
+<td><code>&quot;hermes&quot;</code></td>
+<td>Service user</td>
+</tr>
+<tr>
+<td><code>group</code></td>
+<td>string</td>
+<td><code>&quot;hermes&quot;</code></td>
+<td>Service group</td>
+</tr>
+<tr>
+<td><code>stateDir</code></td>
+<td>path</td>
+<td><code>/var/lib/hermes</code></td>
+<td>State directory</td>
+</tr>
+<tr>
+<td><code>workingDirectory</code></td>
+<td>path</td>
+<td><code>${stateDir}/workspace</code></td>
+<td>Working directory</td>
+</tr>
+<tr>
+<td><code>extraPackages</code></td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Extra packages on PATH</td>
+</tr>
+<tr>
+<td><code>extraArgs</code></td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Extra <code>hermes gateway</code> args</td>
+</tr>
+<tr>
+<td><code>logPath</code></td>
+<td>path</td>
+<td><code>${stateDir}/logs/gateway.log</code></td>
+<td>Log file</td>
+</tr>
+<tr>
+<td><code>restart</code></td>
+<td>string</td>
+<td><code>&quot;always&quot;</code></td>
+<td>systemd Restart policy</td>
+</tr>
+<tr>
+<td><code>restartSec</code></td>
+<td>int</td>
+<td><code>5</code></td>
+<td>Restart delay</td>
+</tr>
+</tbody></table>
+<h2>Config Reference</h2>
+<p>The <code>config</code> attrset maps directly to Hermes&#39; <code>cli-config.yaml</code>. Key sections:</p>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>model</code></td>
+<td>Default model, provider, base_url</td>
+</tr>
+<tr>
+<td><code>terminal</code></td>
+<td>Backend (local/ssh/docker/modal), cwd, timeout</td>
+</tr>
+<tr>
+<td><code>agent</code></td>
+<td>max_turns, verbose, reasoning_effort, personalities</td>
+</tr>
+<tr>
+<td><code>memory</code></td>
+<td>memory_enabled, user_profile_enabled, char limits</td>
+</tr>
+<tr>
+<td><code>compression</code></td>
+<td>Context compression settings</td>
+</tr>
+<tr>
+<td><code>session_reset</code></td>
+<td>Auto-reset policy for messaging</td>
+</tr>
+<tr>
+<td><code>skills</code></td>
+<td>Skill creation nudge settings</td>
+</tr>
+<tr>
+<td><code>toolsets</code></td>
+<td>Which tool groups to enable</td>
+</tr>
+<tr>
+<td><code>mcp_servers</code></td>
+<td>MCP server connections</td>
+</tr>
+<tr>
+<td><code>delegation</code></td>
+<td>Subagent settings</td>
+</tr>
+<tr>
+<td><code>browser</code></td>
+<td>Browser tool settings</td>
+</tr>
+<tr>
+<td><code>stt</code></td>
+<td>Voice transcription config</td>
+</tr>
+<tr>
+<td><code>display</code></td>
+<td>UI/skin settings</td>
+</tr>
+</tbody></table>
+<p>See the <a href="https://raw.githubusercontent.com/NousResearch/hermes-agent/main/cli-config.yaml.example">full config reference</a>.</p>
+<h2>Just the Package</h2>
+<pre><code class="language-bash"># Run directly
+nix run github:0xrsydn/nix-hermes-agent -- --help
+
+# In a dev shell
+nix develop github:0xrsydn/nix-hermes-agent
+
+# Use the overlay
+nixpkgs.overlays = [ nix-hermes.overlays.default ];
+</code></pre>
+<h2>License</h2>
+<p>MIT (same as upstream)</p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Deployment &amp; Infra</h2>
+    <div class="related-grid">
+      <a href="/projects/numtide/llm-agents.nix" class="related-chip">llm-agents.nix <span class="related-stars">967</span></a>
+          <a href="/projects/TheAiSingularity/hermesclaw" class="related-chip">hermesclaw <span class="related-stars">16</span></a>
+          <a href="/projects/rookiemann/portable-hermes-agent" class="related-chip">portable-hermes-agent <span class="related-stars">7</span></a>
+          <a href="/projects/xmbshwll/hermes-agent-docker" class="related-chip">hermes-agent-docker <span class="related-stars">6</span></a>
+          <a href="/projects/JackTheGit/hermes-autonomous-server" class="related-chip">hermes-autonomous-server <span class="related-stars">2</span></a>
+          <a href="/projects/ellickjohnson/portainer-stack-hermes" class="related-chip">portainer-stack-hermes <span class="related-stars">1</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/deployment-options">See all Deployment &amp; Infra projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

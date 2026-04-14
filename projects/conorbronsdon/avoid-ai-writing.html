@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>avoid-ai-writing — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
+<meta name="description" content="Skill that audits and rewrites content to remove AI writing patterns. Use it with your favorite agents including Claude Code, OpenClaw, and Hermes.">
+<link rel="canonical" href="https://hermesatlas.com/projects/conorbronsdon/avoid-ai-writing">
+<meta property="og:title" content="avoid-ai-writing — Hermes Atlas">
+<meta property="og:description" content="Skill that audits and rewrites content to remove AI writing patterns. Use it with your favorite agents including Claude Code, OpenClaw, and Hermes.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/conorbronsdon/avoid-ai-writing">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="avoid-ai-writing — Hermes Atlas">
+<meta name="twitter:description" content="Skill that audits and rewrites content to remove AI writing patterns. Use it with your favorite agents including Claude Code, OpenClaw, and Hermes.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Skills &amp; Skill Registries</a>
+  </div>
+
+  <h1>avoid-ai-writing</h1>
+  <p class="project-desc">Skill that audits and rewrites content to remove AI writing patterns. Use it with your favorite agents including Claude Code, OpenClaw, and Hermes.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 982</span>
+    
+    <span class="badge badge-lang">MIT</span>
+    
+    <span>Updated 4/11/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/conorbronsdon/avoid-ai-writing" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    <a href="https://newsletter.chainofthought.show/" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
+  </div>
+
+  <section class="readme">
+    <div align="center">
+
+<h1>avoid-ai-writing</h1>
+<p>Audit &amp; rewrite content to remove AI writing patterns. A practical skill for any AI agent. Supports detection-only mode.</p>
+<p><a href="https://github.com/conorbronsdon/avoid-ai-writing/stargazers"><img src="https://img.shields.io/github/stars/conorbronsdon/avoid-ai-writing?style=social" alt="GitHub stars"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" alt="License: MIT"></a>
+<a href="https://x.com/ConorBronsdon"><img src="https://img.shields.io/badge/X-@ConorBronsdon-black?style=flat-square&logo=x" alt="X"></a>
+<a href="https://avoid-ai-writing-app.vercel.app"><img src="https://img.shields.io/badge/Try_the_web_app-ff6b35?style=flat-square&logo=vercel&logoColor=white" alt="Web App"></a></p>
+</div>
+<div align="center">
+The community made a meme coin to support the project🤯 CA: BsidWuYJnayqMXVsLGr34524vmZ1BrWFhPer3198pump
+</div>
+
+<hr>
+<p>A portable writing skill for <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a>, <a href="https://github.com/openclaw/openclaw">OpenClaw</a>, <a href="https://github.com/NousResearch/hermes-agent">Hermes</a>, and any other <a href="https://agentskills.io">agentskills.io</a>-compatible agent. Audits and rewrites content to remove AI writing patterns (&quot;AI-isms&quot;).</p>
+<p><strong>Two modes:</strong></p>
+<ul>
+<li><strong>Rewrite</strong> (default) — flags AI patterns and rewrites the text to fix them. A built-in second pass catches patterns that survived the first edit.</li>
+<li><strong>Detect</strong> — flags AI patterns without rewriting. Shows which flags are real problems vs. judgment calls. Useful when patterns might be intentional, when auditing content you don&#39;t want altered, or when you just want a quick scan.</li>
+</ul>
+<h2>Quick demo</h2>
+<p><strong>Input:</strong></p>
+<blockquote>
+<p>Certainly! Acme Analytics, a vibrant startup nestled in the heart of Boulder&#39;s thriving tech ecosystem, has secured $40M in Series B funding — marking a watershed moment for the observability landscape. The platform serves as a unified hub, featuring real-time dashboards, boasting sub-second queries, and presenting a seamless integration layer. Moreover, experts believe Acme is poised to disrupt the market. In conclusion, the future looks bright!</p>
+</blockquote>
+<p><strong>Output:</strong></p>
+<blockquote>
+<p>Acme Analytics raised a $40M Series B led by Sequoia. The Boulder-based startup makes an observability platform that runs queries in under a second and plugs into existing monitoring stacks without custom integration work.</p>
+</blockquote>
+<p><strong>What it caught:</strong> chatbot opener (&quot;Certainly!&quot;), promotional language (&quot;vibrant,&quot; &quot;nestled,&quot; &quot;thriving&quot;), significance inflation (&quot;watershed moment&quot;), copula avoidance (&quot;serves as,&quot; &quot;featuring,&quot; &quot;boasting&quot;), 4 word replacements, vague attribution (&quot;experts believe&quot;), filler (&quot;Moreover&quot;), generic conclusion (&quot;the future looks bright&quot;), over-polished uniformity. 15+ AI tells in one paragraph.</p>
+<h2>Why a skill, not just a prompt</h2>
+<p>A one-shot &quot;make this sound human&quot; prompt catches the obvious stuff. This skill is different:</p>
+<ul>
+<li><strong>Structured audit</strong> — returns identified issues with quoted text, the rewrite, a change summary, and a second-pass audit in four discrete sections. You see exactly what changed and why.</li>
+<li><strong>Two-pass detection</strong> — the second pass re-reads the rewrite and catches patterns that survive the first edit: recycled transitions, lingering inflation, copula swaps that snuck through.</li>
+<li><strong>109-entry word replacement table across 3 tiers</strong> — not vibes-based. Every flagged word has a specific, plainer alternative. &quot;Leverage&quot; → &quot;use.&quot; &quot;Commence&quot; → &quot;start.&quot; Tier 1 words are always flagged, Tier 2 words flag when they cluster, Tier 3 words flag only at high density. This reduces false positives while catching real AI tells.</li>
+<li><strong>36 pattern categories</strong> — see the full list below, each with before/after examples. Includes rhythm/uniformity checks and a rewrite-vs-patch threshold.</li>
+<li><strong>Detect mode</strong> — flag patterns without rewriting. See which flags are real problems vs. judgment calls. Useful when patterns might be intentional or you&#39;re auditing content you don&#39;t want altered.</li>
+<li><strong>Works with Claude Code and OpenClaw</strong> — single <code>SKILL.md</code> with compatible frontmatter for both platforms.</li>
+</ul>
+<h2>Installation &amp; Usage</h2>
+<h3>Claude Code</h3>
+<p><strong>Option 1: Clone into skills directory</strong></p>
+<pre><code class="language-bash">git clone https://github.com/conorbronsdon/avoid-ai-writing ~/.claude/skills/avoid-ai-writing
+</code></pre>
+<p><strong>Option 2: Copy the file directly</strong></p>
+<p>Download <code>SKILL.md</code> and place it in any directory that Claude Code can read. Reference it in your <code>CLAUDE.md</code>:</p>
+<pre><code class="language-markdown">- Editing for AI patterns → read `path/to/avoid-ai-writing/SKILL.md`
+</code></pre>
+<p><strong>Option 3: Use as a slash command</strong></p>
+<p>Create a command file (e.g., <code>~/.claude/commands/clean-ai-writing.md</code>):</p>
+<pre><code class="language-markdown">---
+description: Audit and rewrite content to remove AI writing patterns
+---
+
+$ARGUMENTS
+
+Read and follow the instructions in ~/.claude/skills/avoid-ai-writing/SKILL.md
+</code></pre>
+<p>Then use <code>/clean-ai-writing &lt;your text&gt;</code> in Claude Code.</p>
+<h3>OpenClaw</h3>
+<p><strong>Option 1: <a href="https://clawhub.ai/conorbronsdon/avoid-ai-writing">Install from ClawHub</a></strong></p>
+<pre><code class="language-bash">clawhub install avoid-ai-writing
+</code></pre>
+<p><strong>Option 2: Clone into skills directory</strong></p>
+<pre><code class="language-bash">git clone https://github.com/conorbronsdon/avoid-ai-writing ~/.openclaw/skills/avoid-ai-writing
+</code></pre>
+<h3>Triggering the skill</h3>
+<p>Once installed, ask your assistant to clean up AI writing:</p>
+<ul>
+<li>&quot;Remove AI-isms from this post&quot;</li>
+<li>&quot;Audit this draft for AI tells&quot;</li>
+<li>&quot;Make this sound less like AI&quot;</li>
+<li>&quot;Clean up AI writing in this paragraph&quot;</li>
+</ul>
+<p>In <strong>rewrite mode</strong> (default), the skill returns four sections:</p>
+<ol>
+<li><strong>Issues found</strong> — every AI-ism identified, with the text quoted</li>
+<li><strong>Rewritten version</strong> — clean version with all AI-isms removed</li>
+<li><strong>What changed</strong> — summary of the major edits</li>
+<li><strong>Second-pass audit</strong> — re-reads the rewrite and catches any surviving tells</li>
+</ol>
+<p>In <strong>detect mode</strong>, the skill returns two sections:</p>
+<ol>
+<li><strong>Issues found</strong> — every AI-ism identified, grouped by severity (P0/P1/P2)</li>
+<li><strong>Assessment</strong> — which flags are clear problems vs. patterns that may be intentional or effective in context</li>
+</ol>
+<p>Trigger detect mode with: &quot;detect,&quot; &quot;flag only,&quot; &quot;audit only,&quot; &quot;just flag,&quot; &quot;scan,&quot; or similar.</p>
+<h2>36 Patterns Detected</h2>
+<h3>Content Patterns</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Pattern</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>Significance inflation</strong></td>
+<td>&quot;marking a pivotal moment in the evolution of...&quot;</td>
+<td>&quot;was founded in 2019 to solve X&quot;</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Notability name-dropping</strong></td>
+<td>&quot;cited in NYT, BBC, and Wired&quot;</td>
+<td>&quot;In a 2024 NYT interview, she argued...&quot;</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Superficial -ing analyses</strong></td>
+<td>&quot;symbolizing... reflecting... showcasing...&quot;</td>
+<td>Replace with specific facts or cut</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Promotional language</strong></td>
+<td>&quot;nestled within the breathtaking region&quot;</td>
+<td>&quot;is a town in the Gonder region&quot;</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Vague attributions</strong></td>
+<td>&quot;Experts believe it plays a crucial role&quot;</td>
+<td>&quot;according to a 2019 survey by Gartner&quot;</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Formulaic challenges</strong></td>
+<td>&quot;Despite challenges... continues to thrive&quot;</td>
+<td>Name the challenge and the response</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Novelty inflation</strong></td>
+<td>&quot;He introduced a term I hadn&#39;t heard before&quot;</td>
+<td>&quot;He walked through how X works in practice&quot;</td>
+</tr>
+</tbody></table>
+<h3>Language Patterns</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Pattern</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>8</td>
+<td><strong>Word/phrase replacements (3 tiers)</strong></td>
+<td>&quot;leverage... robust... seamless... utilize&quot;</td>
+<td>&quot;use... reliable... smooth... use&quot;</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>Copula avoidance</strong></td>
+<td>&quot;serves as... features... boasts&quot;</td>
+<td>&quot;is... has&quot;</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>Synonym cycling</strong></td>
+<td>&quot;developers... engineers... practitioners... builders&quot;</td>
+<td>&quot;developers&quot; (repeat the clear word)</td>
+</tr>
+<tr>
+<td>11</td>
+<td><strong>Template phrases</strong></td>
+<td>&quot;a [adj] step towards [adj] infrastructure&quot;</td>
+<td>Describe the specific outcome</td>
+</tr>
+<tr>
+<td>12</td>
+<td><strong>Filler phrases</strong></td>
+<td>&quot;In order to,&quot; &quot;Due to the fact that&quot;</td>
+<td>&quot;To,&quot; &quot;Because&quot;</td>
+</tr>
+<tr>
+<td>13</td>
+<td><strong>False ranges</strong></td>
+<td>&quot;from the Big Bang to dark matter&quot;</td>
+<td>List the actual topics</td>
+</tr>
+<tr>
+<td>14</td>
+<td><strong>Parenthetical hedging</strong></td>
+<td>&quot;tools (like X and Y)&quot;</td>
+<td>Name them directly or cut</td>
+</tr>
+</tbody></table>
+<h3>Structure Patterns</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Pattern</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>15</td>
+<td><strong>Formatting</strong></td>
+<td>Em dashes (— and --), bold overuse, emoji headers, bullet-heavy</td>
+<td>Commas/periods, prose paragraphs</td>
+</tr>
+<tr>
+<td>16</td>
+<td><strong>Sentence structure</strong></td>
+<td>&quot;It&#39;s not X, it&#39;s Y&quot; + hollow intensifiers + hedging</td>
+<td>Direct positive statements</td>
+</tr>
+<tr>
+<td>17</td>
+<td><strong>Structural issues</strong></td>
+<td>Uniform paragraphs, formulaic openings, too-clean grammar</td>
+<td>Varied length, lead with the point</td>
+</tr>
+<tr>
+<td>18</td>
+<td><strong>Transition phrases</strong></td>
+<td>&quot;Moreover,&quot; &quot;Furthermore,&quot; &quot;In today&#39;s [X]&quot;</td>
+<td>&quot;and,&quot; &quot;also,&quot; or restructure</td>
+</tr>
+<tr>
+<td>19</td>
+<td><strong>Inline-header lists</strong></td>
+<td>&quot;<strong>Speed:</strong> Speed improved by...&quot;</td>
+<td>Write the point directly</td>
+</tr>
+<tr>
+<td>20</td>
+<td><strong>Title case headings</strong></td>
+<td>&quot;Strategic Negotiations And Partnerships&quot;</td>
+<td>&quot;Strategic negotiations and partnerships&quot;</td>
+</tr>
+<tr>
+<td>21</td>
+<td><strong>Numbered list inflation</strong></td>
+<td>&quot;Here are 7 reasons why...&quot;</td>
+<td>Cut to the 2-3 that matter</td>
+</tr>
+<tr>
+<td>22</td>
+<td><strong>False concession</strong></td>
+<td>&quot;While X has limitations, it&#39;s still remarkable&quot;</td>
+<td>State the real tradeoff</td>
+</tr>
+<tr>
+<td>23</td>
+<td><strong>Rhetorical question openers</strong></td>
+<td>&quot;What if there were a better way to...?&quot;</td>
+<td>Lead with the claim</td>
+</tr>
+</tbody></table>
+<h3>Communication Patterns</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Pattern</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>24</td>
+<td><strong>Chatbot artifacts</strong></td>
+<td>&quot;I hope this helps! Let me know if...&quot;</td>
+<td>Remove entirely</td>
+</tr>
+<tr>
+<td>25</td>
+<td><strong>&quot;Let&#39;s&quot; constructions</strong></td>
+<td>&quot;Let&#39;s explore,&quot; &quot;Let&#39;s break this down&quot;</td>
+<td>Just start with the point</td>
+</tr>
+<tr>
+<td>26</td>
+<td><strong>Cutoff disclaimers</strong></td>
+<td>&quot;While details are limited in available sources...&quot;</td>
+<td>Find sources or remove</td>
+</tr>
+<tr>
+<td>27</td>
+<td><strong>Generic conclusions</strong></td>
+<td>&quot;The future looks bright,&quot; &quot;Only time will tell&quot;</td>
+<td>Specific closing thought or cut</td>
+</tr>
+<tr>
+<td>28</td>
+<td><strong>Emotional flatline</strong></td>
+<td>&quot;What surprised me most,&quot; &quot;I was fascinated to discover&quot;</td>
+<td>Earn the emotion or cut the claim</td>
+</tr>
+<tr>
+<td>29</td>
+<td><strong>Reasoning chain artifacts</strong></td>
+<td>&quot;Let me think step by step,&quot; &quot;Breaking this down&quot;</td>
+<td>State conclusion, then evidence</td>
+</tr>
+<tr>
+<td>30</td>
+<td><strong>Sycophantic tone</strong></td>
+<td>&quot;Great question!&quot;, &quot;You&#39;re absolutely right!&quot;</td>
+<td>Remove entirely</td>
+</tr>
+<tr>
+<td>31</td>
+<td><strong>Acknowledgment loops</strong></td>
+<td>&quot;You&#39;re asking about,&quot; &quot;To answer your question&quot;</td>
+<td>Just answer directly</td>
+</tr>
+<tr>
+<td>32</td>
+<td><strong>Confidence calibration</strong></td>
+<td>&quot;It&#39;s worth noting,&quot; &quot;Interestingly,&quot; &quot;Surprisingly&quot;</td>
+<td>Let the fact speak for itself</td>
+</tr>
+</tbody></table>
+<h3>Meta Patterns</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Pattern</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>33</td>
+<td><strong>Excessive structure</strong></td>
+<td>5 headers in 200 words, &quot;Overview:&quot;, &quot;Key Points:&quot;</td>
+<td>Merge sections, use specific headers</td>
+</tr>
+<tr>
+<td>34</td>
+<td><strong>Rhythm and uniformity</strong></td>
+<td>All sentences 15–25 words, all paragraphs same length</td>
+<td>Mix short/long, fragments, questions</td>
+</tr>
+<tr>
+<td>35</td>
+<td><strong>Over-polishing</strong></td>
+<td>Every irregularity sanded away, perfectly uniform prose</td>
+<td>Keep natural disfluency, varied rhythm</td>
+</tr>
+<tr>
+<td>36</td>
+<td><strong>Rewrite-vs-patch threshold</strong></td>
+<td>5+ vocabulary flags + 3+ pattern categories + uniform rhythm</td>
+<td>Advise full rewrite, not patching</td>
+</tr>
+</tbody></table>
+<h2>Full Example</h2>
+<p><strong>Before (AI-generated):</strong></p>
+<blockquote>
+<p>Certainly! Here&#39;s a comprehensive overview of Acme&#39;s Series B.</p>
+<p>Acme Analytics, a vibrant startup nestled in the heart of Boulder&#39;s thriving tech ecosystem, has secured $40M in Series B funding — marking a watershed moment for the company and the observability landscape at large. The round was led by Sequoia, with participation from Andreessen Horowitz, Y Combinator, and Index Ventures, underscoring the robust investor confidence in Acme&#39;s vision.</p>
+<p>The platform serves as a unified hub for engineering teams, featuring real-time dashboards, boasting sub-second query performance, and presenting a seamless integration layer. It&#39;s not just another monitoring tool — it&#39;s a paradigm shift in how organizations navigate complex distributed systems. Experts believe Acme is poised to disrupt the $15B observability market. Studies show that companies utilizing comprehensive monitoring solutions can ascertain issues 40% faster.</p>
+<ul>
+<li>🚀 <strong>Performance:</strong> The platform streamlines incident response, empowering engineers to resolve issues faster.</li>
+<li>💡 <strong>Scale:</strong> Acme fosters collaboration across teams, from frontend developers to SRE practitioners to platform builders to infrastructure engineers.</li>
+<li>✅ <strong>Adoption:</strong> Customer adoption continues to accelerate, reflecting broader industry trends.</li>
+</ul>
+<p>Moreover, Acme&#39;s approach showcases the potential of modern observability — symbolizing a shift toward proactive monitoring, reflecting years of R&amp;D investment, and highlighting the intricate interplay between data collection and actionable intelligence. Despite challenges common in the crowded monitoring space, Acme continues to thrive. In order to fully capitalize on this momentum, the company plans to expand its go-to-market endeavors.</p>
+<p>In conclusion, the future looks bright for Acme Analytics. Only time will tell how this game-changer will reshape the observability paradigm. Feel free to reach out if you&#39;d like more details!</p>
+</blockquote>
+<p><strong>After (cleaned up):</strong></p>
+<blockquote>
+<p>Acme Analytics raised a $40M Series B led by Sequoia. The Boulder-based startup makes an observability platform that runs queries in under a second and plugs into existing monitoring stacks without custom integration work.</p>
+<p>The pitch is speed. Their median time-to-resolution is 12 minutes, compared to the 45-minute industry average that Datadog reported in 2024. That gap is why 380 companies are paying for it.</p>
+<p>They&#39;ll use the money to hire sales reps in EMEA and add log management. The monitoring market is crowded, but Acme&#39;s bet is that most teams still stitch together three or four tools and lose time switching between them.</p>
+</blockquote>
+<p><strong>What the skill caught:</strong> chatbot artifacts (Certainly!, Feel free to reach out), 3 em dashes, promotional language (vibrant, nestled, thriving), significance inflation (watershed moment), copula avoidance (serves as, featuring, boasting, presenting), 10 word replacements (landscape, robust, seamless, paradigm, streamline, empower, foster, utilize, ascertain, endeavor), synonym cycling (developers/practitioners/builders/engineers), negative parallelism (It&#39;s not just X, it&#39;s Y), notability name-dropping (Sequoia, a16z, YC, Index stacked for credibility), vague attributions (Experts believe, Studies show), filler phrases (In order to, Moreover), inline-header list with emoji, superficial -ing analysis (symbolizing... reflecting... highlighting...), formulaic challenges (Despite challenges... continues to thrive), generic conclusion (the future looks bright, only time will tell), false range implied in the adoption bullet.</p>
+<p>That&#39;s 35+ AI tells.</p>
+<h2>$avoid token + web app</h2>
+<p>The community created a Solana token around this project. You can burn $avoid tokens to run the audit skill through a web app:</p>
+<p><strong><a href="https://avoid-ai-writing-app.vercel.app">avoid-ai-writing-app.vercel.app</a></strong> — paste text, burn 1,000 $avoid, get a full audit + rewrite. Every token burned is permanently removed from circulation.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Web App</td>
+<td><a href="https://avoid-ai-writing-app.vercel.app">avoid-ai-writing-app.vercel.app</a></td>
+</tr>
+<tr>
+<td>DexScreener</td>
+<td><a href="https://dexscreener.com/solana/4b5mprekzapcwybrsbbaiewtk4amck62rpcznjcxz69m">dexscreener.com/solana/4b5m...</a></td>
+</tr>
+<tr>
+<td>Telegram</td>
+<td><a href="https://t.me/avoidaiwriting">t.me/avoidaiwriting</a></td>
+</tr>
+<tr>
+<td>X Community</td>
+<td><a href="https://x.com/i/communities/2036440377356591415">x.com/i/communities/2036440377356591415</a></td>
+</tr>
+<tr>
+<td>CA</td>
+<td><code>BsidWuYJnayqMXVsLGr34524vmZ1BrWFhPer3198pump</code></td>
+</tr>
+</tbody></table>
+<h2>Credits</h2>
+<p>Pattern research informed by:</p>
+<ul>
+<li><a href="https://www.pangram.com/">Pangram Labs</a> AI detection research — structural regularity insights, vocabulary flags from a decoder-only classifier trained on 28M human documents</li>
+<li>Wikipedia&#39;s <a href="https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing">Signs of AI-generated text</a> documentation — the canonical reference for AI writing tells, maintained by Wikipedia editors</li>
+<li><a href="https://github.com/blader/humanizer">blader/humanizer</a> Claude Code skill</li>
+<li><a href="https://github.com/brandonwise/humanizer">brandonwise/humanizer</a> — tiered vocabulary system, statistical analysis research (burstiness, sentence length variation, trigram repetition), and rewrite philosophy</li>
+<li><a href="https://github.com/openclaw/openclaw">OpenClaw</a> humanizer skill ecosystem — community patterns and vocabulary research</li>
+</ul>
+<p>Authored by <a href="https://github.com/conorbronsdon">Conor Bronsdon</a> · <a href="https://www.linkedin.com/in/conorbronsdon/">LinkedIn</a> · <a href="https://chainofthought.show">Chain of Thought podcast</a></p>
+<h2>License</h2>
+<p>MIT</p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Skills &amp; Skill Registries</h2>
+    <div class="related-grid">
+      <a href="/projects/mukul975/Anthropic-Cybersecurity-Skills" class="related-chip">Anthropic-Cybersecurity-Skills <span class="related-stars">4.1K</span></a>
+          <a href="/projects/wondelai/skills" class="related-chip">wondelai/skills <span class="related-stars">480</span></a>
+          <a href="/projects/DougTrajano/pydantic-ai-skills" class="related-chip">pydantic-ai-skills <span class="related-stars">220</span></a>
+          <a href="/projects/Agents365-ai/drawio-skill" class="related-chip">drawio-skill <span class="related-stars">131</span></a>
+          <a href="/projects/smartcontractkit/chainlink-agent-skills" class="related-chip">chainlink-agent-skills <span class="related-stars">85</span></a>
+          <a href="/projects/tlehman/litprog-skill" class="related-chip">litprog-skill <span class="related-stars">81</span></a>
+          <a href="/projects/esaradev/icarus-plugin" class="related-chip">icarus-plugin <span class="related-stars">51</span></a>
+          <a href="/projects/chigwell/skilldock.io" class="related-chip">skilldock.io <span class="related-stars">50</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/top-skills">See all Skills &amp; Skill Registries projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>
