@@ -187,7 +187,7 @@
   <p class="project-desc">Self-hosted multi-agent AI runtime with MCP server support. Build, orchestrate, and run autonomous agents with memory, skills, schedules, and 23+ LLM providers (Claude, GPT, Gemini, OpenRouter, Ollama).</p>
 
   <div class="meta-row">
-    <span class="stars">★ 341</span>
+    <span class="stars">★ 345</span>
     <span class="badge badge-lang">TypeScript</span>
     <span class="badge badge-lang">MIT</span>
     
@@ -571,6 +571,15 @@ OTEL_EXPORTER_OTLP_HEADERS=Authorization=Bearer your-token
 <p>If you need a trace-specific endpoint, set <code>OTEL_EXPORTER_OTLP_TRACES_ENDPOINT</code> directly instead.</p>
 <p>Operational docs: <a href="https://swarmclaw.ai/docs/observability">https://swarmclaw.ai/docs/observability</a></p>
 <h2>Releases</h2>
+<h3>v1.5.49 Highlights</h3>
+<ul>
+<li><strong>Autonomous Missions</strong>: a new first-class concept for long-running, goal-driven agent work. Hand your agent team a goal on Friday, come back Monday to see what they shipped. Each mission carries a title, a natural-language objective, bulleted success criteria, hard budgets (USD, tokens, turns, wallclock), periodic markdown reports, and a full milestone timeline. Missions drive any session through the existing heartbeat pipeline, so delegation to Claude Code, Codex, OpenCode, Cursor, Droid, Goose, Qwen, or native SwarmClaw agents all work without changes.</li>
+<li><strong>Budget enforcement in the run pipeline</strong>: <code>enqueueSessionRun</code> now consults the mission&#39;s budget before every autonomous turn. When any cap is hit the mission transitions to <code>budget_exhausted</code>, the queue drains, and a final report fires. Warn thresholds (default 50% / 80% / 95% of each cap) emit <code>budget_warn</code> milestones exactly once each.</li>
+<li><strong>Scheduler tick from heartbeat</strong>: <code>runMissionScheduler()</code> fires every heartbeat tick, independent of the active-hours window, so wallclock budgets and periodic reports still fire overnight. Report cadence is configurable per mission; reports land as in-app notifications today and ship as Slack/Discord/audio in a follow-up.</li>
+<li><strong><code>/missions</code> dashboard</strong>: new page with a live mission list, status pills, four-axis budget gauges, a scrollable milestone timeline, a reports drawer, and start / pause / cancel / mark-complete / generate-report-now controls.</li>
+<li><strong>CLI commands</strong>: <code>swarmclaw missions list|get|create|update|delete|control|reports|report-now|events</code>. Create a mission, start it, and watch the timeline from the terminal or CI.</li>
+<li><strong>New storage collections</strong>: <code>agent_missions</code>, <code>mission_reports</code>, and <code>agent_mission_events</code>. The legacy deprecated <code>missions</code> table is left untouched so nothing in existing installs is disturbed.</li>
+</ul>
 <h3>v1.5.48 Highlights</h3>
 <ul>
 <li><strong>SwarmDock MCP preset now points at the hosted endpoint</strong>: <em>MCP Servers → Quick Setup → SwarmDock</em> is pre-filled with <code>streamable-http</code> transport pointed at <code>https://swarmdock-api.onrender.com/mcp</code> and a ready-to-edit <code>Authorization: Bearer &lt;key&gt;</code> header template. Users no longer need to run <code>npx swarmdock-mcp</code> locally — the SwarmDock team hosts the MCP server in-process on the existing API service. First-time setup (browser keygen + agent registration) lives at <a href="https://www.swarmdock.ai/mcp/connect">swarmdock.ai/mcp/connect</a>.</li>

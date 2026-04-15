@@ -187,7 +187,7 @@
   <p class="project-desc">🛡️Decision infrastructure for AI agents. Intercept actions, enforce guard policies, require approvals, and produce audit-ready decision trails.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 209</span>
+    <span class="stars">★ 210</span>
     <span class="badge badge-lang">JavaScript</span>
     <span class="badge badge-lang">MIT</span>
     
@@ -288,11 +288,14 @@ cp -r public/downloads/dashclaw-platform-intelligence .claude/skills/
 export DASHCLAW_API_KEY=your_api_key
 </code></pre>
 <h3>Option 3: Drop in Claude Code hooks (zero-code)</h3>
-<p>Govern 40+ tool types with semantic classification — every Bash, Edit, Write, MultiEdit, and more — no SDK instrumentation needed. The bundled <code>dashclaw_agent_intel</code> module handles tool classification, risk scoring, and signal extraction automatically:</p>
-<pre><code class="language-bash">cp hooks/dashclaw_pretool.py  .claude/hooks/
-cp hooks/dashclaw_posttool.py .claude/hooks/
+<p>Govern 40+ tool types with semantic classification — every Bash, Edit, Write, MultiEdit, and more — no SDK instrumentation needed. The bundled <code>dashclaw_agent_intel</code> module handles tool classification, risk scoring, and signal extraction automatically. The <code>Stop</code> hook captures LLM token usage from the session transcript and PATCHes it onto the action records, so cost analytics light up without any per-agent instrumentation.</p>
+<p>One-command install (from this repo&#39;s root):</p>
+<pre><code class="language-bash">npm run hooks:install
+# or, in any project that has DashClaw cloned alongside it:
+node /path/to/DashClaw/scripts/install-hooks.mjs --target=.
 </code></pre>
-<p>Set <code>DASHCLAW_BASE_URL</code>, <code>DASHCLAW_API_KEY</code>, and <code>DASHCLAW_HOOK_MODE=enforce</code>. Every tool call becomes a governed, replayable decision record. See <a href="hooks/README.md">hooks/README.md</a> for the full guide.</p>
+<p>This copies <code>dashclaw_pretool.py</code>, <code>dashclaw_posttool.py</code>, <code>dashclaw_stop.py</code>, and the <code>dashclaw_agent_intel/</code> module into <code>.claude/hooks/</code>, then merges the matching <code>PreToolUse</code> / <code>PostToolUse</code> / <code>Stop</code> blocks into <code>.claude/settings.json</code>. Idempotent — re-run after <code>git pull</code> to upgrade.</p>
+<p>Set <code>DASHCLAW_BASE_URL</code>, <code>DASHCLAW_API_KEY</code>, and (optionally) <code>DASHCLAW_HOOK_MODE=enforce</code>. Every tool call becomes a governed, replayable decision record. See <a href="hooks/README.md">hooks/README.md</a> for the full guide and <a href="docs/ANALYTICS-ROLLOUT.md">docs/ANALYTICS-ROLLOUT.md</a> for the token-capture data flow.</p>
 <h3>Option 4: Use the SDK (full control)</h3>
 <p>For custom agents where you want precise control over what gets governed:</p>
 <pre><code class="language-bash">npm install dashclaw    # Node.js

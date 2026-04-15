@@ -191,7 +191,7 @@
     <span class="badge badge-lang">TypeScript</span>
     <span class="badge badge-lang">MIT</span>
     
-    <span>Updated 4/14/2026</span>
+    <span>Updated 4/15/2026</span>
   </div>
 
   <div class="actions">
@@ -312,10 +312,16 @@ ANTHROPIC_API_KEY=your-key-here
 # HERMES_PASSWORD=your_password
 </code></pre>
 <hr>
-<h2>🧠 Local Models (Ollama, LM Studio, vLLM)</h2>
+<h2>🧠 Local Models (Ollama, Atomic Chat, LM Studio, vLLM)</h2>
 <p>Hermes Workspace supports two modes with local models:</p>
 <h3>Portable Mode (Easiest)</h3>
-<p>Point the workspace directly at your local server — no Hermes gateway needed:</p>
+<p>Point the workspace directly at your local server — no Hermes gateway needed.</p>
+<h3>Atomic Chat</h3>
+<pre><code class="language-bash"># Start workspace pointed at Atomic Chat
+HERMES_API_URL=http://127.0.0.1:1337/v1 pnpm dev
+</code></pre>
+<p>Download <a href="https://atomic.chat/">Atomic Chat</a>, launch the desktop app, and make sure a model is loaded before starting Hermes Workspace.</p>
+<h3>Ollama</h3>
 <pre><code class="language-bash"># Start Ollama
 OLLAMA_ORIGINS=* ollama serve
 
@@ -324,16 +330,27 @@ HERMES_API_URL=http://127.0.0.1:11434 pnpm dev
 </code></pre>
 <p>Chat works immediately. Sessions, memory, and skills show &quot;Not Available&quot; — that&#39;s expected in portable mode.</p>
 <h3>Enhanced Mode (Full Features)</h3>
-<p>Route through the Hermes gateway for sessions, memory, skills, jobs, and tools:</p>
-<p><strong>1. Configure your local model in <code>~/.hermes/config.yaml</code>:</strong></p>
+<p>Route through the Hermes gateway for sessions, memory, skills, jobs, and tools.</p>
+<p>Here are two explicit <code>~/.hermes/config.yaml</code> examples for the local providers we support directly in the workspace:</p>
+<p><strong>Atomic Chat</strong></p>
+<pre><code class="language-yaml">provider: atomic-chat
+model: your-model-name
+custom_providers:
+  - name: atomic-chat
+    base_url: http://127.0.0.1:1337/v1
+    api_key: atomic-chat
+    api_mode: chat_completions
+</code></pre>
+<p><strong>Ollama</strong></p>
 <pre><code class="language-yaml">provider: ollama
-model: qwen2.5:7b # or any model you have pulled
+model: qwen3:32b
 custom_providers:
   - name: ollama
     base_url: http://127.0.0.1:11434/v1
     api_key: ollama
     api_mode: chat_completions
 </code></pre>
+<p>You can adapt the same shape for other OpenAI-compatible local runners, but <code>Atomic Chat</code> and <code>Ollama</code> are the two built-in local paths documented in the workspace UI.</p>
 <p><strong>2. Enable the API server in <code>~/.hermes/.env</code>:</strong></p>
 <pre><code class="language-env">API_SERVER_ENABLED=true
 </code></pre>
@@ -343,7 +360,7 @@ HERMES_API_URL=http://127.0.0.1:8642 pnpm dev
 </code></pre>
 <p>All workspace features unlock automatically — sessions persist, memory saves across chats, skills are available, and the dashboard shows real usage data.</p>
 <blockquote>
-<p><strong>Works with any OpenAI-compatible server</strong> — Ollama, LM Studio, vLLM, llama.cpp, LocalAI, etc. Just change the <code>base_url</code> and <code>model</code> in the config above.</p>
+<p><strong>Works with any OpenAI-compatible server</strong> — Atomic Chat, Ollama, LM Studio, vLLM, llama.cpp, LocalAI, etc. Just change the <code>base_url</code> and <code>model</code> in the config above.</p>
 </blockquote>
 <hr>
 <h2>🐳 Docker Quickstart</h2>

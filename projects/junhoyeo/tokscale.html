@@ -191,7 +191,7 @@
     <span class="badge badge-lang">Rust</span>
     <span class="badge badge-lang">MIT</span>
     
-    <span>Updated 4/14/2026</span>
+    <span>Updated 4/15/2026</span>
   </div>
 
   <div class="actions">
@@ -1179,10 +1179,10 @@ cargo --version
 bun run build:core
 
 # Run in development mode (launches TUI)
-cd packages/cli &amp;&amp; bun src/cli.ts
+cd packages/cli &amp;&amp; bun src/index.ts
 
 # Or use legacy CLI mode
-cd packages/cli &amp;&amp; bun src/cli.ts --light
+cd packages/cli &amp;&amp; bun src/index.ts --light
 </code></pre>
 <details>
 <summary>Advanced Development</summary>
@@ -1779,7 +1779,7 @@ $env:COPILOT_OTEL_FILE_EXPORTER_PATH = Join-Path $otelDir (&quot;copilot-otel-{0
 <p>Location: <code>~/.local/share/kilo/kilo.db</code></p>
 <p>Kilo CLI stores session data in a SQLite database similar to OpenCode. Each message row contains per-message token breakdowns (input, output, cache read/write, reasoning) with model and provider attribution.</p>
 <h3>Crush</h3>
-<p>Location: Project-level SQLite databases discovered via <code>$XDG_DATA_HOME/crush/projects.json</code> (fallback: `~/.local/share/crush/projects</p>
+<p>Location: Project-level SQLite databases discovered via <code>$XDG_DATA_HOME/crush/projects.json</code> (fallback: `~/.local/share/crush/proj</p>
 <hr>
 <p><em>README truncated. <a href="https://github.com/junhoyeo/tokscale#readme">Continue reading on GitHub</a></em></p>
 
