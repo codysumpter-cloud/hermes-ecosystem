@@ -213,7 +213,7 @@
 <a href="https://github.com/builderz-labs/mission-control/network/members"><img src="https://img.shields.io/github/forks/builderz-labs/mission-control?style=social" alt="GitHub forks"></a>
 <a href="https://github.com/builderz-labs/mission-control/commits/main"><img src="https://img.shields.io/github/last-commit/builderz-labs/mission-control" alt="Last commit"></a>
 <a href="https://github.com/builderz-labs/mission-control/issues"><img src="https://img.shields.io/github/issues/builderz-labs/mission-control" alt="Open issues"></a></p>
-<p><img src="docs/mission-control-overview.png" alt="Mission Control Dashboard"></p>
+<p><img src="https://raw.githubusercontent.com/builderz-labs/mission-control/main/docs/mission-control-overview.png" alt="Mission Control Dashboard"></p>
 </div>
 
 <hr>
@@ -408,27 +408,27 @@ curl &quot;$MC_URL/api/tasks/queue?agent=scout&quot; \
 <h2>Features</h2>
 <h3>Agent Management</h3>
 <p>Monitor agent status, configure models, view heartbeats, and manage the full agent lifecycle from registration to retirement. Local agent discovery from <code>~/.agents/</code>, <code>~/.codex/agents/</code>, and <code>~/.claude/agents/</code>. Agent SOUL system with bidirectional workspace sync.</p>
-<p><img src="docs/mission-control-agents.png" alt="Mission Control Agents Panel"></p>
+<p><img src="https://raw.githubusercontent.com/builderz-labs/mission-control/main/docs/mission-control-agents.png" alt="Mission Control Agents Panel"></p>
 <h3>Task Board</h3>
 <p>Kanban board with six columns (inbox → assigned → in progress → review → quality review → done), drag-and-drop, priority levels, assignments, threaded comments, and inline sub-agent spawning. Multi-project support with per-project ticket prefixes.</p>
-<p><img src="docs/mission-control-tasks.png" alt="Mission Control Tasks Panel"></p>
+<p><img src="https://raw.githubusercontent.com/builderz-labs/mission-control/main/docs/mission-control-tasks.png" alt="Mission Control Tasks Panel"></p>
 <h3>Memory Knowledge Graph</h3>
 <p>Explore agent knowledge through the Memory Browser, filesystem-backed memory tree, and interactive relationship graph for sessions, memory chunks, and linked knowledge files.</p>
-<p><img src="docs/mission-control-memory.png" alt="Mission Control Memory Panel"></p>
+<p><img src="https://raw.githubusercontent.com/builderz-labs/mission-control/main/docs/mission-control-memory.png" alt="Mission Control Memory Panel"></p>
 <h3>Skills Hub</h3>
 <p>Browse, install, and manage agent skills from local directories and external registries (ClawdHub, skills.sh). Built-in security scanner checks for prompt injection, credential leaks, data exfiltration, obfuscated content, and dangerous shell commands before installation. Supports 5 skill roots across <code>~/.agents/skills</code>, <code>~/.codex/skills</code>, project-local directories, and <code>~/.openclaw/skills</code>.</p>
-<p><img src="docs/mission-control-skills.png" alt="Mission Control Skills Panel"></p>
+<p><img src="https://raw.githubusercontent.com/builderz-labs/mission-control/main/docs/mission-control-skills.png" alt="Mission Control Skills Panel"></p>
 <h3>Cost Tracking</h3>
 <p>Token usage dashboard with per-model breakdowns, trend charts, and cost analysis. Session-level granularity powered by Recharts.</p>
-<p><img src="docs/mission-control-cost-tracking.png" alt="Mission Control Cost Tracking"></p>
+<p><img src="https://raw.githubusercontent.com/builderz-labs/mission-control/main/docs/mission-control-cost-tracking.png" alt="Mission Control Cost Tracking"></p>
 <h3>Security Audit &amp; Agent Trust</h3>
 <p>Real-time posture scoring (0-100), secret detection across agent messages, MCP tool call auditing, injection attempt tracking, and per-agent trust scores. Hook profiles (minimal/standard/strict) let operators tune security strictness per deployment.</p>
-<p><img src="docs/mission-control-security.png" alt="Mission Control Security Panel"></p>
+<p><img src="https://raw.githubusercontent.com/builderz-labs/mission-control/main/docs/mission-control-security.png" alt="Mission Control Security Panel"></p>
 <h3>Agent Eval Framework</h3>
 <p>Four-layer evaluation: output evals (task completion scoring against golden datasets), trace evals (convergence/loop detection), component evals (tool reliability with p50/p95/p99 latency), and drift detection (10% threshold vs 4-week rolling baseline).</p>
 <h3>Natural Language Recurring Tasks</h3>
 <p>Create recurring tasks with natural language like &quot;every morning at 9am&quot; or &quot;every 2 hours&quot;. The built-in schedule parser converts expressions to cron and stores them in task metadata. A template-clone pattern keeps the original as a template and spawns dated child tasks on schedule.</p>
-<p><img src="docs/mission-control-cron.png" alt="Mission Control Cron Panel"></p>
+<p><img src="https://raw.githubusercontent.com/builderz-labs/mission-control/main/docs/mission-control-cron.png" alt="Mission Control Cron Panel"></p>
 <h3>Claude Code Integration</h3>
 <ul>
 <li><strong>Session Tracking</strong> — Auto-discovers local Claude Code sessions from <code>~/.claude/projects/</code>, extracts token usage, model info, cost estimates, and active status.</li>
@@ -437,7 +437,7 @@ curl &quot;$MC_URL/api/tasks/queue?agent=scout&quot; \
 </ul>
 <h3>Activity Feed</h3>
 <p>Real-time activity stream across all agents, tasks, and system events. Filter by event type, agent, or time range.</p>
-<p><img src="docs/mission-control-activity.png" alt="Mission Control Activity Panel"></p>
+<p><img src="https://raw.githubusercontent.com/builderz-labs/mission-control/main/docs/mission-control-activity.png" alt="Mission Control Activity Panel"></p>
 <h3>Integrations</h3>
 <p>Outbound webhooks with delivery history, retry with exponential backoff, circuit breaker, and HMAC-SHA256 signature verification. GitHub Issues sync with label/assignee mapping. Agent inter-agent messaging via the comms API.</p>
 <h3>Framework Adapters</h3>

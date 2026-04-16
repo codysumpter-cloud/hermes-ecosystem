@@ -31,10 +31,80 @@ const GITHUB_HEADERS = {
   "User-Agent": "hermes-atlas-build",
 };
 
-// ── Configure marked ──
+// ── Check if a URL is absolute (skip rewriting) ──
+function isAbsoluteUrl(url) {
+  return /^(?:https?:\/\/|data:|mailto:|#|\/\/)/.test(url.trim());
+}
+
+// ── Strip leading ./ from paths and encode spaces ──
+function cleanRelativePath(p) {
+  return p.replace(/^\.\//, "").replace(/ /g, "%20");
+}
+
+// ── Transform relative URLs in README markdown to absolute GitHub URLs ──
+function rewriteRelativeUrls(markdown, owner, repo) {
+  const rawBase = `https://raw.githubusercontent.com/${owner}/${repo}/main/`;
+  const blobBase = `https://github.com/${owner}/${repo}/blob/main/`;
+
+  // Rewrite image references: ![alt](relative/path)
+  markdown = markdown.replace(
+    /!\[([^\]]*)\]\(([^)]+)\)/g,
+    (match, alt, url) => {
+      if (isAbsoluteUrl(url)) return match;
+      return `![${alt}](${rawBase}${cleanRelativePath(url)})`;
+    }
+  );
+
+  // Rewrite HTML img src: <img src="relative/path" (handles both " and ')
+  markdown = markdown.replace(
+    /(<img\s[^>]*?src=["'])([^"']+)(["'])/gi,
+    (match, prefix, url, suffix) => {
+      if (isAbsoluteUrl(url)) return match;
+      return `${prefix}${rawBase}${cleanRelativePath(url)}${suffix}`;
+    }
+  );
+
+  // Rewrite HTML video/source src
+  markdown = markdown.replace(
+    /(<(?:source|video)\s[^>]*?src=["'])([^"']+)(["'])/gi,
+    (match, prefix, url, suffix) => {
+      if (isAbsoluteUrl(url)) return match;
+      return `${prefix}${rawBase}${cleanRelativePath(url)}${suffix}`;
+    }
+  );
+
+  // Rewrite link references to non-anchor, non-URL paths: [text](relative/path)
+  // Only rewrite if the path looks like a file (has extension)
+  markdown = markdown.replace(
+    /(?<!!)\[([^\]]*)\]\(([^)]+\.(?:md|txt|rst|html|pdf|json|yaml|yml|toml|py|js|ts|go|rs|sh|ipynb)[^)]*)\)/g,
+    (match, text, url) => {
+      if (isAbsoluteUrl(url)) return match;
+      return `[${text}](${blobBase}${cleanRelativePath(url)})`;
+    }
+  );
+
+  return markdown;
+}
+
+// ── Configure marked with custom renderer to catch any remaining relative URLs ──
+const renderer = new marked.Renderer();
+
+// Per-repo base URLs — set before each parse call
+let currentRawBase = "";
+
+renderer.image = function ({ href, title, text }) {
+  let src = href || "";
+  if (src && !isAbsoluteUrl(src)) {
+    src = currentRawBase + cleanRelativePath(src);
+  }
+  const titleAttr = title ? ` title="${escapeHtml(title)}"` : "";
+  return `<img src="${escapeHtml(src)}" alt="${escapeHtml(text || "")}"${titleAttr}>`;
+};
+
 marked.setOptions({
   gfm: true,
   breaks: false,
+  renderer,
 });
 
 // ── Load data ──
@@ -564,7 +634,9 @@ async function main() {
     let readmeHtml = null;
     if (readmeRaw) {
       try {
-        readmeHtml = marked.parse(readmeRaw);
+        currentRawBase = `https://raw.githubusercontent.com/${repo.owner}/${repo.repo}/main/`;
+        const readmeFixed = rewriteRelativeUrls(readmeRaw, repo.owner, repo.repo);
+        readmeHtml = marked.parse(readmeFixed);
       } catch (e) {
         console.warn(`  Markdown parse error for ${key}: ${e.message}`);
       }

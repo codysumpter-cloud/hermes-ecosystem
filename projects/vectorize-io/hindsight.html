@@ -202,7 +202,7 @@
   <section class="readme">
     <div align="center">
 
-<p><img src="./hindsight-docs/static/img/hindsight-github-banner.png" alt="Hindsight Banner"></p>
+<p><img src="https://raw.githubusercontent.com/vectorize-io/hindsight/main/hindsight-docs/static/img/hindsight-github-banner.png" alt="Hindsight Banner"></p>
 <p><a href="https://hindsight.vectorize.io">Documentation</a> • <a href="https://arxiv.org/abs/2512.12818">Paper</a> • <a href="https://hindsight.vectorize.io/cookbook">Cookbook</a> • <a href="https://ui.hindsight.vectorize.io/signup">Hindsight Cloud</a></p>
 <p><a href="https://github.com/vectorize-io/hindsight/actions/workflows/release.yml"><img src="https://github.com/vectorize-io/hindsight/actions/workflows/release.yml/badge.svg" alt="CI"></a>
 <a href="https://join.slack.com/t/hindsight-space/shared_invite/zt-3nhbm4w29-LeSJ5Ixi6j8PdiYOCPlOgg"><img src="https://img.shields.io/badge/Slack-Join%20Community-4A154B?logo=slack" alt="Slack Community"></a>
@@ -221,13 +221,13 @@
 <p>It eliminates the shortcomings of alternative techniques such as RAG and knowledge graph and delivers state-of-the-art performance on long term memory tasks.</p>
 <h2>Memory Performance &amp; Accuracy</h2>
 <p>Hindsight is the most accurate agent memory system ever tested according to benchmark performance. It has achieved state-of-the-art performance on the LongMemEval benchmark, widely used to assess memory system performance across a variety of conversational AI scenarios. The current reported performance of Hindsight and other agent memory solutions as of January 2026 is shown here:</p>
-<p><img src="./hindsight-docs/static/img/hindsight-bench.jpg" alt="Overview"></p>
+<p><img src="https://raw.githubusercontent.com/vectorize-io/hindsight/main/hindsight-docs/static/img/hindsight-bench.jpg" alt="Overview"></p>
 <p>The benchmark performance data for Hindsight has been independently reproduced by research collaborators at the Virginia Tech <a href="https://sanghani.cs.vt.edu/">Sanghani Center for Artificial Intelligence and Data Analytics</a> and The Washington Post. Other scores are self-reported by software vendors.</p>
 <p>Hindsight is being used in production at Fortune 500 enterprises and by a growing number of AI startups. </p>
 <h2>Adding Hindsight to Your AI Agents</h2>
 <p>The easiest way to use Hindsight with an existing agent is with the LLM Wrapper. You can add memory to your agent with 2 lines of code. That will swap your current LLM client out with the Hindsight wrapper. After that, memories will be stored and retrieved automatically as you make LLM calls.</p>
 <p>If you need more control over how and when your agent stores and recalls memories, there&#39;s also a simple API you can integrate with using the SDKs or directly via HTTP.</p>
-<p><img src="./hindsight-docs/static/img/migration-code.png" alt="Hindsight Banner"></p>
+<p><img src="https://raw.githubusercontent.com/vectorize-io/hindsight/main/hindsight-docs/static/img/migration-code.png" alt="Hindsight Banner"></p>
 <hr>
 <blockquote>
 <p>🤖 <strong>Using a coding agent?</strong> Install the Hindsight documentation skill for instant access to docs while you code:</p>
@@ -316,13 +316,13 @@ with HindsightServer(
 <h3>Per-User Memories and Chat History</h3>
 <p>One of the simpler use cases you can use Hindsight for is to personalize AI chatbots and other conversational agents by storing and recalling memories associated with individual users.</p>
 <p>The requirements for this use case usually look something like this:</p>
-<p><img src="./hindsight-docs/static/img/per-user-memory-requirements.png" alt="Per-User Memories"></p>
+<p><img src="https://raw.githubusercontent.com/vectorize-io/hindsight/main/hindsight-docs/static/img/per-user-memory-requirements.png" alt="Per-User Memories"></p>
 <p><video src="https://github.com/user-attachments/assets/4805e8e1-e7d1-47c6-a4f8-2344a5ec8906" controls></video></p>
 <p>Satisfying these requirements in Hindsight is straightforward. When new user inputs and tool calls are ingested into Hindsight using the retain operation, custom metadata can be used to enrich the new memories. Metadata provides a convenient way to isolate memories that need to be restricted to a given user. Once these are fed into the retain operation, any raw memories and mental models that get created can be filtered when retrieving relevant memories. </p>
-<p><img src="./hindsight-docs/static/img/per-user-memory-howto.png" alt="Per-User Memories"></p>
+<p><img src="https://raw.githubusercontent.com/vectorize-io/hindsight/main/hindsight-docs/static/img/per-user-memory-howto.png" alt="Per-User Memories"></p>
 <hr>
 <h2>Architecture &amp; Operations</h2>
-<p><img src="./hindsight-docs/static/img/hindsight-overview.webp" alt="Overview"></p>
+<p><img src="https://raw.githubusercontent.com/vectorize-io/hindsight/main/hindsight-docs/static/img/hindsight-overview.webp" alt="Overview"></p>
 <p>Most agent memory implementations rely on basic vector search or sometimes use a knowledge graph. Hindsight uses biomimetic data structures to organize agent memories in a way that is more like how human memory works:</p>
 <ul>
 <li><strong>World:</strong> Facts about the world (&quot;The stove gets hot&quot;)</li>
@@ -357,7 +357,7 @@ client.retain(
 )
 </code></pre>
 <p>Behind the scenes, the retain operation uses an LLM to extract key facts, temporal data, entities, and relationships. It passes these through a normalization process to transform extracted data into canonical entities, time series, and search indexes along with metadata. These representations create the pathways for accurate memory retrieval in the recall and reflect operations. </p>
-<p><img src="hindsight-docs/static/img/retain-operation.webp" alt="Retain Operation"></p>
+<p><img src="https://raw.githubusercontent.com/vectorize-io/hindsight/main/hindsight-docs/static/img/retain-operation.webp" alt="Retain Operation"></p>
 <h3>Recall</h3>
 <p>The recall operation is used to retrieve memories. These memories can come from any of the memory types (world, experiences, etc.)</p>
 <pre><code class="language-python">from hindsight_client import Hindsight
@@ -377,7 +377,7 @@ client.recall(bank_id=&quot;my-bank&quot;, query=&quot;What happened in June?&qu
 <li>Graph: Entity/temporal/causal links</li>
 <li>Temporal: Time range filtering</li>
 </ul>
-<p><img src="hindsight-docs/static/img/recall-operation.webp" alt="Retain Operation"></p>
+<p><img src="https://raw.githubusercontent.com/vectorize-io/hindsight/main/hindsight-docs/static/img/recall-operation.webp" alt="Retain Operation"></p>
 <p>The individual results from the retrievals are merged, then ordered by relevance using reciprocal rank fusion and a cross-encoder reranking model.</p>
 <p>The final output is trimmed as needed to fit within the token limit.</p>
 <h3>Reflect</h3>
@@ -395,7 +395,7 @@ client = Hindsight(base_url=&quot;http://localhost:8888&quot;)
 
 client.reflect(bank_id=&quot;my-bank&quot;, query=&quot;What should I know about Alice?&quot;)
 </code></pre>
-<p><img src="hindsight-docs/static/img/reflect-operation.webp" alt="Retain Operation"></p>
+<p><img src="https://raw.githubusercontent.com/vectorize-io/hindsight/main/hindsight-docs/static/img/reflect-operation.webp" alt="Retain Operation"></p>
 <hr>
 <h2>Resources</h2>
 <p><strong>Documentation:</strong> </p>
