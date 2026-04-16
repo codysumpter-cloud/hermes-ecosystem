@@ -187,11 +187,11 @@
   <p class="project-desc">Self-hosted multi-agent AI runtime with MCP server support. Build, orchestrate, and run autonomous agents with memory, skills, schedules, and 23+ LLM providers (Claude, GPT, Gemini, OpenRouter, Ollama).</p>
 
   <div class="meta-row">
-    <span class="stars">★ 345</span>
+    <span class="stars">★ 353</span>
     <span class="badge badge-lang">TypeScript</span>
     <span class="badge badge-lang">MIT</span>
     
-    <span>Updated 4/14/2026</span>
+    <span>Updated 4/15/2026</span>
   </div>
 
   <div class="actions">
@@ -571,6 +571,10 @@ OTEL_EXPORTER_OTLP_HEADERS=Authorization=Bearer your-token
 <p>If you need a trace-specific endpoint, set <code>OTEL_EXPORTER_OTLP_TRACES_ENDPOINT</code> directly instead.</p>
 <p>Operational docs: <a href="https://swarmclaw.ai/docs/observability">https://swarmclaw.ai/docs/observability</a></p>
 <h2>Releases</h2>
+<h3>v1.5.50 Highlights</h3>
+<ul>
+<li><strong>Fix: opencode-web remote instances no longer fail with <code>EACCES</code></strong>: SwarmClaw used to send the local workspace path (e.g. <code>/root/.swarmclaw/workspace</code>) as a <code>directory=</code> query parameter on every opencode-web request. Remote opencode-web instances tried to <code>lstat</code> that path and rejected the call. The provider now auto-detects local vs. remote from the endpoint hostname (<code>localhost</code>, <code>127.0.0.1</code>, <code>::1</code>, <code>0.0.0.0</code>) and only sends <code>directory=</code> when the endpoint is local. Thanks to <a href="https://github.com/SteamedFish">@SteamedFish</a> for the detailed root-cause writeup in <a href="https://github.com/swarmclawai/swarmclaw/issues/45">#45</a>.</li>
+</ul>
 <h3>v1.5.49 Highlights</h3>
 <ul>
 <li><strong>Autonomous Missions</strong>: a new first-class concept for long-running, goal-driven agent work. Hand your agent team a goal on Friday, come back Monday to see what they shipped. Each mission carries a title, a natural-language objective, bulleted success criteria, hard budgets (USD, tokens, turns, wallclock), periodic markdown reports, and a full milestone timeline. Missions drive any session through the existing heartbeat pipeline, so delegation to Claude Code, Codex, OpenCode, Cursor, Droid, Goose, Qwen, or native SwarmClaw agents all work without changes.</li>

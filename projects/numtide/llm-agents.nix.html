@@ -191,7 +191,7 @@
     <span class="badge badge-lang">Nix</span>
     <span class="badge badge-lang">MIT</span>
     
-    <span>Updated 4/15/2026</span>
+    <span>Updated 4/16/2026</span>
   </div>
 
   <div class="actions">
@@ -1214,7 +1214,18 @@ from our <a href="#binary-cache">binary cache</a> instead of rebuilding everythi
 against your nixpkgs.</p>
 </blockquote>
 <h3>Using Overlay</h3>
-<p>Alternatively, use the overlay to access packages under the <code>llm-agents</code> namespace:</p>
+<p>Alternatively, use an overlay to access packages under the <code>llm-agents</code>
+namespace. Two are provided:</p>
+<ul>
+<li><code>overlays.default</code> exposes <code>packages.${system}</code> as-is. Packages are built
+against this flake&#39;s pinned nixpkgs, so the <a href="#binary-cache">binary cache</a>
+hits regardless of your nixpkgs revision, at the cost of evaluating a second
+nixpkgs instance.</li>
+<li><code>overlays.shared-nixpkgs</code> rebuilds each package against <strong>your</strong> nixpkgs, so
+dependencies are shared with the rest of your system and no extra nixpkgs is
+evaluated. The binary cache will only hit when your nixpkgs revision matches
+ours.</li>
+</ul>
 <pre><code class="language-nix">{
   inputs = {
     nixpkgs.url = &quot;github:NixOS/nixpkgs/nixpkgs-unstable&quot;;

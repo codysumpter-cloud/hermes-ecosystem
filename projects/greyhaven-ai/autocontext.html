@@ -187,11 +187,11 @@
   <p class="project-desc">a recursive self-improving harness designed to help your agents (and future iterations of those agents) succeed on any task</p>
 
   <div class="meta-row">
-    <span class="stars">★ 731</span>
+    <span class="stars">★ 734</span>
     <span class="badge badge-lang">Python</span>
     <span class="badge badge-lang">Apache-2.0</span>
     
-    <span>Updated 4/15/2026</span>
+    <span>Updated 4/16/2026</span>
   </div>
 
   <div class="actions">
@@ -438,8 +438,10 @@ uv run autoctx solve --description &quot;improve customer-support replies for bi
 <pre><code class="language-bash">cd autocontext
 AUTOCONTEXT_AGENT_PROVIDER=claude-cli \
 AUTOCONTEXT_CLAUDE_MODEL=sonnet \
+AUTOCONTEXT_CLAUDE_TIMEOUT=300 \
 uv run autoctx solve --description &quot;improve customer-support replies for billing disputes&quot; --gens 3
 </code></pre>
+<p>For longer <code>autoctx judge</code> / <code>autoctx improve</code> prompts on <code>claude-cli</code>, use <code>--timeout &lt;seconds&gt;</code> or set <code>AUTOCONTEXT_CLAUDE_TIMEOUT</code>.</p>
 <p>Run with Codex CLI:</p>
 <pre><code class="language-bash">cd autocontext
 AUTOCONTEXT_AGENT_PROVIDER=codex \
@@ -457,7 +459,7 @@ uv run autoctx serve --host 127.0.0.1 --port 8000
 <ul>
 <li>Python package: <code>pip install autocontext</code></li>
 <li>TypeScript package: <code>npm install autoctx</code></li>
-<li>Current release line: <code>autocontext==0.4.1</code> and <code>autoctx@0.4.1</code></li>
+<li>Current release line: <code>autocontext==0.4.2</code> and <code>autoctx@0.4.2</code></li>
 </ul>
 <p>Important:</p>
 <ul>
@@ -512,6 +514,9 @@ uv run autoctx serve --host 127.0.0.1 --port 8000
 <li>Hand the harness a task in plain language: <code>uv run autoctx solve --description &quot;improve customer-support replies for billing disputes&quot; --gens 3</code></li>
 <li>Run and improve a saved scenario: <code>uv run autoctx run --scenario support_triage --gens 3</code></li>
 <li>Inspect or replay outputs: <code>uv run autoctx list</code>, <code>uv run autoctx status &lt;run_id&gt;</code></li>
+<li>Run an investigation from Python: <code>uv run autoctx investigate -d &quot;why did conversion drop after Tuesday&#39;s release&quot;</code></li>
+<li>Enqueue an ad hoc queued task from Python: <code>uv run autoctx queue add --task-prompt &quot;Write a 1-line fact about primes&quot; --rubric &quot;correct&quot; --threshold 0.8 --rounds 2</code></li>
+<li>Override the simulation provider per call: <code>uv run autoctx simulate -d &quot;simulate deploying a web service with rollback&quot; --provider claude-cli</code></li>
 <li>Scaffold a custom scenario: <code>uv run autoctx new-scenario --template prompt-optimization --name my-task</code></li>
 <li>Export training data: <code>uv run autoctx export-training-data --scenario support_triage --all-runs --output training/support_triage.jsonl</code></li>
 <li>Train a local model: <code>uv run autoctx train --scenario support_triage --data training/support_triage.jsonl --time-budget 300</code></li>
@@ -521,7 +526,6 @@ uv run autoctx serve --host 127.0.0.1 --port 8000
 <p>Representative TypeScript operator workflows:</p>
 <ul>
 <li>Run a simulation: <code>npx autoctx simulate -d &quot;simulate deploying a web service with rollback&quot;</code></li>
-<li>Run an investigation: <code>npx autoctx investigate -d &quot;why did conversion drop after Tuesday&#39;s release&quot;</code></li>
 <li>Analyze an artifact: <code>npx autoctx analyze --id deploy_sim --type simulation</code></li>
 <li>Operate a mission: <code>npx autoctx mission create --name &quot;Ship login&quot; --goal &quot;Implement OAuth&quot;</code></li>
 </ul>

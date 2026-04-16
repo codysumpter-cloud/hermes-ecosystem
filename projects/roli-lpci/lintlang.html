@@ -191,7 +191,7 @@
     <span class="badge badge-lang">Python</span>
     <span class="badge badge-lang">Apache-2.0</span>
     
-    <span>Updated 4/13/2026</span>
+    <span>Updated 4/15/2026</span>
   </div>
 
   <div class="actions">
@@ -286,6 +286,9 @@ lintlang scan config.yaml --fail-on review
 </tr>
 </tbody></table>
 <p>Each finding includes the <strong>pattern</strong> (H1-H7), <strong>severity</strong>, <strong>location</strong>, and a <strong>concrete fix suggestion</strong>. No vague &quot;improve your prompt&quot; — specific rewrites you can apply immediately.</p>
+<h2>Why These 7 Detectors?</h2>
+<p>These aren&#39;t arbitrary rules — they&#39;re the 7 structural failure modes that cause real agent breakdowns in production. We identified them across audits of 8 major AI frameworks (LangChain, Semantic Kernel, AutoGen, smolagents, LiteLLM, Anthropic SDK, OpenAI SDK, Agno) and 12 filed PRs. Each detector maps to a specific class of bug that no other linter catches because they&#39;re language problems, not code problems.</p>
+<p>No existing tool covers this: yamllint checks syntax, semgrep checks code patterns, ruff checks Python style. None of them can tell you that your tool description is ambiguous enough to cause wrong-tool selection, or that your system prompt lacks termination conditions and will loop forever.</p>
 <h2>Structural Detectors (H1-H7)</h2>
 <table>
 <thead>
@@ -341,7 +344,9 @@ lintlang scan config.yaml --fail-on review
 </tbody></table>
 <h3>H5: Context-Aware Negatives</h3>
 <p>H5 distinguishes between <strong>safety constraints</strong> and <strong>style negatives</strong>. Security rules like &quot;Never expose API keys&quot; are correctly exempted. Style issues like &quot;Don&#39;t be verbose&quot; are flagged with positive rewrites.</p>
-<p>Validated on 26 real-world configs (OpenHands, RAG agents, HIPAA compliance, financial advisors, content moderation, DevOps safety).</p>
+<p>Validated on 26 real-world configs (OpenHands, RAG agents, HIPAA compliance, financial advisors, content moderation, DevOps safety) — see <a href="samples/"><code>samples/</code></a> for examples.</p>
+<h3>Why not just use GPT-4?</h3>
+<p>Zero cost, zero latency, zero data exposure. Runs in CI where LLM calls can&#39;t. Catches structural patterns (missing termination, schema mismatches, role ordering) that LLMs are blind to because they process content, not structure.</p>
 <h2>CI Integration</h2>
 <h3>GitHub Actions</h3>
 <pre><code class="language-yaml">- name: Lint agent configs
@@ -370,7 +375,7 @@ lintlang scan config.yaml --fail-on review
 </tr>
 <tr>
 <td><code>--fail-under 80</code></td>
-<td>HERM score &lt; threshold</td>
+<td>Quality score &lt; threshold</td>
 <td>Legacy score-based gate</td>
 </tr>
 </tbody></table>

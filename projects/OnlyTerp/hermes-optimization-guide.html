@@ -187,11 +187,11 @@
   <p class="project-desc">Hermes Agent setup, migration, LightRAG, Telegram, and skill creation guide</p>
 
   <div class="meta-row">
-    <span class="stars">★ 123</span>
+    <span class="stars">★ 139</span>
     
     <span class="badge badge-lang">MIT</span>
     
-    <span>Updated 4/7/2026</span>
+    <span>Updated 4/16/2026</span>
   </div>
 
   <div class="actions">
@@ -202,10 +202,10 @@
   <section class="readme">
     <h1>Hermes Optimization Guide</h1>
 <blockquote>
-<p><strong>Tested on Hermes Agent (latest) — April 2026</strong> · 5 parts · Battle-tested on a live production deployment</p>
+<p><strong>Tested on Hermes Agent (latest) — April 2026</strong> · 11 parts · Battle-tested on a live production deployment</p>
 </blockquote>
-<h3>Make Your Hermes Agent Actually Work — Setup, Migration, Knowledge Graphs, Telegram, and Self-Improving Skills</h3>
-<h4>Full setup walkthrough, OpenClaw migration, LightRAG graph RAG, Telegram bot integration, and on-the-fly skill creation</h4>
+<h3>Make Your Hermes Agent Actually Work — Setup, Migration, Knowledge Graphs, Telegram, Skills, Memory, Models, and Recovery</h3>
+<h4>Full setup walkthrough, OpenClaw migration, LightRAG graph RAG, Telegram bot integration, on-the-fly skill creation, memory architecture, custom models, and crash recovery</h4>
 <p><em>By Terp - <a href="https://x.com/OnlyTerp">Terp AI Labs</a></em></p>
 <hr>
 <h2>Table of Contents</h2>
@@ -216,6 +216,12 @@
 <li><a href="#part-3-lightrag--graph-rag-that-actually-works">LightRAG — Graph RAG</a> — Set up a knowledge graph that actually understands relationships, not just text similarity</li>
 <li><a href="#part-4-telegram-setup-chat-from-anywhere">Telegram Bot</a> — Connect Hermes to Telegram for mobile access, voice memos, and group chats</li>
 <li><a href="#part-5-on-the-fly-skills-let-hermes-build-its-own-playbook">On-the-Fly Skills</a> — Ask Hermes to create new skills that optimize your workflow automatically</li>
+<li><a href="./part6-context-compression.md">Context Compression</a> — Fix the silent context loss bug, configure compression thresholds, survive long sessions</li>
+<li><a href="./part7-memory-system.md">Memory System</a> — The three-tier memory architecture: persistent facts, conversation recall, procedural memory</li>
+<li><a href="./part8-subagent-patterns.md">Subagent Patterns</a> — Orchestrator/worker delegation, ACP subagents, parallel task execution</li>
+<li><a href="./part9-custom-models.md">Custom Model Providers</a> — Cerebras, Fireworks, Ollama, model aliases, fallback chains</li>
+<li><a href="./part10-soul-antipatterns.md">SOUL.md Anti-Patterns</a> — What makes an agent annoying vs useful, the formula that works</li>
+<li><a href="./part11-gateway-recovery.md">Gateway Recovery</a> — Crash detection, auto-recovery, common failure modes, health checks</li>
 </ol>
 <hr>
 <h2>The Problem</h2>
@@ -1827,12 +1833,7 @@ LinkedIn for key contacts, look at recent news, and compile a one-page summary.
 </ul>
 <hr>
 <h2>Tips for Better Skills</h2>
-<p><strong>Be specific about the task.</strong> &quot;Deploy Docker containers&quot; is too vague. &quot;Deploy a Python Flask app to a VPS using Docker Compose with health checks&quot; gives the agent enough detail to write a precise skill.</p>
-<p><strong>Include examples.</strong> When asking for a skill, show an example of the desired output. This helps the agent write better templates.</p>
-<p><strong>Let the agent discover pitfalls.</strong> Don&#39;t prescribe the exact steps. Let Hermes figure out the workflow and capture what goes wrong — those pitfall notes are the most valuable part of the skill.</p>
-<p><strong>Update skills when they go stale.</strong> If you use a skill and hit issues not covered by it, tell Hermes to update it with what you learned. Skills that aren&#39;t maintained become liabilities.</p>
-<p><strong>Use categories.</strong> Organize skills into subdirectories (<code>~/.hermes/skills/devops/</code>, <code>~/.hermes/skills/research/</code>, etc.). This keeps the list manageable and helps the agent find relevant skills faster.</p>
-<p><strong>Keep skills focused.</strong> A skill that tries to cover &quot;all of DevOps&quot; wil</p>
+<p><strong>Be specific about the task.</strong> &quot;Deploy Docker containers&quot; is too vague. &quot;Deploy a Python Flask app to a VPS using Docker Compose with health checks&quot; gives the</p>
 <hr>
 <p><em>README truncated. <a href="https://github.com/OnlyTerp/hermes-optimization-guide#readme">Continue reading on GitHub</a></em></p>
 
