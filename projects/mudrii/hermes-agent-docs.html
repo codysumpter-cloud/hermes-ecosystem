@@ -191,7 +191,7 @@
     
     
     
-    <span>Updated 4/14/2026</span>
+    <span>Updated 4/16/2026</span>
   </div>
 
   <div class="actions">
@@ -203,7 +203,7 @@
     <h1>Hermes Agent</h1>
 <p><strong>The self-improving AI agent built by <a href="https://nousresearch.com">Nous Research</a>.</strong></p>
 <p>Hermes Agent is an autonomous AI agent with a built-in learning loop. It creates skills from experience, improves them during use, searches its own past conversations for context, and builds a deepening model of who you are across sessions. It runs on a $5 VPS, a GPU cluster, or serverless infrastructure -- not tied to your laptop.</p>
-<p>Current version: <strong>v0.9.0 (v2026.4.13)</strong> -- released April 13, 2026.</p>
+<p>Current version: <strong>v0.10.0 (v2026.4.16)</strong> -- released April 16, 2026.</p>
 <hr>
 <h2>What Hermes Agent Is</h2>
 <p>Hermes Agent is not a coding copilot or a chatbot wrapper. It is a multi-platform, multi-provider autonomous agent that:</p>
@@ -239,9 +239,11 @@
 <p>Use any model without code changes. Supported providers:</p>
 <ul>
 <li><strong>Nous Portal</strong> -- first-class provider; 400+ models via Nous inference (<code>https://inference-api.nousresearch.com/v1</code>)</li>
+<li><strong>Nous Tool Gateway</strong> (v0.10.0) -- paid Nous Portal subscribers can route web search, image generation, TTS, and browser automation through their subscription with per-tool <code>use_gateway</code> control</li>
 <li><strong>OpenRouter</strong> -- 200+ models (<code>https://openrouter.ai/api/v1</code>)</li>
 <li><strong>Anthropic</strong> (native, v0.3.0) -- direct API with Claude Code credential auto-discovery, OAuth PKCE flows, and native prompt caching</li>
 <li><strong>OpenAI</strong> -- GPT-5 variants via chat completions or Codex Responses API</li>
+<li><strong>AWS Bedrock</strong> (v0.10.0) -- native Converse API provider with IAM authentication, model discovery, and Guardrails support</li>
 <li><strong>Vercel AI Gateway</strong> (v0.3.0) -- access Vercel&#39;s model catalog and infrastructure (<code>https://ai-gateway.vercel.sh/v1</code>)</li>
 <li><strong>GitHub Copilot</strong> (v0.4.0) -- OAuth auth, 400k context, token validation</li>
 <li><strong>Alibaba Cloud / DashScope</strong> (v0.4.0) -- DashScope v1 runtime</li>
@@ -266,9 +268,9 @@
 <h3>Plugin Lifecycle Hooks (v0.5.0)</h3>
 <p><code>pre_llm_call</code>, <code>post_llm_call</code>, <code>on_session_start</code>, and <code>on_session_end</code> hooks now fire in the agent loop and CLI/gateway, completing the plugin hook system. Plugins can also register slash commands and extend the TUI.</p>
 <h3>Nix Flake (v0.5.0)</h3>
-<p>Full uv2nix build, NixOS module with persistent container mode, auto-generated config keys from Python source, and suffix PATHs for agent-friendliness. See <a href="installation.md">installation.md</a> for Nix installation details. Contributed by @alt-glitch.</p>
+<p>Full uv2nix build, NixOS module with persistent container mode, auto-generated config keys from Python source, and suffix PATHs for agent-friendliness. See <a href="https://github.com/mudrii/hermes-agent-docs/blob/main/installation.md">installation.md</a> for Nix installation details. Contributed by @alt-glitch.</p>
 <h3>Profiles — Multi-Instance Hermes (v0.6.0)</h3>
-<p>Run multiple isolated Hermes instances from the same installation. Each profile gets its own config, memory, sessions, skills, and gateway service. Create with <code>hermes profile create</code>, target a single command with <code>hermes -p &lt;name&gt; ...</code>, or set the sticky default with <code>hermes profile use &lt;name&gt;</code>. Token locks prevent credential collisions between profiles. See <a href="configuration.md">configuration.md</a> for details.</p>
+<p>Run multiple isolated Hermes instances from the same installation. Each profile gets its own config, memory, sessions, skills, and gateway service. Create with <code>hermes profile create</code>, target a single command with <code>hermes -p &lt;name&gt; ...</code>, or set the sticky default with <code>hermes profile use &lt;name&gt;</code>. Token locks prevent credential collisions between profiles. See <a href="https://github.com/mudrii/hermes-agent-docs/blob/main/configuration.md">configuration.md</a> for details.</p>
 <h3>MCP Server Mode (v0.6.0)</h3>
 <p>Expose Hermes sessions to MCP-compatible clients (Claude Desktop, Cursor, VS Code, etc.) via <code>hermes mcp serve</code>. In the released v0.6.0 surface, Hermes serves MCP over stdio; Streamable HTTP is part of Hermes&#39; MCP client support, not the <code>serve</code> command.</p>
 <h3>Docker Container (v0.6.0)</h3>
@@ -558,15 +560,15 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 </tr>
 </thead>
 <tbody><tr>
-<td><a href="architecture.md">architecture.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/architecture.md">architecture.md</a></td>
 <td>Component diagram, agent loop, context compression, session storage, internal design</td>
 </tr>
 <tr>
-<td><a href="changelog.md">changelog.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/changelog.md">changelog.md</a></td>
 <td>Released change history from v0.7.0 back through the earlier v0.x lines</td>
 </tr>
 <tr>
-<td><a href="streaming.md">streaming.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/streaming.md">streaming.md</a></td>
 <td>Unified streaming infrastructure, token delivery, platform support (v0.3.0)</td>
 </tr>
 </tbody></table>
@@ -579,23 +581,31 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 </tr>
 </thead>
 <tbody><tr>
-<td><a href="installation.md">installation.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/installation.md">installation.md</a></td>
 <td>Install methods (one-liner, manual, Windows), prerequisites, setup wizard</td>
 </tr>
 <tr>
-<td><a href="configuration.md">configuration.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/configuration.md">configuration.md</a></td>
 <td>Complete config.yaml reference, env vars, precedence rules</td>
 </tr>
 <tr>
-<td><a href="cli-reference.md">cli-reference.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/cli-reference.md">cli-reference.md</a></td>
 <td>All CLI commands, slash commands, flags, environment variables</td>
 </tr>
 <tr>
-<td><a href="providers.md">providers.md</a></td>
-<td>All 17 LLM providers, credential resolution, routing, OAuth flows</td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/providers.md">providers.md</a></td>
+<td>LLM providers, credential resolution, routing, OAuth flows, and released provider setup guides</td>
 </tr>
 <tr>
-<td><a href="profiles.md">profiles.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/tool-gateway.md">tool-gateway.md</a></td>
+<td>Nous Tool Gateway, <code>use_gateway</code>, per-tool routing, and subscription-backed tool access (v0.10.0)</td>
+</tr>
+<tr>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/guides/aws-bedrock.md">guides/aws-bedrock.md</a></td>
+<td>Native AWS Bedrock setup, IAM auth, regions, Guardrails, and troubleshooting (v0.10.0)</td>
+</tr>
+<tr>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/profiles.md">profiles.md</a></td>
 <td>Multi-instance profiles, creation, switching, gateway per-profile (v0.6.0)</td>
 </tr>
 </tbody></table>
@@ -608,103 +618,107 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 </tr>
 </thead>
 <tbody><tr>
-<td><a href="plugins.md">plugins.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/plugins.md">plugins.md</a></td>
 <td>Plugin architecture, discovery, registration, custom tools (v0.3.0)</td>
 </tr>
 <tr>
-<td><a href="hooks.md">hooks.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/dashboard-plugins.md">dashboard-plugins.md</a></td>
+<td>Extend the local web dashboard with custom tabs, bundles, and backend routes (v0.10.0)</td>
+</tr>
+<tr>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/hooks.md">hooks.md</a></td>
 <td>Gateway and plugin lifecycle hooks, event types</td>
 </tr>
 <tr>
-<td><a href="logging.md">logging.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/logging.md">logging.md</a></td>
 <td>Centralized logging to <code>~/.hermes/logs/</code>, <code>hermes logs</code> command, rotation, and redaction (v0.8.0)</td>
 </tr>
 <tr>
-<td><a href="live-model-switching.md">live-model-switching.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/live-model-switching.md">live-model-switching.md</a></td>
 <td><code>/model</code> command, mid-session provider and model switching, interactive pickers (v0.8.0)</td>
 </tr>
 <tr>
-<td><a href="notify-on-complete.md">notify-on-complete.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/notify-on-complete.md">notify-on-complete.md</a></td>
 <td><code>notify_on_complete</code> parameter, process registry, background task auto-notifications (v0.8.0)</td>
 </tr>
 <tr>
-<td><a href="browser.md">browser.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/browser.md">browser.md</a></td>
 <td>Browser automation, Browserbase, Browser Use, CDP connect</td>
 </tr>
 <tr>
-<td><a href="credential-pools.md">credential-pools.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/credential-pools.md">credential-pools.md</a></td>
 <td>Same-provider credential rotation, pool strategies, fallback interplay</td>
 </tr>
 <tr>
-<td><a href="fallback-providers.md">fallback-providers.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/fallback-providers.md">fallback-providers.md</a></td>
 <td>Provider failover chains, retry logic, health checks</td>
 </tr>
 <tr>
-<td><a href="context-references.md">context-references.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/context-references.md">context-references.md</a></td>
 <td><code>@file</code> and <code>@url</code> context injection, syntax, constraints</td>
 </tr>
 <tr>
-<td><a href="code-execution.md">code-execution.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/code-execution.md">code-execution.md</a></td>
 <td><code>execute_code</code>, sandbox model, and when to prefer it over direct tools</td>
 </tr>
 <tr>
-<td><a href="checkpoints.md">checkpoints.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/checkpoints.md">checkpoints.md</a></td>
 <td>Filesystem checkpoints, rollback, git worktree isolation</td>
 </tr>
 <tr>
-<td><a href="cron.md">cron.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/cron.md">cron.md</a></td>
 <td>Scheduled task system, schedule formats, job management</td>
 </tr>
 <tr>
-<td><a href="voice-mode.md">voice-mode.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/voice-mode.md">voice-mode.md</a></td>
 <td>Voice interaction, STT/TTS providers, Discord voice channels (v0.3.0)</td>
 </tr>
 <tr>
-<td><a href="batch-processing.md">batch-processing.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/batch-processing.md">batch-processing.md</a></td>
 <td>Batch trajectory generation for SFT/RL training data</td>
 </tr>
 <tr>
-<td><a href="delegation.md">delegation.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/delegation.md">delegation.md</a></td>
 <td>Subagent spawning, task isolation, parallel workstreams</td>
 </tr>
 <tr>
-<td><a href="api-server.md">api-server.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/api-server.md">api-server.md</a></td>
 <td>OpenAI-compatible HTTP API, endpoints, compatible frontends</td>
 </tr>
 <tr>
-<td><a href="honcho.md">honcho.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/honcho.md">honcho.md</a></td>
 <td>Honcho-backed user modeling, session mapping, and identity controls</td>
 </tr>
 <tr>
-<td><a href="image-generation.md">image-generation.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/image-generation.md">image-generation.md</a></td>
 <td>Image generation providers, prompts, routing, and constraints</td>
 </tr>
 <tr>
-<td><a href="vision.md">vision.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/vision.md">vision.md</a></td>
 <td>Vision analysis, multimodal input, and messaging-platform support</td>
 </tr>
 <tr>
-<td><a href="tts.md">tts.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/tts.md">tts.md</a></td>
 <td>Text-to-speech backends and delivery modes</td>
 </tr>
 <tr>
-<td><a href="personality.md">personality.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/personality.md">personality.md</a></td>
 <td>Personality system, SOUL.md, and identity layering</td>
 </tr>
 <tr>
-<td><a href="provider-routing.md">provider-routing.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/provider-routing.md">provider-routing.md</a></td>
 <td>Provider detection, prefix matching, smart routing, runtime selection</td>
 </tr>
 <tr>
-<td><a href="environments.md">environments.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/environments.md">environments.md</a></td>
 <td>RL and benchmark environments shipped with Hermes</td>
 </tr>
 <tr>
-<td><a href="rl-training.md">rl-training.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/rl-training.md">rl-training.md</a></td>
 <td>Training workflows, trajectories, and Atropos integration</td>
 </tr>
 <tr>
-<td><a href="skins.md">skins.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/skins.md">skins.md</a></td>
 <td>CLI themes, custom skins, banner configuration</td>
 </tr>
 </tbody></table>
@@ -717,19 +731,19 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 </tr>
 </thead>
 <tbody><tr>
-<td><a href="skills.md">skills.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/skills.md">skills.md</a></td>
 <td>Skills system, SKILL.md format, 96 bundled + 22 optional skills catalog</td>
 </tr>
 <tr>
-<td><a href="tools.md">tools.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/tools.md">tools.md</a></td>
 <td>Built-in tools reference with activation rules, parameters, and examples</td>
 </tr>
 <tr>
-<td><a href="toolsets.md">toolsets.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/toolsets.md">toolsets.md</a></td>
 <td>Toolset definitions, compositions, per-platform configuration</td>
 </tr>
 <tr>
-<td><a href="mcp.md">mcp.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/mcp.md">mcp.md</a></td>
 <td>MCP client integration, stdio/HTTP transports, sampling, tool filtering</td>
 </tr>
 </tbody></table>
@@ -742,19 +756,19 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 </tr>
 </thead>
 <tbody><tr>
-<td><a href="security.md">security.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/security.md">security.md</a></td>
 <td>Five-layer security model, PII redaction, approvals, tirith scanning, OAuth</td>
 </tr>
 <tr>
-<td><a href="memory.md">memory.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/memory.md">memory.md</a></td>
 <td>Built-in memory files, external memory providers, and write/read behavior</td>
 </tr>
 <tr>
-<td><a href="acp.md">acp.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/acp.md">acp.md</a></td>
 <td>ACP server for IDE integration (VS Code, Zed, JetBrains)</td>
 </tr>
 <tr>
-<td><a href="credential-pools.md">credential-pools.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/credential-pools.md">credential-pools.md</a></td>
 <td>Provider-local key pools and recovery behavior</td>
 </tr>
 </tbody></table>
@@ -767,7 +781,7 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 </tr>
 </thead>
 <tbody><tr>
-<td><a href="gateway.md">gateway.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/gateway.md">gateway.md</a></td>
 <td>Gateway architecture, session management, authorization, streaming</td>
 </tr>
 <tr>
@@ -775,63 +789,67 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 <td>Per-platform setup guides for the released messaging adapters plus API/Open WebUI</td>
 </tr>
 <tr>
-<td><a href="messaging/telegram.md">messaging/telegram.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/messaging/telegram.md">messaging/telegram.md</a></td>
 <td>Telegram Bot API setup, forum topics, voice notes</td>
 </tr>
 <tr>
-<td><a href="messaging/discord.md">messaging/discord.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/messaging/discord.md">messaging/discord.md</a></td>
 <td>Discord bot setup, voice channels, threads</td>
 </tr>
 <tr>
-<td><a href="messaging/slack.md">messaging/slack.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/messaging/slack.md">messaging/slack.md</a></td>
 <td>Slack Bolt + Socket Mode setup</td>
 </tr>
 <tr>
-<td><a href="messaging/whatsapp.md">messaging/whatsapp.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/messaging/whatsapp.md">messaging/whatsapp.md</a></td>
 <td>WhatsApp Baileys bridge setup</td>
 </tr>
 <tr>
-<td><a href="messaging/signal.md">messaging/signal.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/messaging/signal.md">messaging/signal.md</a></td>
 <td>Signal via signal-cli-rest-api</td>
 </tr>
 <tr>
-<td><a href="messaging/email.md">messaging/email.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/messaging/email.md">messaging/email.md</a></td>
 <td>Email via IMAP/SMTP</td>
 </tr>
 <tr>
-<td><a href="messaging/matrix.md">messaging/matrix.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/messaging/matrix.md">messaging/matrix.md</a></td>
 <td>Matrix with E2E encryption</td>
 </tr>
 <tr>
-<td><a href="messaging/mattermost.md">messaging/mattermost.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/messaging/mattermost.md">messaging/mattermost.md</a></td>
 <td>Mattermost team chat</td>
 </tr>
 <tr>
-<td><a href="messaging/dingtalk.md">messaging/dingtalk.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/messaging/dingtalk.md">messaging/dingtalk.md</a></td>
 <td>DingTalk enterprise messaging</td>
 </tr>
 <tr>
-<td><a href="messaging/homeassistant.md">messaging/homeassistant.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/messaging/homeassistant.md">messaging/homeassistant.md</a></td>
 <td>Home Assistant smart home</td>
 </tr>
 <tr>
-<td><a href="messaging/feishu.md">messaging/feishu.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/messaging/feishu.md">messaging/feishu.md</a></td>
 <td>Feishu/Lark enterprise messaging (v0.6.0)</td>
 </tr>
 <tr>
-<td><a href="messaging/wecom.md">messaging/wecom.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/messaging/wecom.md">messaging/wecom.md</a></td>
 <td>WeCom enterprise messaging (v0.6.0)</td>
 </tr>
 <tr>
-<td><a href="messaging/webhook.md">messaging/webhook.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/messaging/qqbot.md">messaging/qqbot.md</a></td>
+<td>QQ Bot via the Official API v2 (v0.10.0)</td>
+</tr>
+<tr>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/messaging/webhook.md">messaging/webhook.md</a></td>
 <td>Webhook adapter</td>
 </tr>
 <tr>
-<td><a href="messaging/open-webui.md">messaging/open-webui.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/messaging/open-webui.md">messaging/open-webui.md</a></td>
 <td>Open WebUI / API server frontend</td>
 </tr>
 <tr>
-<td><a href="messaging/sms.md">messaging/sms.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/messaging/sms.md">messaging/sms.md</a></td>
 <td>SMS via Twilio</td>
 </tr>
 </tbody></table>
@@ -844,15 +862,15 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 </tr>
 </thead>
 <tbody><tr>
-<td><a href="getting-started/learning-path.md">getting-started/learning-path.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/getting-started/learning-path.md">getting-started/learning-path.md</a></td>
 <td>Suggested onboarding sequence through install, config, skills, and messaging</td>
 </tr>
 <tr>
-<td><a href="getting-started/nix-setup.md">getting-started/nix-setup.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/getting-started/nix-setup.md">getting-started/nix-setup.md</a></td>
 <td>Nix and Home Manager installation path</td>
 </tr>
 <tr>
-<td><a href="getting-started/updating.md">getting-started/updating.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/getting-started/updating.md">getting-started/updating.md</a></td>
 <td>Safe upgrade flow, <code>hermes update</code>, and rollback guidance</td>
 </tr>
 </tbody></table>
@@ -865,63 +883,63 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 </tr>
 </thead>
 <tbody><tr>
-<td><a href="developer-guide/architecture.md">developer-guide/architecture.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/developer-guide/architecture.md">developer-guide/architecture.md</a></td>
 <td>Top-level internal map and subsystem boundaries</td>
 </tr>
 <tr>
-<td><a href="developer-guide/agent-loop.md">developer-guide/agent-loop.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/developer-guide/agent-loop.md">developer-guide/agent-loop.md</a></td>
 <td><code>AIAgent</code> turn lifecycle and orchestration internals</td>
 </tr>
 <tr>
-<td><a href="developer-guide/adding-tools.md">developer-guide/adding-tools.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/developer-guide/adding-tools.md">developer-guide/adding-tools.md</a></td>
 <td>How to create or extend built-in tools</td>
 </tr>
 <tr>
-<td><a href="developer-guide/adding-providers.md">developer-guide/adding-providers.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/developer-guide/adding-providers.md">developer-guide/adding-providers.md</a></td>
 <td>How to add inference providers and setup flows</td>
 </tr>
 <tr>
-<td><a href="developer-guide/creating-skills.md">developer-guide/creating-skills.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/developer-guide/creating-skills.md">developer-guide/creating-skills.md</a></td>
 <td>SKILL authoring guide, structure, and conventions</td>
 </tr>
 <tr>
-<td><a href="developer-guide/extending-cli.md">developer-guide/extending-cli.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/developer-guide/extending-cli.md">developer-guide/extending-cli.md</a></td>
 <td>CLI command wiring and extension points</td>
 </tr>
 <tr>
-<td><a href="developer-guide/context-compression.md">developer-guide/context-compression.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/developer-guide/context-compression.md">developer-guide/context-compression.md</a></td>
 <td>Compression algorithm, session lineage, tuning</td>
 </tr>
 <tr>
-<td><a href="developer-guide/session-storage.md">developer-guide/session-storage.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/developer-guide/session-storage.md">developer-guide/session-storage.md</a></td>
 <td>SQLite schema, FTS5 search, session lifecycle</td>
 </tr>
 <tr>
-<td><a href="developer-guide/provider-runtime.md">developer-guide/provider-runtime.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/developer-guide/provider-runtime.md">developer-guide/provider-runtime.md</a></td>
 <td>Runtime resolution and provider selection internals</td>
 </tr>
 <tr>
-<td><a href="developer-guide/prompt-assembly.md">developer-guide/prompt-assembly.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/developer-guide/prompt-assembly.md">developer-guide/prompt-assembly.md</a></td>
 <td>Prompt layering and system-prompt composition</td>
 </tr>
 <tr>
-<td><a href="developer-guide/tools-runtime.md">developer-guide/tools-runtime.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/developer-guide/tools-runtime.md">developer-guide/tools-runtime.md</a></td>
 <td>Tool registry, dispatch, and safety model</td>
 </tr>
 <tr>
-<td><a href="developer-guide/gateway-internals.md">developer-guide/gateway-internals.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/developer-guide/gateway-internals.md">developer-guide/gateway-internals.md</a></td>
 <td>Gateway orchestration and adapter lifecycle</td>
 </tr>
 <tr>
-<td><a href="developer-guide/cron-internals.md">developer-guide/cron-internals.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/developer-guide/cron-internals.md">developer-guide/cron-internals.md</a></td>
 <td>Scheduler internals and cron execution model</td>
 </tr>
 <tr>
-<td><a href="developer-guide/trajectory-format.md">developer-guide/trajectory-format.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/developer-guide/trajectory-format.md">developer-guide/trajectory-format.md</a></td>
 <td>Trajectory serialization and training-data format</td>
 </tr>
 <tr>
-<td><a href="developer-guide/memory-provider-plugin.md">developer-guide/memory-provider-plugin.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/developer-guide/memory-provider-plugin.md">developer-guide/memory-provider-plugin.md</a></td>
 <td>Released memory-provider plugin framework (v0.7.0)</td>
 </tr>
 </tbody></table>
@@ -934,43 +952,43 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 </tr>
 </thead>
 <tbody><tr>
-<td><a href="reference/cli-commands.md">reference/cli-commands.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/reference/cli-commands.md">reference/cli-commands.md</a></td>
 <td>CLI command reference by command family</td>
 </tr>
 <tr>
-<td><a href="reference/environment-variables.md">reference/environment-variables.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/reference/environment-variables.md">reference/environment-variables.md</a></td>
 <td>Environment variables by subsystem</td>
 </tr>
 <tr>
-<td><a href="reference/profile-commands.md">reference/profile-commands.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/reference/profile-commands.md">reference/profile-commands.md</a></td>
 <td>Profile-specific command quick reference</td>
 </tr>
 <tr>
-<td><a href="reference/slash-commands.md">reference/slash-commands.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/reference/slash-commands.md">reference/slash-commands.md</a></td>
 <td>Complete slash command reference</td>
 </tr>
 <tr>
-<td><a href="reference/tools-reference.md">reference/tools-reference.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/reference/tools-reference.md">reference/tools-reference.md</a></td>
 <td>Released built-in tools reference</td>
 </tr>
 <tr>
-<td><a href="reference/toolsets-reference.md">reference/toolsets-reference.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/reference/toolsets-reference.md">reference/toolsets-reference.md</a></td>
 <td>Toolset membership and gating rules</td>
 </tr>
 <tr>
-<td><a href="reference/skills-catalog.md">reference/skills-catalog.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/reference/skills-catalog.md">reference/skills-catalog.md</a></td>
 <td>Bundled skills catalog</td>
 </tr>
 <tr>
-<td><a href="reference/optional-skills-catalog.md">reference/optional-skills-catalog.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/reference/optional-skills-catalog.md">reference/optional-skills-catalog.md</a></td>
 <td>Official optional skills catalog</td>
 </tr>
 <tr>
-<td><a href="reference/mcp-config-reference.md">reference/mcp-config-reference.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/reference/mcp-config-reference.md">reference/mcp-config-reference.md</a></td>
 <td>MCP config schema and transport options</td>
 </tr>
 <tr>
-<td><a href="reference/faq.md">reference/faq.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/reference/faq.md">reference/faq.md</a></td>
 <td>Common operational questions and troubleshooting</td>
 </tr>
 </tbody></table>
@@ -983,20 +1001,36 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 </tr>
 </thead>
 <tbody><tr>
-<td><a href="review_plan_v2026.4.13.md">review_plan_v2026.4.13.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/review_plan_v2026.4.13.md">review_plan_v2026.4.13.md</a></td>
 <td>Release-bounded review plan for the April 13, 2026 audit</td>
 </tr>
 <tr>
-<td><a href="release_evaluation_v2026.4.13.md">release_evaluation_v2026.4.13.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/release_evaluation_v2026.4.13.md">release_evaluation_v2026.4.13.md</a></td>
 <td>Release validation, diff sizing, and unreleased-main exclusions</td>
 </tr>
 <tr>
-<td><a href="repo_review_v2026.4.13.md">repo_review_v2026.4.13.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/repo_review_v2026.4.13.md">repo_review_v2026.4.13.md</a></td>
 <td>Source-tree review mapped by subsystem</td>
 </tr>
 <tr>
-<td><a href="source_validation_matrix_v2026.4.13.md">source_validation_matrix_v2026.4.13.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/source_validation_matrix_v2026.4.13.md">source_validation_matrix_v2026.4.13.md</a></td>
 <td>Claim-to-source matrix with local and online validation links</td>
+</tr>
+<tr>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/review_plan_v2026.4.16.md">review_plan_v2026.4.16.md</a></td>
+<td>Release-bounded review plan for the April 16, 2026 audit</td>
+</tr>
+<tr>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/release_evaluation_v2026.4.16.md">release_evaluation_v2026.4.16.md</a></td>
+<td>Local-release validation plus public-release-surface discrepancy notes</td>
+</tr>
+<tr>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/repo_review_v2026.4.16.md">repo_review_v2026.4.16.md</a></td>
+<td>Docs-gap review and correction summary for v0.10.0</td>
+</tr>
+<tr>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/source_validation_matrix_v2026.4.16.md">source_validation_matrix_v2026.4.16.md</a></td>
+<td>Source-to-doc mapping for the v2026.4.13..v2026.4.16 sync window</td>
 </tr>
 </tbody></table>
 <h3>Contributing</h3>
@@ -1008,7 +1042,7 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 </tr>
 </thead>
 <tbody><tr>
-<td><a href="contributing.md">contributing.md</a></td>
+<td><a href="https://github.com/mudrii/hermes-agent-docs/blob/main/contributing.md">contributing.md</a></td>
 <td>Dev setup, contribution guide, PR process, priorities</td>
 </tr>
 </tbody></table>

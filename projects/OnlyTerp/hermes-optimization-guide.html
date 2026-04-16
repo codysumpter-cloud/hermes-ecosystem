@@ -187,7 +187,7 @@
   <p class="project-desc">Hermes Agent setup, migration, LightRAG, Telegram, and skill creation guide</p>
 
   <div class="meta-row">
-    <span class="stars">★ 139</span>
+    <span class="stars">★ 143</span>
     
     <span class="badge badge-lang">MIT</span>
     
@@ -216,12 +216,12 @@
 <li><a href="#part-3-lightrag--graph-rag-that-actually-works">LightRAG — Graph RAG</a> — Set up a knowledge graph that actually understands relationships, not just text similarity</li>
 <li><a href="#part-4-telegram-setup-chat-from-anywhere">Telegram Bot</a> — Connect Hermes to Telegram for mobile access, voice memos, and group chats</li>
 <li><a href="#part-5-on-the-fly-skills-let-hermes-build-its-own-playbook">On-the-Fly Skills</a> — Ask Hermes to create new skills that optimize your workflow automatically</li>
-<li><a href="./part6-context-compression.md">Context Compression</a> — Fix the silent context loss bug, configure compression thresholds, survive long sessions</li>
-<li><a href="./part7-memory-system.md">Memory System</a> — The three-tier memory architecture: persistent facts, conversation recall, procedural memory</li>
-<li><a href="./part8-subagent-patterns.md">Subagent Patterns</a> — Orchestrator/worker delegation, ACP subagents, parallel task execution</li>
-<li><a href="./part9-custom-models.md">Custom Model Providers</a> — Cerebras, Fireworks, Ollama, model aliases, fallback chains</li>
-<li><a href="./part10-soul-antipatterns.md">SOUL.md Anti-Patterns</a> — What makes an agent annoying vs useful, the formula that works</li>
-<li><a href="./part11-gateway-recovery.md">Gateway Recovery</a> — Crash detection, auto-recovery, common failure modes, health checks</li>
+<li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part6-context-compression.md">Context Compression</a> — Fix the silent context loss bug, configure compression thresholds, survive long sessions</li>
+<li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part7-memory-system.md">Memory System</a> — The three-tier memory architecture: persistent facts, conversation recall, procedural memory</li>
+<li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part8-subagent-patterns.md">Subagent Patterns</a> — Orchestrator/worker delegation, ACP subagents, parallel task execution</li>
+<li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part9-custom-models.md">Custom Model Providers</a> — Cerebras, Fireworks, Ollama, model aliases, fallback chains</li>
+<li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part10-soul-antipatterns.md">SOUL.md Anti-Patterns</a> — What makes an agent annoying vs useful, the formula that works</li>
+<li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part11-gateway-recovery.md">Gateway Recovery</a> — Crash detection, auto-recovery, common failure modes, health checks</li>
 </ol>
 <hr>
 <h2>The Problem</h2>
@@ -312,6 +312,13 @@ hermes
 <h3>Linux / macOS / WSL2</h3>
 <pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
 </code></pre>
+<blockquote>
+<p><strong>Security tip:</strong> Piping scripts directly from the internet to bash executes them sight-unseen. If you prefer to inspect first:</p>
+<pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh -o install.sh
+less install.sh   # Review the script
+bash install.sh
+</code></pre>
+</blockquote>
 <blockquote>
 <p><strong>Windows users:</strong> Native Windows is not supported. Install <a href="https://learn.microsoft.com/en-us/windows/wsl/install">WSL2</a> and run the command from inside WSL. It works perfectly.</p>
 </blockquote>
@@ -455,8 +462,10 @@ hermes             # Start chatting!
 <p>This opens an interactive menu to add API keys for each provider. Keys are stored in <code>~/.hermes/.env</code> — never committed to git.</p>
 <blockquote>
 <p><strong>Tip:</strong> You can also set keys manually:</p>
-<pre><code class="language-bash">echo &quot;ANTHROPIC_API_KEY=sk-ant-...&quot; &gt;&gt; ~/.hermes/.env
+<pre><code class="language-bash">echo &quot;ANTHROPIC_API_KEY=&lt;your-key-here&gt;&quot; &gt;&gt; ~/.hermes/.env
+chmod 600 ~/.hermes/.env   # Restrict access to your user only
 </code></pre>
+<p><strong>Important:</strong> Always run <code>chmod 600 ~/.hermes/.env</code> to prevent other users on the system from reading your API keys.</p>
 </blockquote>
 <h3>3. Configure Toolsets</h3>
 <pre><code class="language-bash">hermes tools
@@ -990,17 +999,20 @@ pip install -e &quot;.[api]&quot;
 <pre><code class="language-bash"># LLM for entity extraction (during ingestion)
 LLM_BINDING=openai
 LLM_MODEL=kimi-2.5                    # What we actually use — great quality/cost ratio
-LLM_BINDING_API_KEY=***
+LLM_BINDING_API_KEY=&lt;your-api-key&gt;
 
 # Embedding model (for vector storage)
 EMBEDDING_BINDING=fireworks
 EMBEDDING_MODEL=accounts/fireworks/models/qwen3-embedding-8b
-EMBEDDING_API_KEY=***
+EMBEDDING_API_KEY=&lt;your-fireworks-api-key&gt;
 
 # Or use local Ollama (free, no API key needed):
 # EMBEDDING_BINDING=ollama
 # EMBEDDING_MODEL=nomic-embed-text
 </code></pre>
+<blockquote>
+<p><strong>Security tip:</strong> Set restrictive permissions on this file: <code>chmod 600 ~/.hermes/lightrag/.env</code></p>
+</blockquote>
 <h3>Entity Extraction Model — What to Use</h3>
 <p>This is the LLM that reads your documents and pulls out entities and relationships during ingestion. Quality here directly determines how good your knowledge graph is.</p>
 <table>
@@ -1060,8 +1072,8 @@ EMBEDDING_API_KEY=***
 <h3>Start the REST API</h3>
 <pre><code class="language-bash">cd ~/.hermes/lightrag/LightRAG
 
-# Start the API server
-lightrag-server --port 9623
+# Start the API server (binds to localhost by default)
+lightrag-server --host 127.0.0.1 --port 9623
 </code></pre>
 <p>The server starts on <code>http://localhost:9623</code> with:</p>
 <ul>
@@ -1069,6 +1081,9 @@ lightrag-server --port 9623
 <li><strong>Web UI</strong> at <code>http://localhost:9623/webui</code> for browsing the knowledge graph</li>
 <li><strong>Health check</strong> at <code>http://localhost:9623/health</code></li>
 </ul>
+<blockquote>
+<p><strong>Security warning:</strong> The LightRAG REST API has <strong>no built-in authentication</strong>. Always bind to <code>127.0.0.1</code> (localhost only) — never <code>0.0.0.0</code>. If you need remote access, put it behind a reverse proxy (nginx, Caddy) with authentication, or use SSH tunneling. Anyone who can reach this port can query, ingest, or delete your knowledge graph data.</p>
+</blockquote>
 <h3>Run as a Background Service</h3>
 <pre><code class="language-bash"># Using nohup
 nohup lightrag-server --port 9623 &gt; ~/.hermes/lightrag/server.log 2&gt;&amp;1 &amp;
@@ -1471,8 +1486,8 @@ status - Show agent status
 <p>Select <strong>Telegram</strong> when prompted. The wizard asks for your bot token and allowed user IDs, then writes the configuration for you.</p>
 <h3>Option B: Manual Configuration</h3>
 <p>Add the following to <code>~/.hermes/.env</code>:</p>
-<pre><code class="language-bash">TELEGRAM_BOT_TOKEN=123456789:ABCdefGHIjklMNOpqrSTUvwxYZ
-TELEGRAM_ALLOWED_USERS=123456789    # Comma-separated for multiple users
+<pre><code class="language-bash">TELEGRAM_BOT_TOKEN=&lt;your-bot-token-from-botfather&gt;
+TELEGRAM_ALLOWED_USERS=&lt;your-numeric-user-id&gt;    # Comma-separated for multiple users
 </code></pre>
 <p>For groups, also add the group chat ID (negative number, like <code>-1001234567890</code>):</p>
 <pre><code class="language-bash">TELEGRAM_ALLOWED_CHATS=-1001234567890
@@ -1527,8 +1542,15 @@ hermes cron create --deliver telegram &quot;Check server status every hour&quot;
 <h3>Configuration</h3>
 <p>Add to <code>~/.hermes/.env</code>:</p>
 <pre><code class="language-bash">TELEGRAM_WEBHOOK_URL=https://your-app.fly.dev
-TELEGRAM_WEBHOOK_SECRET=your-random-secret-here
+TELEGRAM_WEBHOOK_SECRET=&lt;generate-with-command-below&gt;
 </code></pre>
+<p>Generate a strong secret — never use a guessable value:</p>
+<pre><code class="language-bash">openssl rand -hex 32
+</code></pre>
+<p>Copy the output and paste it as your <code>TELEGRAM_WEBHOOK_SECRET</code> value.</p>
+<blockquote>
+<p><strong>Warning:</strong> A weak or default webhook secret lets attackers forge Telegram webhook requests and inject messages into your agent. Always use a cryptographically random value.</p>
+</blockquote>
 <table>
 <thead>
 <tr>
@@ -1790,50 +1812,7 @@ hermes skills list
 </code></pre>
 <h3>Update a Skill</h3>
 <p>If a skill is outdated or missing steps:</p>
-<pre><code>Update the docker-deploy skill — we learned that the health check
-needs a 30-second timeout, not 10.
-</code></pre>
-<p>Hermes patches the skill with <code>skill_manage(action=&#39;patch&#39;)</code>.</p>
-<hr>
-<h2>Real-World Skill Examples</h2>
-<h3>Example 1: Server Monitoring</h3>
-<pre><code>Create a skill that monitors my server: check CPU, memory, and disk
-usage via SSH, log results to a CSV, and alert on Telegram if anything
-exceeds thresholds.
-</code></pre>
-<p>Hermes creates a skill with:</p>
-<ul>
-<li>SSH connection commands</li>
-<li>Resource check scripts</li>
-<li>CSV logging format</li>
-<li>Telegram alert integration</li>
-<li>Threshold configuration</li>
-</ul>
-<h3>Example 2: Code Review</h3>
-<pre><code>Create a skill for reviewing Python pull requests. It should check
-for security issues, performance problems, and style violations.
-</code></pre>
-<p>Hermes creates a skill with:</p>
-<ul>
-<li><code>git diff</code> analysis steps</li>
-<li>Security pattern checks</li>
-<li>Performance anti-pattern detection</li>
-<li>Style guide references</li>
-</ul>
-<h3>Example 3: Lead Research</h3>
-<pre><code>Create a skill that researches companies: find their website, check
-LinkedIn for key contacts, look at recent news, and compile a one-page summary.
-</code></pre>
-<p>Hermes creates a skill with:</p>
-<ul>
-<li>Web search queries to use</li>
-<li>LinkedIn search patterns</li>
-<li>News aggregation approach</li>
-<li>Summary template</li>
-</ul>
-<hr>
-<h2>Tips for Better Skills</h2>
-<p><strong>Be specific about the task.</strong> &quot;Deploy Docker containers&quot; is too vague. &quot;Deploy a Python Flask app to a VPS using Docker Compose with health checks&quot; gives the</p>
+<p>``</p>
 <hr>
 <p><em>README truncated. <a href="https://github.com/OnlyTerp/hermes-optimization-guide#readme">Continue reading on GitHub</a></em></p>
 

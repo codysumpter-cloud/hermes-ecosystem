@@ -187,7 +187,7 @@
   <p class="project-desc">🛡️Decision infrastructure for AI agents. Intercept actions, enforce guard policies, require approvals, and produce audit-ready decision trails.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 210</span>
+    <span class="stars">★ 211</span>
     <span class="badge badge-lang">JavaScript</span>
     <span class="badge badge-lang">MIT</span>
     
@@ -295,7 +295,7 @@ export DASHCLAW_API_KEY=your_api_key
 node /path/to/DashClaw/scripts/install-hooks.mjs --target=.
 </code></pre>
 <p>This copies <code>dashclaw_pretool.py</code>, <code>dashclaw_posttool.py</code>, <code>dashclaw_stop.py</code>, and the <code>dashclaw_agent_intel/</code> module into <code>.claude/hooks/</code>, then merges the matching <code>PreToolUse</code> / <code>PostToolUse</code> / <code>Stop</code> blocks into <code>.claude/settings.json</code>. Idempotent — re-run after <code>git pull</code> to upgrade.</p>
-<p>Set <code>DASHCLAW_BASE_URL</code>, <code>DASHCLAW_API_KEY</code>, and (optionally) <code>DASHCLAW_HOOK_MODE=enforce</code>. Every tool call becomes a governed, replayable decision record. See <a href="hooks/README.md">hooks/README.md</a> for the full guide and <a href="docs/ANALYTICS-ROLLOUT.md">docs/ANALYTICS-ROLLOUT.md</a> for the token-capture data flow.</p>
+<p>Set <code>DASHCLAW_BASE_URL</code>, <code>DASHCLAW_API_KEY</code>, and (optionally) <code>DASHCLAW_HOOK_MODE=enforce</code>. Every tool call becomes a governed, replayable decision record. See <a href="https://github.com/ucsandman/DashClaw/blob/main/hooks/README.md">hooks/README.md</a> for the full guide and <a href="https://github.com/ucsandman/DashClaw/blob/main/docs/ANALYTICS-ROLLOUT.md">docs/ANALYTICS-ROLLOUT.md</a> for the token-capture data flow.</p>
 <h3>Option 4: Use the SDK (full control)</h3>
 <p>For custom agents where you want precise control over what gets governed:</p>
 <pre><code class="language-bash">npm install dashclaw    # Node.js
@@ -307,7 +307,7 @@ pip install dashclaw    # Python
 <p>For agents built on the <a href="https://github.com/openclaw">OpenClaw</a> framework, <code>@dashclaw/openclaw-plugin</code> wires governance directly into the lifecycle:</p>
 <pre><code class="language-bash">npm install @dashclaw/openclaw-plugin
 </code></pre>
-<p>It intercepts <code>PreToolUse</code> / <code>PostToolUse</code>, calls <code>guard</code> / <code>record</code> / <code>waitForApproval</code> automatically, and ships a <code>HOOK.md</code> pack the <code>openclaw</code> CLI installs. Tool-classification vocabulary aligns with DashClaw guard action types so policies behave consistently whether the call came from a plugin, a hook, or a direct SDK call. See <a href="./packages/openclaw-plugin/README.md"><code>packages/openclaw-plugin/README.md</code></a>.</p>
+<p>It intercepts <code>PreToolUse</code> / <code>PostToolUse</code>, calls <code>guard</code> / <code>record</code> / <code>waitForApproval</code> automatically, and ships a <code>HOOK.md</code> pack the <code>openclaw</code> CLI installs. Tool-classification vocabulary aligns with DashClaw guard action types so policies behave consistently whether the call came from a plugin, a hook, or a direct SDK call. See <a href="https://github.com/ucsandman/DashClaw/blob/main/packages/openclaw-plugin/README.md"><code>packages/openclaw-plugin/README.md</code></a>.</p>
 <hr>
 <h2>What is DashClaw?</h2>
 <p>DashClaw is not observability. It is <strong>control before execution</strong>.</p>
@@ -451,7 +451,7 @@ node scripts/upload-skill.mjs
 <td>5-step &quot;Daily Market Briefing&quot;</td>
 </tr>
 </tbody></table>
-<p>Open <strong>Workflows</strong>, find &quot;Daily Market Briefing&quot;, and click <strong>Run</strong>. Watch Mission Control light up as each step executes — knowledge search, API fetches, LLM analysis, and a publish step that pauses for human approval. See <a href="DEMO.md">DEMO.md</a> for the full walkthrough.</p>
+<p>Open <strong>Workflows</strong>, find &quot;Daily Market Briefing&quot;, and click <strong>Run</strong>. Watch Mission Control light up as each step executes — knowledge search, API fetches, LLM analysis, and a publish step that pauses for human approval. See <a href="https://github.com/ucsandman/DashClaw/blob/main/DEMO.md">DEMO.md</a> for the full walkthrough.</p>
 <hr>
 <h2>Quickstart</h2>
 <h3>1. Install the SDK</h3>
@@ -577,57 +577,57 @@ dashclaw logout                 # remove saved config
 <tbody><tr>
 <td>Drift Detection</td>
 <td>Monitors reasoning and metric drift across sessions, surfaces signals on deviation</td>
-<td><a href="./sdk/README.md#learning-loop">SDK: Learning Loop</a></td>
+<td><a href="https://github.com/ucsandman/DashClaw/blob/main/sdk/README.md#learning-loop">SDK: Learning Loop</a></td>
 </tr>
 <tr>
 <td>Recovery Recipes</td>
 <td>6 built-in recipes mapping signals to remediations and auto-actions</td>
-<td><a href="./sdk/README.md#learning-loop">SDK: Recovery</a></td>
+<td><a href="https://github.com/ucsandman/DashClaw/blob/main/sdk/README.md#learning-loop">SDK: Recovery</a></td>
 </tr>
 <tr>
 <td>Scoring Profiles</td>
 <td>Multi-dimensional evaluation with weighted composites and auto-calibration</td>
-<td><a href="./sdk/README.md#scoring-profiles">SDK: Scoring</a></td>
+<td><a href="https://github.com/ucsandman/DashClaw/blob/main/sdk/README.md#scoring-profiles">SDK: Scoring</a></td>
 </tr>
 <tr>
 <td>Learning Loop</td>
 <td>Guard responses include historical context — score averages, drift status, patterns</td>
-<td><a href="./sdk/README.md#learning-loop">SDK: Learning</a></td>
+<td><a href="https://github.com/ucsandman/DashClaw/blob/main/sdk/README.md#learning-loop">SDK: Learning</a></td>
 </tr>
 <tr>
 <td>Prompt Injection Scanning</td>
 <td>On by default. Detects and blocks injection patterns in declared goals</td>
-<td><a href="./sdk/README.md#security-scanning">SDK: Security</a></td>
+<td><a href="https://github.com/ucsandman/DashClaw/blob/main/sdk/README.md#security-scanning">SDK: Security</a></td>
 </tr>
 <tr>
 <td>Session Lifecycle</td>
 <td>Automatic tracking with stall detection, recovery, and graduated autonomy</td>
-<td><a href="./CHANGELOG.md">CHANGELOG</a></td>
+<td><a href="https://github.com/ucsandman/DashClaw/blob/main/CHANGELOG.md">CHANGELOG</a></td>
 </tr>
 <tr>
 <td>Capability Registry</td>
 <td>Full CRUD, HTTP invocation, health monitoring, and per-agent access rules</td>
-<td><a href="./sdk/README.md#capability-runtime">Capability Runtime</a></td>
+<td><a href="https://github.com/ucsandman/DashClaw/blob/main/sdk/README.md#capability-runtime">Capability Runtime</a></td>
 </tr>
 <tr>
 <td>Workflow Engine</td>
 <td>3 step types, variable substitution, <code>continue_on_failure</code>, resume from checkpoint</td>
-<td><a href="./DEMO.md">DEMO.md</a></td>
+<td><a href="https://github.com/ucsandman/DashClaw/blob/main/DEMO.md">DEMO.md</a></td>
 </tr>
 <tr>
 <td>Agent Profiles</td>
 <td>Per-agent governance dashboard: trust posture, decision history, assumptions, active signals, and policies at <code>/agents/[agentId]</code></td>
-<td><a href="./PROJECT_DETAILS.md">PROJECT_DETAILS.md</a></td>
+<td><a href="https://github.com/ucsandman/DashClaw/blob/main/PROJECT_DETAILS.md">PROJECT_DETAILS.md</a></td>
 </tr>
 <tr>
 <td>Policy Builder</td>
 <td>Shields-first policy experience with 8 pre-built safety switches (Deploy Gate, Risk Threshold, Rate Limiter, etc.), AI generator, YAML import, and guard activity feed at <code>/policies</code></td>
-<td><a href="./PROJECT_DETAILS.md">PROJECT_DETAILS.md</a></td>
+<td><a href="https://github.com/ucsandman/DashClaw/blob/main/PROJECT_DETAILS.md">PROJECT_DETAILS.md</a></td>
 </tr>
 <tr>
 <td>Analytics</td>
 <td>Cost trends, action volume, agent and type breakdowns, policy enforcement stats, and token efficiency with 7d/30d/90d time ranges at <code>/analytics</code></td>
-<td><a href="./PROJECT_DETAILS.md">PROJECT_DETAILS.md</a></td>
+<td><a href="https://github.com/ucsandman/DashClaw/blob/main/PROJECT_DETAILS.md">PROJECT_DETAILS.md</a></td>
 </tr>
 </tbody></table>
 <hr>
@@ -639,12 +639,12 @@ python scripts/test-sdk-agent.py --full
 <hr>
 <h2>Documentation</h2>
 <ul>
-<li><a href="./sdk/README.md">SDK README</a> — Canonical reference for the <code>dashclaw</code> npm package (80 v2 methods + canonical HITL flow)</li>
-<li><a href="./docs/sdk-parity.md">SDK Parity Matrix</a> — Node v2 vs Node legacy vs Python surface coverage</li>
-<li><a href="./PROJECT_DETAILS.md">Architecture</a> — System map, boundary rules, and SDK surface inventory</li>
-<li><a href="./docs/architecture/runtime-api.md">Runtime API</a> — The minimal core governance endpoints</li>
-<li><a href="./ROADMAP.md">Roadmap</a> — What&#39;s shipped, in progress, and exploring</li>
-<li><a href="./CHANGELOG.md">CHANGELOG</a> — Detailed release history</li>
+<li><a href="https://github.com/ucsandman/DashClaw/blob/main/sdk/README.md">SDK README</a> — Canonical reference for the <code>dashclaw</code> npm package (80 v2 methods + canonical HITL flow)</li>
+<li><a href="https://github.com/ucsandman/DashClaw/blob/main/docs/sdk-parity.md">SDK Parity Matrix</a> — Node v2 vs Node legacy vs Python surface coverage</li>
+<li><a href="https://github.com/ucsandman/DashClaw/blob/main/PROJECT_DETAILS.md">Architecture</a> — System map, boundary rules, and SDK surface inventory</li>
+<li><a href="https://github.com/ucsandman/DashClaw/blob/main/docs/architecture/runtime-api.md">Runtime API</a> — The minimal core governance endpoints</li>
+<li><a href="https://github.com/ucsandman/DashClaw/blob/main/ROADMAP.md">Roadmap</a> — What&#39;s shipped, in progress, and exploring</li>
+<li><a href="https://github.com/ucsandman/DashClaw/blob/main/CHANGELOG.md">CHANGELOG</a> — Detailed release history</li>
 </ul>
 <hr>
 <h2>License</h2>

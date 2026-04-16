@@ -270,7 +270,7 @@ factory improve ./demo
 </ul>
 <hr>
 <h2>How It Works</h2>
-<p>See <a href="docs/ARCHITECTURE.md"><code>docs/ARCHITECTURE.md</code></a> for the full design. The short version:</p>
+<p>See <a href="https://github.com/supermodeltools/bigiron/blob/main/docs/ARCHITECTURE.md"><code>docs/ARCHITECTURE.md</code></a> for the full design. The short version:</p>
 <p><strong>Supermodel</strong> ships as an MCP server that Hermes consumes natively. It maintains a persistent multi-layered graph of the codebase — call graph, dependency graph, domain graph, AST. The agent queries this graph instead of loading files.</p>
 <p><strong>Hermes</strong> runs a skill at each SDLC phase. Each skill knows how to use the graph API for that specific phase: blast radius before planning, arch validation before coding, topological test ordering, graph-diff quality gates.</p>
 <p><strong>The result:</strong> the agent always knows what&#39;s connected to what, never hallucinates signatures, and can&#39;t accidentally violate the architecture without it being caught at a gate.</p>
@@ -392,8 +392,8 @@ factory improve ./demo
 <hr>
 <h2>References</h2>
 <ul>
-<li><a href="docs/ARCHITECTURE.md">Architecture</a></li>
-<li><a href="AGENTS.md">Agent Rules</a></li>
+<li><a href="https://github.com/supermodeltools/bigiron/blob/main/docs/ARCHITECTURE.md">Architecture</a></li>
+<li><a href="https://github.com/supermodeltools/bigiron/blob/main/AGENTS.md">Agent Rules</a></li>
 <li><a href="https://hermes-agent.nousresearch.com/docs">Hermes Agent Docs</a></li>
 <li><a href="https://supermodeltools.com">Supermodel</a></li>
 <li><a href="https://modelcontextprotocol.io">Model Context Protocol</a></li>

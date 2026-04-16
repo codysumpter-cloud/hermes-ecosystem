@@ -370,14 +370,14 @@
 </tbody></table>
 <p>Key Documents:</p>
 <ul>
-<li><a href="atroposlib/envs/README.md">Base Environment Class</a> - Documentation for creating custom environments</li>
-<li><a href="atroposlib/envs/server_handling/MANAGED_SERVER.md">ManagedServer Guide</a> - <strong>Recommended approach</strong> for automatic token and logprob tracking</li>
-<li><a href="environments/community/README.md">Environments Overview and Contribution Guide</a> - Documentation for existing environments and how to contribute new ones.</li>
-<li><a href="CONFIG.md">Full Environment Config Options</a> - Documentation for creating custom environments</li>
-<li><a href="example_trainer/README.md">Example Trainer</a> - Getting started with training</li>
-<li><a href="SLURM.md">Slurm Guide</a> - Guide for using Atropos with Slurm for distributed inference</li>
-<li><a href="atroposlib/FAQ.md">Frequently Asked Questions (FAQ)</a> - Answers to common questions for new users</li>
-<li><a href="CONTRIBUTING.md">Contributing Guide</a> - Guidelines for contributors</li>
+<li><a href="https://github.com/NousResearch/atropos/blob/main/atroposlib/envs/README.md">Base Environment Class</a> - Documentation for creating custom environments</li>
+<li><a href="https://github.com/NousResearch/atropos/blob/main/atroposlib/envs/server_handling/MANAGED_SERVER.md">ManagedServer Guide</a> - <strong>Recommended approach</strong> for automatic token and logprob tracking</li>
+<li><a href="https://github.com/NousResearch/atropos/blob/main/environments/community/README.md">Environments Overview and Contribution Guide</a> - Documentation for existing environments and how to contribute new ones.</li>
+<li><a href="https://github.com/NousResearch/atropos/blob/main/CONFIG.md">Full Environment Config Options</a> - Documentation for creating custom environments</li>
+<li><a href="https://github.com/NousResearch/atropos/blob/main/example_trainer/README.md">Example Trainer</a> - Getting started with training</li>
+<li><a href="https://github.com/NousResearch/atropos/blob/main/SLURM.md">Slurm Guide</a> - Guide for using Atropos with Slurm for distributed inference</li>
+<li><a href="https://github.com/NousResearch/atropos/blob/main/atroposlib/FAQ.md">Frequently Asked Questions (FAQ)</a> - Answers to common questions for new users</li>
+<li><a href="https://github.com/NousResearch/atropos/blob/main/CONTRIBUTING.md">Contributing Guide</a> - Guidelines for contributors</li>
 <li><a href="LICENSE">License</a> - MIT license details</li>
 </ul>
 <hr>
@@ -417,14 +417,14 @@ pip install -e .[all]           # for everything
 <ol>
 <li><p><strong>Create Your First Environment</strong></p>
 <ul>
-<li>Review our <a href="atroposlib/envs/README.md">Base Class Documentation</a> to understand the core concepts</li>
+<li>Review our <a href="https://github.com/NousResearch/atropos/blob/main/atroposlib/envs/README.md">Base Class Documentation</a> to understand the core concepts</li>
 <li>Check out existing environments in the <a href="environments"><code>environments/</code></a> directory for examples</li>
 </ul>
 </li>
 <li><p><strong>Run an Example Environment</strong></p>
 </li>
 </ol>
-<p>  You should edit the config_init section of the environment file you want (<a href="https://github.com/NousResearch/atropos/blob/main/environments/gsm8k_server.py#L53">For example, in GSM8K Environment</a>) to point to a running VLLM or SGLang inference server as well as any other <a href="CONFIG.md">configuration changes</a> you&#39;d like to make, such as the group size, then:</p>
+<p>  You should edit the config_init section of the environment file you want (<a href="https://github.com/NousResearch/atropos/blob/main/environments/gsm8k_server.py#L53">For example, in GSM8K Environment</a>) to point to a running VLLM or SGLang inference server as well as any other <a href="https://github.com/NousResearch/atropos/blob/main/CONFIG.md">configuration changes</a> you&#39;d like to make, such as the group size, then:</p>
 <blockquote>
 <p><strong>Note:</strong> By default, Atropos uses the OpenAI-compatible API endpoint which works with any provider. For enhanced features, use <code>VLLMServer</code> (atroposlib/envs/server_handling/vllm_server.py) or <code>SGLangServer</code> (atroposlib/envs/server_handling/sglang_server.py) for direct access to native APIs with full token and logprob tracking.</p>
 </blockquote>
@@ -444,7 +444,7 @@ run-api
   for help getting started with the available tools, we recommend starting with process or view-run</p>
 <ol start="4">
 <li><strong>Training Your Model</strong><ul>
-<li>Follow our <a href="example_trainer/README.md">training example guide</a> for detailed instructions</li>
+<li>Follow our <a href="https://github.com/NousResearch/atropos/blob/main/example_trainer/README.md">training example guide</a> for detailed instructions</li>
 <li>Monitor progress through our built-in logging and reporting system:<ul>
 <li>Completion lengths</li>
 <li>Evaluation accuracies</li>
@@ -484,7 +484,7 @@ This allows you to leverage Atropos for reinforcement learning while utilizing A
 <p>To get started, check out the README at the <a href="https://github.com/NousResearch/tinker-atropos">project repository</a>.</p>
 <h2>Atropos&#39; Example Trainer</h2>
 <p>Atropos repo contains an example trainer that should primarily be used as a reference example to show how a trainer and inference provider can be integrated with Atropos to complete the RL Training Loop.</p>
-<p>To use the example trainer, see this page: <a href="example_trainer/README.md">training example guide</a></p>
+<p>To use the example trainer, see this page: <a href="https://github.com/NousResearch/atropos/blob/main/example_trainer/README.md">training example guide</a></p>
 <h2>On-Policy Distillation (API + ScoredDataGroup Contract)</h2>
 <p>Atropos now supports OPD at the transport layer by carrying distillation arrays
 through <code>ScoredDataGroup</code> and the API queue/batch endpoints.</p>
@@ -708,8 +708,8 @@ pip install -e &quot;.[dev]&quot;
 </code></pre>
 <hr>
 <h2>Contributing</h2>
-<p>Atropos is built by the open-source AI community, and relies on our amazing contributors! Please see our <a href="CONTRIBUTING.md">contributing</a> guide for more details on our code formatting, testing, etc.
-Please follow the <a href="CODE_OF_CONDUCT.md">Code of Conduct</a>.</p>
+<p>Atropos is built by the open-source AI community, and relies on our amazing contributors! Please see our <a href="https://github.com/NousResearch/atropos/blob/main/CONTRIBUTING.md">contributing</a> guide for more details on our code formatting, testing, etc.
+Please follow the <a href="https://github.com/NousResearch/atropos/blob/main/CODE_OF_CONDUCT.md">Code of Conduct</a>.</p>
 <hr>
 <h2>License</h2>
 <p>Atropos uses the MIT license, see the <a href="LICENSE">LICENSE</a> file here for more information</p>
