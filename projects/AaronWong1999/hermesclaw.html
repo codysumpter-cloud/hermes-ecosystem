@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hermesclaw — Hermes Agent Integrations &amp; Bridges | Hermes Atlas</title>
+<meta name="description" content="Run Hermes Agent and OpenClaw on the same WeChat account">
+<link rel="canonical" href="https://hermesatlas.com/projects/AaronWong1999/hermesclaw">
+<meta property="og:title" content="hermesclaw — Hermes Atlas">
+<meta property="og:description" content="Run Hermes Agent and OpenClaw on the same WeChat account">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/AaronWong1999/hermesclaw">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hermesclaw — Hermes Atlas">
+<meta name="twitter:description" content="Run Hermes Agent and OpenClaw on the same WeChat account">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Integrations &amp; Bridges</a>
+  </div>
+
+  <h1>hermesclaw</h1>
+  <p class="project-desc">Run Hermes Agent and OpenClaw on the same WeChat account</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 113</span>
+    <span class="badge badge-lang">Python</span>
+    <span class="badge badge-lang">MIT</span>
+    
+    <span>Updated 4/16/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/AaronWong1999/hermesclaw" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <h1>HermesClaw</h1>
+<p><strong>Dual-open <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> and <a href="https://github.com/openclaw/openclaw">OpenClaw</a> on the same WeChat account. One command to install.</strong></p>
+<p><strong>在同一个微信账号上同时双开 <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> 和 <a href="https://github.com/openclaw/openclaw">OpenClaw</a>。一条命令安装。</strong></p>
+<p align="center">
+  <a href="https://x.com/AaronYonW"><img src="https://img.shields.io/badge/X-%40AaronYonW-000000.svg" alt="X / Twitter"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="MIT License"></a>
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/AaronWong1999/hermesclaw/main/docs/HermesClaw.jpeg" alt="HermesClaw — One WeChat bot. Two AI brains. /hermes, /openclaw, /both." style="max-width: 100%;" />
+</p>
+
+<p align="center">
+  <em>One iLink account. Two AI brains. Switch with <code>/hermes</code>, <code>/openclaw</code>, <code>/both</code>.</em><br/>
+  <em>一个 iLink 账号，两个 AI 大脑。<code>/hermes</code>、<code>/openclaw</code>、<code>/both</code> 一句话切换。</em>
+</p>
+
+<hr>
+<h2>Why HermesClaw</h2>
+<p>Both Hermes Agent and OpenClaw now support WeChat natively — <strong>but you can&#39;t run both on the same account.</strong> Each gateway exclusively locks the iLink connection. If you start both, one gets 403 errors and drops messages.</p>
+<p>HermesClaw solves this by becoming the <strong>sole iLink poller</strong>, then running two local proxy servers — one for each gateway. Each gateway believes it&#39;s talking to the real iLink API.</p>
+<p>现在 Hermes 和 OpenClaw 都原生支持微信了——<strong>但你不能在同一个账号上双开。</strong> 每个 Gateway 会独占 iLink 连接。HermesClaw 解决这个问题：它作为唯一的 iLink 轮询者，运行两个本地代理，让两个 Gateway 各连各的。</p>
+<hr>
+<h2>Special Thanks</h2>
+<p>Special thanks to the <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> team at Nous Research for recognizing and recommending <strong>HermesClaw</strong> in the <code>Community</code> section of their official GitHub README.</p>
+<p>特别感谢 Nous Research 的 <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> 团队，在其 GitHub 官方 README 的 <code>Community</code> 区收录并推荐 <strong>HermesClaw</strong>。</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/AaronWong1999/hermesclaw/main/docs/hermes-agent-community-recognition.png" alt="Hermes Agent README Community section highlighting HermesClaw" style="max-width: 100%;" />
+</p>
+
+<blockquote>
+<p>Official reference:
+<a href="https://github.com/NousResearch/hermes-agent">Hermes Agent README - Community</a></p>
+</blockquote>
+<hr>
+<h2>Before / After</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Without HermesClaw</th>
+<th>With HermesClaw</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hermes on WeChat</td>
+<td>✅ Works (native gateway)</td>
+<td>✅ Works</td>
+</tr>
+<tr>
+<td>OpenClaw on WeChat</td>
+<td>✅ Works (clawbot)</td>
+<td>✅ Works</td>
+</tr>
+<tr>
+<td>Both on same account</td>
+<td>❌ Token conflict / 403</td>
+<td>✅ <code>/both</code> mode</td>
+</tr>
+<tr>
+<td>Voice messages</td>
+<td>✅ Each handles natively</td>
+<td>✅ Transcription forwarded</td>
+</tr>
+<tr>
+<td>Images / video / files</td>
+<td>✅ Each handles natively</td>
+<td>✅ Raw iLink msg forwarded</td>
+</tr>
+<tr>
+<td>Switching agents</td>
+<td>—</td>
+<td><code>/hermes</code>, <code>/openclaw</code>, <code>/both</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Architecture</h2>
+<pre><code>                    ┌────────── iLink API ──────────┐
+                    │  ilinkai.weixin.qq.com        │
+                    └──────────┬────────────────────┘
+                               │
+                      (sole poller / token owner)
+                               │
+                    ┌──────────▼────────────────────┐
+                    │     HermesClaw v2              │
+                    │  routes by /hermes /openclaw   │
+                    │  queues raw iLink messages     │
+                    ├──────────┬────────────────────┤
+                    │          │                    │
+              Proxy A (:19999)    Proxy B (:19998) │
+              for openclaw-weixin for hermes-gw    │
+                    │          │                    │
+                    ▼          ▼                    │
+              ┌──────────┐ ┌──────────┐            │
+              │ openclaw │ │ hermes   │            │
+              │ gateway  │ │ gateway  │            │
+              │ polls    │ │ polls    │            │
+              │ proxy A  │ │ proxy B  │            │
+              └────┬─────┘ └────┬─────┘            │
+                   │            │                  │
+              sendmessage  sendmessage             │
+                   └─────┬──────┘                  │
+                         │ (proxy forwards to iLink)│
+                         └─────────────────────────┘
+</code></pre>
+<p>HermesClaw is a thin Python proxy (~500 lines). It does <strong>not</strong> process media, call agent APIs, or touch agent memory. It just queues and forwards raw iLink protocol messages. Each gateway handles its own media decryption, markdown formatting, and AI interaction natively.</p>
+<p>HermesClaw 只是一个轻量转发代理（~500 行），不处理媒体、不调 Agent API、不动记忆。每个 Gateway 原生处理自己的媒体解密和 AI 交互。</p>
+<hr>
+<h2>Prerequisites</h2>
+<p>Before installing HermesClaw, you need <strong>at least one</strong> of:</p>
+<ol>
+<li><strong>OpenClaw + clawbot</strong> (<code>openclaw-weixin</code>) — installed and logged into WeChat</li>
+<li><strong>Hermes Agent + WeChat gateway</strong> — installed with <code>hermes gateway</code> configured</li>
+</ol>
+<p>Both installed = full dual-open. One installed = single-agent mode with the option to add the other later.</p>
+<p>安装 HermesClaw 前，需要至少安装以下其中一个：OpenClaw 的 clawbot，或者 Hermes 的微信 Gateway。</p>
+<hr>
+<h2>Quick Install</h2>
+<pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/AaronWong1999/hermesclaw/main/install.sh | bash
+</code></pre>
+<p>The installer will:</p>
+<ol>
+<li>Detect which gateways are installed and configured</li>
+<li>Extract the iLink token from gateway account files</li>
+<li>Patch openclaw-weixin <code>baseUrl</code> → <code>http://127.0.0.1:19999</code> (proxy A)</li>
+<li>Patch Hermes <code>WEIXIN_BASE_URL</code> → <code>http://127.0.0.1:19998</code> (proxy B)</li>
+<li>Install Python deps (<code>requests</code>, <code>python-dotenv</code>)</li>
+<li>Create OpenClaw media symlink (workaround for media path mismatch)</li>
+<li>Set up the <code>hermesclaw</code> systemd service</li>
+</ol>
+<p>After install, restart your gateways and send <code>/whoami</code> in WeChat.</p>
+<h3>AI-assisted install</h3>
+<p>Drop this into any AI agent on the target machine:</p>
+<pre><code class="language-text">Run: curl -fsSL https://raw.githubusercontent.com/AaronWong1999/hermesclaw/main/install.sh | bash
+
+Then read README.md and install.sh from the installed HermesClaw directory.
+Detect whether Hermes Agent, OpenClaw, their WeChat gateways, python3, pip3,
+and systemd are present.  At least one gateway must be configured.  Extract
+the iLink token from the first available gateway account file.  Patch
+openclaw-weixin baseUrl to http://127.0.0.1:19999 and Hermes WEIXIN_BASE_URL
+to http://127.0.0.1:19998.  Install dependencies and systemd service.
+
+If Hermes Agent WeChat gateway is detected, the installer will offer to patch
+weixin.py to disable newline-based message splitting (recommended).  Accept
+this patch so long replies are sent as single messages instead of being split
+by paragraphs.  The fix script is at fix_hermes_splitting.sh.
+
+Restart gateways.  Verify /whoami works in WeChat.
+</code></pre>
+<hr>
+<h2>Commands</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/hermes</code></td>
+<td>Route to <strong>Hermes</strong> only</td>
+</tr>
+<tr>
+<td><code>/openclaw</code></td>
+<td>Route to <strong>OpenClaw</strong> only</td>
+</tr>
+<tr>
+<td><code>/both</code></td>
+<td>Route to <strong>Hermes + OpenClaw</strong> (reply from both)</td>
+</tr>
+<tr>
+<td><code>/whoami</code></td>
+<td>Show current route and status</td>
+</tr>
+<tr>
+<td>anything else</td>
+<td>Forward to the active agent(s)</td>
+</tr>
+</tbody></table>
+<p>Default route is <strong>Hermes</strong>. In <code>/both</code> mode, replies are prefixed with <code>[Hermes Agent]</code> / <code>[OpenClaw]</code> for attribution.</p>
+<hr>
+<h2>Project layout</h2>
+<pre><code class="language-text">hermesclaw.py             # ~500 lines. Dual-proxy router.
+install.sh                # Smart auto-detecting installer.
+fix_hermes_splitting.sh   # Patch Hermes weixin.py (optional, recommended).
+tests/                    # 59 pytest tests (core, proxy, recovery).
+README.md
+LICENSE
+docs/                     # Screenshots and media.
+</code></pre>
+<hr>
+<h2>Media handling</h2>
+<p>HermesClaw forwards <strong>raw iLink protocol messages</strong> to each gateway. This means:</p>
+<ul>
+<li><strong>Text</strong> — forwarded as-is</li>
+<li><strong>Voice</strong> — iLink includes a transcription; HermesClaw forwards the transcription text</li>
+<li><strong>Images / video / files</strong> — the raw iLink message (with CDN URLs and AES keys) is forwarded; each gateway downloads and decrypts natively</li>
+</ul>
+<p>HermesClaw does <strong>not</strong> do AES decryption, CDN downloads, or media re-encoding. That&#39;s each gateway&#39;s job.</p>
+<hr>
+<h2>Uninstall</h2>
+<h3>AI-assisted</h3>
+<pre><code class="language-text">Stop and disable the hermesclaw systemd service.  Restore openclaw-weixin
+account .bak files.  Remove WEIXIN_BASE_URL override from ~/.hermes/.env
+(or restore .bak).  Optionally remove ~/hermesclaw directory.
+</code></pre>
+<h3>Manual</h3>
+<pre><code class="language-bash">sudo systemctl stop hermesclaw
+sudo systemctl disable hermesclaw
+sudo rm -f /etc/systemd/system/hermesclaw.service
+sudo systemctl daemon-reload
+
+# Restore openclaw-weixin configs:
+find &quot;$HOME&quot; -maxdepth 5 -name &quot;*.json.bak&quot; -path &quot;*/openclaw-weixin/accounts/*&quot; \
+  -exec sh -c &#39;for f; do cp &quot;$f&quot; &quot;${f%.bak}&quot;; done&#39; sh {} +
+
+# Restore Hermes .env:
+[ -f &quot;$HOME/.hermes/.env.bak&quot; ] &amp;&amp; cp &quot;$HOME/.hermes/.env.bak&quot; &quot;$HOME/.hermes/.env&quot;
+
+rm -rf &quot;$HOME/hermesclaw&quot;
+</code></pre>
+<hr>
+<h2>Star History</h2>
+<a href="https://www.star-history.com/#AaronWong1999/hermesclaw&Date">
+  <img src="https://api.star-history.com/svg?repos=AaronWong1999/hermesclaw&type=Date" alt="Star History Chart" width="600">
+</a>
+
+<hr>
+<h2>Changelog</h2>
+<h3>v0.2.1 (2026-04-12)</h3>
+<ul>
+<li><strong>Fix: Hermes message splitting</strong> — The installer now offers to patch Hermes Agent&#39;s <code>weixin.py</code> to disable newline-based message splitting during installation (recommended, default Yes). This ensures long replies are sent as single messages instead of being split by paragraphs. Existing users can run <code>bash fix_hermes_splitting.sh</code> manually.</li>
+</ul>
+<h3>v0.2.0</h3>
+<ul>
+<li><strong>Complete rewrite</strong>: dual-proxy gateway architecture.</li>
+<li>Removed ~400 lines of AES/CDN media processing.</li>
+<li>59 pytest tests (core, proxy, recovery).</li>
+<li>Smart 8-case detection installer.</li>
+<li><strong>Fix: Hermes &quot;Response formatting failed&quot;</strong> — Proxy servers now use <code>ThreadingHTTPServer</code> instead of single-threaded <code>HTTPServer</code>.</li>
+<li><strong>Fix: OpenClaw ENOENT on media files</strong> — Installer now creates symlink for media path mismatch.</li>
+<li><strong>Improved error handling</strong> — <code>BrokenPipeError</code> now caught and logged as DEBUG.</li>
+</ul>
+<hr>
+<h2>License</h2>
+<p><a href="LICENSE">MIT</a> — by <a href="https://github.com/AaronWong1999">@AaronWong1999</a> · <a href="https://x.com/AaronYonW">X @AaronYonW</a></p>
+<hr>
+<h2>Credits</h2>
+<ul>
+<li><a href="https://github.com/NousResearch/hermes-agent">NousResearch/hermes-agent</a> — the agent that grows with you.</li>
+<li><a href="https://github.com/openclaw/openclaw">openclaw/openclaw</a> — your own personal AI assistant. The lobster way. 🦞</li>
+<li>The Clawbot / openclaw-weixin maintainers for the iLink WeChat bridge.</li>
+</ul>
+<p>HermesClaw is a community bridge. It is not affiliated with NousResearch or OpenClaw.</p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Integrations &amp; Bridges</h2>
+    <div class="related-grid">
+      <a href="/projects/raulvidis/hermes-android" class="related-chip">hermes-android <span class="related-stars">38</span></a>
+          <a href="/projects/teknium1/hermes-miniverse" class="related-chip">hermes-miniverse <span class="related-stars">8</span></a>
+          <a href="/projects/Ridwannurudeen/hermes-council" class="related-chip">hermes-council <span class="related-stars">6</span></a>
+          <a href="/projects/marlandoj/zouroboros-swarm-executors" class="related-chip">zouroboros-swarm-executors <span class="related-stars">4</span></a>
+          <a href="/projects/gizdusum/hermes-blockchain-oracle" class="related-chip">hermes-blockchain-oracle <span class="related-stars">3</span></a>
+          <a href="/projects/kevinmarmstrong/hermes-claude-code-rc" class="related-chip">hermes-claude-code-rc <span class="related-stars">1</span></a>
+    </div>
+    
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>clawshell — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
+<meta name="description" content="The Runtime Security Layer for OpenClaw/Hermes-agent, the essential safety harness for PII &amp; sensitive credentials protection.">
+<link rel="canonical" href="https://hermesatlas.com/projects/clawshell/clawshell">
+<meta property="og:title" content="clawshell — Hermes Atlas">
+<meta property="og:description" content="The Runtime Security Layer for OpenClaw/Hermes-agent, the essential safety harness for PII &amp; sensitive credentials protection.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/clawshell/clawshell">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="clawshell — Hermes Atlas">
+<meta name="twitter:description" content="The Runtime Security Layer for OpenClaw/Hermes-agent, the essential safety harness for PII &amp; sensitive credentials protection.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Plugins &amp; Extensions</a>
+  </div>
+
+  <h1>clawshell</h1>
+  <p class="project-desc">The Runtime Security Layer for OpenClaw/Hermes-agent, the essential safety harness for PII &amp; sensitive credentials protection.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 255</span>
+    <span class="badge badge-lang">Rust</span>
+    <span class="badge badge-lang">Apache-2.0</span>
+    
+    <span>Updated 4/12/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/clawshell/clawshell" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    <a href="https://clawshell.org" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
+  </div>
+
+  <section class="readme">
+    <h1>ClawShell 🛡️</h1>
+<p><img src="https://raw.githubusercontent.com/clawshell/clawshell/main/docs/images/banner.png" alt="ClawShell Banner"></p>
+<blockquote>
+<p><strong>Powered by Runta. The essential safety harness for OpenClaw/Hermes Agent&#39;s PII &amp; Sensitive Credentials.</strong></p>
+</blockquote>
+<p><a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License"></a>
+<a href="https://github.com/clawshell/clawshell/actions"><img src="https://img.shields.io/github/actions/workflow/status/clawshell/clawshell/rust.yml" alt="GitHub Actions Workflow Status"></a>
+<a href="https://www.npmjs.com/package/@clawshell/clawshell"><img src="https://img.shields.io/npm/v/%40clawshell%2Fclawshell" alt="NPM Version"></a>
+<a href="https://crates.io/crates/clawshell"><img src="https://img.shields.io/crates/v/clawshell" alt="Crates.io Version"></a></p>
+<h2>📖 Introduction</h2>
+<p><strong>ClawShell</strong> is a security-privileged process for the <strong>OpenClaw/Hermes Agent</strong> ecosystem. It sits between OpenClaw/Hermes Agent and upstream LLM API providers (OpenAI, Anthropic, OpenRouter), performing virtual-to-real API key mapping and DLP (Data Loss Prevention) scanning on request and response bodies. It can also expose an Email read endpoint with sender allowlist/denylist filtering.</p>
+<p>OpenClaw/Hermes Agent never holds real API keys, only virtual keys that ClawShell swaps for real ones before forwarding requests upstream. Real keys are stored in a privileged config directory (<code>/etc/clawshell</code>) protected by Unix file system permissions.</p>
+<h2>Key Features</h2>
+<h3>1. API Token Secure Binding</h3>
+<p>ClawShell maps virtual API keys to real provider keys so that OpenClaw/Hermes Agent never has direct access to real credentials.</p>
+<ul>
+<li><strong>Key Isolation</strong>: Real API keys are stored in <code>/etc/clawshell/clawshell.toml</code>, readable only by the <code>clawshell</code> system user. OpenClaw/Hermes Agent holds only virtual keys.</li>
+<li><strong>Multi-Provider Support</strong>: Maps keys to OpenAI or Anthropic, injecting the correct authentication header format (<code>Authorization: Bearer</code> for OpenAI, <code>x-api-key</code> for Anthropic).</li>
+</ul>
+<h3>2. PII Safety Net (DLP)</h3>
+<p>ClawShell scans HTTP request and response bodies for sensitive data using configurable regex patterns.</p>
+<ul>
+<li><strong>Request Scanning</strong>: Detects PII (SSNs, credit card numbers, emails, etc.) in outbound requests. Patterns can be configured to either block the request or redact the matched text before forwarding.</li>
+<li><strong>Response Scanning</strong>: Optionally scans upstream responses and redacts detected PII before returning to OpenClaw/Hermes Agent. Streaming (SSE) responses are passed through without scanning.</li>
+<li><strong>Custom Patterns</strong>: Define sensitive data patterns using regex in the TOML config, each with a <code>block</code> or <code>redact</code> action.</li>
+</ul>
+<h3>3. Sensitive Email Isolation</h3>
+<p>ClawShell supports sender-based email filtering so each virtual key only sees mailbox content based on sender rules.</p>
+<ul>
+<li><strong>Sender Filtering</strong>: Filter emails by sender.</li>
+<li><strong>Key Isolation</strong>: IMAP credentials are stored in <code>/etc/clawshell/clawshell.toml</code>, readable only by the <code>clawshell</code> system user. OpenClaw/Hermes Agent holds only virtual keys.</li>
+<li><strong>Provider Support</strong>: Built-in Gmail and Outlook presets, with manual IMAP setup for other providers.</li>
+</ul>
+<h3>4. OAuth Authentication (Codex / ChatGPT)</h3>
+<p>ClawShell supports OAuth-based authentication as an alternative to static API keys.</p>
+<ul>
+<li><strong>Device Code Flow</strong>: Log in via a one-time code — no browser required on the server. The onboard wizard prints a URL and code; authorize from any device.</li>
+<li><strong>Automatic Token Refresh</strong>: Access tokens are refreshed transparently before they expire.</li>
+<li><strong>Request Translation</strong>: Automatically translates OpenAI Chat Completions API requests to the ChatGPT Responses API format when using Codex OAuth.</li>
+</ul>
+<h3>5. Runtime Statistics</h3>
+<p>ClawShell exposes running counters at <code>GET /admin/stats</code> so operators can audit proxy activity since startup and across restarts.</p>
+<ul>
+<li><strong>What&#39;s Counted</strong>: Total requests protected, total upstream <code>prompt_tokens</code> / <code>completion_tokens</code> / <code>total_tokens</code> (parsed from non-streaming JSON responses — SSE streams are not counted), number of emails hidden by the sender policy, and a per-address breakdown of filtered senders.</li>
+<li><strong>Loopback-Only</strong>: The endpoint is reachable without a virtual key but only from <code>127.0.0.1</code> / <code>::1</code> peers; non-loopback clients receive <code>403</code>.</li>
+<li><strong>Persistent</strong>: Counters are flushed to disk every 30 seconds and on graceful shutdown. The location is a required config field — set <code>[stats] persist_path = &quot;...&quot;</code> in <code>clawshell.toml</code> (typically <code>/var/lib/clawshell/stats.json</code> under the hardened systemd unit, since <code>/etc/clawshell</code> is read-only there).</li>
+<li><strong>Bounded</strong>: The filtered-address map is capped at 10,000 unique entries; further unique addresses are aggregated under an <code>&lt;overflow&gt;</code> bucket so memory stays bounded.</li>
+</ul>
+<h3>6. Seamless Integration</h3>
+<ul>
+<li><strong>Drop-in Sidecar</strong>: The <code>clawshell onboard</code> wizard configures exactly one downstream LLM client per run — either OpenClaw or <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — to route all requests through ClawShell&#39;s proxy. See <a href="#agent-target-pick-one">Agent Target (pick one)</a>.</li>
+<li><strong>No External Dependencies</strong>: Uses Unix file system permissions to protect secrets. No IdP, Vault, or external key management service required.</li>
+</ul>
+<h3>7. Ultra Lightweight and Scalable</h3>
+<ul>
+<li>Runs in under 10MB of memory.</li>
+<li>Written in Rust with Tokio.</li>
+</ul>
+<h2>Architecture</h2>
+<pre><code>                               ║ security boundary (Unix File System Permissions)
+                               ║
+                               ║  ┌───────────────────────────┐
+                               ║  │  /etc/clawshell           │
+                               ║  │  ┄ real API keys          │
+                               ║  │  ┄ DLP patterns           │
+                               ║  │  ┄ email sender rules     │
+                               ║  │  ┄ IMAP account creds     │
+                               ║  └──────────┬────────────────┘
+                               ║       reads │
+                               ║  ┌──────────┴────────────────┐
+  ┌──────────────┐  REQUEST    ║  │                           │   REQUEST       ┌────────────┐
+  │              ├──(virtual───╫─►│       ClawShell           ├──-(real key,───►│            │
+  │  OpenClaw or │   key)      ║  │                           │   PII redacted) │  OpenAI /  │
+  │ Hermes Agent │             ║  │  DLP scan                 │                 │ Anthropic/ │
+  │ holds only   │  RESPONSE   ║  │  real-key mapping         │   RESPONSE      │ OpenRouter │
+  │ virtual keys │◄────────────║◄─┤  email sender filtering   │◄────────────────┤            │
+  │              │             ║  │                           │                 └────────────┘
+  │              │  EMAIL GET  ║  │                           │   IMAP fetch    ┌────────────┐
+  │              ├───(virtual──║  |                           |───(real key)───►|            |
+  │              │    key)     ║  │                           │                 │ IMAP       │
+  │              │             ║  │                           │                 | Provider   │
+  │              │             ║  │                           │    RESPONSE     │ Gmail /    │
+  │              │  filtered   ║  │                           │◄────────────────│ Outlook /  │
+  │              │◄────────────║◄─|                           |                 │ custom     │
+  └──────────────┘             ║  |                           |                 └────────────┘
+                               ║  └───────────────────────────┘
+</code></pre>
+<p>OpenClaw/Hermes Agent only holds virtual keys and cannot access the real API keys stored in the privileged config.</p>
+<p>ClawShell swaps virtual keys for real ones and scans for PII before forwarding requests upstream.</p>
+<p>ClawShell also enforces sender-based filtering before returning email data.</p>
+<h2>Installation</h2>
+<h3>Cargo</h3>
+<pre><code class="language-bash">cargo install clawshell --locked
+
+# Requires privilege to set up the security boundary
+sudo clawshell onboard
+</code></pre>
+<h3>NPM</h3>
+<pre><code class="language-bash">npm install -g @clawshell/clawshell
+
+# Requires privilege to set up the security boundary
+sudo clawshell onboard
+</code></pre>
+<h3>Build from Source</h3>
+<pre><code class="language-bash">RUSTFLAGS=&quot;--remap-path-prefix=$(pwd)=. --remap-path-prefix=$HOME=/&quot; cargo build --release
+ls -al target/release/clawshell
+</code></pre>
+<h4>Cross-compile on Linux/arm64</h4>
+<pre><code class="language-bash">wget https://musl.cc/x86_64-linux-musl-cross.tgz -O /tmp/musl-cross.tgz
+tar -xzf /tmp/musl-cross.tgz -C /tmp
+CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER=&quot;/tmp/x86_64-linux-musl-cross/bin/x86_64-linux-musl-gcc&quot; \
+RUSTFLAGS=&quot;--remap-path-prefix=$(pwd)=. --remap-path-prefix=$HOME=/&quot; \
+cargo build --release --target x86_64-unknown-linux-musl
+</code></pre>
+<h2>Advanced Usage</h2>
+<h3>Onboarding</h3>
+<p>The <code>onboard</code> command is an interactive setup wizard that must be run with <code>sudo</code>. It:</p>
+<ol>
+<li>Asks which downstream agent to wire through ClawShell — <strong>OpenClaw</strong> or <strong>Hermes Agent</strong> (exactly one per run).</li>
+<li>Creates the <code>clawshell</code> system user.</li>
+<li>Creates and secures <code>/etc/clawshell</code> (mode 700) and <code>/var/log/clawshell</code>.</li>
+<li>Walks you through provider selection, API key entry, and virtual key generation.</li>
+<li>Writes the ClawShell config to <code>/etc/clawshell/clawshell.toml</code>.</li>
+<li>Wires the chosen agent through ClawShell (patches <code>~/.openclaw/openclaw.json</code> for OpenClaw, or runs <code>hermes config set</code> for Hermes).</li>
+<li>Starts the ClawShell daemon.</li>
+</ol>
+<pre><code class="language-bash">sudo clawshell onboard
+</code></pre>
+<h3>More Commands</h3>
+<pre><code class="language-bash"># Start (daemonizes by default)
+sudo clawshell start
+
+# Start in the foreground
+sudo clawshell start --foreground
+
+# Start with a custom config file
+sudo clawshell start -c /path/to/clawshell.toml
+
+# Check status
+clawshell status
+
+# View logs
+clawshell logs
+clawshell logs --level error
+clawshell logs --follow
+
+# Restart / Stop
+sudo clawshell restart
+sudo clawshell stop
+
+# Migrate config schema to current version
+sudo clawshell migrate-config
+</code></pre>
+<p>By default ClawShell listens on <code>127.0.0.1:18790</code>.</p>
+<p>You can override the bind address at runtime with environment variables:</p>
+<pre><code class="language-bash">CLAWSHELL_SERVER_HOST=0.0.0.0 CLAWSHELL_SERVER_PORT=17890 clawshell start --foreground
+</code></pre>
+<h3>Customized Configuration</h3>
+<p>ClawShell reads its config from <code>/etc/clawshell/clawshell.toml</code>. You can view or edit it with:</p>
+<pre><code class="language-bash">sudo clawshell config          # print current config
+sudo clawshell config --edit   # open in $EDITOR
+</code></pre>
+<p>A minimal config looks like this:</p>
+<pre><code class="language-toml">version = &quot;0.2.1&quot;
+log_level = &quot;info&quot;
+
+[server]
+host = &quot;127.0.0.1&quot;
+port = 18790
+
+[upstream]
+openai_base_url = &quot;https://api.openai.com&quot;
+anthropic_base_url = &quot;https://api.anthropic.com&quot;
+
+# Virtual-to-real API key mappings
+[[keys]]
+virtual_key = &quot;vk-alice-001&quot;
+real_key = &quot;sk-your-real-openai-key-here&quot;
+provider = &quot;openai&quot;
+
+[[keys]]
+virtual_key = &quot;vk-claude-001&quot;
+real_key = &quot;sk-ant-your-real-anthropic-key-here&quot;
+provider = &quot;anthropic&quot;
+
+# Data Loss Prevention (DLP)
+# action = &quot;block&quot;  -&gt; reject the request with 400
+# action = &quot;redact&quot; -&gt; replace matches with [REDACTED:&lt;name&gt;] and forward
+[dlp]
+scan_responses = false
+patterns = [
+    { name = &quot;ssn&quot;,       regex = &#39;\b\d{3}-\d{2}-\d{4}\b&#39;,          action = &quot;redact&quot; },
+    { name = &quot;visa_card&quot;, regex = &#39;\b4[0-9]{12}(?:[0-9]{3})?\b&#39;,    action = &quot;redact&quot; },
+    { name = &quot;amex_card&quot;, regex = &#39;\b3[47][0-9]{13}\b&#39;,             action = &quot;redact&quot; },
+]
+
+# Email secure endpoint
+[email]
+enabled = true
+mode = &quot;allowlist&quot;
+allow_senders = [&quot;alice@example.com&quot;, &quot;@trusted.org&quot;]
+deny_senders = []
+default_max_results = 50
+
+[[email.accounts]]
+virtual_key = &quot;vk-email-001&quot;
+email = &quot;bot@gmail.com&quot;
+app_password = &quot;abcd efgh ijkl mnop&quot;
+imap_host = &quot;imap.gmail.com&quot;
+imap_port = 993
+# Outlook preset example:
+# imap_host = &quot;imap-mail.outlook.com&quot;
+</code></pre>
+<h3>OAuth Authentication (Codex / ChatGPT)</h3>
+<p>Instead of a static API key, you can authenticate via OAuth using your ChatGPT / Codex account.</p>
+<h4>Setup via onboard</h4>
+<p>During <code>sudo clawshell onboard</code>, select <strong>&quot;Codex / ChatGPT (OAuth)&quot;</strong> as the provider. The wizard will start a device code flow:</p>
+<ol>
+<li>A URL and one-time code are printed to the terminal.</li>
+<li>Open the URL on any device and enter the code.</li>
+<li>Once authorized, tokens are saved automatically to <code>/etc/clawshell/oauth/</code>.</li>
+</ol>
+<p>No browser is required on the server.</p>
+<h4>Manual configuration</h4>
+<p>To configure OAuth manually in <code>clawshell.toml</code>:</p>
+<pre><code class="language-toml"># OAuth-backed key — no real_key needed
+[[keys]]
+virtual_key = &quot;vk-codex-001&quot;
+auth = &quot;oauth&quot;
+oauth_provider = &quot;codex&quot;
+provider = &quot;openai&quot;
+
+# OAuth provider definition
+[[oauth_providers]]
+provider = &quot;codex&quot;
+# Optional overrides (defaults work for ChatGPT):
+# client_id = &quot;app_EMoamEEZ73f0CkXaXp7hrann&quot;
+# auth_url = &quot;https://auth.openai.com/authorize&quot;
+# token_url = &quot;https://auth.openai.com/oauth/token&quot;
+</code></pre>
+<p>ClawShell handles token refresh automatically. When using Codex OAuth, requests to <code>/v1/chat/completions</code> are translated to the ChatGPT Responses API format and routed to <code>chatgpt.com/backend-api/codex</code>.</p>
+<p>If <code>start</code>, <code>restart</code>, <code>stop</code>, <code>config --edit</code>, <code>onboard</code>, or <code>uninstall</code> reports that migration is required, run:</p>
+<pre><code class="language-bash">sudo clawshell migrate-config --config /etc/clawshell/clawshell.toml
+</code></pre>
+<p>See <a href="https://github.com/clawshell/clawshell/blob/main/clawshell.example.toml"><code>clawshell.example.toml</code></a> for a full example.</p>
+<h3>Agent Target (pick one)</h3>
+<p><code>sudo clawshell onboard</code> begins with a single, mandatory choice:</p>
+<pre><code>=== Agent Target ===
+? Which downstream agent should ClawShell wire through?
+  &gt; OpenClaw
+    Hermes Agent
+</code></pre>
+<p>Each onboard run configures <strong>exactly one</strong> downstream client. There&#39;s no &quot;also configure the other one&quot; path — switching later means re-running <code>sudo clawshell onboard</code> and picking the other target. The prompt has no default preselection, so you pick explicitly every time.</p>
+<h4>OpenClaw target</h4>
+<p>When you pick OpenClaw, the wizard:</p>
+<ul>
+<li>Backs up <code>~/.openclaw/openclaw.json</code> (numbered <code>.bak</code> files, mode 000).</li>
+<li>Shells out to <code>openclaw config set</code> to patch three paths: <code>env.CLAWSHELL_API_KEY</code>, <code>agents.defaults.models.clawshell/&lt;model&gt;</code>, and <code>models.providers.clawshell</code>.</li>
+<li>Writes a <code>get-email-messages</code> skill bundle to <code>&lt;openclaw_root&gt;/skills/</code> when email integration is enabled.</li>
+<li>Offers to run <code>openclaw models set clawshell</code> and <code>openclaw gateway restart</code> at the end.</li>
+</ul>
+<p>This is the historical onboarding flow and is unchanged by the target-selection rework.</p>
+<h4>Hermes Agent target</h4>
+<p>When you pick <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>, the wizard:</p>
+<ul>
+<li><p>Skips every OpenClaw step — <code>~/.openclaw/</code> is <strong>not</strong> touched.</p>
+</li>
+<li><p>Writes a <code>get-email-messages</code> skill bundle to <code>~/.hermes/skills/</code> (owned by your invoking user, not root) when email integration is enabled. Hermes auto-discovers skills from that directory.</p>
+</li>
+<li><p>Shells out to <code>hermes config set</code> to write:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>model.provider</code></td>
+<td><code>custom</code></td>
+</tr>
+<tr>
+<td><code>model.base_url</code></td>
+<td><code>http://&lt;server_host&gt;:&lt;server_port&gt;/v1</code></td>
+</tr>
+<tr>
+<td><code>model.default</code></td>
+<td>the model ID you chose during onboard</td>
+</tr>
+<tr>
+<td><code>model.api_key</code></td>
+<td>your ClawShell <strong>virtual</strong> key (never the real upstream key)</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<p>The <code>hermes</code> binary must be on your <code>PATH</code>. ClawShell drops root privileges before invoking it so writes land under your normal user account, not root&#39;s.</p>
+<h4>Manual Hermes configuration</h4>
+<p>If you&#39;d rather skip the wizard&#39;s Hermes integration, run the equivalent commands from your user account (not root):</p>
+<pre><code class="language-bash">hermes config set model.provider custom
+hermes config set model.base_url http://127.0.0.1:18790/v1
+hermes config set model.default  &lt;your-model-id&gt;
+hermes config set model.api_key  &lt;your-clawshell-virtual-key&gt;
+</code></pre>
+<p>Then verify with <code>hermes config show</code>.</p>
+<h4>Reverting Hermes</h4>
+<p>Hermes has no <code>config unset</code> subcommand. To detach Hermes from ClawShell, set the provider back to auto-detect and Hermes will pick another upstream based on the credentials it still has:</p>
+<pre><code class="language-bash">hermes config set model.provider auto
+</code></pre>
+<h3>Uninstall</h3>
+<pre><code class="language-bash">sudo clawshell uninstall
+</code></pre>
+<h2>License</h2>
+<p>This project is licensed under the <a href="LICENSE">Apache License 2.0</a>.</p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Plugins &amp; Extensions</h2>
+    <div class="related-grid">
+      <a href="/projects/robbyczgw-cla/hermes-web-search-plus" class="related-chip">hermes-web-search-plus <span class="related-stars">21</span></a>
+          <a href="/projects/42-evey/hermes-plugins" class="related-chip">hermes-plugins <span class="related-stars">16</span></a>
+          <a href="/projects/FahrenheitResearch/hermes-weather-plugin" class="related-chip">hermes-weather-plugin <span class="related-stars">7</span></a>
+          <a href="/projects/42-evey/evey-bridge-plugin" class="related-chip">evey-bridge-plugin <span class="related-stars">4</span></a>
+          <a href="/projects/nativ3ai/hermes-payguard" class="related-chip">hermes-payguard <span class="related-stars">4</span></a>
+          <a href="/projects/raulvidis/hermes-cloudflare" class="related-chip">hermes-cloudflare <span class="related-stars">1</span></a>
+    </div>
+    
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>

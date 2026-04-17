@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>gbrain — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
+<meta name="description" content="Garry's Opinionated OpenClaw/Hermes Agent Brain">
+<link rel="canonical" href="https://hermesatlas.com/projects/garrytan/gbrain">
+<meta property="og:title" content="gbrain — Hermes Atlas">
+<meta property="og:description" content="Garry's Opinionated OpenClaw/Hermes Agent Brain">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/garrytan/gbrain">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="gbrain — Hermes Atlas">
+<meta name="twitter:description" content="Garry's Opinionated OpenClaw/Hermes Agent Brain">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
+    --border-subtle: #1e1e30; --border-default: #2a2a44;
+    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
+    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
+    --brand-purple: #a78bfa; --brand-star: #fbbf24;
+    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
+  }
+  [data-theme="light"] {
+    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
+    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
+    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
+    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
+    --brand-star: #d97706;
+    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-base); color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s, color 0.2s;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { color: var(--text-link-hover); text-decoration: underline; }
+
+  .nav {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
+    border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  #theme-toggle:hover { border-color: var(--brand-purple); }
+  #theme-toggle .icon-sun { display: none; }
+  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
+
+  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .breadcrumb { margin-bottom: 16px; }
+  .breadcrumb a {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
+    background: var(--overlay-medium); color: var(--text-tertiary);
+  }
+  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
+
+  .project h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .project-desc {
+    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
+  }
+  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
+  .meta-row .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
+  .meta-row .badge-lang { background: var(--overlay-medium); }
+
+  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
+  .actions a {
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .actions .btn-primary {
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    color: #fff;
+  }
+  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
+  .actions .btn-secondary {
+    background: var(--overlay-medium); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* README styles */
+  .readme {
+    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
+  }
+  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
+  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
+  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
+  .readme a { color: var(--text-link); }
+  .readme strong { color: var(--text-primary); }
+  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+  .readme li { margin-bottom: 4px; }
+  .readme code {
+    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
+    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .readme pre {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
+  }
+  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
+  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
+  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
+
+  /* Related projects */
+  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
+  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .related-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary); white-space: nowrap;
+  }
+  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
+  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
+  .list-link { margin-top: 12px; font-size: 13px; }
+
+  .page-footer {
+    text-align: center; margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .page-footer a { color: var(--text-link); }
+
+  @media (max-width: 600px) {
+    .project { padding: 24px 16px 60px; }
+    .project h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
+  <div class="nav-actions">
+    <a href="/" class="nav-link">Ecosystem Map</a>
+    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
+  </div>
+</nav>
+
+<article class="project">
+  <div class="breadcrumb">
+    <a href="/">Memory &amp; Context</a>
+  </div>
+
+  <h1>gbrain</h1>
+  <p class="project-desc">Garry's Opinionated OpenClaw/Hermes Agent Brain</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 8.9K</span>
+    <span class="badge badge-lang">TypeScript</span>
+    <span class="badge badge-lang">MIT</span>
+    
+    <span>Updated 4/17/2026</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/garrytan/gbrain" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    
+  </div>
+
+  <section class="readme">
+    <h1>GBrain</h1>
+<p>Your AI agent is smart but forgetful. GBrain gives it a brain.</p>
+<p>Built by the President and CEO of Y Combinator to run his actual AI agents. The production brain powering his OpenClaw and Hermes deployments: <strong>17,888 pages, 4,383 people, 723 companies</strong>, 21 cron jobs running autonomously, built in 12 days. The agent ingests meetings, emails, tweets, voice calls, and original ideas while you sleep. It enriches every person and company it encounters. It fixes its own citations and consolidates memory overnight. You wake up and the brain is smarter than when you went to bed.</p>
+<p>GBrain is those patterns, generalized. 25 skills. Install in 30 minutes. Your agent does the work. As Garry&#39;s personal agent gets smarter, so does yours.</p>
+<blockquote>
+<p><strong>~30 minutes to a fully working brain.</strong> Database ready in 2 seconds (PGLite, no server). You just answer questions about API keys.</p>
+</blockquote>
+<h2>Install</h2>
+<h3>On an agent platform (recommended)</h3>
+<p>GBrain is designed to be installed and operated by an AI agent. If you don&#39;t have one running yet:</p>
+<ul>
+<li><strong><a href="https://openclaw.ai">OpenClaw</a></strong> ... Deploy <a href="https://render.com/deploy?repo=https://github.com/chrysb/alphaclaw">AlphaClaw on Render</a> (one click, 8GB+ RAM)</li>
+<li><strong><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a></strong> ... Deploy on <a href="https://github.com/praveen-ks-2001/hermes-agent-template">Railway</a> (one click)</li>
+</ul>
+<p>Paste this into your agent:</p>
+<pre><code>Retrieve and follow the instructions at:
+https://raw.githubusercontent.com/garrytan/gbrain/master/INSTALL_FOR_AGENTS.md
+</code></pre>
+<p>That&#39;s it. The agent clones the repo, installs GBrain, sets up the brain, loads 25 skills, and configures recurring jobs. You answer a few questions about API keys. ~30 minutes.</p>
+<h3>Standalone CLI (no agent)</h3>
+<pre><code class="language-bash">git clone https://github.com/garrytan/gbrain.git &amp;&amp; cd gbrain &amp;&amp; bun install &amp;&amp; bun link
+gbrain init                     # local brain, ready in 2 seconds
+gbrain import ~/notes/          # index your markdown
+gbrain query &quot;what themes show up across my notes?&quot;
+</code></pre>
+<pre><code>3 results (hybrid search, 0.12s):
+
+1. concepts/do-things-that-dont-scale (score: 0.94)
+   PG&#39;s argument that unscalable effort teaches you what users want.
+   [Source: paulgraham.com, 2013-07-01]
+
+2. originals/founder-mode-observation (score: 0.87)
+   Deep involvement isn&#39;t micromanagement if it expands the team&#39;s thinking.
+
+3. concepts/build-something-people-want (score: 0.81)
+   The YC motto. Connected to 12 other brain pages.
+</code></pre>
+<h3>MCP server (Claude Code, Cursor, Windsurf)</h3>
+<p>GBrain exposes 30+ MCP tools via stdio:</p>
+<pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;gbrain&quot;: { &quot;command&quot;: &quot;gbrain&quot;, &quot;args&quot;: [&quot;serve&quot;] }
+  }
+}
+</code></pre>
+<p>Add to <code>~/.claude/server.json</code> (Claude Code), Settings &gt; MCP Servers (Cursor), or your client&#39;s MCP config.</p>
+<h3>Remote MCP (Claude Desktop, Cowork, Perplexity)</h3>
+<pre><code class="language-bash">ngrok http 8787 --url your-brain.ngrok.app
+bun run src/commands/auth.ts create &quot;claude-desktop&quot;
+claude mcp add gbrain -t http https://your-brain.ngrok.app/mcp -H &quot;Authorization: Bearer TOKEN&quot;
+</code></pre>
+<p>Per-client guides: <a href="https://github.com/garrytan/gbrain/blob/main/docs/mcp/DEPLOY.md"><code>docs/mcp/</code></a>. ChatGPT requires OAuth 2.1 (not yet implemented).</p>
+<h2>The 25 Skills</h2>
+<p>GBrain ships 25 skills organized by <code>skills/RESOLVER.md</code>. The resolver tells your agent which skill to read for any task.</p>
+<p><a href="https://x.com/garrytan/status/2042925773300908103">Skill files are code.</a> They&#39;re the most powerful way to get knowledge work done. A skill file is a fat markdown document that encodes an entire workflow: when to fire, what to check, how to chain with other skills, what quality bar to enforce. The agent reads the skill and executes it. Skills can also call deterministic TypeScript code bundled in GBrain (search, import, embed, sync) for the parts that shouldn&#39;t be left to LLM judgment. <a href="https://github.com/garrytan/gbrain/blob/main/docs/ethos/THIN_HARNESS_FAT_SKILLS.md">Thin harness, fat skills</a>: the intelligence lives in the skills, not the runtime.</p>
+<h3>Always-on</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>signal-detector</strong></td>
+<td>Fires on every message. Spawns a cheap model in parallel to capture original thinking and entity mentions. The brain compounds on autopilot.</td>
+</tr>
+<tr>
+<td><strong>brain-ops</strong></td>
+<td>Brain-first lookup before any external API. The read-enrich-write loop that makes every response smarter.</td>
+</tr>
+</tbody></table>
+<h3>Content ingestion</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>ingest</strong></td>
+<td>Thin router. Detects input type and delegates to the right ingestion skill.</td>
+</tr>
+<tr>
+<td><strong>idea-ingest</strong></td>
+<td>Links, articles, tweets become brain pages with analysis, author people pages, and cross-linking.</td>
+</tr>
+<tr>
+<td><strong>media-ingest</strong></td>
+<td>Video, audio, PDF, books, screenshots, GitHub repos. Transcripts, entity extraction, backlink propagation.</td>
+</tr>
+<tr>
+<td><strong>meeting-ingestion</strong></td>
+<td>Transcripts become brain pages. Every attendee gets enriched. Every company gets a timeline entry.</td>
+</tr>
+</tbody></table>
+<h3>Brain operations</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>enrich</strong></td>
+<td>Tiered enrichment (Tier 1/2/3). Creates and updates person/company pages with compiled truth and timelines.</td>
+</tr>
+<tr>
+<td><strong>query</strong></td>
+<td>3-layer search with synthesis and citations. Says &quot;the brain doesn&#39;t have info on X&quot; instead of hallucinating.</td>
+</tr>
+<tr>
+<td><strong>maintain</strong></td>
+<td>Periodic health: stale pages, orphans, dead links, citation audit, back-link enforcement, tag consistency.</td>
+</tr>
+<tr>
+<td><strong>citation-fixer</strong></td>
+<td>Scans pages for missing or malformed citations. Fixes format to match the standard.</td>
+</tr>
+<tr>
+<td><strong>repo-architecture</strong></td>
+<td>Where new brain files go. Decision protocol: primary subject determines directory, not format.</td>
+</tr>
+<tr>
+<td><strong>publish</strong></td>
+<td>Share brain pages as password-protected HTML. Zero LLM calls.</td>
+</tr>
+<tr>
+<td><strong>data-research</strong></td>
+<td>Structured data research with parameterized YAML recipes. Extract investor updates, expenses, company metrics from email.</td>
+</tr>
+</tbody></table>
+<h3>Operational</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>daily-task-manager</strong></td>
+<td>Task lifecycle with priority levels (P0-P3). Stored as searchable brain pages.</td>
+</tr>
+<tr>
+<td><strong>daily-task-prep</strong></td>
+<td>Morning prep: calendar lookahead with brain context per attendee, open threads, task review.</td>
+</tr>
+<tr>
+<td><strong>cron-scheduler</strong></td>
+<td>Schedule staggering (5-min offsets), quiet hours (timezone-aware with wake-up override), idempotency.</td>
+</tr>
+<tr>
+<td><strong>reports</strong></td>
+<td>Timestamped reports with keyword routing. &quot;What&#39;s the latest briefing?&quot; finds it instantly.</td>
+</tr>
+<tr>
+<td><strong>cross-modal-review</strong></td>
+<td>Quality gate via second model. Refusal routing: if one model refuses, silently switch.</td>
+</tr>
+<tr>
+<td><strong>webhook-transforms</strong></td>
+<td>External events (SMS, meetings, social mentions) converted into brain pages with entity extraction.</td>
+</tr>
+<tr>
+<td><strong>testing</strong></td>
+<td>Validates every skill has SKILL.md with frontmatter, manifest coverage, resolver coverage.</td>
+</tr>
+<tr>
+<td><strong>skill-creator</strong></td>
+<td>Create new skills following the conformance standard. MECE check against existing skills.</td>
+</tr>
+</tbody></table>
+<h3>Identity and setup</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>soul-audit</strong></td>
+<td>6-phase interview generating SOUL.md (agent identity), USER.md (user profile), ACCESS_POLICY.md (4-tier privacy), HEARTBEAT.md (operational cadence).</td>
+</tr>
+<tr>
+<td><strong>setup</strong></td>
+<td>Auto-provision PGLite or Supabase. First import. GStack detection.</td>
+</tr>
+<tr>
+<td><strong>migrate</strong></td>
+<td>Universal migration from Obsidian, Notion, Logseq, markdown, CSV, JSON, Roam.</td>
+</tr>
+<tr>
+<td><strong>briefing</strong></td>
+<td>Daily briefing with meeting context, active deals, and citation tracking.</td>
+</tr>
+</tbody></table>
+<h3>Conventions</h3>
+<p>Cross-cutting rules in <code>skills/conventions/</code>:</p>
+<ul>
+<li><strong>quality.md</strong> ... citations, back-links, notability gate, source attribution</li>
+<li><strong>brain-first.md</strong> ... 5-step lookup before any external API call</li>
+<li><strong>model-routing.md</strong> ... which model for which task</li>
+<li><strong>test-before-bulk.md</strong> ... test 3-5 items before any batch operation</li>
+<li><strong>cross-modal.yaml</strong> ... review pairs and refusal routing chain</li>
+</ul>
+<h2>How It Works</h2>
+<pre><code>Signal arrives (meeting, email, tweet, link)
+  -&gt; Signal detector captures ideas + entities (parallel, never blocks)
+  -&gt; Brain-ops: check the brain first (gbrain search, gbrain get)
+  -&gt; Respond with full context
+  -&gt; Write: update brain pages with new information + citations
+  -&gt; Sync: gbrain indexes changes for next query
+</code></pre>
+<p>Every cycle adds knowledge. The agent enriches a person page after a meeting. Next time that person comes up, the agent already has context. The difference compounds daily.</p>
+<p>The system gets smarter on its own. Entity enrichment auto-escalates: a person mentioned once gets a stub page (Tier 3). After 3 mentions across different sources, they get web + social enrichment (Tier 2). After a meeting or 8+ mentions, full pipeline (Tier 1). The brain learns who matters without being told. Deterministic classifiers improve over time via a fail-improve loop that logs every LLM fallback and generates better regex patterns from the failures. <code>gbrain doctor</code> shows the trajectory: &quot;intent classifier: 87% deterministic, up from 40% in week 1.&quot;</p>
+<blockquote>
+<p>&quot;Prep me for my meeting with Jordan in 30 minutes&quot;
+... pulls dossier, shared history, recent activity, open threads</p>
+</blockquote>
+<blockquote>
+<p>&quot;What have I said about the relationship between shame and founder performance?&quot;
+... searches YOUR thinking, not the internet</p>
+</blockquote>
+<h2>Getting Data In</h2>
+<p>GBrain ships integration recipes that your agent sets up for you. Each recipe tells the agent what credentials to ask for, how to validate, and what cron to register.</p>
+<table>
+<thead>
+<tr>
+<th>Recipe</th>
+<th>Requires</th>
+<th>What It Does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://github.com/garrytan/gbrain/blob/main/recipes/ngrok-tunnel.md">Public Tunnel</a></td>
+<td>—</td>
+<td>Fixed URL for MCP + voice (ngrok Hobby $8/mo)</td>
+</tr>
+<tr>
+<td><a href="https://github.com/garrytan/gbrain/blob/main/recipes/credential-gateway.md">Credential Gateway</a></td>
+<td>—</td>
+<td>Gmail + Calendar access</td>
+</tr>
+<tr>
+<td><a href="https://github.com/garrytan/gbrain/blob/main/recipes/twilio-voice-brain.md">Voice-to-Brain</a></td>
+<td>ngrok-tunnel</td>
+<td>Phone calls to brain pages (Twilio + OpenAI Realtime)</td>
+</tr>
+<tr>
+<td><a href="https://github.com/garrytan/gbrain/blob/main/recipes/email-to-brain.md">Email-to-Brain</a></td>
+<td>credential-gateway</td>
+<td>Gmail to entity pages</td>
+</tr>
+<tr>
+<td><a href="https://github.com/garrytan/gbrain/blob/main/recipes/x-to-brain.md">X-to-Brain</a></td>
+<td>—</td>
+<td>Twitter timeline + mentions + deletions</td>
+</tr>
+<tr>
+<td><a href="https://github.com/garrytan/gbrain/blob/main/recipes/calendar-to-brain.md">Calendar-to-Brain</a></td>
+<td>credential-gateway</td>
+<td>Google Calendar to searchable daily pages</td>
+</tr>
+<tr>
+<td><a href="https://github.com/garrytan/gbrain/blob/main/recipes/meeting-sync.md">Meeting Sync</a></td>
+<td>—</td>
+<td>Circleback transcripts to brain pages with attendees</td>
+</tr>
+</tbody></table>
+<p><strong>Data research recipes</strong> extract structured data from email into tracked brain pages. Built-in recipes for investor updates (MRR, ARR, runway, headcount), expense tracking, and company metrics. Create your own with <code>gbrain research init</code>.</p>
+<p>Run <code>gbrain integrations</code> to see status.</p>
+<h2>GBrain + GStack</h2>
+<p><a href="https://github.com/garrytan/gstack">GStack</a> is the engine. GBrain is the mod.</p>
+<ul>
+<li><strong><a href="https://github.com/garrytan/gstack">GStack</a></strong> = coding skills (ship, review, QA, investigate, office-hours, retro). 70,000+ stars, 30,000 developers per day. When your agent codes on itself, it uses GStack.</li>
+<li><strong>GBrain</strong> = everything-else skills (brain ops, signal detection, ingestion, enrichment, cron, reports, identity). When your agent remembers, thinks, and operates, it uses GBrain.</li>
+<li><strong><code>hosts/gbrain.ts</code></strong> = the bridge. Tells GStack&#39;s coding skills to check the brain before coding.</li>
+</ul>
+<p><code>gbrain init</code> detects if GStack is installed and reports mod status. If GStack isn&#39;t there, it tells you how to get it.</p>
+<h2>Architecture</h2>
+<pre><code>┌──────────────────┐    ┌───────────────┐    ┌──────────────────┐
+│   Brain Repo     │    │    GBrain     │    │    AI Agent      │
+│   (git)          │    │  (retrieval)  │    │  (read/write)    │
+│                  │    │               │    │                  │
+│  markdown files  │───&gt;│  Postgres +   │&lt;──&gt;│  25 skills       │
+│  = source of     │    │  pgvector     │    │  define HOW to   │
+│    truth         │    │               │    │  use the brain   │
+│                  │&lt;───│  hybrid       │    │                  │
+│  human can       │    │  search       │    │  RESOLVER.md     │
+│  always read     │    │  (vector +    │    │  routes intent   │
+│  &amp; edit          │    │   keyword +   │    │  to skill        │
+│                  │    │   RRF)        │    │                  │
+└──────────────────┘    └───────────────┘    └──────────────────┘
+</code></pre>
+<p>The repo is the system of record. GBrain is the retrieval layer. The agent reads and writes through both. Human always wins... edit any markdown file and <code>gbrain sync</code> picks up the changes.</p>
+<h2>The Knowledge Model</h2>
+<p>Every page follows the compiled truth + timeline pattern:</p>
+<pre><code class="language-markdown">---
+type: concept
+title: Do Things That Don&#39;t Scale
+tags: [startups, growth, pg-essay]
+---
+
+Paul Graham&#39;s argument that startups should do unscalable things early on.
+The key insight: the unscalable effort teaches you what users actually
+want, which you can&#39;t learn any other way.
+
+---
+
+- 2013-07-01: Published on paulgraham.com
+- 2024-11-15: Referenced in batch W25 kickoff talk
+</code></pre>
+<p>Above the <code>---</code>: <strong>compiled truth</strong>. Your current best understanding. Gets rewritten when new evidence changes the picture. Below: <strong>timeline</strong>. Append-only evidence trail. Never edited, only added to.</p>
+<h2>Search</h2>
+<p>Hybrid search: vector + keyword + RRF fusion + multi-query expansion + 4-layer dedup.</p>
+<pre><code>Query
+  -&gt; Intent classifier (entity? temporal? event? general?)
+  -&gt; Multi-query expansion (Claude Haiku)
+  -&gt; Vector search (HNSW cosine) + Keyword search (tsvector)
+  -&gt; RRF fusion: score = sum(1/(60 + rank))
+  -&gt; Cosine re-scoring + compiled truth boost
+  -&gt; 4-layer dedup + compiled truth guarantee
+  -&gt; Results
+</code></pre>
+<p>Keyword alone misses conceptual matches. Vector alone misses exact phrases. RRF gets both. Search quality is benchmarked and reproducible: <code>gbrain eval --qrels queries.json</code> measures P@k, Recall@k, MRR, and nDCG@k. A/B test config changes before deploying them.</p>
+<h2>Voice</h2>
+<p>Call a phone number. Your AI answers. It knows who&#39;s calling, pulls their full context from the brain, and responds like someone who actually knows your world. When the call ends, a brain page appears with the transcript, entity detection, and cross-references.</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/garrytan/gbrain/main/docs/images/voice-client.png" alt="Voice client connected" width="300" />
+</p>
+
+<blockquote>
+<p><a href="https://x.com/garrytan/status/2043022208512172263">See it in action</a></p>
+</blockquote>
+<p>The voice recipe ships with GBrain: <a href="https://github.com/garrytan/gbrain/blob/main/recipes/twilio-voice-brain.md">Voice-to-Brain</a>. WebRTC works in a browser tab with zero setup. A real phone number is optional.</p>
+<h2>Engine Architecture</h2>
+<pre><code>CLI / MCP Server
+     (thin wrappers, identical operations)
+              |
+      BrainEngine interface (pluggable)
+              |
+     +--------+--------+
+     |                  |
+PGLiteEngine       PostgresEngine
+  (default)          (Supabase)
+     |                  |
+~/.gbrain/           Supabase Pro ($25/mo)
+brain.pglite         Postgres + pgvector
+embedded PG 17.5
+
+     gbrain migrate --to supabase|pglite
+         (bidirectional migration)
+</code></pre>
+<p>PGLite: embedded Postgres, no server, zero config. When your brain outgrows local (1000+ files, multi-device), <code>gbrain migrate --to supabase</code> moves everything.</p>
+<h2>File Storage</h2>
+<p>Brain repos accumulate binaries. GBrain has a three-stage migration:</p>
+<pre><code class="language-bash">gbrain files mirror &lt;dir&gt;       # copy to cloud, local untouched
+gbrain files redirect &lt;dir&gt;     # replace local with .redirect pointers
+gbrain files clean &lt;dir&gt;        # remove pointers, cloud only
+gbrain files restore &lt;dir&gt;      # download everything back (undo)
+</code></pre>
+<p>Storage backends: S3-compatible (AWS, R2, MinIO), Supabase Storage, or local.</p>
+<h2>Commands</h2>
+<pre><code>SETUP
+  gbrain init [--supabase|--url]        Create brain (PGLite default)
+  gbrain migrate --to supabase|pglite   Bidirectional engine migration
+  gbrain upgrade                        Self-update with feature discovery
+
+PAGES
+  gbrain get &lt;slug&gt;                     Read a page (fuzzy slug matching)
+  gbrain put &lt;slug&gt; [&lt; file.md]         Write/update (auto-versions)
+  gbrain delete &lt;slug&gt;                  Delete a page
+  gbrain list [--type T] [--tag T]      List with filters
+
+SEARCH
+  gbrain search &lt;query&gt;                 Keyword search (tsvector)
+  gbrain query &lt;question&gt;              Hybrid search (vector + keyword + RRF)
+
+IMPORT
+  gbrain import &lt;dir&gt; [--no-embed]      Import markdown (idempotent)
+  gbrain sync [--repo &lt;path&gt;]           Git-to-brain incremental sync
+  gbrain export [--dir ./out/]          Export to markdown
+
+FILES
+  gbrain files list|upload|sync|verify  File storage operations
+
+EMBEDDINGS
+  gbrain embed [&lt;slug&gt;|--all|--stale]   Generate/refresh embeddings
+
+LINKS + GRAPH
+  gbrain link|unlink|backlinks|graph    Cross-reference management
+
+ADMIN
+  gbrain doctor [--json] [--fast]       Health checks (resolver, skills, DB, embeddings)
+  gbrain doctor --fix                   Auto-fix resolver issues
+  gbrain stats                          Brain statistics
+  gbrain serve                          MCP server (stdio)
+  gbrain integrations                   Integration recipe dashboard
+  gbrain check-backlinks check|fix      Back-link enforcement
+  gbrain lint [--fix]                   LLM artifact detection
+  gbrain transcribe &lt;audio&gt;             Transcribe audio (Groq Whisper)
+  gbrain research init &lt;name&gt;           Scaffold a data-research recipe
+  gbrain research list                  Show available recipes
+</code></pre>
+<p>Run <code>gbrain --help</code> for the full reference.</p>
+<h2>Origin Story</h2>
+<p>I was setting up my <a href="https://openclaw.ai">OpenClaw</a> agent and started a markdown brain repo. One page per person, one page per company, compiled truth on top, timeline on the bottom. Within a week: 10,000+ files, 3,000+ people, 13 years of calendar data, 280+ meeting transcripts, 300+ captured ideas.</p>
+<p>The agent runs while I sleep. The dream cycle scans every conversation, enriches missing entities, fixes broken citations, consolidates memory. I wake up and the brain is smarter than when I went to sleep.</p>
+<p>The skills in this repo are those patterns, generalized. What took 11 days to build by hand ships as a mod you install in 30 minutes.</p>
+<h2>Docs</h2>
+<p><strong>For agents:</strong></p>
+<ul>
+<li><strong><a href="https://github.com/garrytan/gbrain/blob/main/skills/RESOLVER.md">skills/RESOLVER.md</a></strong> ... Start here. The skill dispatcher.</li>
+<li><a href="skills/">Individual skill files</a> ... 25 standalone instruction sets</li>
+<li><a href="https://github.com/garrytan/gbrain/blob/main/docs/GBRAIN_SKILLPACK.md">GBRAIN_SKILLPACK.md</a> ... Legacy reference architecture</li>
+<li><a href="https://github.com/garrytan/gbrain/blob/main/docs/integrations/README.md">Getting Data In</a> ... Integration recipes and data flow</li>
+<li><a href="https://github.com/garrytan/gbrain/blob/main/docs/GBRAIN_VERIFY.md">GBRAIN_VERIFY.md</a> ... Installation verification</li>
+</ul>
+<p><strong>For humans:</strong></p>
+<ul>
+<li><a href="https://github.com/garrytan/gbrain/blob/main/docs/GBRAIN_RECOMMENDED_SCHEMA.md">GBRAIN_RECOMMENDED_SCHEMA.md</a> ... Brain repo directory structure</li>
+<li><a href="https://github.com/garrytan/gbrain/blob/main/docs/ethos/THIN_HARNESS_FAT_SKILLS.md">Thin Harness, Fat Skills</a> ... Architecture philosophy</li>
+<li><a href="https://github.com/garrytan/gbrain/blob/main/docs/ENGINES.md">ENGINES.md</a> ... Pluggable engine interface</li>
+</ul>
+<p><strong>Reference:</strong></p>
+<ul>
+<li><a href="https://github.com/garrytan/gbrain/blob/main/docs/GBRAIN_V0.md">GBRAIN_V0.md</a> ... Full product spec</li>
+<li><a href="https://github.com/garrytan/gbrain/blob/main/CHANGELOG.md">CHANGELOG.md</a> ... Version history</li>
+</ul>
+<h2>Contributing</h2>
+<p>See <a href="https://github.com/garrytan/gbrain/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>. Run <code>bun test</code> for unit tests. E2E tests: spin up Postgres with pgvector, run <code>bun run test:e2e</code>, tear down.</p>
+<p>PRs welcome for: new enrichment APIs, performance optimizations, additional engine backends, new skills following the conformance standard in <code>skills/skill-creator/SKILL.md</code>.</p>
+<h2>License</h2>
+<p>MIT</p>
+
+  </section>
+
+  <aside class="related">
+    <h2>More in Memory &amp; Context</h2>
+    <div class="related-grid">
+      <a href="/projects/vectorize-io/hindsight" class="related-chip">hindsight <span class="related-stars">8.4K</span></a>
+          <a href="/projects/greyhaven-ai/autocontext" class="related-chip">autocontext <span class="related-stars">711</span></a>
+          <a href="/projects/elkimek/honcho-self-hosted" class="related-chip">honcho-self-hosted <span class="related-stars">126</span></a>
+          <a href="/projects/yoloshii/ClawMem" class="related-chip">ClawMem <span class="related-stars">86</span></a>
+          <a href="/projects/plur-ai/plur" class="related-chip">plur <span class="related-stars">31</span></a>
+          <a href="/projects/amanning3390/flowstate-qmd" class="related-chip">flowstate-qmd <span class="related-stars">5</span></a>
+          <a href="/projects/stephenschoettler/hermes-lcm" class="related-chip">hermes-lcm <span class="related-stars">178</span></a>
+    </div>
+    <p class="list-link"><a href="/lists/best-memory-providers">See all Memory &amp; Context projects →</a></p>
+  </aside>
+</article>
+
+<div class="page-footer">
+  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+</div>
+
+<script>
+  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+</script>
+</body>
+</html>
