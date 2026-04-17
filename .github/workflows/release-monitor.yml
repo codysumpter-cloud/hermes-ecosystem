@@ -73,10 +73,13 @@ jobs:
       - name: Fetch full release notes from repo
         if: steps.check.outputs.new_release == 'true'
         id: notes
+        env:
+          RELEASE_TAG: ${{ steps.check.outputs.tag }}
+          RELEASE_BODY: ${{ steps.check.outputs.body }}
         uses: actions/github-script@v7
         with:
           script: |
-            const tag = '${{ steps.check.outputs.tag }}';
+            const tag = process.env.RELEASE_TAG || '';
             const versionClean = tag.replace(/^v/, '').replace(/[^0-9.]/g, '');
 
             // Try to fetch the RELEASE_vX.Y.Z.md file from the repo
@@ -103,9 +106,11 @@ jobs:
               }
             }
 
-            // Fall back to the release body from GitHub Releases
+            // Fall back to the release body from GitHub Releases.
+            // Read from env to avoid JS string-injection issues with backticks,
+            // ${} template syntax, and quote characters in the release body.
             if (!releaseNotes) {
-              releaseNotes = '${{ steps.check.outputs.body }}'.replace(/\\n/g, '\n');
+              releaseNotes = process.env.RELEASE_BODY || '';
               console.log(`Using GitHub Release body (${releaseNotes.length} chars)`);
             }
 
@@ -120,13 +125,18 @@ jobs:
 
       - name: Create research file and open PR
         if: steps.check.outputs.new_release == 'true' && steps.notes.outputs.has_notes == 'true'
+        env:
+          RELEASE_TAG: ${{ steps.check.outputs.tag }}
+          RELEASE_NAME: ${{ steps.check.outputs.release_name }}
+          PUBLISHED_AT: ${{ steps.check.outputs.published_at }}
+          RELEASE_CONTENT: ${{ steps.notes.outputs.content }}
         uses: actions/github-script@v7
         with:
           script: |
-            const tag = '${{ steps.check.outputs.tag }}';
-            const releaseName = '${{ steps.check.outputs.release_name }}';
-            const publishedAt = '${{ steps.check.outputs.published_at }}';
-            const content = `${{ steps.notes.outputs.content }}`.replace(/\\n/g, '\n');
+            const tag = process.env.RELEASE_TAG || '';
+            const releaseName = process.env.RELEASE_NAME || tag;
+            const publishedAt = process.env.PUBLISHED_AT || '';
+            const content = process.env.RELEASE_CONTENT || '';
             const versionClean = tag.replace(/^v/, '').replace(/[^0-9.]/g, '');
 
             // Build the research file content (inline to keep YAML block
