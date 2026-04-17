@@ -838,5 +838,15 @@
     "url": "https://github.com/beardthelion/hermes-skill-distillation",
     "official": false,
     "category": "Forks & Derivatives"
+  },
+  {
+    "owner": "xaspx",
+    "repo": "hermes-control-interface",
+    "name": "hermes-control-interface",
+    "description": "A self-hosted web dashboard for the Hermes AI agent stack. Provides a browser-based terminal, file explorer, session overview, cron management, system metrics, and an agent status panel — all behind a",
+    "stars": 323,
+    "url": "https://github.com/xaspx/hermes-control-interface",
+    "official": false,
+    "category": "Developer Tools"
   }
 ]
