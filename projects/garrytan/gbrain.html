@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>GBrain</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">GBrain is a persistent memory and context layer designed to transform AI agents into long-term knowledge repositories. It utilizes a local PGLite database and a library of 25 specialized skills to ingest, enrich, and cross-link data from meetings, emails, and social media. The system operates on a &quot;brain-first&quot; principle, requiring agents to query internal memory for context before executing external API calls or generating responses. This architecture enables autonomous background tasks like citation fixing, entity extraction, and automated daily briefings via MCP server integrations.</p>
+    <ul class="summary-highlights">
+      <li>Provides 25 specialized skills for autonomous data ingestion and enrichment</li>
+      <li>Exposes 30+ MCP tools for integration with Claude and Cursor</li>
+      <li>Uses PGLite for zero-config local vector and relational storage</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>GBrain</h1>
 <p>Your AI agent is smart but forgetful. GBrain gives it a brain.</p>
 <p>Built by the President and CEO of Y Combinator to run his actual AI agents. The production brain powering his OpenClaw and Hermes deployments: <strong>17,888 pages, 4,383 people, 723 companies</strong>, 21 cron jobs running autonomously, built in 12 days. The agent ingests meetings, emails, tweets, voice calls, and original ideas while you sleep. It enriches every person and company it encounters. It fixes its own citations and consolidates memory overnight. You wake up and the brain is smarter than when you went to bed.</p>
 <p>GBrain is those patterns, generalized. 25 skills. Install in 30 minutes. Your agent does the work. As Garry&#39;s personal agent gets smarter, so does yours.</p>
@@ -639,7 +674,8 @@ ADMIN
 <h2>License</h2>
 <p>MIT</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Memory &amp; Context</h2>

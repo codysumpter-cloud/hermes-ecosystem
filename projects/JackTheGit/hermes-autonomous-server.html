@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>🚀 Hermes Agent – Autonomous Linux Server Setup</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">This project provides a deployment framework for running Hermes Agent as a persistent, headless Linux service. It utilizes systemd to manage the Hermes Gateway, ensuring the agent remains active across reboots without requiring an open terminal session. The setup integrates with the Nous Portal for model access and leverages the native Hermes cron scheduler to automate recurring AI tasks. This approach offers a stable, self-hosted alternative to manual shell loops or third-party hosting for autonomous server operations.</p>
+    <ul class="summary-highlights">
+      <li>Configures Hermes Gateway as a reboot-safe systemd service</li>
+      <li>Enables autonomous execution of recurring AI cron jobs</li>
+      <li>Supports headless operation on Ubuntu and Debian servers</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>🚀 Hermes Agent – Autonomous Linux Server Setup</h1>
 <p align="center">
   A clean, reboot-safe, headless deployment guide for Hermes Agent.
 </p>
@@ -421,7 +456,8 @@ hermes uninstall
 <h2>Disclaimer</h2>
 <p>This repository is an independent deployment guide and is not affiliated with or endorsed by Nous Research.</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Deployment &amp; Infra</h2>

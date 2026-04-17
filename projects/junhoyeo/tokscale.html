@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -199,8 +221,21 @@
     <a href="https://tokscale.ai" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
   </div>
 
-  <section class="readme">
-    <!-- <CENTERED SECTION FOR GITHUB DISPLAY> -->
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Tokscale is a high-performance CLI tool and visualization dashboard designed to track token consumption and costs across various AI coding agents. It operates by scanning local databases and session files from supported clients to aggregate usage data into a native Rust TUI or a web-based dashboard. The tool provides real-time pricing calculations using LiteLLM data, accounting for tiered pricing and cache discounts. It supports a wide range of integrations including Hermes Agent, Claude Code, Cursor, and GitHub Copilot CLI.</p>
+    <ul class="summary-highlights">
+      <li>Tracks token usage across 20+ AI coding agents and CLIs</li>
+      <li>Provides real-time cost estimation using LiteLLM pricing data</li>
+      <li>Features a native Rust TUI and 3D contribution visualization</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <!-- <CENTERED SECTION FOR GITHUB DISPLAY> -->
 
 <div align="center">
 
@@ -1782,7 +1817,8 @@ $env:COPILOT_OTEL_FILE_EXPORTER_PATH = Join-Path $otelDir (&quot;copilot-otel-{0
 <hr>
 <p><em>README truncated. <a href="https://github.com/junhoyeo/tokscale#readme">Continue reading on GitHub</a></em></p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Developer Tools</h2>

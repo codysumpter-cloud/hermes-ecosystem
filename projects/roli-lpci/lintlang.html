@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -199,8 +221,21 @@
     <a href="https://hermes-labs.ai" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
   </div>
 
-  <section class="readme">
-    <h1>lintlang</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">lintlang is a static linter designed to identify language-based bugs in AI agent configurations, tool descriptions, and system prompts. It uses seven structural detectors (H1-H7) to find issues like tool ambiguity and missing termination conditions without requiring LLM calls. The tool integrates into CI pipelines to gate deployments based on finding severity. It supports YAML, JSON, and plain text formats for a wide range of agent frameworks.</p>
+    <ul class="summary-highlights">
+      <li>Static analysis with zero LLM calls, cost, or latency</li>
+      <li>Seven structural detectors for common agent failure modes</li>
+      <li>CI integration with verdict-based gating (PASS, REVIEW, FAIL)</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>lintlang</h1>
 <p><a href="https://github.com/roli-lpci/lintlang/actions/workflows/ci.yml"><img src="https://github.com/roli-lpci/lintlang/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
 <a href="https://pypi.org/project/lintlang/"><img src="https://img.shields.io/pypi/v/lintlang" alt="PyPI version"></a>
 <a href="https://pypi.org/project/lintlang/"><img src="https://img.shields.io/pypi/dm/lintlang" alt="PyPI downloads"></a>
@@ -465,7 +500,8 @@ pytest
 <h2>License</h2>
 <p><a href="LICENSE">Apache 2.0</a></p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Developer Tools</h2>

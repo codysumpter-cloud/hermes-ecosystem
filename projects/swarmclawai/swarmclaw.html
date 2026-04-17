@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">Self-hosted multi-agent AI runtime with MCP server support. Build, orchestrate, and run autonomous agents with memory, skills, schedules, and 23+ LLM providers (Claude, GPT, Gemini, OpenRouter, Ollama).</p>
 
   <div class="meta-row">
-    <span class="stars">★ 359</span>
+    <span class="stars">★ 362</span>
     <span class="badge badge-lang">TypeScript</span>
     <span class="badge badge-lang">MIT</span>
     
@@ -199,8 +221,21 @@
     <a href="https://www.swarmclaw.ai" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
   </div>
 
-  <section class="readme">
-    <h1>SwarmClaw</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">SwarmClaw is a self-hosted runtime designed for orchestrating and managing autonomous AI agent swarms. It functions as an execution environment that supports multi-agent delegation, persistent memory, and scheduled tasks across various model providers. The platform integrates with the Model Context Protocol (MCP) and allows agents to learn new skills from reviewed conversations. Users can visualize agent hierarchies through an organizational chart and manage complex workflows using a variety of CLI-based backends and local sandboxes.</p>
+    <ul class="summary-highlights">
+      <li>Supports 23 model providers including Hermes, OpenAI, and Anthropic</li>
+      <li>MCP-native architecture with runtime skill learning and delegation</li>
+      <li>Self-hosted runtime with Docker-based browser sandboxing for agents</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>SwarmClaw</h1>
 <p><a href="https://github.com/swarmclawai/swarmclaw/actions/workflows/ci.yml"><img src="https://github.com/swarmclawai/swarmclaw/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
 <a href="https://github.com/swarmclawai/swarmclaw/releases"><img src="https://img.shields.io/github/v/tag/swarmclawai/swarmclaw" alt="Release"></a>
 <a href="https://www.npmjs.com/package/@swarmclawai/swarmclaw"><img src="https://img.shields.io/npm/v/%40swarmclawai%2Fswarmclaw?label=npm" alt="npm"></a></p>
@@ -639,7 +674,8 @@ OTEL_EXPORTER_OTLP_HEADERS=Authorization=Bearer your-token
 <li>CLI reference: <a href="https://swarmclaw.ai/docs/cli">https://swarmclaw.ai/docs/cli</a></li>
 </ul>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Multi-Agent &amp; Orchestration</h2>

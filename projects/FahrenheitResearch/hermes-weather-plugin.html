@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>Hermes Weather Plugin</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">The Hermes Weather Plugin provides a suite of 13 meteorological tools for the Hermes Agent ecosystem, enabling real-time access to observations, forecasts, and high-fidelity model imagery. It utilizes a Python-first architecture that offloads heavy computational tasks, such as NEXRAD radar rendering and ECAPE calculations, to high-performance Rust backends. The plugin features an automated bootstrap process that compiles necessary Rust binaries on first use, ensuring a streamlined setup for complex weather analysis. Users can retrieve verified model soundings, severe weather outlooks from the SPC, and global data via Open-Meteo integration.</p>
+    <ul class="summary-highlights">
+      <li>Thirteen tools for NWS forecasts, radar imagery, and severe weather alerts</li>
+      <li>Rust-backed meteorological calculations for ECAPE, soundings, and parcel profiles</li>
+      <li>Automated bootstrap system for compiling and caching required Rust binaries</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>Hermes Weather Plugin</h1>
 <p>Weather plugin for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>.</p>
 <p>It provides 13 tools for observations, forecasts, alerts, model imagery, radar, soundings, calculations, and ECAPE. The plugin is packaged for Hermes plugin autodiscovery and bootstraps its Rust backends on first use instead of requiring users to clone and build multiple repos by hand.</p>
 <h2>Install</h2>
@@ -412,7 +447,8 @@ $env:ECAPE_RS_RUNNER = &#39;C:\path\to\run_case.exe&#39;
 <li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</li>
 </ul>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Plugins &amp; Extensions</h2>

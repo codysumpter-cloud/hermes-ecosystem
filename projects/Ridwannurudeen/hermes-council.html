@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">Adversarial multi-perspective council MCP server for hermes-agent</p>
 
   <div class="meta-row">
-    <span class="stars">★ 9</span>
+    <span class="stars">★ 11</span>
     <span class="badge badge-lang">Python</span>
     <span class="badge badge-lang">MIT</span>
     
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <p><a href="https://github.com/Ridwannurudeen/hermes-council/actions/workflows/ci.yml"><img src="https://github.com/Ridwannurudeen/hermes-council/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Hermes-council is an MCP server designed to provide adversarial, multi-perspective decision-making for the hermes-agent ecosystem. It functions by orchestrating five distinct personas—Advocate, Skeptic, Oracle, Contrarian, and Arbiter—to debate complex questions through structured deliberation. The system produces calibrated verdicts with confidence scores and evidence links, and it can be used to generate DPO preference pairs for Reinforcement Learning training.</p>
+    <ul class="summary-highlights">
+      <li>Five distinct intellectual personas for adversarial deliberation</li>
+      <li>Generates DPO preference pairs for RL training</li>
+      <li>Supports custom persona configuration via YAML</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <p><a href="https://github.com/Ridwannurudeen/hermes-council/actions/workflows/ci.yml"><img src="https://github.com/Ridwannurudeen/hermes-council/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
 <a href="https://github.com/Ridwannurudeen/hermes-council/actions/workflows/ci.yml"><img src="https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/Ridwannurudeen/316e2a72a4089fdb4fddc9980ed1c28b/raw/coverage.json" alt="Coverage"></a></p>
 <h1>hermes-council</h1>
 <p>Adversarial multi-perspective council MCP server for <a href="https://github.com/NousResearch/hermes-agent">hermes-agent</a>.</p>
@@ -391,7 +426,8 @@ pytest
 <h2>License</h2>
 <p>MIT</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Integrations &amp; Bridges</h2>

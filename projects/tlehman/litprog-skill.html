@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">Literate programming skill for agent harnesses like Claude Code, OpenCode and Hermes Agent</p>
 
   <div class="meta-row">
-    <span class="stars">★ 94</span>
+    <span class="stars">★ 95</span>
     <span class="badge badge-lang">TypeScript</span>
     
     
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>Literate Programming Skill for Claude Code</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">The litprog-skill is a Claude Code extension that implements Donald Knuth's literate programming paradigm by transforming codebases into human-readable narratives. It works by generating a .lit.md file that weaves together prose, Mermaid diagrams, and LaTeX math with the original source code. The tool includes a tangler to extract runnable files and a reverse-sync engine to ensure the documentation stays updated when source files are edited. This approach helps developers document architectural decisions and facilitates easier onboarding through structured, essay-like code explanations.</p>
+    <ul class="summary-highlights">
+      <li>Generates .lit.md files combining prose, diagrams, and source code</li>
+      <li>Extracts runnable source files from documentation using a tangler</li>
+      <li>Automatically syncs source file edits back to the literate document</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>Literate Programming Skill for Claude Code</h1>
 <p>A Claude Code skill that transforms codebases into literate programs. These are documents written for human comprehension that also generate the original source code.</p>
 <h2>What is Literate Programming?</h2>
 <p>Literate programming was invented by <strong>Donald Knuth</strong> in 1984. Knuth is the author of <em>The Art of Computer Programming</em>, creator of TeX, and winner of the 1974 Turing Award. He introduced literate programming as a paradigm where programs are written as essays for human readers, with code embedded in a narrative.</p>
@@ -262,7 +297,8 @@ cp litprog-skill/SKILL.md your-project/.claude/skills/literate-programming.md
 <li><strong>Knowledge transfer</strong>: Useful for onboarding, code reviews, and preserving institutional knowledge. A new team member can read the literate program start to finish and understand the system.</li>
 </ul>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Skills &amp; Skill Registries</h2>

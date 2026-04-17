@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">Run Hermes Agent and OpenClaw on the same WeChat account</p>
 
   <div class="meta-row">
-    <span class="stars">★ 113</span>
+    <span class="stars">★ 114</span>
     <span class="badge badge-lang">Python</span>
     <span class="badge badge-lang">MIT</span>
     
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>HermesClaw</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">HermesClaw is an integration bridge that enables Hermes Agent and OpenClaw to operate simultaneously on a single WeChat account. It functions as a central iLink poller that creates two local proxy servers, allowing both gateways to receive messages without the 403 errors typically caused by token conflicts. Users can toggle between agents or receive responses from both simultaneously using commands like /hermes, /openclaw, and /both. The tool is a lightweight Python proxy that forwards raw protocol messages, ensuring native handling of media and voice transcriptions by each respective gateway.</p>
+    <ul class="summary-highlights">
+      <li>Enables dual-agent operation on one WeChat iLink account</li>
+      <li>Routes messages via /hermes, /openclaw, or /both commands</li>
+      <li>Automated installation script patches existing gateway configurations</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>HermesClaw</h1>
 <p><strong>Dual-open <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> and <a href="https://github.com/openclaw/openclaw">OpenClaw</a> on the same WeChat account. One command to install.</strong></p>
 <p><strong>在同一个微信账号上同时双开 <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> 和 <a href="https://github.com/openclaw/openclaw">OpenClaw</a>。一条命令安装。</strong></p>
 <p align="center">
@@ -455,7 +490,8 @@ rm -rf &quot;$HOME/hermesclaw&quot;
 </ul>
 <p>HermesClaw is a community bridge. It is not affiliated with NousResearch or OpenClaw.</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Integrations &amp; Bridges</h2>

@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">Pan by Euraika — a self-hosted AI workspace for Hermes Agent. Chat, skills, extensions, memory, profiles, and runtime controls.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 47</span>
+    <span class="stars">★ 49</span>
     <span class="badge badge-lang">TypeScript</span>
     <span class="badge badge-lang">MIT</span>
     
@@ -199,8 +221,21 @@
     <a href="https://github.com/Euraika-Labs/pan-ui#readme" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
   </div>
 
-  <section class="readme">
-    <p align="center">
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Pan is a self-hosted web dashboard and workspace designed specifically for the Hermes Agent runtime. It provides a centralized interface to manage agent interactions through a chat-first environment that includes session management, tool timelines, and approval workflows. The platform integrates directly with the Hermes API and filesystem to handle skill discovery via skills.sh, MCP server configuration, and profile-scoped memory management. Users can deploy the interface as a background daemon or system service to maintain a persistent management layer for their AI agents.</p>
+    <ul class="summary-highlights">
+      <li>Unified dashboard for chat, memory management, and agent profile isolation</li>
+      <li>Integrated marketplace for discovering and installing skills and MCP servers</li>
+      <li>Automated setup wizard with support for daemon and systemd execution</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <p align="center">
   <img src="https://raw.githubusercontent.com/Euraika-Labs/pan-ui/main/docs/assets/pan-logo.svg" alt="Pan by Euraika" width="120" />
 </p>
 
@@ -602,7 +637,8 @@ npm run dev
 <h2>License</h2>
 <p><a href="LICENSE">MIT</a> © <a href="https://github.com/Euraika-Labs">Euraika Labs</a></p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Workspaces &amp; GUIs</h2>

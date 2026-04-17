@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">A mysterious multi-agent swarm framework summoned by TAW Agent from 1971 to help you craft a better future towards 2133 &amp; beyond. Ankh.md is a Hermes Agent (Nous Research) launch exclusive.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 33</span>
+    <span class="stars">★ 34</span>
     <span class="badge badge-lang">Shell</span>
     <span class="badge badge-lang">MIT</span>
     
@@ -199,8 +221,21 @@
     <a href="https://www.ankh.md" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
   </div>
 
-  <section class="readme">
-    <h1>Ankh.md</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Ankh.md is an open-source framework designed to transform a single Hermes Agent into multiple specialized, project-specific instances. It works by detecting a local `.agent/` directory and dynamically overriding the default `hermes` command with a scoped agent configuration. This allows developers to maintain unique instructions, skills, and memories for different codebases or workflows without cross-project interference.</p>
+    <ul class="summary-highlights">
+      <li>Per-folder scoping with local configuration and skills</li>
+      <li>Seamlessly switches between default and scoped Hermes agents</li>
+      <li>Supports project-local memories, tools, and custom instructions</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>Ankh.md</h1>
 <p><strong><a href="https://Ankh.md">Ankh.md</a></strong> (also known as Agent Ankh) is a 100% free, open-source, MIT-licensed agentic framework that helps you go from one Hermes Agent to multiple individually scoped Hermes Agents. </p>
 <p>Ankh Hermes Agents live within your files &amp; projects to help you create &amp; use specialized agentic workflows.</p>
 <p>By default, Hermes Agent is a default experience you call from anywhere using <code>hermes</code>. After you install Ankh.md &amp; craft a local agent in a folder, the <code>hermes</code> command runs the Ankh instead of the default Hermes Agent.</p>
@@ -392,7 +427,8 @@
 <h2>License</h2>
 <p>MIT</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Developer Tools</h2>

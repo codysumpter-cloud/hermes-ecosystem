@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">Native web workspace for Hermes Agent — chat, terminal, memory, skills, inspector.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 1.5K</span>
+    <span class="stars">★ 1.6K</span>
     <span class="badge badge-lang">TypeScript</span>
     <span class="badge badge-lang">MIT</span>
     
@@ -199,8 +221,21 @@
     <a href="https://hermes-workspace.com" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
   </div>
 
-  <section class="readme">
-    <div align="center">
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Hermes Workspace is a native web-based command center designed to manage and orchestrate AI agents through a unified graphical interface. It functions as a Progressive Web App that connects to OpenAI-compatible backends or the Hermes gateway to provide real-time SSE streaming of agent outputs and tool calls. The platform integrates a terminal, file browser, and an inspector for searching and editing agent memory and skills. It supports local model providers like Ollama and LM Studio, offering enhanced session persistence and job tracking when routed through a dedicated gateway.</p>
+    <ul class="summary-highlights">
+      <li>Unified interface for chat, terminal, memory browser, and skills management</li>
+      <li>Real-time SSE streaming with visual rendering for agent tool calls</li>
+      <li>Supports local backends including Ollama, Atomic Chat, and vLLM</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <div align="center">
 
 <img src="https://raw.githubusercontent.com/outsourc-e/hermes-workspace/main/public/hermes-avatar.webp" alt="Hermes Workspace" width="80" style="border-radius: 16px" />
 
@@ -670,7 +705,8 @@ docker compose up --build
   <sub>Built with ⚡ by <a href="https://github.com/outsourc-e">@outsourc-e</a> and the Hermes Workspace community</sub>
 </div>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Workspaces &amp; GUIs</h2>

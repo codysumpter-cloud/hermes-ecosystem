@@ -58,6 +58,12 @@
   .list-page th { text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-tertiary); border-bottom: 1px solid var(--border-subtle); background: var(--overlay-medium); }
   .list-page td { padding: 10px 12px; border-bottom: 1px solid var(--border-subtle); }
   .list-page tr:hover td { background: var(--overlay-medium); }
+  .listicle { margin-top: 32px; border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .listicle h2 { font-size: 18px; font-weight: 800; margin-bottom: 16px; }
+  .listicle-entry { margin-bottom: 20px; }
+  .listicle-entry h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .listicle-entry h3 a { color: var(--text-link); }
+  .listicle-entry p { font-size: 14px; line-height: 1.7; color: var(--text-secondary); margin: 0; }
   .back-link { margin-top: 24px; font-size: 13px; }
   .page-footer { text-align: center; margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border-subtle); font-size: 11px; color: var(--text-muted); }
   .page-footer a { color: var(--text-link); }
@@ -87,46 +93,82 @@
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">2</td>
         <td><a href="/projects/outsourc-e/hermes-workspace"><strong>hermes-workspace</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 1.5K</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 1.6K</td>
         <td style="color:var(--text-secondary);font-size:13px">Native web workspace for Hermes Agent — chat, terminal, memory, skills, inspector.</td>
       </tr>
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">3</td>
         <td><a href="/projects/xaspx/hermes-control-interface"><strong>hermes-control-interface</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 325</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 332</td>
         <td style="color:var(--text-secondary);font-size:13px">A self-hosted web dashboard for the Hermes AI agent stack. Provides a browser-based terminal, file explorer, session ove</td>
       </tr>
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">4</td>
         <td><a href="/projects/dodo-reach/hermes-desktop"><strong>hermes-desktop</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 313</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 325</td>
         <td style="color:var(--text-secondary);font-size:13px">A native Mac workspace for Hermes: real SSH, real terminal, real session data.</td>
       </tr>
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">5</td>
         <td><a href="/projects/fathah/hermes-desktop"><strong>hermes-desktop</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 256</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 257</td>
         <td style="color:var(--text-secondary);font-size:13px">Desktop Companion for Hermes Agent</td>
       </tr>
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">6</td>
         <td><a href="/projects/sanchomuzax/hermes-webui"><strong>hermes-webui</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 84</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 85</td>
         <td style="color:var(--text-secondary);font-size:13px">Process monitoring and configuration dashboard for Hermes Agent</td>
       </tr>
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">7</td>
         <td><a href="/projects/Euraika-Labs/pan-ui"><strong>pan-ui</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 47</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 49</td>
         <td style="color:var(--text-secondary);font-size:13px">Pan by Euraika — a self-hosted AI workspace for Hermes Agent. Chat, skills, extensions, memory, profiles, and runtime co</td>
       </tr>
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">8</td>
         <td><a href="/projects/pyrate-llama/hermes-ui"><strong>hermes-ui</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 25</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 27</td>
         <td style="color:var(--text-secondary);font-size:13px">Glassmorphic web interface for Hermes Agent — your self-hosted AI assistant</td>
       </tr></tbody>
   </table>
+  
+  <section class="listicle">
+    <h2>Project Breakdown</h2>
+    <div class="listicle-entry">
+      <h3><a href="/projects/nesquena/hermes-webui">hermes-webui</a></h3>
+      <p>This lightweight web interface offers full feature parity with the Hermes CLI through a streamlined three-panel layout for chat, sessions, and file browsing. Built with Python and vanilla JavaScript, it provides a responsive, mobile-friendly experience without the complexity of modern build tools.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/outsourc-e/hermes-workspace">hermes-workspace</a></h3>
+      <p>A comprehensive native web workspace that unifies chat, terminal access, and memory browsing into a single interface. It features real-time SSE streaming for visual tool-call rendering and supports diverse local backends including Ollama and vLLM.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/xaspx/hermes-control-interface">hermes-control-interface</a></h3>
+      <p>This self-hosted dashboard functions as a multi-agent gateway, allowing users to configure profiles and monitor system metrics in real-time. It stands out for its granular security, offering role-based access control with 28 distinct permissions and detailed token cost analytics.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/dodo-reach/hermes-desktop">hermes-desktop</a></h3>
+      <p>A native macOS workspace that provides direct SSH connectivity to Hermes without requiring local file mirroring or background daemons. It includes a multi-tabbed terminal with live theme controls and a profile-aware interface for managing remote sessions and cron jobs.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/fathah/hermes-desktop">hermes-desktop</a></h3>
+      <p>This desktop companion simplifies the initial setup of Hermes Agent through guided installation and dependency resolution. Beyond local chat, it serves as a configuration hub for connecting agents to messaging platforms like Discord and Telegram.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/sanchomuzax/hermes-webui">hermes-webui</a></h3>
+      <p>Focused on observability, this dashboard provides real-time monitoring of session activity, gateway status, and operational costs. It enables deep inspection of agent history through full-text SQLite search and a read-only view of scheduled cron jobs.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/Euraika-Labs/pan-ui">pan-ui</a></h3>
+      <p>A self-hosted workspace that emphasizes agent isolation and extensibility through a built-in marketplace for skills and MCP servers. It features an automated setup wizard that supports daemon and systemd execution for persistent background operation.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/pyrate-llama/hermes-ui">hermes-ui</a></h3>
+      <p>This glassmorphic web interface utilizes a unique single-file React architecture that requires no build steps or external dependencies. It provides real-time log streaming and tool-call visualization alongside an integrated memory inspector for rapid agent configuration.</p>
+    </div>
+  </section>
   <p class="back-link"><a href="/">← Back to Ecosystem Map</a></p>
 </article>
 <div class="page-footer">

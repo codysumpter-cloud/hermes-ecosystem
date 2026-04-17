@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>🧬 Hermes Agent Self-Evolution</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Hermes Agent Self-Evolution is an automated optimization framework designed to improve the performance of Hermes Agent without requiring GPU training. The system utilizes DSPy and Genetic-Pareto Prompt Evolution (GEPA) to analyze execution traces and mutate skill files, prompts, and tool descriptions. It validates candidate improvements through a rigorous pipeline of synthetic or session-based evaluations, constraint gates, and mandatory test suites. The final output is a refined version of the agent's components delivered via pull requests for human review.</p>
+    <ul class="summary-highlights">
+      <li>Optimizes skills and prompts using reflective evolutionary search via API calls.</li>
+      <li>Analyzes execution traces to understand and fix specific failure points.</li>
+      <li>Enforces strict guardrails including size limits and 100% test pass rates.</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>🧬 Hermes Agent Self-Evolution</h1>
 <p><strong>Evolutionary self-improvement for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>.</strong></p>
 <p>Hermes Agent Self-Evolution uses DSPy + GEPA (Genetic-Pareto Prompt Evolution) to automatically evolve and optimize Hermes Agent&#39;s skills, tool descriptions, system prompts, and code — producing measurably better versions through reflective evolutionary search.</p>
 <p><strong>No GPU training required.</strong> Everything operates via API calls — mutating text, evaluating results, and selecting the best variants. ~$2-10 per optimization run.</p>
@@ -315,7 +350,8 @@ python -m evolution.skills.evolve_skill \
 <h2>License</h2>
 <p>MIT — © 2026 Nous Research</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Core &amp; Official</h2>

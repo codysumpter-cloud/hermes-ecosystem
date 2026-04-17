@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>PLUR — Your agents share the same memory</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">PLUR is a local-first persistent memory layer designed to synchronize agent corrections, preferences, and conventions across different tools and sessions. It stores knowledge as plain YAML &quot;engrams&quot; on disk and utilizes a hybrid retrieval system combining BM25 search and BGE embeddings without requiring external API calls. The system uses an activation model where memories strengthen with use and naturally decay over time to ensure context remains relevant. It integrates directly with MCP-compatible tools, Claude Code, and Hermes Agent to automate the capture and injection of learned information.</p>
+    <ul class="summary-highlights">
+      <li>Stores persistent memory locally as open-format YAML engrams</li>
+      <li>Hybrid retrieval using BM25 and embeddings with zero API costs</li>
+      <li>Automatic memory decay and strengthening based on usage frequency</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>PLUR — Your agents share the same memory</h1>
 <p>Persistent memory for AI agents. Local-first, zero-cost, works across MCP tools.</p>
 <p><a href="https://plur.ai">plur.ai</a> · <a href="https://plur.ai/benchmark.html">Benchmark</a> · <a href="https://plur.ai/spec.html">Engram Spec</a> · <a href="https://www.npmjs.com/org/plur-ai">npm</a></p>
 <h2>The idea</h2>
@@ -499,7 +534,8 @@ pnpm install &amp;&amp; pnpm build &amp;&amp; pnpm test
 <h2>License</h2>
 <p>Apache-2.0</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Memory &amp; Context</h2>

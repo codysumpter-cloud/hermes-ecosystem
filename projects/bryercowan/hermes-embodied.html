@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>Hermes Embodied: Self-Improving Robotics via Hermes Agent</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Hermes Embodied is a robotics extension for Hermes Agent that enables autonomous fine-tuning of Vision-Language-Action (VLA) models through natural language. The system orchestrates a self-improvement loop by collecting robot trajectories in simulation or hardware, provisioning cloud GPUs via Vast.ai, and retraining models when performance thresholds are met. It integrates with the LeRobot framework and MuJoCo simulation to automate the transition from data collection to model promotion. This allows users to manage complex robotics training pipelines without manual machine learning expertise.</p>
+    <ul class="summary-highlights">
+      <li>Automates VLA fine-tuning loops using natural language commands</li>
+      <li>Provisions and manages Vast.ai cloud GPU instances autonomously</li>
+      <li>Supports SmolVLA and GR00T models for simulation or physical hardware</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>Hermes Embodied: Self-Improving Robotics via Hermes Agent</h1>
 <blockquote>
 <p>&quot;Any robot owner can fine-tune a state-of-the-art VLA by talking to their agent. No ML expertise needed.&quot;</p>
 </blockquote>
@@ -362,7 +397,8 @@
 <h2>License</h2>
 <p>MIT</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Domain Applications</h2>

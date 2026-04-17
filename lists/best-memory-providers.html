@@ -58,6 +58,12 @@
   .list-page th { text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-tertiary); border-bottom: 1px solid var(--border-subtle); background: var(--overlay-medium); }
   .list-page td { padding: 10px 12px; border-bottom: 1px solid var(--border-subtle); }
   .list-page tr:hover td { background: var(--overlay-medium); }
+  .listicle { margin-top: 32px; border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .listicle h2 { font-size: 18px; font-weight: 800; margin-bottom: 16px; }
+  .listicle-entry { margin-bottom: 20px; }
+  .listicle-entry h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .listicle-entry h3 a { color: var(--text-link); }
+  .listicle-entry p { font-size: 14px; line-height: 1.7; color: var(--text-secondary); margin: 0; }
   .back-link { margin-top: 24px; font-size: 13px; }
   .page-footer { text-align: center; margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border-subtle); font-size: 11px; color: var(--text-muted); }
   .page-footer a { color: var(--text-link); }
@@ -93,25 +99,25 @@
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">3</td>
         <td><a href="/projects/greyhaven-ai/autocontext"><strong>autocontext</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 740</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 741</td>
         <td style="color:var(--text-secondary);font-size:13px">a recursive self-improving harness designed to help your agents (and future iterations of those agents) succeed on any t</td>
       </tr>
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">4</td>
         <td><a href="/projects/stephenschoettler/hermes-lcm"><strong>hermes-lcm</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 179</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 181</td>
         <td style="color:var(--text-secondary);font-size:13px">Lossless Context Management plugin for Hermes Agent — DAG-based context engine that never loses a message</td>
       </tr>
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">5</td>
         <td><a href="/projects/elkimek/honcho-self-hosted"><strong>honcho-self-hosted</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 158</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 161</td>
         <td style="color:var(--text-secondary);font-size:13px">Self-host Honcho memory layer for Hermes Agent — OpenRouter + Venice, no code changes</td>
       </tr>
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">6</td>
         <td><a href="/projects/yoloshii/ClawMem"><strong>ClawMem</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 123</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 124</td>
         <td style="color:var(--text-secondary);font-size:13px">On-device memory layer for AI agents. Claude Code, Hermes and OpenClaw. Hooks + MCP server + hybrid RAG search.</td>
       </tr>
       <tr>
@@ -127,6 +133,42 @@
         <td style="color:var(--text-secondary);font-size:13px">FlowState QMD — Anticipatory Memory for AI Agents. Hermes 2026 Hackathon Entry.</td>
       </tr></tbody>
   </table>
+  
+  <section class="listicle">
+    <h2>Project Breakdown</h2>
+    <div class="listicle-entry">
+      <h3><a href="/projects/vectorize-io/hindsight">hindsight</a></h3>
+      <p>Hindsight implements biomimetic data structures to manage long-term learning through dedicated retain, recall, and reflect workflows. It offers a simple two-line LLM wrapper that automates memory management, allowing agents to evolve their mental models over time.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/garrytan/gbrain">gbrain</a></h3>
+      <p>This opinionated brain provides 25 specialized skills for autonomous data ingestion and enrichment, utilizing PGLite for zero-config local vector and relational storage. It exposes over 30 MCP tools, making it a powerful choice for integrating Hermes with Claude and Cursor workflows.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/greyhaven-ai/autocontext">autocontext</a></h3>
+      <p>This recursive context harness uses a multi-agent loop to propose strategies and curate knowledge across eleven distinct scenario families. It excels at complex task execution by maintaining persistent storage of validated playbooks, hints, and execution artifacts.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/stephenschoettler/hermes-lcm">hermes-lcm</a></h3>
+      <p>Designed specifically for Hermes, this plugin uses an immutable SQLite-backed DAG structure to ensure conversation data is never lost. It features a hierarchical engine for multi-level summary escalation and provides built-in tools for searching and expanding compacted context.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/elkimek/honcho-self-hosted">honcho-self-hosted</a></h3>
+      <p>This self-hosted backend enables private, cross-session memory for Hermes using a Docker-based stack including PostgreSQL and Redis. It is highly flexible, supporting any OpenAI-compatible provider or local inference server for complete data sovereignty.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/yoloshii/ClawMem">ClawMem</a></h3>
+      <p>ClawMem is a local-first context engine that eliminates cloud dependencies by combining vector search, BM25, and multi-graph traversal. It facilitates seamless memory sharing across different platforms, including Claude Code, OpenClaw, and Hermes.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/plur-ai/plur">plur</a></h3>
+      <p>Plur introduces a shared memory layer using open-format YAML engrams that support automatic memory decay and strengthening based on usage frequency. It provides a cost-effective hybrid retrieval system using BM25 and embeddings without requiring external API calls.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/amanning3390/flowstate-qmd">flowstate-qmd</a></h3>
+      <p>This anticipatory memory system prefetches relevant context into a local 'intuition file' to reduce latency during agent workflows. Built for privacy using SQLite-vec and node-llama-cpp, it integrates as an MCP server to provide RAG capabilities for coding agents.</p>
+    </div>
+  </section>
   <p class="back-link"><a href="/">← Back to Ecosystem Map</a></p>
 </article>
 <div class="page-footer">

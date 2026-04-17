@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">Hermes Agent setup, migration, LightRAG, Telegram, and skill creation guide</p>
 
   <div class="meta-row">
-    <span class="stars">★ 151</span>
+    <span class="stars">★ 152</span>
     <span class="badge badge-lang">Shell</span>
     <span class="badge badge-lang">MIT</span>
     
@@ -199,17 +221,32 @@
     
   </div>
 
-  <section class="readme">
-    <h1>Hermes Optimization Guide</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">The Hermes Optimization Guide is a comprehensive technical resource and toolkit designed to move Hermes Agent deployments from basic installation to production-ready environments. It provides a 21-part instructional series alongside runnable artifacts, including a one-command VPS bootstrap script and pre-configured systemd units. The project includes 13 installable skills and 5 opinionated configuration templates tailored for specific needs like cost-optimization, security hardening, and Telegram bot integration. Users can implement advanced features such as MCP server orchestration, Langfuse observability, and remote sandboxing for coding agents.</p>
+    <ul class="summary-highlights">
+      <li>One-command VPS bootstrap script for automated Debian and Ubuntu deployment</li>
+      <li>Thirteen ready-to-use skills and five specialized configuration templates</li>
+      <li>Reference architectures for homelabs, agencies, and mobile road warriors</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>Hermes Optimization Guide</h1>
 <p><a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
 <a href="https://github.com/NousResearch/hermes-agent"><img src="https://img.shields.io/badge/Hermes-v0.10.0%20%28main%29-9146FF" alt="Hermes"></a>
 <a href="./CHANGELOG.md"><img src="https://img.shields.io/badge/Last%20updated-2026--04--17-brightgreen" alt="Last updated"></a>
 <a href="#table-of-contents"><img src="https://img.shields.io/badge/parts-21-blue" alt="Parts"></a>
-<a href="./skills/"><img src="https://img.shields.io/badge/installable%20skills-9-blue" alt="Skills"></a>
+<a href="./skills/"><img src="https://img.shields.io/badge/installable%20skills-13-blue" alt="Skills"></a>
 <a href="./templates/config/"><img src="https://img.shields.io/badge/config%20templates-5-blue" alt="Configs"></a>
+<a href="./.github/workflows/ci.yml"><img src="https://github.com/OnlyTerp/hermes-optimization-guide/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
 <a href="./CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a></p>
 <blockquote>
-<p><strong>Tested on Hermes Agent v0.10.0 (v2026.4.16)</strong> with post-release tracking for <code>main</code> · <strong>21 parts, 9 installable skills, 5 opinionated configs, one-command VPS bootstrap</strong> · Battle-tested on a live production deployment</p>
+<p><strong>Tested on Hermes Agent v0.10.0 (v2026.4.16)</strong> with post-release tracking for <code>main</code> · <strong>21 parts, 13 installable skills, 5 opinionated configs, 4 reference architectures, one-command VPS bootstrap</strong> · Battle-tested on a live production deployment</p>
+<p>Other languages: <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/README-zh.md">中文</a> · <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/README-ja.md">日本語</a></p>
 </blockquote>
 <h3>The End-to-End Hermes Guide — docs + runnable artifacts</h3>
 <p>Every part you need to go from fresh install to a production Hermes deployment that talks on 16 platforms, orchestrates Claude Code / Codex / Gemini CLI, plugs into any MCP server, traces every call in Langfuse, and runs heavy work on disposable Modal/Daytona sandboxes — without burning $100/day on Opus tokens.</p>
@@ -233,7 +270,7 @@
 </thead>
 <tbody><tr>
 <td><a href="./skills"><code>skills/</code></a></td>
-<td><strong>9 installable <code>SKILL.md</code></strong> files. <code>ln -s</code> into <code>~/.hermes/skills/</code> and they&#39;re live.</td>
+<td><strong>13 installable <code>SKILL.md</code></strong> files. <code>ln -s</code> into <code>~/.hermes/skills/</code> and they&#39;re live.</td>
 </tr>
 <tr>
 <td><a href="./templates/config"><code>templates/config/</code></a></td>
@@ -266,6 +303,18 @@
 <tr>
 <td><a href="./benchmarks"><code>benchmarks/</code></a></td>
 <td>Reproducible cost + latency table across 12 models × 5 tasks.</td>
+</tr>
+<tr>
+<td><a href="./docs/wizard"><code>docs/wizard/</code></a></td>
+<td><strong>Interactive config wizard</strong> — 8 questions → ready-to-drop <code>config.yaml</code>. Runs in your browser.</td>
+</tr>
+<tr>
+<td><a href="./docs/reference-architectures"><code>docs/reference-architectures/</code></a></td>
+<td><strong>4 blueprints</strong> — Homelab, Solo Dev, Small Agency, Road Warrior. Full parts list + cost + install.</td>
+</tr>
+<tr>
+<td><a href="./docs/outreach"><code>docs/outreach/</code></a></td>
+<td>Launch tweet, HN post, upstream-PR body drafts (for people linking to this guide).</td>
 </tr>
 <tr>
 <td><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/docs/quickstart.md"><code>docs/quickstart.md</code></a></td>
@@ -1483,29 +1532,15 @@ def search(query: str, mode: str = &quot;hybrid&quot;) -&gt; str:
     except Exception as e:
         return f&quot;LightRAG query failed: {e}&quot;
 
-if __name__ == &quot;__main__&quot;:
-    query = &quot; &quot;.join(sys.argv[1:]) if len(sys.argv) &gt; 1 else &quot;&quot;
-    if not query:
-        print(&quot;Usage: lightrag_search.py &lt;query&gt;&quot;)
-        sys.exit(1)
-    print(search(query))
-</code></pre>
-<hr>
-<h2>Optimizing Search Quality</h2>
-<h3>1. Tune Entity Extraction</h3>
-<p>The quality of your graph depends on entity extraction. In LightRAG&#39;s config:</p>
-<pre><code class="language-yaml"># More entities = richer graph, slower ingestion
-entity_extract_max_gleaning: 5    # Default: 3. Higher = more thorough
+if __name__ == &quot;__main__&quot;
 
-# Chunk size affects entity density
-chunk_token_size: 1200             # Default: 1200. Smaller = more entities per doc
-chunk_overlap_token_size: 100      # Default: 100
-</code></pre>
-<h3>2. Use High-Qual</h3>
-<hr>
-<p><em>README truncated. <a href="https://github.com/OnlyTerp/hermes-optimization-guide#readme">Continue reading on GitHub</a></em></p>
+---
 
-  </section>
+*README truncated. [Continue reading on GitHub](https://github.com/OnlyTerp/hermes-optimization-guide#readme)*
+</code></pre>
+
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Guides &amp; Docs</h2>

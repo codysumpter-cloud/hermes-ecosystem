@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">Desktop Companion for Hermes Agent</p>
 
   <div class="meta-row">
-    <span class="stars">★ 256</span>
+    <span class="stars">★ 257</span>
     <span class="badge badge-lang">TypeScript</span>
     <span class="badge badge-lang">MIT</span>
     
@@ -199,8 +221,21 @@
     <a href="https://github.com/fathah/hermes-desktop" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
   </div>
 
-  <section class="readme">
-    <img width="100%" alt="HERMES DESKTOP" src="https://github.com/user-attachments/assets/80585955-3bae-4aee-af90-a1e61757ccb8" />
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Hermes Desktop is a native GUI companion designed to simplify the installation, configuration, and management of the Hermes Agent AI assistant. It replaces manual CLI management by providing a guided setup process and a centralized interface for interacting with the agent. Users can manage multiple LLM providers, configure messaging gateways, and control complex toolsets through a visual workspace. The application also includes features for session history, memory management, and scheduled task automation.</p>
+    <ul class="summary-highlights">
+      <li>Guided installation and dependency resolution for Hermes Agent</li>
+      <li>Support for diverse LLM providers and local endpoints</li>
+      <li>Integrated messaging gateways for platforms like Discord and Telegram</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <img width="100%" alt="HERMES DESKTOP" src="https://github.com/user-attachments/assets/80585955-3bae-4aee-af90-a1e61757ccb8" />
 
 <br/>
 <p align="center">
@@ -484,7 +519,8 @@ npm run build:linux
 <li><a href="https://github.com/NousResearch/hermes-agent">https://github.com/NousResearch/hermes-agent</a></li>
 </ul>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Workspaces &amp; GUIs</h2>

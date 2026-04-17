@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <img alt="llm-agents.nix" src="https://banner.numtide.com/banner/numtide/llm-agents.nix.svg">
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">llm-agents.nix is a collection of Nix packages designed to simplify the deployment and management of AI coding agents and development tools. It provides a unified repository of Nix expressions that automate the installation of various terminal-based agents, ranging from local open-source tools to proprietary binaries. The project is updated daily to ensure users have access to the latest versions of tools like Goose, Claude Code, and various agent orchestrators. This infrastructure allows developers to run diverse AI agents instantly via Nix flakes without manual environment configuration.</p>
+    <ul class="summary-highlights">
+      <li>Provides Nix packages for numerous terminal-based AI coding agents</li>
+      <li>Automates daily updates for all included agentic development tools</li>
+      <li>Supports both open-source and proprietary binary-based AI tools</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <img alt="llm-agents.nix" src="https://banner.numtide.com/banner/numtide/llm-agents.nix.svg">
 
 <p>Nix packages for AI coding agents and development tools. Automatically updated daily.</p>
 <h2>Available Tools</h2>
@@ -1333,7 +1368,8 @@ nix flake check
 <p>Individual tools are licensed under their respective licenses.</p>
 <p>The Nix packaging code in this repository is licensed under MIT.</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Deployment &amp; Infra</h2>

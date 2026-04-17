@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>Hermes - Portainer Stack</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">This project provides a Docker Compose configuration for deploying the Hermes agent alongside a ttyd web terminal. It utilizes a pre-built image from the GitHub Container Registry to facilitate browser-based terminal access to the agent. Users can manage the deployment as a Git-based stack within the Portainer UI for simplified container orchestration. The setup includes an automated GitHub Action workflow for building and updating the underlying container image.</p>
+    <ul class="summary-highlights">
+      <li>Deploys Hermes agent with a ttyd web terminal interface</li>
+      <li>Integrates directly with Portainer as a Git Repository stack</li>
+      <li>Automates image builds using GitHub Actions and GHCR</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>Hermes - Portainer Stack</h1>
 <p>Hermes agent with ttyd web terminal, running from pre-built GHCR image.</p>
 <h2>Setup</h2>
 <ol>
@@ -214,7 +249,8 @@
 <li>In Portainer, pull and redeploy the stack</li>
 </ol>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Deployment &amp; Infra</h2>

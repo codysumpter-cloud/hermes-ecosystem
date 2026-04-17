@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>openclaw-to-hermes</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">openclaw-to-hermes is a migration utility designed to transition users from OpenClaw to Hermes Agent. It automates the transfer of agent personas, workspace files, model configurations, and credentials between the two ecosystems. The tool addresses specific limitations found in earlier migration methods, such as incorrect authentication formatting and incomplete workspace detection. It provides a safe migration path through dry-run modes and automated backup creation.</p>
+    <ul class="summary-highlights">
+      <li>Migrates agent personas, memories, skills, and workspace files</li>
+      <li>Maps complex OpenClaw model configurations to Hermes YAML format</li>
+      <li>Handles credential transfers from local and system-level environment files</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>openclaw-to-hermes</h1>
 <p>Migrate from <a href="https://github.com/openclaw/openclaw">OpenClaw</a> to <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — a complete, battle-tested migration tool.</p>
 <p>Built from a real production migration. Fixes every issue we found in the existing <code>hermes-migrate</code> tool.</p>
 <blockquote>
@@ -406,7 +441,8 @@ ruff check .
 <h2>License</h2>
 <p>MIT</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Developer Tools</h2>

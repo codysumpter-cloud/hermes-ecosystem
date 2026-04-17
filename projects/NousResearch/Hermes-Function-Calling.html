@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>Hermes-Function-Calling</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">This repository provides the implementation and examples for enabling function calling and JSON mode in Hermes 2 Pro models. It utilizes a structured recursive loop to generate tool calls, execute them via Python scripts, and feed the results back into the model for final responses. Users can define custom tools using Pydantic models or modify existing financial data functions powered by the yfinance library. The system is designed for OpenAI-compatible workflows using the ChatML prompt format to ensure reliable multi-turn interactions.</p>
+    <ul class="summary-highlights">
+      <li>Implements recursive function calling and structured JSON mode inference</li>
+      <li>Supports custom tool definition via Pydantic and OpenAI-style schemas</li>
+      <li>Uses ChatML format for steerable multi-turn agentic dialogues</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>Hermes-Function-Calling</h1>
 <p>This repository contains code for the Hermes Pro Large Language Model to perform function calling based on the provided schema. It allows users to query the model and retrieve information related to stock prices, company fundamentals, financial statements, and more.</p>
 <h2>Installation</h2>
 <p>To install the required packages, run the following command:</p>
@@ -428,7 +463,8 @@ You are a helpful assistant that answers in JSON. Here&#39;s the json schema you
 </code></pre>
 <p>Given the {schema} that you provide, it should follow the format of that json to create it&#39;s response, all you have to do is give a typical user prompt, and it will respond in JSON.</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Core &amp; Official</h2>

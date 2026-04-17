@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">HermesHub - The Skills Hub for Hermes Agent by Nous Research. Browse, share, and install community skills.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 26</span>
+    <span class="stars">★ 27</span>
     <span class="badge badge-lang">TypeScript</span>
     
     
@@ -199,8 +221,21 @@
     <a href="https://hermeshub.vercel.app" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
   </div>
 
-  <section class="readme">
-    <h1>HermesHub</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">HermesHub is a curated registry and marketplace for AI agent skills built on the agentskills.io open standard. It provides a centralized platform for browsing, searching, and installing verified capabilities for Hermes Agent via a command-line interface. The system utilizes an automated security scanner with over 65 rules to detect threats like prompt injection and data exfiltration before skills are listed. It also features a creator marketplace supporting crypto-based micropayments and an agent-to-agent feedback protocol for building trust scores.</p>
+    <ul class="summary-highlights">
+      <li>Automated security scanning for prompt injection and malicious payloads</li>
+      <li>One-click installation via Hermes Agent command-line interface</li>
+      <li>Creator marketplace with x402 and Micropayment Protocol support</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>HermesHub</h1>
 <p><strong>The Skills Hub for <a href="https://hermes-agent.nousresearch.com/">Hermes Agent</a> by Nous Research.</strong></p>
 <p>Browse, install, and share verified skills for the self-improving AI agent. Security-scanned. Open standard. Community-driven.</p>
 <p><strong><a href="https://hermeshub.xyz">hermeshub.xyz</a></strong></p>
@@ -574,7 +609,8 @@ hermes skills search &lt;query&gt;
 <h2>License</h2>
 <p>MIT</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Skills &amp; Skill Registries</h2>

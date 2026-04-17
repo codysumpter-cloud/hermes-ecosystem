@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">Agent skills for Claude Code and other agentskills.io-compatible agents. See https://developertoolkit.ai for more information about skills in general.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 624</span>
+    <span class="stars">★ 625</span>
     <span class="badge badge-lang">Shell</span>
     <span class="badge badge-lang">MIT</span>
     
@@ -199,8 +221,21 @@
     <a href="https://skills.wondel.ai" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
   </div>
 
-  <section class="readme">
-    <h1>Wondel.ai Skills</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Wondel.ai Skills is a cross-platform library of agent capabilities designed for Claude Code and agentskills.io-compatible environments. It provides pre-configured skill collections based on established industry frameworks, such as Jobs to Be Done, Clean Code, and Lean Startup methodology. Users can install these skills via the Claude Code marketplace or a dedicated CLI to equip AI agents with specialized knowledge in software architecture, UX design, and product strategy. The project bridges the gap between raw LLM capabilities and structured professional methodologies through modular, installable plugins.</p>
+    <ul class="summary-highlights">
+      <li>Compatible with Claude Code and agentskills.io-compatible agents</li>
+      <li>Modular installation via marketplace or npx skills CLI</li>
+      <li>Frameworks for architecture, UX design, marketing, and product strategy</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>Wondel.ai Skills</h1>
 <p>Agent skills for Claude Code and agentskills.io-compatible agents. Browse all skills at <a href="https://skills.wondel.ai/">skills.wondel.ai</a>.</p>
 <h2>Installation</h2>
 <h3>Via Claude Code Plugin Marketplace</h3>
@@ -902,7 +937,8 @@ npx skills add wondelai/skills/37signals-way
 <hr>
 <p><em>README truncated. <a href="https://github.com/wondelai/skills#readme">Continue reading on GitHub</a></em></p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Skills &amp; Skill Registries</h2>

@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>Hermes PayGuard</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Hermes PayGuard is a security-focused plugin that enables Hermes Agents to handle USDC and x402 payments through a gated execution model. It separates payment preparation from execution by requiring an out-of-band human approval stamp for transfers exceeding user-defined policy limits. The system supports Circle developer-controlled wallets, cross-chain CCTP transfers, and automated x402 micropayments for paid HTTP fetches. This architecture ensures that while agents can stage financial intents, they cannot unilaterally move significant funds without explicit operator consent.</p>
+    <ul class="summary-highlights">
+      <li>Enforces human-in-the-loop approval for high-value USDC transfers</li>
+      <li>Supports Circle CCTP for cross-chain USDC routing and execution</li>
+      <li>Automates x402 micropayments below configurable policy thresholds</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>Hermes PayGuard</h1>
 <p>Hermes PayGuard is a standalone Hermes plugin for safe-by-design USDC and x402 payments.</p>
 <p>It does not patch Hermes core. It installs as an add-on and gives Hermes payment tools with an explicit operator boundary:</p>
 <ul>
@@ -372,7 +407,8 @@ pytest -q
 <li>Hermes plugin discovery and tool registration</li>
 </ul>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Plugins &amp; Extensions</h2>

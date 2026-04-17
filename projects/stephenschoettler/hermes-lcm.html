@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">Lossless Context Management plugin for Hermes Agent — DAG-based context engine that never loses a message</p>
 
   <div class="meta-row">
-    <span class="stars">★ 179</span>
+    <span class="stars">★ 181</span>
     <span class="badge badge-lang">Python</span>
     
     
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <p align="center">
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Hermes-LCM is a context management plugin for the Hermes Agent that prevents information loss during long-running conversations. It replaces standard lossy compression with a hierarchical Directed Acyclic Graph (DAG) engine that persists every message in an immutable SQLite store. When context limits are reached, the system performs multi-level escalation from detailed summaries to deterministic truncation while maintaining retrieval paths. This allows the agent to use specialized tools like grep and expansion to drill back into original message content from compacted summaries.</p>
+    <ul class="summary-highlights">
+      <li>Immutable SQLite storage ensures no conversation data is ever deleted</li>
+      <li>Hierarchical DAG structure enables multi-level summary escalation and retrieval</li>
+      <li>Built-in agent tools for searching, describing, and expanding compacted context</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <p align="center">
   <img src="https://raw.githubusercontent.com/stephenschoettler/hermes-lcm/main/banner.png" alt="HERMES-LCM" width="800">
 </p>
 
@@ -487,7 +522,8 @@ system. Config-driven selection via <code>context.engine</code> in config.yaml, 
 <h2>License</h2>
 <p>MIT</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Memory &amp; Context</h2>

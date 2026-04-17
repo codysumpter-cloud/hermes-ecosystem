@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">On-device memory layer for AI agents. Claude Code, Hermes and OpenClaw. Hooks + MCP server + hybrid RAG search.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 123</span>
+    <span class="stars">★ 124</span>
     <span class="badge badge-lang">TypeScript</span>
     <span class="badge badge-lang">MIT</span>
     
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>ClawMem — On-device memory layer for Claude Code, OpenClaw, and Hermes agents</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">ClawMem is a local-first memory and context layer designed to provide persistent knowledge for AI agents across different sessions and platforms. It utilizes a hybrid retrieval architecture that combines vector search, BM25, and multi-graph traversal to surface relevant documents, decisions, and causal relationships. The system automatically captures insights from conversation transcripts using local models and maintains a shared SQLite vault accessible by Claude Code, OpenClaw, and Hermes agents. By operating entirely on-device without cloud dependencies, it ensures data privacy while enabling cross-runtime memory continuity.</p>
+    <ul class="summary-highlights">
+      <li>Hybrid retrieval combining vector search, BM25, and multi-graph traversal</li>
+      <li>Local-first architecture with no API keys or cloud dependencies</li>
+      <li>Cross-platform memory sharing between Claude Code, OpenClaw, and Hermes</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>ClawMem — On-device memory layer for Claude Code, OpenClaw, and Hermes agents</h1>
 <p align="center">
   <img src="https://raw.githubusercontent.com/yoloshii/ClawMem/main/docs/clawmem_hero.jpg" alt="ClawMem" width="100%">
 </p>
@@ -1178,7 +1213,8 @@ clawmem status                                  Quick index status
 <hr>
 <p><em>README truncated. <a href="https://github.com/yoloshii/ClawMem#readme">Continue reading on GitHub</a></em></p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Memory &amp; Context</h2>

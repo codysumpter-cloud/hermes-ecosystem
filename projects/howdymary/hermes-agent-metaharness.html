@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">An implementation of a Meta Harness for Hermes.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 73</span>
+    <span class="stars">★ 74</span>
     <span class="badge badge-lang">Python</span>
     <span class="badge badge-lang">MIT</span>
     
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>Hermes Agent Meta-Harness</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Hermes Agent Meta-Harness is a standalone outer-loop optimization framework designed to improve the performance of Hermes agents on verifiable coding benchmarks. It treats the agent as an execution backend and searches for optimal harness configurations—the code governing context collection and retrieval—rather than modifying model weights. The system automates benchmark orchestration, archive analysis, and frontier tracking to identify high-performing harness candidates. It currently supports TBLite and TB2 benchmarks, providing structured mutation and search capabilities to refine agentic workflows.</p>
+    <ul class="summary-highlights">
+      <li>Optimizes harness code through an automated outer-loop search process</li>
+      <li>Orchestrates TBLite and TB2 benchmark evaluation via Hermes Agent</li>
+      <li>Tracks performance frontiers with structured candidate mutation and comparison</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>Hermes Agent Meta-Harness</h1>
 <p><code>hermes-agent-metaharness</code> is the standalone outer-loop Meta-Harness repo for Hermes.</p>
 <p>It treats <code>hermes-agent</code> as the execution backend for benchmark harness candidates and focuses on:</p>
 <ul>
@@ -364,7 +399,8 @@ against an Ollama OpenAI-compatible endpoint on <code>http://localhost:11434/v1<
 <li>Stronger benchmark-aware candidate generation</li>
 </ol>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Multi-Agent &amp; Orchestration</h2>

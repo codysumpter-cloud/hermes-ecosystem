@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>Atropos - Nous Research&#39;s LLM RL Gym</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Atropos is an environment microservice framework designed for asynchronous reinforcement learning with large language models. It operates by hosting environments as services that interact with a trajectory API to collect, distribute, and evaluate model data for training loops. The framework supports diverse interactive settings including tool-calling, code execution, and multimodal tasks. It has been used to train specialized models like DeepHermes for complex multi-turn interactions and financial prediction.</p>
+    <ul class="summary-highlights">
+      <li>Microservice architecture for asynchronous RL environment management</li>
+      <li>Supports tool-calling, code execution, and multimodal training environments</li>
+      <li>Standardized trajectory API for data collection and batch processing</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>Atropos - Nous Research&#39;s LLM RL Gym</h1>
 <p><img src="https://raw.githubusercontent.com/NousResearch/atropos/main/banner-image.jpg" alt="newatr-02"></p>
 <div align="center">
 
@@ -714,7 +749,8 @@ Please follow the <a href="https://github.com/NousResearch/atropos/blob/main/COD
 <h2>License</h2>
 <p>Atropos uses the MIT license, see the <a href="LICENSE">LICENSE</a> file here for more information</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Core &amp; Official</h2>

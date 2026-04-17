@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>BFL Skills</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">This project provides official image generation skills for FLUX models, offering standardized prompting guidelines and API integration patterns following the agentskills.io specification. It functions as a technical resource for developers to implement text-to-image and image-to-image workflows through structured JSON prompting, hex color specification, and multi-reference editing. The repository includes a model selection guide for FLUX.1 and FLUX.2 variants and can be integrated directly into Claude Code as a plugin. Users can access documented API patterns for asynchronous polling, webhook verification, and rate limit management.</p>
+    <ul class="summary-highlights">
+      <li>Standardized prompting guidelines for FLUX.1 and FLUX.2 model families</li>
+      <li>API integration patterns for polling, webhooks, and error handling</li>
+      <li>Support for JSON structured prompting and precise hex color specification</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>BFL Skills</h1>
 <p>Official skills from Black Forest Labs for FLUX image generation models. These skills provide prompting guidelines and API integration patterns following the <a href="https://agentskills.io">agentskills.io</a> specification.</p>
 <h2>Installation</h2>
 <pre><code class="language-bash">npx skills add black-forest-labs/skills
@@ -326,7 +361,8 @@ while True:
 <h2>Author</h2>
 <p><a href="https://blackforestlabs.ai">Black Forest Labs</a></p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Skills &amp; Skill Registries</h2>

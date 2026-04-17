@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">a recursive self-improving harness designed to help your agents (and future iterations of those agents) succeed on any task</p>
 
   <div class="meta-row">
-    <span class="stars">★ 740</span>
+    <span class="stars">★ 741</span>
     <span class="badge badge-lang">Python</span>
     <span class="badge badge-lang">Apache-2.0</span>
     
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <!-- autocontext-readme-hero:start -->
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">autocontext is a recursive self-improving harness designed to prevent LLM agents from starting every task with a cold context. It uses a multi-agent loop—comprising competitors, analysts, and coaches—to evaluate execution traces and persist validated knowledge into reusable playbooks and artifacts. The system supports structured scenarios ranging from game strategy to tool drift adaptation, allowing agents to accumulate lessons across repeated runs. Users can also distill successful behaviors into local runtimes using MLX or export datasets for downstream training.</p>
+    <ul class="summary-highlights">
+      <li>Multi-agent loop for strategy proposal, analysis, and knowledge curation</li>
+      <li>Eleven scenario families for testing games, workflows, and investigations</li>
+      <li>Persistent storage of validated playbooks, hints, and execution artifacts</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <!-- autocontext-readme-hero:start -->
 <p align="center">
   <img src="https://raw.githubusercontent.com/greyhaven-ai/autocontext/main/autocontext/assets/banner.svg" alt="autocontext ASCII banner" style="max-width: 100%; height: auto;" />
 </p>
@@ -564,7 +599,8 @@ uv run autoctx serve --host 127.0.0.1 --port 8000
 <a href="https://pypi.org/project/autocontext/"><img src="https://img.shields.io/pypi/dm/autocontext?logo=pypi&amp;label=PyPI%20downloads" alt="PyPI downloads"></a></p>
 <p><a href="https://www.star-history.com/#greyhaven-ai/autocontext&Date"><img src="https://api.star-history.com/svg?repos=greyhaven-ai/autocontext&amp;type=Date" alt="Star History Chart"></a></p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Memory &amp; Context</h2>

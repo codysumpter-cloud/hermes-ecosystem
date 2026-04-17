@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">Autonomous SRE agent built on Hermes - detects, heals, and learns from production incidents. Uses Memory + Skills + Cron + Gateway + Subagents + Atropos RL.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 13</span>
+    <span class="stars">★ 14</span>
     <span class="badge badge-lang">Python</span>
     <span class="badge badge-lang">MIT</span>
     
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>⚕ Hermes Incident Commander</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Hermes Incident Commander is an autonomous SRE agent designed to automate the detection, diagnosis, and remediation of production infrastructure failures. It utilizes the Hermes Agent framework to monitor system vitals, classify incident severity from P0 to P3, and apply corrective actions across CPU, memory, and service layers. Following resolution, the agent generates structured post-mortem reports and automatically creates new prevention skills to handle similar future incidents more efficiently. The system integrates with Telegram and Discord for real-time alerting and uses cron scheduling for continuous health audits.</p>
+    <ul class="summary-highlights">
+      <li>Automates incident triage, root cause analysis, and remediation actions</li>
+      <li>Generates persistent prevention skills and post-incident reports automatically</li>
+      <li>Supports parallel subagent spawning for multi-layer service investigations</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>⚕ Hermes Incident Commander</h1>
 <blockquote>
 <p><strong>An autonomous SRE agent that detects, diagnoses, and heals production infrastructure - then learns from every incident it resolves.</strong></p>
 </blockquote>
@@ -471,7 +506,8 @@ pytest tests/test_incident_env.py::TestSkillFile -v
 <hr>
 <p><em>Built with <a href="https://hermes-agent.nousresearch.com">Hermes Agent</a> - the agent that grows with you.</em></p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Domain Applications</h2>

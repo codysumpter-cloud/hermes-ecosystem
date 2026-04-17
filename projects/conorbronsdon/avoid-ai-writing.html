@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -199,8 +221,21 @@
     <a href="https://newsletter.chainofthought.show/" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
   </div>
 
-  <section class="readme">
-    <div align="center">
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Avoid-ai-writing is a portable skill for AI agents designed to audit and rewrite text to eliminate detectable machine-generated patterns. It utilizes a structured two-pass process and a 109-entry word replacement table to replace common &quot;AI-isms&quot; with plainer, more human-like language. The tool offers both a rewrite mode for active editing and a detection-only mode for identifying issues without altering the source. It is compatible with Hermes, Claude Code, and OpenClaw via the agentskills.io standard.</p>
+    <ul class="summary-highlights">
+      <li>Identifies 36 distinct AI writing patterns and structural tells</li>
+      <li>Uses a three-tier word replacement table for precise editing</li>
+      <li>Performs a second-pass audit to catch surviving linguistic patterns</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <div align="center">
 
 <h1>avoid-ai-writing</h1>
 <p>Audit &amp; rewrite content to remove AI writing patterns. A practical skill for any AI agent. Supports detection-only mode.</p>
@@ -626,7 +661,8 @@ Read and follow the instructions in ~/.claude/skills/avoid-ai-writing/SKILL.md
 <h2>License</h2>
 <p>MIT</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Skills &amp; Skill Registries</h2>

@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">The agent that grows with you</p>
 
   <div class="meta-row">
-    <span class="stars">★ 96.1K</span>
+    <span class="stars">★ 96.4K</span>
     <span class="badge badge-lang">Python</span>
     <span class="badge badge-lang">MIT</span>
     <span class="badge badge-official">Nous Research</span>
@@ -199,8 +221,21 @@
     <a href="https://hermes-agent.nousresearch.com" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
   </div>
 
-  <section class="readme">
-    <p align="center">
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Hermes Agent is an autonomous AI system designed for persistent, cross-session task execution and self-improvement. It utilizes a closed learning loop to automatically generate new skills from experience and maintain long-term user profiles through dialectic modeling. The agent supports six execution backends, including Docker and SSH, allowing it to run complex Python scripts and parallel subagents across various cloud or local environments. Users can interact with the system via a terminal interface or through integrated messaging platforms like Telegram, Discord, and Slack.</p>
+    <ul class="summary-highlights">
+      <li>Autonomous skill creation and self-improvement from task experience</li>
+      <li>Multi-platform support including Telegram, Discord, Slack, and Signal</li>
+      <li>Six execution backends including Docker, SSH, and serverless Modal</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <p align="center">
   <img src="https://raw.githubusercontent.com/NousResearch/hermes-agent/main/assets/banner.png" alt="Hermes Agent" width="100%">
 </p>
 
@@ -432,7 +467,8 @@ uv pip install -e &quot;./tinker-atropos&quot;
 <p>MIT — see <a href="LICENSE">LICENSE</a>.</p>
 <p>Built by <a href="https://nousresearch.com">Nous Research</a>.</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Core &amp; Official</h2>

@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">🗺️ Hermes Atlas — the community map of every tool, skill, and integration for Hermes Agent by Nous Research. Live at hermesatlas.com</p>
 
   <div class="meta-row">
-    <span class="stars">★ 267</span>
+    <span class="stars">★ 285</span>
     <span class="badge badge-lang">HTML</span>
     
     
@@ -199,8 +221,21 @@
     <a href="https://hermesatlas.com" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
   </div>
 
-  <section class="readme">
-    <h1>🗺️ Hermes Atlas</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Hermes Atlas is a community-curated directory and ecosystem map for the Hermes Agent by Nous Research. It aggregates over 80 quality-filtered repositories, including skills, plugins, and deployment templates, using a vanilla JavaScript frontend and Vercel serverless functions. The platform features a RAG-powered chatbot that answers technical questions grounded in 27 research files using hybrid retrieval and OpenRouter LLMs. Users can search and filter the ecosystem while viewing live GitHub star counts and growth trends cached via Redis.</p>
+    <ul class="summary-highlights">
+      <li>Directory of 80+ security-reviewed Hermes Agent tools and integrations</li>
+      <li>RAG chatbot providing grounded answers from 27 research files</li>
+      <li>Live GitHub star tracking with Redis-cached sparklines and trends</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>🗺️ Hermes Atlas</h1>
 <p><strong>The community-curated map of every tool, skill, and integration for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by <a href="https://nousresearch.com">Nous Research</a>.</strong></p>
 <p>🌐 <strong>Live site:</strong> <a href="https://hermesatlas.com">hermesatlas.com</a></p>
 <hr>
@@ -333,7 +368,8 @@ OPENROUTER_API_KEY=sk-or-... node scripts/test-rag.js
 <hr>
 <p>Built by <a href="https://github.com/ksimback">@ksimback</a>. Not officially affiliated with Nous Research — community project celebrating their work.</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Guides &amp; Docs</h2>

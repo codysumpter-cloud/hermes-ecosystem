@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">Hermes Agent ported to Claude Code Channel — 46 native skills, no OAuth, no external process</p>
 
   <div class="meta-row">
-    <span class="stars">★ 79</span>
+    <span class="stars">★ 80</span>
     <span class="badge badge-lang">PowerShell</span>
     
     
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>hermes-CCC</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">hermes-CCC is a port of the Hermes Agent framework specifically designed for the Claude Code native skill system. It integrates the Hermes brain architecture directly into the Claude Code execution context, eliminating the need for external processes or OAuth authentication. The project implements 46 core skills across categories such as MLOps, software development, and research, including specialized tools for RL training and vector database management. This allows developers to utilize Hermes-style memory, personas, and task routing while remaining within a unified terminal environment.</p>
+    <ul class="summary-highlights">
+      <li>Port of Hermes Agent brain and 46 core skills to CCC</li>
+      <li>Runs natively in Claude Code without separate processes or OAuth</li>
+      <li>Includes MLOps tools for vLLM, GGUF inference, and RL training</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>hermes-CCC</h1>
 <blockquote>
 <p>Hermes Agent, faithfully ported to Claude Code Channel (CCC).</p>
 </blockquote>
@@ -655,7 +690,8 @@ cd hermes-CCC
 <h2>License</h2>
 <p>MIT © 2026 AlexAI-MCP</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Developer Tools</h2>

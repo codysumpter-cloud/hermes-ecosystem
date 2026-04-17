@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">Custom plugins for hermes-agent — goal management, inter-agent bridge, model selection, cost control</p>
 
   <div class="meta-row">
-    <span class="stars">★ 28</span>
+    <span class="stars">★ 29</span>
     <span class="badge badge-lang">Python</span>
     <span class="badge badge-lang">AGPL-3.0</span>
     
@@ -199,8 +221,21 @@
     <a href="https://evey.cc" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
   </div>
 
-  <section class="readme">
-    <h1>Evey&#39;s Hermes Plugins</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Evey's Hermes Plugins is a collection of 23 custom extensions designed to enhance the autonomy, observability, and cost-efficiency of the Hermes Agent. The suite implements a modular architecture featuring multi-model debate systems, smart model routing with fallback chains, and structured JSON telemetry for self-inspection. These tools enable agents to manage long-term goals, consolidate memories into vector storage, and maintain bidirectional communication with external environments like Claude Code and Telegram.</p>
+    <ul class="summary-highlights">
+      <li>Autonomous planning, reflection, and multi-model consensus decision-making tools.</li>
+      <li>Budget enforcement and cost tracking via Langfuse integration.</li>
+      <li>Adaptive memory management with nightly fact consolidation and importance scoring.</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>Evey&#39;s Hermes Plugins</h1>
 <blockquote>
 <p><strong>Support Evey</strong> — runs 24/7 on free models, hardware costs ~$69/mo: <strong><a href="https://evey.cc/donate.html">Donate</a></strong> (BTC, ETH, SOL, XRP, DOGE)</p>
 </blockquote>
@@ -373,7 +408,8 @@ cp hermes-plugins/evey_utils.py ~/.hermes/plugins/
 <h2>License</h2>
 <p>MIT</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Plugins &amp; Extensions</h2>

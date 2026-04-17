@@ -58,6 +58,12 @@
   .list-page th { text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-tertiary); border-bottom: 1px solid var(--border-subtle); background: var(--overlay-medium); }
   .list-page td { padding: 10px 12px; border-bottom: 1px solid var(--border-subtle); }
   .list-page tr:hover td { background: var(--overlay-medium); }
+  .listicle { margin-top: 32px; border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .listicle h2 { font-size: 18px; font-weight: 800; margin-bottom: 16px; }
+  .listicle-entry { margin-bottom: 20px; }
+  .listicle-entry h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .listicle-entry h3 a { color: var(--text-link); }
+  .listicle-entry p { font-size: 14px; line-height: 1.7; color: var(--text-secondary); margin: 0; }
   .back-link { margin-top: 24px; font-size: 13px; }
   .page-footer { text-align: center; margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border-subtle); font-size: 11px; color: var(--text-muted); }
   .page-footer a { color: var(--text-link); }
@@ -87,19 +93,19 @@
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">2</td>
         <td><a href="/projects/swarmclawai/swarmclaw"><strong>swarmclaw</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 359</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 362</td>
         <td style="color:var(--text-secondary);font-size:13px">Self-hosted multi-agent AI runtime with MCP server support. Build, orchestrate, and run autonomous agents with memory, s</td>
       </tr>
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">3</td>
         <td><a href="/projects/howdymary/hermes-agent-metaharness"><strong>hermes-agent-metaharness</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 73</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 74</td>
         <td style="color:var(--text-secondary);font-size:13px">An implementation of a Meta Harness for Hermes.</td>
       </tr>
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">4</td>
         <td><a href="/projects/1ilkhamov/opencode-hermes-multiagent"><strong>opencode-hermes-multiagent</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 43</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 44</td>
         <td style="color:var(--text-secondary);font-size:13px">Hermes — a multi-agent system for OpenCode AI. 17 specialized agents for research, planning, implementation, quality, an</td>
       </tr>
       <tr>
@@ -111,7 +117,7 @@
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">6</td>
         <td><a href="/projects/supermodeltools/bigiron"><strong>bigiron</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 8</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 9</td>
         <td style="color:var(--text-secondary);font-size:13px">Big Iron — AI-Native SDLC. Hermes Agent + Supermodel code graph, graph-gated at every phase.</td>
       </tr>
       <tr>
@@ -121,6 +127,38 @@
         <td style="color:var(--text-secondary);font-size:13px">Hermes skill for ACP-style multi-agent delegation (Hermes, Codex, Claude Code).</td>
       </tr></tbody>
   </table>
+  
+  <section class="listicle">
+    <h2>Project Breakdown</h2>
+    <div class="listicle-entry">
+      <h3><a href="/projects/builderz-labs/mission-control">mission-control</a></h3>
+      <p>This self-hosted orchestration platform manages multi-agent workflows using a lightweight SQLite backend with zero external dependencies. It features a unique 'Aegis' review system that acts as a quality gate, allowing users to monitor spend and sign off on tasks via real-time WebSocket updates.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/swarmclawai/swarmclaw">swarmclaw</a></h3>
+      <p>Swarmclaw is an MCP-native framework designed for building autonomous swarms that can learn new skills at runtime and delegate tasks across 23 different model providers. It provides a secure, self-hosted environment featuring Docker-based browser sandboxing to ensure agents can execute web-based tasks safely.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/howdymary/hermes-agent-metaharness">hermes-agent-metaharness</a></h3>
+      <p>This project implements a meta-optimization loop that automatically searches for and evolves the most effective harness code for Hermes Agent benchmarks. By orchestrating TBLite and TB2 evaluations, it tracks performance frontiers through structured candidate mutation and comparison.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/1ilkhamov/opencode-hermes-multiagent">opencode-hermes-multiagent</a></h3>
+      <p>This robust pipeline coordinates 17 specialized agents—ranging from security experts to infrastructure architects—under a master orchestrator. The system enforces strict quality control through mandatory reviewer and tester loops to ensure high-standard implementation and refactoring.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/runtimenoteslabs/gladiator">gladiator</a></h3>
+      <p>Gladiator creates a competitive arena where two autonomous AI companies, powered by Hermes Agent, compete for GitHub stars. The framework orchestrates nine specialized agents and visualizes their live tasks, code generation, and scoreboard metrics through a real-time dashboard.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/supermodeltools/bigiron">bigiron</a></h3>
+      <p>Bigiron automates an eight-phase software development lifecycle by providing Hermes with structural code graphs via the Supermodel MCP. It ensures architectural integrity by using graph-diff phase gates to validate every step from initial planning to final health checks.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/Rainhoole/hermes-agent-acp-skill">hermes-agent-acp-skill</a></h3>
+      <p>This delegation framework routes tasks between Hermes, Codex, and Claude Code while preventing context pollution through isolated workflows. It prioritizes operational safety by enforcing configurable execution timeouts and strict output character limits for all subagents.</p>
+    </div>
+  </section>
   <p class="back-link"><a href="/">← Back to Ecosystem Map</a></p>
 </article>
 <div class="page-footer">

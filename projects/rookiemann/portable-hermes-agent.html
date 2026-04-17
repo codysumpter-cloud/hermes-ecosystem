@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">Hermes Agent made portable desktop for Windows — 100 tools, GUI, local models via LM Studio, TTS, Music, ComfyUI, workflows, tool maker. No install. No Docker. No admin rights.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 28</span>
+    <span class="stars">★ 29</span>
     <span class="badge badge-lang">Python</span>
     <span class="badge badge-lang">MIT</span>
     
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>Portable Hermes Agent</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Portable Hermes Agent is a Windows desktop implementation of the Hermes Agent designed for non-technical users to run AI agents without installation or admin rights. It utilizes a Tkinter GUI and an embedded Python environment to bridge local models via LM Studio or cloud providers like OpenRouter. The system features a workflow engine for automating multi-step pipelines and a dynamic tool maker for creating custom API wrappers at runtime. It also integrates portable servers for text-to-speech, music generation, and ComfyUI image generation.</p>
+    <ul class="summary-highlights">
+      <li>100 tools including local model management and GPU monitoring</li>
+      <li>No-install deployment requiring no admin rights or Docker</li>
+      <li>Integrated workflow engine for scheduled and conditional automation</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>Portable Hermes Agent</h1>
 <p><strong>Portable AI agent desktop for Windows</strong> — 100 tools, GUI, local models via LM Studio, TTS, Music, ComfyUI, workflows, tool maker. No install. No Docker. No admin rights.</p>
 <p>Built on <a href="https://github.com/NousResearch/hermes-agent">NousResearch/hermes-agent</a> (MIT License) with extensive customization for non-technical users.</p>
 <hr>
@@ -390,7 +425,8 @@ AIAgent (run_agent.py)
 <p>MIT License — see <a href="LICENSE">LICENSE</a> for details.</p>
 <p>Original framework copyright (c) 2025 Nous Research.</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Developer Tools</h2>

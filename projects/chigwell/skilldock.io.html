@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -199,8 +221,21 @@
     <a href="https://skilldock.io/" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
   </div>
 
-  <section class="readme">
-    <div align="center">
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">SkillDock is a registry and SDK for managing reusable AI skills based on the AgentSkills specification. It provides a Python client and CLI that interact with an OpenAPI-driven backend to search, install, and version-control modular agent capabilities. The platform supports a dual-rail commerce system using TON and Stripe for buying and selling skills, alongside recursive dependency resolution for local installations. Developers can publish private or public skills by uploading zipped packages containing metadata and versioned descriptions.</p>
+    <ul class="summary-highlights">
+      <li>OpenAPI-driven Python SDK and CLI for skill discovery and management</li>
+      <li>Supports recursive dependency resolution and local skill installation</li>
+      <li>Integrated commerce features for skill monetization via TON and Stripe</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <div align="center">
   <a target="_blank" href="https://skilldock.io/?utm_source=github&utm_medium=readme">
    <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=200&section=header&text=SkillDock.io&fontSize=50&fontAlignY=35&animation=fadeIn&fontColor=FFFFFF&descAlignY=55&descAlign=62" alt="SkillDock" width="100%" />
   </a>
@@ -451,7 +486,8 @@ The exact details are derived from the OpenAPI <code>securitySchemes</code> when
 <pre><code class="language-bash">python -m unittest discover -s tests
 </code></pre>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Skills &amp; Skill Registries</h2>

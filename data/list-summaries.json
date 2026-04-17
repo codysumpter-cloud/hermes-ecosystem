@@ -1,0 +1,94 @@
+{
+  "best-memory-providers": {
+    "entries": {
+      "garrytan/gbrain": "This opinionated brain provides 25 specialized skills for autonomous data ingestion and enrichment, utilizing PGLite for zero-config local vector and relational storage. It exposes over 30 MCP tools, making it a powerful choice for integrating Hermes with Claude and Cursor workflows.",
+      "vectorize-io/hindsight": "Hindsight implements biomimetic data structures to manage long-term learning through dedicated retain, recall, and reflect workflows. It offers a simple two-line LLM wrapper that automates memory management, allowing agents to evolve their mental models over time.",
+      "greyhaven-ai/autocontext": "This recursive context harness uses a multi-agent loop to propose strategies and curate knowledge across eleven distinct scenario families. It excels at complex task execution by maintaining persistent storage of validated playbooks, hints, and execution artifacts.",
+      "stephenschoettler/hermes-lcm": "Designed specifically for Hermes, this plugin uses an immutable SQLite-backed DAG structure to ensure conversation data is never lost. It features a hierarchical engine for multi-level summary escalation and provides built-in tools for searching and expanding compacted context.",
+      "elkimek/honcho-self-hosted": "This self-hosted backend enables private, cross-session memory for Hermes using a Docker-based stack including PostgreSQL and Redis. It is highly flexible, supporting any OpenAI-compatible provider or local inference server for complete data sovereignty.",
+      "yoloshii/ClawMem": "ClawMem is a local-first context engine that eliminates cloud dependencies by combining vector search, BM25, and multi-graph traversal. It facilitates seamless memory sharing across different platforms, including Claude Code, OpenClaw, and Hermes.",
+      "plur-ai/plur": "Plur introduces a shared memory layer using open-format YAML engrams that support automatic memory decay and strengthening based on usage frequency. It provides a cost-effective hybrid retrieval system using BM25 and embeddings without requiring external API calls.",
+      "amanning3390/flowstate-qmd": "This anticipatory memory system prefetches relevant context into a local 'intuition file' to reduce latency during agent workflows. Built for privacy using SQLite-vec and node-llama-cpp, it integrates as an MCP server to provide RAG capabilities for coding agents."
+    },
+    "generatedAt": "2026-04-17T18:21:20.948Z",
+    "version": 1
+  },
+  "top-skills": {
+    "entries": {
+      "mukul975/Anthropic-Cybersecurity-Skills": "This repository provides 754 structured cybersecurity skills mapped to major frameworks like MITRE ATT&CK and NIST AI RMF. It equips Hermes with specialized security domains, ensuring the agent operates with industry-standard defensive and offensive knowledge.",
+      "conorbronsdon/avoid-ai-writing": "This tool audits and rewrites content to eliminate 36 distinct AI writing patterns and structural tells. It uses a multi-tier word replacement system and a second-pass audit to ensure Hermes produces human-like, undetectable prose.",
+      "wondelai/skills": "A modular, cross-platform library that brings architecture, UX design, and product strategy frameworks to agentskills.io-compatible agents. It allows Hermes users to quickly install specialized professional capabilities via a simple CLI or marketplace.",
+      "DougTrajano/pydantic-ai-skills": "This project implements the Agent Skills open specification for Pydantic AI with a focus on type safety. It utilizes progressive disclosure of metadata to reduce token usage, making Hermes more efficient when managing complex skill definitions.",
+      "Agents365-ai/drawio-skill": "This skill enables Hermes to generate editable .drawio diagrams and various image exports from natural language descriptions. It includes specialized presets for ML models and an automated self-check loop to fix layout issues autonomously.",
+      "smartcontractkit/chainlink-agent-skills": "Designed for blockchain interaction, these skills provide standardized workflows for the Chainlink Runtime Environment and CCIP. They allow Hermes to perform cross-chain sends, monitor contracts, and discover decentralized services using the agentskills.io spec.",
+      "tlehman/litprog-skill": "This literate programming skill allows Hermes to weave runnable code and prose documentation into unified .lit.md files. It features a tangler for extracting source files and automatically syncs edits back to the primary documentation.",
+      "esaradev/icarus-plugin": "Icarus provides Hermes with cross-instance shared memory and a pipeline for training its own replacement models. It extracts decision-quality data from active workflows to facilitate fine-tuning and long-term knowledge retention.",
+      "chigwell/skilldock.io": "This registry and SDK facilitate the discovery, installation, and monetization of reusable AI skills. It supports recursive dependency resolution and integrated commerce features, creating a structured ecosystem for Hermes skill management.",
+      "black-forest-labs/skills": "These official FLUX skills provide Hermes with standardized prompting guidelines and API integration patterns for high-quality image generation. They support precise JSON structured prompting and hex color specifications for exact visual control.",
+      "Romanescu11/hermes-skill-factory": "This meta-skill plugin monitors active workflows to automatically detect and propose new, reusable skills. It generates both documentation and Python scaffolds, allowing Hermes to programmatically expand its own capabilities.",
+      "ReinaMacCredy/maestro": "Maestro is a harness for long-running agents that manages shared state and structured context transfers via UKI v5.4 handoffs. It provides Hermes with a persistent memory directory and a TUI for tracking complex mission progress.",
+      "tiann/execplan-skill": "This skill enables Hermes to execute complex, multi-step tasks with built-in checkpoints and recovery procedures. It ensures autonomous reliability by providing real-time progress tracking and safe rollback mechanisms for long-running operations.",
+      "cablate/Agentic-MCP-Skill": "A progressive MCP client that uses three-layer lazy loading to minimize token consumption during tool definition. It maintains persistent connections to multiple servers, allowing Hermes to efficiently inspect schemas and retrieve metadata.",
+      "armelhbobdad/bmad-module-skill-forge": "This forge converts source code and documentation into verified skills by extracting function signatures directly from ASTs. It ensures high-fidelity instructions by linking every AI trigger to specific source file citations.",
+      "amanning3390/hermeshub": "HermesHub serves as a community gallery for browsing and installing skills with built-in security scanning for prompt injections. It supports one-click installation via the Hermes CLI and includes a marketplace for creator monetization.",
+      "PederHP/skillsdotnet": "This project brings the agentskills.io specification to the C# and .NET ecosystem, including MCP resource templates. It provides Hermes with vendor-specific shortcuts for integrating with environments like Cursor and Copilot."
+    },
+    "generatedAt": "2026-04-17T18:21:29.943Z",
+    "version": 1
+  },
+  "deployment-options": {
+    "entries": {
+      "numtide/llm-agents.nix": "This project provides a comprehensive suite of Nix packages for terminal-based AI coding agents, including Hermes. It automates daily updates for all included tools and supports a mix of open-source and proprietary binary-based development agents.",
+      "TheAiSingularity/hermesclaw": "Hermesclaw focuses on security by providing hardware-level enforcement of network, filesystem, and process boundaries for the agent. It features three security policy presets and includes secure gateways for integrating Hermes with Telegram, Discord, and Slack.",
+      "0xrsydn/nix-hermes-agent": "This repository offers a NixOS module for declarative management of Hermes configurations, documents, and systemd services. It prioritizes security through sops-nix integration and supports a hybrid skill model that combines Nix-managed assets with interactive CLI installations.",
+      "rookiemann/portable-hermes-agent": "Designed for Windows users, this no-install desktop application provides a GUI and over 100 tools without requiring admin rights or Docker. It features integrated GPU monitoring, local model management, and a workflow engine for scheduled automation.",
+      "xmbshwll/hermes-agent-docker": "This project provides a streamlined Docker sandbox that includes both the official Hermes installation and mini-swe-agent. It supports persistent state through mounted directories and allows users to build specific Hermes versions using build arguments.",
+      "JackTheGit/hermes-autonomous-server": "Targeting production environments, this deployment configures the Hermes Gateway as a reboot-safe systemd service for Ubuntu and Debian. It is optimized for headless operation and enables the autonomous execution of recurring AI cron jobs.",
+      "ellickjohnson/portainer-stack-hermes": "This Docker Compose stack integrates with Portainer to deploy Hermes alongside a ttyd web terminal interface. It simplifies the deployment lifecycle by automating image builds through GitHub Actions and the GitHub Container Registry."
+    },
+    "generatedAt": "2026-04-17T18:21:35.878Z",
+    "version": 1
+  },
+  "multi-agent-frameworks": {
+    "entries": {
+      "builderz-labs/mission-control": "This self-hosted orchestration platform manages multi-agent workflows using a lightweight SQLite backend with zero external dependencies. It features a unique 'Aegis' review system that acts as a quality gate, allowing users to monitor spend and sign off on tasks via real-time WebSocket updates.",
+      "swarmclawai/swarmclaw": "Swarmclaw is an MCP-native framework designed for building autonomous swarms that can learn new skills at runtime and delegate tasks across 23 different model providers. It provides a secure, self-hosted environment featuring Docker-based browser sandboxing to ensure agents can execute web-based tasks safely.",
+      "howdymary/hermes-agent-metaharness": "This project implements a meta-optimization loop that automatically searches for and evolves the most effective harness code for Hermes Agent benchmarks. By orchestrating TBLite and TB2 evaluations, it tracks performance frontiers through structured candidate mutation and comparison.",
+      "runtimenoteslabs/gladiator": "Gladiator creates a competitive arena where two autonomous AI companies, powered by Hermes Agent, compete for GitHub stars. The framework orchestrates nine specialized agents and visualizes their live tasks, code generation, and scoreboard metrics through a real-time dashboard.",
+      "1ilkhamov/opencode-hermes-multiagent": "This robust pipeline coordinates 17 specialized agents—ranging from security experts to infrastructure architects—under a master orchestrator. The system enforces strict quality control through mandatory reviewer and tester loops to ensure high-standard implementation and refactoring.",
+      "supermodeltools/bigiron": "Bigiron automates an eight-phase software development lifecycle by providing Hermes with structural code graphs via the Supermodel MCP. It ensures architectural integrity by using graph-diff phase gates to validate every step from initial planning to final health checks.",
+      "Rainhoole/hermes-agent-acp-skill": "This delegation framework routes tasks between Hermes, Codex, and Claude Code while preventing context pollution through isolated workflows. It prioritizes operational safety by enforcing configurable execution timeouts and strict output character limits for all subagents."
+    },
+    "generatedAt": "2026-04-17T18:21:41.443Z",
+    "version": 1
+  },
+  "developer-tools": {
+    "entries": {
+      "junhoyeo/tokscale": "This Rust-based TUI tracks token consumption and real-time costs across over 20 AI coding agents, including Hermes and Claude Code. It utilizes LiteLLM pricing data to provide developers with precise financial oversight and 3D usage visualizations for their agentic workflows.",
+      "joeynyc/hermes-skins": "This customization tool allows users to personalize the Hermes terminal interface through YAML-defined themes and inheritance. It modifies visual elements like banners, spinners, and response boxes with community-driven styles ranging from Cyberdyne Systems to Vault-Tec.",
+      "AlexAI-MCP/hermes-CCC": "This project ports the Hermes Agent brain and its 46 core skills directly into the Claude Code Channel for native execution without external processes or OAuth. It specifically enhances the environment with MLOps tools for vLLM inference, GGUF management, and reinforcement learning training.",
+      "unmodeled-tyler/vessel-browser": "An AI-native browser designed for autonomous control, this tool provides an MCP-native interface for external harnesses like Hermes Agent. It features durable session persistence for agent stability and a human-in-the-loop supervisory layer for real-time transcript monitoring and approvals.",
+      "Abruptive/Ankh.md": "This framework enables the creation of scoped Hermes Agents that are restricted to specific project folders with local configurations and memories. It allows developers to seamlessly toggle between global and project-local agents, each equipped with unique tools and custom instructions.",
+      "roli-lpci/lintlang": "A static analysis tool that validates agent configurations, tool descriptions, and system prompts without incurring LLM costs or latency. It uses seven structural detectors to identify common failure modes and provides CI-ready gating based on HERM v1.1 scoring.",
+      "0xNyk/openclaw-to-hermes": "This migration utility streamlines the transition from OpenClaw to Hermes Agent by mapping complex model configurations and personas to the Hermes YAML format. It automates the transfer of memories, skills, and workspace files while securely handling environment-level credentials.",
+      "42-evey/evey-setup": "This deployment script uses Docker to orchestrate a full Hermes Agent stack including LiteLLM, Ollama, and Qdrant in minutes. It comes pre-configured with 29 community plugins and automated routing for free models and local GPU inference.",
+      "rookiemann/portable-hermes-agent": "This no-install Windows desktop application provides a GUI for Hermes Agent that requires no administrative rights or Docker setup. It features over 100 integrated tools for GPU monitoring and local model management alongside a workflow engine for scheduled automation."
+    },
+    "generatedAt": "2026-04-17T18:21:47.660Z",
+    "version": 1
+  },
+  "workspaces-and-guis": {
+    "entries": {
+      "nesquena/hermes-webui": "This lightweight web interface offers full feature parity with the Hermes CLI through a streamlined three-panel layout for chat, sessions, and file browsing. Built with Python and vanilla JavaScript, it provides a responsive, mobile-friendly experience without the complexity of modern build tools.",
+      "outsourc-e/hermes-workspace": "A comprehensive native web workspace that unifies chat, terminal access, and memory browsing into a single interface. It features real-time SSE streaming for visual tool-call rendering and supports diverse local backends including Ollama and vLLM.",
+      "xaspx/hermes-control-interface": "This self-hosted dashboard functions as a multi-agent gateway, allowing users to configure profiles and monitor system metrics in real-time. It stands out for its granular security, offering role-based access control with 28 distinct permissions and detailed token cost analytics.",
+      "dodo-reach/hermes-desktop": "A native macOS workspace that provides direct SSH connectivity to Hermes without requiring local file mirroring or background daemons. It includes a multi-tabbed terminal with live theme controls and a profile-aware interface for managing remote sessions and cron jobs.",
+      "fathah/hermes-desktop": "This desktop companion simplifies the initial setup of Hermes Agent through guided installation and dependency resolution. Beyond local chat, it serves as a configuration hub for connecting agents to messaging platforms like Discord and Telegram.",
+      "sanchomuzax/hermes-webui": "Focused on observability, this dashboard provides real-time monitoring of session activity, gateway status, and operational costs. It enables deep inspection of agent history through full-text SQLite search and a read-only view of scheduled cron jobs.",
+      "Euraika-Labs/pan-ui": "A self-hosted workspace that emphasizes agent isolation and extensibility through a built-in marketplace for skills and MCP servers. It features an automated setup wizard that supports daemon and systemd execution for persistent background operation.",
+      "pyrate-llama/hermes-ui": "This glassmorphic web interface utilizes a unique single-file React architecture that requires no build steps or external dependencies. It provides real-time log streaming and tool-call visualization alongside an integrated memory inspector for rapid agent configuration."
+    },
+    "generatedAt": "2026-04-17T18:21:53.127Z",
+    "version": 1
+  }
+}

@@ -58,6 +58,12 @@
   .list-page th { text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-tertiary); border-bottom: 1px solid var(--border-subtle); background: var(--overlay-medium); }
   .list-page td { padding: 10px 12px; border-bottom: 1px solid var(--border-subtle); }
   .list-page tr:hover td { background: var(--overlay-medium); }
+  .listicle { margin-top: 32px; border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .listicle h2 { font-size: 18px; font-weight: 800; margin-bottom: 16px; }
+  .listicle-entry { margin-bottom: 20px; }
+  .listicle-entry h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .listicle-entry h3 a { color: var(--text-link); }
+  .listicle-entry p { font-size: 14px; line-height: 1.7; color: var(--text-secondary); margin: 0; }
   .back-link { margin-top: 24px; font-size: 13px; }
   .page-footer { text-align: center; margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border-subtle); font-size: 11px; color: var(--text-muted); }
   .page-footer a { color: var(--text-link); }
@@ -87,19 +93,19 @@
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">2</td>
         <td><a href="/projects/rookiemann/portable-hermes-agent"><strong>portable-hermes-agent</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 28</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 29</td>
         <td style="color:var(--text-secondary);font-size:13px">Hermes Agent made portable desktop for Windows — 100 tools, GUI, local models via LM Studio, TTS, Music, ComfyUI, workfl</td>
       </tr>
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">3</td>
         <td><a href="/projects/TheAiSingularity/hermesclaw"><strong>hermesclaw</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 27</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 28</td>
         <td style="color:var(--text-secondary);font-size:13px">Hermes Agent (NousResearch) sandboxed by NVIDIA OpenShell — hardware-enforced network/filesystem/syscall policy, full me</td>
       </tr>
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">4</td>
         <td><a href="/projects/xmbshwll/hermes-agent-docker"><strong>hermes-agent-docker</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 12</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 13</td>
         <td style="color:var(--text-secondary);font-size:13px">Simple docker sandbox image for Hermes Agent</td>
       </tr>
       <tr>
@@ -121,6 +127,38 @@
         <td style="color:var(--text-secondary);font-size:13px">Hermes Agent deployment with ttyd web terminal</td>
       </tr></tbody>
   </table>
+  
+  <section class="listicle">
+    <h2>Project Breakdown</h2>
+    <div class="listicle-entry">
+      <h3><a href="/projects/numtide/llm-agents.nix">llm-agents.nix</a></h3>
+      <p>This project provides a comprehensive suite of Nix packages for terminal-based AI coding agents, including Hermes. It automates daily updates for all included tools and supports a mix of open-source and proprietary binary-based development agents.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/rookiemann/portable-hermes-agent">portable-hermes-agent</a></h3>
+      <p>Designed for Windows users, this no-install desktop application provides a GUI and over 100 tools without requiring admin rights or Docker. It features integrated GPU monitoring, local model management, and a workflow engine for scheduled automation.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/TheAiSingularity/hermesclaw">hermesclaw</a></h3>
+      <p>Hermesclaw focuses on security by providing hardware-level enforcement of network, filesystem, and process boundaries for the agent. It features three security policy presets and includes secure gateways for integrating Hermes with Telegram, Discord, and Slack.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/xmbshwll/hermes-agent-docker">hermes-agent-docker</a></h3>
+      <p>This project provides a streamlined Docker sandbox that includes both the official Hermes installation and mini-swe-agent. It supports persistent state through mounted directories and allows users to build specific Hermes versions using build arguments.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/0xrsydn/nix-hermes-agent">nix-hermes-agent</a></h3>
+      <p>This repository offers a NixOS module for declarative management of Hermes configurations, documents, and systemd services. It prioritizes security through sops-nix integration and supports a hybrid skill model that combines Nix-managed assets with interactive CLI installations.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/JackTheGit/hermes-autonomous-server">hermes-autonomous-server</a></h3>
+      <p>Targeting production environments, this deployment configures the Hermes Gateway as a reboot-safe systemd service for Ubuntu and Debian. It is optimized for headless operation and enables the autonomous execution of recurring AI cron jobs.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/ellickjohnson/portainer-stack-hermes">portainer-stack-hermes</a></h3>
+      <p>This Docker Compose stack integrates with Portainer to deploy Hermes alongside a ttyd web terminal interface. It simplifies the deployment lifecycle by automating image builds through GitHub Actions and the GitHub Container Registry.</p>
+    </div>
+  </section>
   <p class="back-link"><a href="/">← Back to Ecosystem Map</a></p>
 </article>
 <div class="page-footer">

@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc"> A meta-skill plugin for Nous Research's Hermes AI agent that watches your workflows and automatically turns them into reusable skills.  Every time you work with Hermes and solve something — setting up a project, debugging code, creating a PR — that   workflow disappears at the end of the session. You have to explain it again next time.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 43</span>
+    <span class="stars">★ 44</span>
     <span class="badge badge-lang">Python</span>
     
     
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>🏭 Skill Factory</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Skill Factory is a meta-skill for Hermes Agent that automates the creation of reusable skills by monitoring user workflows. It functions by tracking session patterns in the background and proposing structured skill definitions when it detects repeatable sequences. Users can generate both SKILL.md documentation and Python plugin scaffolds directly from these proposals via slash commands or natural language. This tool streamlines the expansion of the Hermes ecosystem by turning manual environment setups and development tasks into permanent, executable assets.</p>
+    <ul class="summary-highlights">
+      <li>Automatically detects and proposes reusable skills from active workflows</li>
+      <li>Generates both SKILL.md documentation and Python plugin scaffolds</li>
+      <li>Provides slash commands to manage, list, and save detected patterns</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>🏭 Skill Factory</h1>
 <blockquote>
 <p><strong>The meta-skill that creates skills.</strong>
 Your AI watches your workflows and turns them into reusable Hermes skills — automatically.</p>
@@ -369,7 +404,8 @@ tags: [python, venv, testing]
 <h2>License</h2>
 <p>MIT</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Skills &amp; Skill Registries</h2>

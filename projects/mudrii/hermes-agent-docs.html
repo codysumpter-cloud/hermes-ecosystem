@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">Comprehensive documentation for Hermes Agent by NousResearch — the self-improving AI agent (v0.2.0)</p>
 
   <div class="meta-row">
-    <span class="stars">★ 10</span>
+    <span class="stars">★ 11</span>
     
     
     
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>Hermes Agent</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Hermes Agent is an autonomous AI system designed for persistent learning and multi-platform deployment across various messaging and IDE environments. It utilizes a closed learning loop that automatically creates and refines skills, manages long-term memory via SQLite, and performs full-text searches across past conversation sessions. The agent supports concurrent tool execution and integrates with dozens of model providers, including native support for Anthropic, AWS Bedrock, and the Nous Portal. Its architecture allows for isolated subagents, scheduled cron jobs, and the export of training trajectories for model fine-tuning.</p>
+    <ul class="summary-highlights">
+      <li>Autonomous skill creation and self-improvement based on task experience</li>
+      <li>Unified gateway for Telegram, Discord, Slack, and twelve other platforms</li>
+      <li>Extensible plugin architecture with lifecycle hooks and MCP server management</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>Hermes Agent</h1>
 <p><strong>The self-improving AI agent built by <a href="https://nousresearch.com">Nous Research</a>.</strong></p>
 <p>Hermes Agent is an autonomous AI agent with a built-in learning loop. It creates skills from experience, improves them during use, searches its own past conversations for context, and builds a deepening model of who you are across sessions. It runs on a $5 VPS, a GPU cluster, or serverless infrastructure -- not tied to your laptop.</p>
 <p>Current version: <strong>v0.10.0 (v2026.4.16)</strong> -- released April 16, 2026.</p>
@@ -1060,7 +1095,8 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 <p>MIT -- see <a href="https://github.com/NousResearch/hermes-agent/blob/main/LICENSE">LICENSE</a>.</p>
 <p>Built by <a href="https://nousresearch.com">Nous Research</a>.</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Guides &amp; Docs</h2>

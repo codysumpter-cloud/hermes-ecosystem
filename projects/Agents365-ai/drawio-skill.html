@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -199,8 +221,21 @@
     <a href="https://agents365-ai.github.io/drawio-skill/" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
   </div>
 
-  <section class="readme">
-    <h1>drawio-skill — From Text to Professional Diagrams</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">This project is a diagramming skill that enables AI agents to generate professional draw.io XML files and image exports from natural language descriptions. It utilizes the native draw.io desktop CLI to produce grid-aligned diagrams with specialized presets for architectures, UML, and machine learning models. The tool features an iterative self-check loop that automatically identifies and fixes layout issues while supporting animated connectors for data-flow visualization. It integrates with major agent platforms including Hermes Agent, Claude Code, and OpenClaw.</p>
+    <ul class="summary-highlights">
+      <li>Generates editable .drawio files and exports to PNG, SVG, or PDF</li>
+      <li>Includes 6 diagram presets including ML models with tensor shape annotations</li>
+      <li>Automated self-check loop identifies and fixes six common layout issues</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>drawio-skill — From Text to Professional Diagrams</h1>
 <p><a href="https://github.com/Agents365-ai/drawio-skill/blob/main/README_CN.md">中文文档</a> | <a href="https://agents365-ai.github.io/drawio-skill/">Online Docs</a></p>
 <h2>What it does</h2>
 <ul>
@@ -707,7 +742,8 @@ and User DB / Order DB / Product DB / Redis Cache / Stripe API</p>
 <li>GitHub: <a href="https://github.com/Agents365-ai">https://github.com/Agents365-ai</a></li>
 </ul>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Skills &amp; Skill Registries</h2>

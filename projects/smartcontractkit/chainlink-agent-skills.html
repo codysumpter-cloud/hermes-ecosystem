@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>Chainlink Agent Skills</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Chainlink Agent Skills provides a standardized set of capabilities for AI agents to interact with decentralized oracle networks and smart contracts. The project implements the Agent Skills specification, using YAML frontmatter and markdown instructions to define specific workflows. It currently offers specialized skills for Chainlink Runtime Environment (CRE) operations and Cross-Chain Interoperability Protocol (CCIP) tasks like token transfers and local testing. These skills can be integrated into agent environments using the Vercel skills installer and invoked via explicit chat commands.</p>
+    <ul class="summary-highlights">
+      <li>Standardized skills for Chainlink Runtime Environment and CCIP workflows</li>
+      <li>Follows the agentskills.io specification using YAML and markdown</li>
+      <li>Supports CCIP contract discovery, monitoring, and cross-chain sends</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>Chainlink Agent Skills</h1>
 <p>Official Repo for Chainlink skills. Each skill follows the <a href="https://agentskills.io/specification">Agent Skills specification</a>.</p>
 <h2>Spec</h2>
 <p>Skills follow the <a href="https://agentskills.io/specification">Agent Skills format</a>: YAML frontmatter (<code>name</code>, <code>description</code>) plus markdown instructions.</p>
@@ -235,7 +270,8 @@ npx skills add https://github.com/smartcontractkit/chainlink-agent-skills --skil
 <h2>Best Used With</h2>
 <p>Cursor Composer-1.5, Claude Opus 4.6, Codex 5.2+, Gemini 3.</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Skills &amp; Skill Registries</h2>

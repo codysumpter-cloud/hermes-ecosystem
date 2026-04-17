@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <p align="center">
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Awesome Hermes Agent is a curated directory of resources and extensions for the Hermes Agent ecosystem developed by Nous Research. It categorizes community-contributed skills, tools, and integrations while providing maturity ratings to help users navigate the self-improving agent's capabilities. The repository serves as a central hub for discovering specialized plugins for goal management, autonomous novel writing, and production incident response. It also provides structured guidance for new users to transition from basic installation to advanced multi-agent orchestration.</p>
+    <ul class="summary-highlights">
+      <li>Categorizes skills by production, beta, and experimental maturity levels</li>
+      <li>Indexes official Nous Research tools for self-evolution and novel writing</li>
+      <li>Lists community integrations for Telegram, Discord, and workspace GUIs</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <p align="center">
   <picture>
     <img src="https://raw.githubusercontent.com/NousResearch/hermes-agent/main/assets/banner.png" alt="Awesome Hermes Agent" width="600">
   </picture>
@@ -477,7 +512,8 @@
 <p>This list is licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International</a>. You are free to share and adapt this material for any purpose, provided you give appropriate attribution.</p>
 <p>All resources included in this list have their own license terms.</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Guides &amp; Docs</h2>

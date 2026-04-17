@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -199,8 +221,21 @@
     <a href="https://dougtrajano.github.io/pydantic-ai-skills/" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
   </div>
 
-  <section class="readme">
-    <h1>pydantic-ai-skills</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">pydantic-ai-skills is a framework that implements the Agent Skills open specification to provide modular, specialized capabilities for Pydantic AI agents. It uses a tool-calling approach to enable progressive disclosure, allowing agents to discover and load detailed instructions or scripts only when relevant to a task. The package supports skills defined as filesystem directories or created programmatically using Python decorators and dataclasses. This architecture reduces token consumption by preventing the injection of unnecessary context into the initial system prompt.</p>
+    <ul class="summary-highlights">
+      <li>Implements the Agent Skills open specification for Pydantic AI</li>
+      <li>Reduces token usage through progressive disclosure of skill metadata</li>
+      <li>Supports both filesystem-based and programmatic Python skill definitions</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>pydantic-ai-skills</h1>
 <p>A standardized, composable framework for building and managing Agent Skills within the Pydantic AI ecosystem.</p>
 <p><strong>Agent Skills</strong> are modular collections of instructions, scripts, tools, and resources that enable AI agents to progressively discover, load, and execute specialized capabilities for domain-specific tasks.</p>
 <p>This package implements the <a href="https://agentskills.io/home">Agent Skills specification</a> for Pydantic AI using a tool-calling approach, maintaining full compatibility with the specification while adapting the loading mechanism for Pydantic AI&#39;s architecture. Agent Skills is an open format maintained by Anthropic and open to contributions from the community.</p>
@@ -457,7 +492,8 @@ result = await run_skill_script(
 <h2>License</h2>
 <p>MIT License - see <a href="LICENSE">LICENSE</a> file for details.</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Skills &amp; Skill Registries</h2>

@@ -58,6 +58,12 @@
   .list-page th { text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-tertiary); border-bottom: 1px solid var(--border-subtle); background: var(--overlay-medium); }
   .list-page td { padding: 10px 12px; border-bottom: 1px solid var(--border-subtle); }
   .list-page tr:hover td { background: var(--overlay-medium); }
+  .listicle { margin-top: 32px; border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .listicle h2 { font-size: 18px; font-weight: 800; margin-bottom: 16px; }
+  .listicle-entry { margin-bottom: 20px; }
+  .listicle-entry h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .listicle-entry h3 a { color: var(--text-link); }
+  .listicle-entry p { font-size: 14px; line-height: 1.7; color: var(--text-secondary); margin: 0; }
   .back-link { margin-top: 24px; font-size: 13px; }
   .page-footer { text-align: center; margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border-subtle); font-size: 11px; color: var(--text-muted); }
   .page-footer a { color: var(--text-link); }
@@ -87,31 +93,31 @@
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">2</td>
         <td><a href="/projects/joeynyc/hermes-skins"><strong>hermes-skins</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 223</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 225</td>
         <td style="color:var(--text-secondary);font-size:13px">Custom skins (visual themes) for the Hermes CLI agent</td>
       </tr>
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">3</td>
         <td><a href="/projects/AlexAI-MCP/hermes-CCC"><strong>hermes-CCC</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 79</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 80</td>
         <td style="color:var(--text-secondary);font-size:13px">Hermes Agent ported to Claude Code Channel — 46 native skills, no OAuth, no external process</td>
       </tr>
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">4</td>
         <td><a href="/projects/unmodeled-tyler/vessel-browser"><strong>vessel-browser</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 51</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 52</td>
         <td style="color:var(--text-secondary);font-size:13px">Built from the ground-up for agents, Vessel Browser is an open source AI browser for Linux/Windows that provides a durab</td>
       </tr>
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">5</td>
         <td><a href="/projects/Abruptive/Ankh.md"><strong>Ankh.md</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 33</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 34</td>
         <td style="color:var(--text-secondary);font-size:13px">A mysterious multi-agent swarm framework summoned by TAW Agent from 1971 to help you craft a better future towards 2133 </td>
       </tr>
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">6</td>
         <td><a href="/projects/rookiemann/portable-hermes-agent"><strong>portable-hermes</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 28</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 29</td>
         <td style="color:var(--text-secondary);font-size:13px">Hermes Agent made portable desktop for Windows — 100 tools, GUI, local models via LM Studio, TTS, Music, ComfyUI, workfl</td>
       </tr>
       <tr>
@@ -129,10 +135,50 @@
       <tr>
         <td style="font-weight:700;color:var(--text-tertiary)">9</td>
         <td><a href="/projects/42-evey/evey-setup"><strong>evey-setup</strong></a></td>
-        <td style="color:var(--brand-star);font-weight:700">★ 10</td>
+        <td style="color:var(--brand-star);font-weight:700">★ 11</td>
         <td style="color:var(--text-secondary);font-size:13px">Get a hermes-agent stack running in minutes. Free models, 29 plugins, zero cost.</td>
       </tr></tbody>
   </table>
+  
+  <section class="listicle">
+    <h2>Project Breakdown</h2>
+    <div class="listicle-entry">
+      <h3><a href="/projects/junhoyeo/tokscale">tokscale</a></h3>
+      <p>This Rust-based TUI tracks token consumption and real-time costs across over 20 AI coding agents, including Hermes and Claude Code. It utilizes LiteLLM pricing data to provide developers with precise financial oversight and 3D usage visualizations for their agentic workflows.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/joeynyc/hermes-skins">hermes-skins</a></h3>
+      <p>This customization tool allows users to personalize the Hermes terminal interface through YAML-defined themes and inheritance. It modifies visual elements like banners, spinners, and response boxes with community-driven styles ranging from Cyberdyne Systems to Vault-Tec.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/AlexAI-MCP/hermes-CCC">hermes-CCC</a></h3>
+      <p>This project ports the Hermes Agent brain and its 46 core skills directly into the Claude Code Channel for native execution without external processes or OAuth. It specifically enhances the environment with MLOps tools for vLLM inference, GGUF management, and reinforcement learning training.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/unmodeled-tyler/vessel-browser">vessel-browser</a></h3>
+      <p>An AI-native browser designed for autonomous control, this tool provides an MCP-native interface for external harnesses like Hermes Agent. It features durable session persistence for agent stability and a human-in-the-loop supervisory layer for real-time transcript monitoring and approvals.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/Abruptive/Ankh.md">Ankh.md</a></h3>
+      <p>This framework enables the creation of scoped Hermes Agents that are restricted to specific project folders with local configurations and memories. It allows developers to seamlessly toggle between global and project-local agents, each equipped with unique tools and custom instructions.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/rookiemann/portable-hermes-agent">portable-hermes</a></h3>
+      <p>This no-install Windows desktop application provides a GUI for Hermes Agent that requires no administrative rights or Docker setup. It features over 100 integrated tools for GPU monitoring and local model management alongside a workflow engine for scheduled automation.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/roli-lpci/lintlang">lintlang</a></h3>
+      <p>A static analysis tool that validates agent configurations, tool descriptions, and system prompts without incurring LLM costs or latency. It uses seven structural detectors to identify common failure modes and provides CI-ready gating based on HERM v1.1 scoring.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/0xNyk/openclaw-to-hermes">openclaw-to-hermes</a></h3>
+      <p>This migration utility streamlines the transition from OpenClaw to Hermes Agent by mapping complex model configurations and personas to the Hermes YAML format. It automates the transfer of memories, skills, and workspace files while securely handling environment-level credentials.</p>
+    </div>
+    <div class="listicle-entry">
+      <h3><a href="/projects/42-evey/evey-setup">evey-setup</a></h3>
+      <p>This deployment script uses Docker to orchestrate a full Hermes Agent stack including LiteLLM, Ollama, and Qdrant in minutes. It comes pre-configured with 29 community plugins and automated routing for free models and local GPU inference.</p>
+    </div>
+  </section>
   <p class="back-link"><a href="/">← Back to Ecosystem Map</a></p>
 </article>
 <div class="page-footer">

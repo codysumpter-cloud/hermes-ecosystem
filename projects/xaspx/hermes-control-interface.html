@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">A self-hosted web dashboard for the Hermes AI agent stack. Provides a browser-based terminal, file explorer, session overview, cron management, system metrics, and an agent status panel — all behind a single password gate.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 325</span>
+    <span class="stars">★ 332</span>
     <span class="badge badge-lang">JavaScript</span>
     <span class="badge badge-lang">MIT</span>
     
@@ -199,8 +221,21 @@
     <a href="https://x.com/bayendor" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
   </div>
 
-  <section class="readme">
-    <h1>Hermes Control Interface</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">The Hermes Control Interface is a self-hosted web dashboard designed to manage the Hermes AI agent stack through a centralized graphical interface. It utilizes a Node.js and Express backend with WebSockets to provide real-time system monitoring, multi-agent gateway management, and a browser-based terminal. Users can configure over 80 agent settings, track detailed token analytics across different models, and manage scheduled cron jobs for automated tasks. The platform also includes a revamped chat interface with collapsible tool call cards and a secure file explorer scoped to the agent's directory.</p>
+    <ul class="summary-highlights">
+      <li>Multi-agent gateway for starting, stopping, and configuring individual profiles.</li>
+      <li>Detailed token analytics tracking costs and usage by model and platform.</li>
+      <li>Role-based access control with 28 permissions across 12 functional groups.</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>Hermes Control Interface</h1>
 <p>A self-hosted web dashboard for the <a href="https://github.com/NousResearch/hermes-agent">Hermes AI agent</a> stack. Manage terminals, files, sessions, cron jobs, token analytics, multi-agent gateways, and team access — all behind a password gate.</p>
 <p><strong>Stack:</strong> Vanilla JS + Vite · Node.js · Express · WebSocket · xterm.js
 <strong>Version:</strong> 3.3.2</p>
@@ -917,7 +952,8 @@ If running via systemd, use <code>sudo systemctl restart hermes-control</code>.<
 <p>Built for the <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> ecosystem.</p>
 <p><a href="https://x.com/bayendor">@bayendor</a> — GitHub: <a href="https://github.com/xaspx">xaspx</a></p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Workspaces &amp; GUIs</h2>

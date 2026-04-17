@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">Custom skins (visual themes) for the Hermes CLI agent</p>
 
   <div class="meta-row">
-    <span class="stars">★ 223</span>
+    <span class="stars">★ 225</span>
     <span class="badge badge-lang">Python</span>
     <span class="badge badge-lang">MIT</span>
     
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <h1>Hermes Skins</h1>
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Hermes Skins is a collection of community-driven visual themes for the Hermes CLI agent that allows users to customize the terminal interface's appearance. The project utilizes YAML configuration files to modify visual elements such as ASCII art banners, color schemes, spinner animations, and branding text without altering the agent's underlying logic. Users can apply themes like Skynet, Vault-Tec, or Sakura by placing files in a local directory and updating their configuration. This system supports partial overrides, meaning custom skins inherit missing values from a default template for easier creation.</p>
+    <ul class="summary-highlights">
+      <li>Customizes CLI visuals including banners, spinners, and response-box labels</li>
+      <li>Uses YAML files for simple theme definition and inheritance</li>
+      <li>Includes diverse themes like Pirate, Vault-Tec, and Cyberdyne Systems</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <h1>Hermes Skins</h1>
 <p>Custom skins (visual themes) for the <a href="https://github.com/NousResearch/hermes-agent">Hermes</a> CLI agent.</p>
 <p>Skins control the <strong>visual presentation</strong> of Hermes: banner colors, spinner faces/verbs, response-box labels, branding text, tool activity prefix, and ASCII art banners. They don&#39;t affect personality or behavior — just how things look.</p>
 <h2>Quick Start</h2>
@@ -348,7 +383,8 @@ branding:
  </picture>
 </a>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Developer Tools</h2>

@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,11 +209,11 @@
   <p class="project-desc">Built from the ground-up for agents, Vessel Browser is an open source AI browser for Linux/Windows that provides a durable state, MCP control, and BYOK with full autonomous browsing. Use with Hermes Agent, OpenClaw, or connect to your favorite API provider.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 51</span>
+    <span class="stars">★ 52</span>
     <span class="badge badge-lang">TypeScript</span>
     <span class="badge badge-lang">MIT</span>
     
-    <span>Updated 4/16/2026</span>
+    <span>Updated 4/17/2026</span>
   </div>
 
   <div class="actions">
@@ -199,8 +221,21 @@
     <a href="https://quantaintellect.com" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
   </div>
 
-  <section class="readme">
-    <div align="center">
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Vessel is an open-source Chromium-based browser designed for persistent web agents that require durable state and human supervision. It operates as a Model Context Protocol (MCP) host, allowing external agent harnesses like Hermes to control the browser while maintaining a visible UI for human auditing and intervention. The platform features named session persistence, structured page visibility context, and built-in tools for handling popups and consent walls. It bridges the gap between headless automation and manual browsing by providing a dedicated runtime for long-running autonomous workflows.</p>
+    <ul class="summary-highlights">
+      <li>MCP-native control for external agent harnesses and Hermes Agent</li>
+      <li>Durable session persistence for cookies, bookmarks, and tab layouts</li>
+      <li>Human-in-the-loop supervisory interface with live agent transcripts and approvals</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <div align="center">
   
 <p><img src="https://cdn-uploads.huggingface.co/production/uploads/686c460ba3fc457ad14ab6f8/gB6J60f9Yeyb3Thop2dUa.png" alt="quanta-intellect-logo-transparent"></p>
 <a href="https://snapcraft.io/vessel-browser">
@@ -707,7 +742,8 @@ vessel-browser-launch --dry-run
 <p>MIT</p>
 <p><em>Developed by Tyler Williams in Portland, Oregon (2026)</em></p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Developer Tools</h2>

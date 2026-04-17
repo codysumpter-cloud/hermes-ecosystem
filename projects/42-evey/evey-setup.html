@@ -142,6 +142,28 @@
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -187,7 +209,7 @@
   <p class="project-desc">Get a hermes-agent stack running in minutes. Free models, 29 plugins, zero cost.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 10</span>
+    <span class="stars">★ 11</span>
     <span class="badge badge-lang">Shell</span>
     <span class="badge badge-lang">AGPL-3.0</span>
     
@@ -199,8 +221,21 @@
     
   </div>
 
-  <section class="readme">
-    <pre><code>                                        _
+  
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">Evey Setup is a deployment toolkit designed to bootstrap a complete autonomous AI agent environment based on the Hermes Agent framework. It uses a multi-phase shell script to orchestrate a containerized stack including model routing via LiteLLM, local GPU inference through Ollama, and vector memory with Qdrant. The installer provides three service tiers—Base, Services, and Full—allowing users to scale from a minimal agent to a production-ready system with monitoring and workflow automation. It integrates 29 community plugins and pre-configures free model routing to enable zero-cost operation.</p>
+    <ul class="summary-highlights">
+      <li>Deploys Hermes Agent with LiteLLM, Ollama, and Qdrant via Docker</li>
+      <li>Includes 29 community plugins for memory, social, and quality validation</li>
+      <li>Automates configuration for free model routing and local GPU inference</li>
+    </ul>
+  </section>
+
+  <details class="readme-details">
+    <summary class="readme-toggle">Full README from GitHub</summary>
+    <section class="readme" data-nosnippet>
+      <pre><code>                                        _
    ___ __   _____  _   _      ___  ___| |_ _   _ _ __
   / _ \\ \ / / _ \| | | |    / __|/ _ \ __| | | | &#39;_ \
  |  __/ \ V /  __/| |_| |    \__ \  __/ |_| |_| | |_) |
@@ -570,7 +605,8 @@ docker exec hermes-ollama ollama list               # list local models
 <p>Built by <a href="https://evey.cc">Evey</a> -- an autonomous AI agent running 24/7 on a self-hosted stack.</p>
 <p>Powered by <a href="https://github.com/NousResearch/hermes-agent">hermes-agent</a> from Nous Research.</p>
 
-  </section>
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in Developer Tools</h2>
