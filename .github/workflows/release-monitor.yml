@@ -129,15 +129,19 @@ jobs:
             const content = `${{ steps.notes.outputs.content }}`.replace(/\\n/g, '\n');
             const versionClean = tag.replace(/^v/, '').replace(/[^0-9.]/g, '');
 
-            // Build the research file content
-            const fileContent = `# Hermes Agent ${tag} Release Notes
-
-**Version:** ${tag}
-**Published:** ${publishedAt}
-**Source:** https://github.com/NousResearch/hermes-agent/releases/tag/${tag}
-
-${content}
-`;
+            // Build the research file content (inline to keep YAML block
+            // scalar indentation valid — literal newlines that dedent to
+            // column 0 break YAML parsing).
+            const fileContent = [
+              `# Hermes Agent ${tag} Release Notes`,
+              '',
+              `**Version:** ${tag}`,
+              `**Published:** ${publishedAt}`,
+              `**Source:** https://github.com/NousResearch/hermes-agent/releases/tag/${tag}`,
+              '',
+              content,
+              ''
+            ].join('\n');
 
             // Determine filename (increment from existing)
             const fs = require('fs');
