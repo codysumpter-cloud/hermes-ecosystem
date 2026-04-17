@@ -1045,8 +1045,7 @@
 
 <!-- Footer -->
 <div class="footer">
-  <p>Updated April 9, 2026 · Hermes v0.8.0 (209 PRs) · Security reviewed · Quality filtered · Data from GitHub API + community research</p>
-  <p>Missing a repo? <a href="https://github.com/ksimback/hermes-ecosystem/issues">Open an issue</a></p>
+  <p style="font-size: 14px;">Missing a repo? <a href="https://github.com/ksimback/hermes-ecosystem/issues">Open an issue</a></p>
   <a class="cta" href="/projects/NousResearch/hermes-agent" data-github="https://github.com/NousResearch/hermes-agent">Get Hermes Agent →</a>
 </div>
 
@@ -1134,8 +1133,8 @@
   initTooltips();
 
   // ── Add data-repo attributes to all items ──
-  document.querySelectorAll('.item[href*="github.com/"]').forEach(item => {
-    const match = item.href.match(/github\.com\/([^/]+\/[^/]+)/);
+  document.querySelectorAll('.item[data-github]').forEach(item => {
+    const match = item.getAttribute('data-github').match(/github\.com\/([^/]+\/[^/]+)/);
     if (match) item.setAttribute('data-repo', match[1]);
   });
 
