@@ -229,6 +229,17 @@ jobs:
               ref: 'heads/main'
             });
 
+            // Delete existing branch if present (from previous failed runs)
+            try {
+              await github.rest.git.deleteRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `heads/${branch}`
+              });
+            } catch (e) {
+              // Branch doesn't exist — that's fine
+            }
+
             // Create branch
             await github.rest.git.createRef({
               owner: context.repo.owner,
