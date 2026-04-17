@@ -1,13 +1,13 @@
 {
   "NousResearch/hermes-agent": {
-    "summary": "Hermes Agent is an autonomous AI system designed for persistent, cross-session task execution and self-improvement. It utilizes a closed learning loop to automatically generate new skills from experience and maintain long-term user profiles through dialectic modeling. The agent supports six execution backends, including Docker and SSH, allowing it to run complex Python scripts and parallel subagents across various cloud or local environments. Users can interact with the system via a terminal interface or through integrated messaging platforms like Telegram, Discord, and Slack.",
+    "summary": "Hermes Agent is an open-source AI assistant designed for continuous learning and cross-platform task execution. It utilizes a closed learning loop to autonomously create and refine skills from experience while maintaining persistent user modeling and session memory. The system supports 14 messaging platforms and six execution backends, including Docker and SSH, allowing it to run on everything from local terminals to serverless cloud infrastructure. Users can integrate over 200 models from various providers and automate complex workflows using a built-in cron scheduler.",
     "highlights": [
-      "Autonomous skill creation and self-improvement from task experience",
-      "Multi-platform support including Telegram, Discord, Slack, and Signal",
-      "Six execution backends including Docker, SSH, and serverless Modal"
+      "Autonomous skill creation and self-improvement through a closed learning loop.",
+      "Supports 14 platforms including Telegram, Discord, Slack, and WhatsApp.",
+      "Six execution backends including Docker, SSH, and serverless Modal environments."
     ],
-    "readmeHash": "7560ab784dfc04468b9df808ca66ad76a4d7b67bb9896753c578a39da157d5fe",
-    "generatedAt": "2026-04-17T18:14:32.275Z",
+    "readmeHash": "1e1a381a87f39311c33bc0a8f13c37a0d10e15b2e58ca54bb9a177984a5ca4b1",
+    "generatedAt": "2026-04-17T21:34:21.438Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -312,14 +312,14 @@
     "audit": "pass"
   },
   "armelhbobdad/bmad-module-skill-forge": {
-    "summary": "Skill Forge is a development tool that converts source code, documentation, and developer discussions into verified instruction files for AI agents to prevent hallucinations. It analyzes repositories to extract exact function signatures and types, compiling them into agentskills.io-compliant formats that link every instruction to a specific file and line number. The tool generates a dual-output consisting of a full instruction set and a compact context snippet to improve agent accuracy across platforms like Claude and Cursor. It also includes lifecycle management for version-pinning skills and transactional operations for maintaining skill registries.",
+    "summary": "Skill Forge is a development tool that converts source code, documentation, and developer discussions into verified instruction files for AI agents to prevent API hallucinations. It uses AST extraction to map function signatures and types directly to specific source files and line numbers, ensuring agents follow real implementation details. The tool generates version-pinned skills compliant with the agentskills.io specification, supporting workflows for libraries, SaaS APIs, and complex dependency stacks. Every skill includes a provenance map for auditability and a compact context snippet for efficient agent memory management.",
     "highlights": [
-      "Extracts verified function signatures and types directly from source code AST",
-      "Links every AI instruction to specific source file and line citations",
-      "Produces dual-output files for both active triggers and passive context"
+      "Extracts verified function signatures and types via AST analysis",
+      "Links every AI instruction to specific source file line numbers",
+      "Generates agentskills.io-compliant markdown and JSON instruction sets"
     ],
-    "readmeHash": "41460be7e14267259bda110c2d59f9f6b734ba48833d84c9b728b96233c90098",
-    "generatedAt": "2026-04-17T18:16:17.257Z",
+    "readmeHash": "cdf94eee115fe18cdd6da97d005520f67a95d8c2a5242e3ce610e5dbd682e02b",
+    "generatedAt": "2026-04-17T21:34:29.958Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -364,14 +364,14 @@
     "audit": "pass"
   },
   "greyhaven-ai/autocontext": {
-    "summary": "autocontext is a recursive self-improving harness designed to prevent LLM agents from starting every task with a cold context. It uses a multi-agent loop—comprising competitors, analysts, and coaches—to evaluate execution traces and persist validated knowledge into reusable playbooks and artifacts. The system supports structured scenarios ranging from game strategy to tool drift adaptation, allowing agents to accumulate lessons across repeated runs. Users can also distill successful behaviors into local runtimes using MLX or export datasets for downstream training.",
+    "summary": "autocontext is a recursive self-improvement harness designed to prevent LLM agents from starting every task with a cold context. It uses a structured multi-agent loop—comprising competitors, analysts, and coaches—to evaluate agent runs, extract validated lessons, and persist them as reusable playbooks. The system supports diverse execution surfaces including verifier-driven missions, evidence-based investigations, and parameter-sweep simulations. Successful behaviors can eventually be distilled from frontier models into smaller, local runtimes using MLX.",
     "highlights": [
-      "Multi-agent loop for strategy proposal, analysis, and knowledge curation",
-      "Eleven scenario families for testing games, workflows, and investigations",
-      "Persistent storage of validated playbooks, hints, and execution artifacts"
+      "Multi-agent loop extracts and persists validated knowledge across repeated runs",
+      "Supports eleven scenario families including negotiation, workflows, and tool fragility",
+      "Distills stable agent behaviors into local models via MLX integration"
     ],
-    "readmeHash": "168386001a8263a6e74c479bc47a30791c034d5a242b8a65f06631ea87ae86e5",
-    "generatedAt": "2026-04-17T18:16:35.208Z",
+    "readmeHash": "229255b8462da8cd8d6bba54861c89fe3249c0ed623ba14a4b02331a2156f168",
+    "generatedAt": "2026-04-17T21:34:34.822Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -520,14 +520,14 @@
     "audit": "pass"
   },
   "swarmclawai/swarmclaw": {
-    "summary": "SwarmClaw is a self-hosted runtime designed for orchestrating and managing autonomous AI agent swarms. It functions as an execution environment that supports multi-agent delegation, persistent memory, and scheduled tasks across various model providers. The platform integrates with the Model Context Protocol (MCP) and allows agents to learn new skills from reviewed conversations. Users can visualize agent hierarchies through an organizational chart and manage complex workflows using a variety of CLI-based backends and local sandboxes.",
+    "summary": "SwarmClaw is a self-hosted runtime designed to orchestrate and manage autonomous AI agent swarms. It operates as a multi-provider system that supports MCP-native tools, delegation, and scheduled tasks across various LLM backends and CLI-based agents. The platform features an organizational chart interface for visualizing agent hierarchies and includes a reviewed conversation-to-skill learning mechanism. It integrates with over 20 providers, including OpenClaw, Hermes, and local models via Ollama.",
     "highlights": [
-      "Supports 23 model providers including Hermes, OpenAI, and Anthropic",
-      "MCP-native architecture with runtime skill learning and delegation",
-      "Self-hosted runtime with Docker-based browser sandboxing for agents"
+      "Self-hosted runtime for autonomous agent orchestration and delegation",
+      "Supports 23 providers including OpenClaw, Hermes, and major LLM APIs",
+      "Native MCP support with durable memory and runtime skill learning"
     ],
-    "readmeHash": "9974f9a7e2cafdba1fa848334e7d86cfb22170d02ed90bb368c03531c87bb3c2",
-    "generatedAt": "2026-04-17T18:17:26.124Z",
+    "readmeHash": "790f3abfead15c1cfc20bd6d50bdc6c323f6496fd7732439a390855f5e86c690",
+    "generatedAt": "2026-04-17T21:34:40.573Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
