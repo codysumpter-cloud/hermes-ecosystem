@@ -69,9 +69,46 @@ jobs:
               core.setOutput('updated_at', data.pushed_at);
               core.setOutput('is_fork', data.fork);
               core.setOutput('html_url', data.html_url);
+              core.setOutput('topics', (data.topics || []).join(','));
               core.setOutput('exists', 'true');
 
-              console.log(`${owner}/${repo}: ${data.stargazers_count} stars, ${data.language}, created ${data.created_at}`);
+              // Infer category from description, name, and topics
+              const text = [
+                data.description || '',
+                data.name || '',
+                ...(data.topics || [])
+              ].join(' ').toLowerCase();
+
+              let category = 'Developer Tools'; // fallback
+
+              if (data.owner?.login === 'NousResearch') {
+                category = 'Core & Official';
+              } else if (data.fork) {
+                category = 'Forks & Derivatives';
+              } else if (/\b(memory|context|recall|remember|semantic search|knowledge graph|rag|retrieval|embedding|vector|long.?term)\b/.test(text)) {
+                category = 'Memory & Context';
+              } else if (/\b(gui|ui|dashboard|desktop|workspace|webui|web.?ui|frontend|interface|chat.?app|companion.?app|panel)\b/.test(text)) {
+                category = 'Workspaces & GUIs';
+              } else if (/\b(skill|agentskills|skill.?registry|skill.?factory)\b/.test(text)) {
+                category = 'Skills & Skill Registries';
+              } else if (/\b(plugin|extension|bridge|adapter|connector|integration|webhook|mcp)\b/.test(text)) {
+                category = 'Plugins & Extensions';
+              } else if (/\b(multi.?agent|swarm|orchestrat|fleet|delegation|coordinator)\b/.test(text)) {
+                category = 'Multi-Agent & Orchestration';
+              } else if (/\b(deploy|docker|kubernetes|k8s|nix|systemd|infra|server|hosting|cloud|helm|portainer)\b/.test(text)) {
+                category = 'Deployment & Infra';
+              } else if (/\b(telegram|discord|slack|android|ios|mobile|whatsapp|cloudflare|browser)\b/.test(text)) {
+                category = 'Integrations & Bridges';
+              } else if (/\b(guide|tutorial|doc|book|wiki|awesome|learning|course|handbook)\b/.test(text)) {
+                category = 'Guides & Docs';
+              } else if (/\b(cybersecurity|finance|trading|medical|legal|blockchain|oracle|game|novel|creative|domain)\b/.test(text)) {
+                category = 'Domain Applications';
+              } else if (/\b(cli|linter|migration|token.?track|devtool|debug|test|benchmark|lint)\b/.test(text)) {
+                category = 'Developer Tools';
+              }
+
+              core.setOutput('inferred_category', category);
+              console.log(`${owner}/${repo}: ${data.stargazers_count} stars, ${data.language}, category: ${category}`);
             } catch (e) {
               core.setOutput('exists', 'false');
               core.setFailed(`Repo not found: ${owner}/${repo}`);
@@ -191,6 +228,7 @@ jobs:
           REPO_DESC: ${{ steps.metadata.outputs.description }}
           REPO_HTML_URL: ${{ steps.metadata.outputs.html_url }}
           REPO_CATEGORY: ${{ steps.extract.outputs.category }}
+          INFERRED_CATEGORY: ${{ steps.metadata.outputs.inferred_category }}
         with:
           script: |
             const fs = require('fs');
@@ -199,8 +237,11 @@ jobs:
             const stars = parseInt(process.env.REPO_STARS) || 0;
             const description = process.env.REPO_DESC;
             const htmlUrl = process.env.REPO_HTML_URL;
+            // Use user-suggested category if provided, otherwise use inferred
             let category = process.env.REPO_CATEGORY;
-            if (category === 'Not sure') category = 'Developer Tools';
+            if (!category || category === 'Not sure') {
+              category = process.env.INFERRED_CATEGORY || 'Developer Tools';
+            }
 
             // Read current repos.json
             const repos = JSON.parse(fs.readFileSync('data/repos.json', 'utf-8'));
