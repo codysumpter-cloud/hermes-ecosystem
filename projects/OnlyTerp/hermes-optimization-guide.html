@@ -187,11 +187,11 @@
   <p class="project-desc">Hermes Agent setup, migration, LightRAG, Telegram, and skill creation guide</p>
 
   <div class="meta-row">
-    <span class="stars">★ 143</span>
-    
+    <span class="stars">★ 147</span>
+    <span class="badge badge-lang">Shell</span>
     <span class="badge badge-lang">MIT</span>
     
-    <span>Updated 4/16/2026</span>
+    <span>Updated 4/17/2026</span>
   </div>
 
   <div class="actions">
@@ -201,16 +201,176 @@
 
   <section class="readme">
     <h1>Hermes Optimization Guide</h1>
+<p><a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+<a href="https://github.com/NousResearch/hermes-agent"><img src="https://img.shields.io/badge/Hermes-v0.10.0%20%28main%29-9146FF" alt="Hermes"></a>
+<a href="./CHANGELOG.md"><img src="https://img.shields.io/badge/Last%20updated-2026--04--17-brightgreen" alt="Last updated"></a>
+<a href="#table-of-contents"><img src="https://img.shields.io/badge/parts-21-blue" alt="Parts"></a>
+<a href="./skills/"><img src="https://img.shields.io/badge/installable%20skills-9-blue" alt="Skills"></a>
+<a href="./templates/config/"><img src="https://img.shields.io/badge/config%20templates-5-blue" alt="Configs"></a>
+<a href="./CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a></p>
 <blockquote>
-<p><strong>Tested on Hermes Agent (latest) — April 2026</strong> · 11 parts · Battle-tested on a live production deployment</p>
+<p><strong>Tested on Hermes Agent v0.10.0 (v2026.4.16)</strong> with post-release tracking for <code>main</code> · <strong>21 parts, 9 installable skills, 5 opinionated configs, one-command VPS bootstrap</strong> · Battle-tested on a live production deployment</p>
 </blockquote>
-<h3>Make Your Hermes Agent Actually Work — Setup, Migration, Knowledge Graphs, Telegram, Skills, Memory, Models, and Recovery</h3>
-<h4>Full setup walkthrough, OpenClaw migration, LightRAG graph RAG, Telegram bot integration, on-the-fly skill creation, memory architecture, custom models, and crash recovery</h4>
-<p><em>By Terp - <a href="https://x.com/OnlyTerp">Terp AI Labs</a></em></p>
+<h3>The End-to-End Hermes Guide — docs + runnable artifacts</h3>
+<p>Every part you need to go from fresh install to a production Hermes deployment that talks on 16 platforms, orchestrates Claude Code / Codex / Gemini CLI, plugs into any MCP server, traces every call in Langfuse, and runs heavy work on disposable Modal/Daytona sandboxes — without burning $100/day on Opus tokens.</p>
+<p>Unlike most guides, the prescriptions come with <strong>working files</strong>: <a href="./skills"><code>skills/</code></a> you can <code>ln -s</code> into <code>~/.hermes/skills/</code>, <a href="./templates/config"><code>templates/config/</code></a> you <code>cp</code> to <code>~/.hermes/config.yaml</code>, <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/scripts/vps-bootstrap.sh"><code>scripts/vps-bootstrap.sh</code></a> that takes a fresh VPS to production in one command.</p>
+<p><em>By Terp — <a href="https://x.com/OnlyTerp">Terp AI Labs</a></em> · Last updated <strong>April 17, 2026</strong> · <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/CHANGELOG.md">CHANGELOG</a> · <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/ROADMAP.md">ROADMAP</a> · <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/ECOSYSTEM.md">ECOSYSTEM</a></p>
+<hr>
+<h2>Install Everything (one command)</h2>
+<p>On a fresh Debian 12 / Ubuntu 24.04 box (Hetzner CX22 works great for ~$5/mo):</p>
+<pre><code class="language-bash">curl -sSL https://raw.githubusercontent.com/OnlyTerp/hermes-optimization-guide/main/scripts/vps-bootstrap.sh | sudo bash
+</code></pre>
+<p>This installs Hermes, Node.js, Caddy (auto-TLS reverse proxy), UFW, fail2ban, creates a non-root <code>hermes</code> user, drops in hardened systemd units, and symlinks every skill from this repo into <code>~hermes/.hermes/skills/</code>. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/scripts/vps-bootstrap.sh"><code>scripts/vps-bootstrap.sh</code></a> for what it does line by line — it&#39;s non-destructive and re-runnable.</p>
+<p>Prefer a 5-minute local-only setup? → <strong><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/docs/quickstart.md">docs/quickstart.md</a></strong> (zero to Telegram bot in 5 min).</p>
+<hr>
+<h2>Repo Map</h2>
+<table>
+<thead>
+<tr>
+<th>Folder</th>
+<th>What&#39;s in it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="./skills"><code>skills/</code></a></td>
+<td><strong>9 installable <code>SKILL.md</code></strong> files. <code>ln -s</code> into <code>~/.hermes/skills/</code> and they&#39;re live.</td>
+</tr>
+<tr>
+<td><a href="./templates/config"><code>templates/config/</code></a></td>
+<td><strong>5 opinionated <code>config.yaml</code></strong> — minimum, telegram-bot, production, cost-optimized, security-hardened.</td>
+</tr>
+<tr>
+<td><a href="./templates/compose"><code>templates/compose/</code></a></td>
+<td>Self-hosted Langfuse v3 stack (ClickHouse + MinIO + Redis).</td>
+</tr>
+<tr>
+<td><a href="./templates/caddy"><code>templates/caddy/</code></a></td>
+<td>Caddyfile reference (reverse proxy + auto TLS + HSTS).</td>
+</tr>
+<tr>
+<td><a href="./templates/systemd"><code>templates/systemd/</code></a></td>
+<td>Hardened <code>hermes.service</code> + <code>hermes-dashboard.service</code>.</td>
+</tr>
+<tr>
+<td><a href="./templates/cron"><code>templates/cron/</code></a></td>
+<td>Recommended production cron schedule.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/scripts/vps-bootstrap.sh"><code>scripts/vps-bootstrap.sh</code></a></td>
+<td>One-command fresh VPS → production Hermes.</td>
+</tr>
+<tr>
+<td><a href="./diagrams"><code>diagrams/</code></a></td>
+<td>6 Mermaid diagrams (architecture, MCP flow, delegation, sandbox sync, observability, security layers).</td>
+</tr>
+<tr>
+<td><a href="./benchmarks"><code>benchmarks/</code></a></td>
+<td>Reproducible cost + latency table across 12 models × 5 tasks.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/docs/quickstart.md"><code>docs/quickstart.md</code></a></td>
+<td>5-minute zero-to-Telegram-bot.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/ECOSYSTEM.md"><code>ECOSYSTEM.md</code></a></td>
+<td>Curated directory of MCP servers, coding agents, dashboard plugins.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/ROADMAP.md"><code>ROADMAP.md</code></a> · <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/CHANGELOG.md"><code>CHANGELOG.md</code></a> · <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/CONTRIBUTING.md"><code>CONTRIBUTING.md</code></a></td>
+<td>The usual suspects.</td>
+</tr>
+<tr>
+<td><code>part1-*.md</code> … <code>part21-*.md</code></td>
+<td>The guide itself.</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Architecture at a glance</h2>
+<pre><code class="language-mermaid">flowchart LR
+  Inputs[16 platforms&lt;br/&gt;Telegram · Discord · Slack&lt;br/&gt;iMessage · WeChat · Email&lt;br/&gt;SMS · Webhooks · Cron · Voice · CLI] --&gt; Gateway
+  Gateway --&gt; Router[Model Router&lt;br/&gt;cost + context + capability]
+  Router --&gt; Providers[Anthropic · OpenAI&lt;br/&gt;Google · Cerebras · Moonshot&lt;br/&gt;z.ai · xAI · Local]
+  Gateway --&gt; Approval[Approval Layer&lt;br/&gt;denylist · allowlist · quarantine]
+  Approval --&gt; Tools[Tools&lt;br/&gt;Native · Tool Gateway&lt;br/&gt;MCP · Subagents · Coding Agents]
+  Tools --&gt; Memory[Memory&lt;br/&gt;Vector · LightRAG · mem0]
+  Tools --&gt; Logs[(Audit log&lt;br/&gt;+ Langfuse/Helicone traces)]
+</code></pre>
+<p>Full set of diagrams: <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/diagrams/architecture.md"><code>diagrams/architecture.md</code></a>.</p>
+<hr>
+<h2>Pick Your Path</h2>
+<p>This guide grew to 21 parts because <em>Hermes grew</em>. You don&#39;t have to read them all. Pick the shortest path to what you need:</p>
+<h3>🎯 &quot;I just want it working in 10 minutes&quot;</h3>
+<p><a href="#part-1-setup-stop-fumbling-with-installation">Part 1: Setup</a> → <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part12-web-dashboard.md">Part 12: Web Dashboard</a> → done. Use the dashboard to point-and-click the rest.</p>
+<h3>📱 &quot;I want a Telegram bot that&#39;s actually useful&quot;</h3>
+<p><a href="#part-1-setup-stop-fumbling-with-installation">Part 1</a> → <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part4-telegram-setup.md">Part 4: Telegram</a> → <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part5-creating-skills.md">Part 5: On-the-fly Skills</a> → <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part7-memory-system.md">Part 7: Memory</a>.</p>
+<h3>🤖 &quot;I want to drive Claude Code / Codex / Gemini from my phone&quot;</h3>
+<p><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part18-coding-agents.md">Part 18: Coding Agents</a> → <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part17-mcp-servers.md">Part 17: MCP Servers</a> → <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part21-remote-sandboxes.md">Part 21: Remote Sandboxes</a>.</p>
+<h3>💼 &quot;I&#39;m running this in production&quot;</h3>
+<p><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part19-security-playbook.md">Part 19: Security Playbook</a> → <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part20-observability.md">Part 20: Observability &amp; Cost</a> → <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part16-backup-debug.md">Part 16: Backup &amp; Debug</a> → <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part11-gateway-recovery.md">Part 11: Gateway Recovery</a>.</p>
+<h3>🧠 &quot;I want the most capable agent possible, cost be damned&quot;</h3>
+<p><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part17-mcp-servers.md">Part 17: MCP Servers</a> → <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part18-coding-agents.md">Part 18: Coding Agents</a> → <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part3-lightrag-setup.md">Part 3: LightRAG</a> → <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part14-fast-mode-watchers.md">Part 14: Fast Mode</a> → <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part20-observability.md">Part 20: Observability</a>.</p>
+<h3>💰 &quot;I want the cheapest possible agent that still works&quot;</h3>
+<p><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part9-custom-models.md">Part 9: Custom Models</a> (Kimi/GLM/Gemini Flash routing) → <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part20-observability.md#cost-routing-playbook-the-one-that-actually-saves-money">Part 20: Observability</a> → <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part6-context-compression.md">Part 6: Context Compression</a>.</p>
+<h3>🛡️ &quot;I&#39;m worried about prompt injection (you should be)&quot;</h3>
+<p><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part19-security-playbook.md">Part 19: Security Playbook</a> — read this first if your agent reads any untrusted input (email, webhooks, Discord, public Telegram groups).</p>
+<hr>
+<h2>What&#39;s New (April 10–17, 2026)</h2>
+<p>Two major Hermes releases dropped this week, <strong>plus a stream of landmark PRs on <code>main</code></strong> that are targeted for v0.11. This guide is current as of both releases <em>and</em> the most impactful post-v0.10 merges.</p>
+<h3><a href="https://github.com/NousResearch/hermes-agent/releases/tag/v2026.4.13">v0.9.0 — 2026.4.13 — &quot;Everywhere&quot;</a></h3>
+<ul>
+<li><strong>Local web dashboard</strong> (<code>hermes dashboard</code>) — full browser UI for config, API keys, sessions, logs, analytics, cron, and skills. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part12-web-dashboard.md">Part 12</a>.</li>
+<li><strong>Fast Mode</strong> (<code>/fast</code>) — priority-tier inference on OpenAI &amp; Anthropic, available on every gateway platform, not just the CLI. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part14-fast-mode-watchers.md">Part 14</a>.</li>
+<li><strong>Three new messaging adapters</strong> — iMessage (via BlueBubbles), WeChat/Weixin, and WeCom (Enterprise WeChat). Brings the total to <strong>16 platforms</strong>. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part15-new-platforms.md">Part 15</a>.</li>
+<li><strong>Android / Termux</strong> tested install path — run the full Hermes CLI on your phone. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part15-new-platforms.md#android--termux-running-hermes-on-your-phone">Part 15</a>.</li>
+<li><strong>Background process monitoring</strong> (<code>watch_patterns</code>) — real-time regex event hooks on long-running processes, no more polling. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part14-fast-mode-watchers.md#background-process-monitoring-watch_patterns">Part 14</a>.</li>
+<li><strong>Pluggable context engine</strong> — swap in a custom engine to filter memory, inject domain context, or pre-summarize tool output. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part14-fast-mode-watchers.md#pluggable-context-engine">Part 14</a>.</li>
+<li><strong><code>hermes backup</code> / <code>hermes import</code></strong> — first-class portable backups with interactive conflict resolution. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part16-backup-debug.md">Part 16</a>.</li>
+<li><strong>Dashboard plugins</strong> — third-party tabs that extend the web UI. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part12-web-dashboard.md#dashboard-plugins-extend-the-ui">Part 12</a>.</li>
+<li><strong>Proxy support, webhook secret validation, SSRF protection, log redaction</strong> — hardening pass across every adapter. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part16-backup-debug.md#security-hardening-v09--v010-notes">Part 16</a>.</li>
+</ul>
+<h3><a href="https://github.com/NousResearch/hermes-agent/releases/tag/v2026.4.16">v0.10.0 — 2026.4.16 — &quot;Tool Gateway&quot;</a></h3>
+<ul>
+<li><strong>Nous Tool Gateway</strong> — paid <a href="https://portal.nousresearch.com">Nous Portal</a> subscribers get web search (Firecrawl), image generation (FAL FLUX 2 Pro), TTS (OpenAI), and browser automation (Browser Use) through their subscription — <strong>no extra API keys</strong>. Per-tool <code>use_gateway: true</code> with clean precedence over direct keys. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part13-tool-gateway.md">Part 13</a>.</li>
+<li><strong>Native xAI and Xiaomi MiMo providers</strong> — both now have first-class adapters with provider-specific features (Grok&#39;s live-X search, MiMo&#39;s reasoning modes), not just OpenRouter pass-through. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part9-custom-models.md">Part 9</a>.</li>
+<li><strong><code>/compress &lt;topic&gt;</code></strong> — guided compression that preserves detail relevant to a topic. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part14-fast-mode-watchers.md#compress-topic--guided-compression">Part 14</a>.</li>
+<li><strong><code>/debug</code> + <code>hermes debug share</code></strong> — single-command diagnostic bundler with upload endpoint for bug reports. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part16-backup-debug.md#debug-and-hermes-debug-share">Part 16</a>.</li>
+<li><strong>Approval bypass inheritance for subagents</strong> — subagents inherit the parent session&#39;s approval posture; override per delegation. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part16-backup-debug.md#approval-bypass-for-trusted-subagents">Part 16</a>.</li>
+<li><code>HERMES_ENABLE_NOUS_MANAGED_TOOLS</code> env flag <strong>removed</strong> — replaced by clean subscription detection + per-tool <code>use_gateway</code>. <code>hermes upgrade</code> migrates automatically.</li>
+</ul>
+<h3>🔥 Cooking on <code>main</code> (past 72 hours, targeting v0.11)</h3>
+<p>The stream of merges between April 14–17 is unusually large — this is why we added five new parts to this guide:</p>
+<ul>
+<li><strong>Gemini CLI OAuth inference provider</strong> — OAuth login + 1500 req/day free tier. <a href="https://github.com/NousResearch/hermes-agent/pull/11270">#11270</a>. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part9-custom-models.md#gemini-cli-oauth--free-1500-reqday">Part 9</a>.</li>
+<li><strong>Gemini TTS (7th voice provider)</strong> — <code>gemini-2.5-flash-preview-tts</code>, Kore voice, native WAV. <a href="https://github.com/NousResearch/hermes-agent/issues/10922">#10922</a>. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part9-custom-models.md#gemini-tts--7th-voice-provider">Part 9</a>.</li>
+<li><strong>Multi-model FAL image gen picker</strong> — <code>hermes tools</code> now lets you pick FLUX / Imagen / SDXL variants without editing YAML. <a href="https://github.com/NousResearch/hermes-agent/pull/11265">#11265</a>.</li>
+<li><strong>Bulk file sync with sync-back on teardown</strong> — SSH/Modal/Daytona remote sandboxes now download only diffed files on shutdown, with SIGINT-safe rollback and flock serialization. <a href="https://github.com/NousResearch/hermes-agent/pull/8018">#8018</a>. See <strong><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part21-remote-sandboxes.md">Part 21 — Remote Sandboxes</a></strong>.</li>
+<li><strong>TCP keepalives for provider connections</strong> — dead connections detected in 60s instead of silently hanging. <a href="https://github.com/NousResearch/hermes-agent/pull/11277">#11277</a>.</li>
+<li><strong>GLM 5.1 in OpenCode Go catalogs</strong> — fastest open-weights tool-use model now routable through OpenCode. <a href="https://github.com/NousResearch/hermes-agent/pull/11269">#11269</a>.</li>
+<li><strong>Azure OpenAI GPT-5.x via <code>/chat/completions</code></strong> — previously locked to <code>/responses</code>. <a href="https://github.com/NousResearch/hermes-agent/pull/10086">#10086</a>.</li>
+<li><strong><code>concept-diagrams</code> skill</strong> — auto-renders Mermaid diagrams for explanations. Merged April 17.</li>
+<li><strong>Feishu CARD-type WebSocket</strong> — interactive cards finally work in enterprise Feishu deployments.</li>
+<li><strong>OCAS skill sync</strong> (feature proposal, April 15) — sync your local skills to a central repo. Watch <a href="https://github.com/NousResearch/hermes-agent/issues/11363">#11363</a>.</li>
+</ul>
+<h3>🆕 Brand-new parts in this guide (April 17)</h3>
+<ul>
+<li><strong><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part17-mcp-servers.md">Part 17 — MCP Servers</a></strong> — the viral tool-integration standard. Finally documented for Hermes. GitHub, Postgres, Supabase, Cloudflare, mem0, writing your own, and the <code>sampling/createMessage</code> killer feature.</li>
+<li><strong><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part18-coding-agents.md">Part 18 — Delegating to Coding Agents</a></strong> — Claude Code, Codex, Gemini CLI, OpenCode, and Aider. Print-mode delegation, thread-bound runtimes (the OpenClaw pattern), ACP as both client and server, cost routing, git isolation.</li>
+<li><strong><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part19-security-playbook.md">Part 19 — Security Playbook</a></strong> — defending against the April 15 &quot;Comment and Control&quot; prompt-injection attack, plus the full Hermes hardening posture: provenance labels, approval layers, secrets isolation, webhook sig validation, SSRF guards, MCP trust levels, quarantine mode.</li>
+<li><strong><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part20-observability.md">Part 20 — Observability &amp; Cost Control</a></strong> — Langfuse, Helicone, OpenTelemetry → Phoenix. The cost-routing playbook that drops typical feature-implementation spend by 90%. Eval-driven regression protection.</li>
+<li><strong><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part21-remote-sandboxes.md">Part 21 — Remote Sandboxes &amp; Bulk File Sync</a></strong> — SSH, Modal, Daytona, Fly Machines, E2B. &quot;Phone drives, beefy remote does the work.&quot; Sync-back on teardown with SIGINT safety.</li>
+</ul>
+<h3>Viral model / provider developments (past 72h, now in the guide)</h3>
+<ul>
+<li><strong>GPT-5.4</strong> and <strong>GPT-5.4-Cyber</strong> (OpenAI, Apr 15) — reasoning flagship and the first LLM-as-a-security-analyst. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part9-custom-models.md#flagship-model-cheat-sheet-april-17-2026">Part 9 model cheat sheet</a>.</li>
+<li><strong>Claude Mythos</strong> (Anthropic, cyber-focused, invite-only).</li>
+<li><strong>Gemini 3 Flash Preview</strong> (Google) — 1M context, low latency, $0.50/$3 per MTok.</li>
+<li><strong>Kimi K2.5</strong> (Moonshot) — arguably the best price/quality ratio in coding models.</li>
+<li><strong>GLM 5.1</strong> (z.ai) — the strongest open-weights tool-use model as of this week.</li>
+</ul>
 <hr>
 <h2>Table of Contents</h2>
 <ol>
-<li><a href="#part-1-setup-stop-fumbling-with-installation">Setup</a> — Install Hermes, configure your provider, first-run walkthrough</li>
+<li><a href="#part-1-setup-stop-fumbling-with-installation">Setup</a> — Install Hermes, configure your provider, first-run walkthrough (with Android/Termux)</li>
 <li><a href="#soulmd--give-your-agent-a-personality">SOUL.md Personality</a> — The Molty prompt, what good personality rules look like, how to fix a bland agent</li>
 <li><a href="#part-2-openclaw-migration-dont-leave-your-knowledge-behind">OpenClaw Migration</a> — Move your OpenClaw data, config, skills, and memory into Hermes</li>
 <li><a href="#part-3-lightrag--graph-rag-that-actually-works">LightRAG — Graph RAG</a> — Set up a knowledge graph that actually understands relationships, not just text similarity</li>
@@ -219,9 +379,19 @@
 <li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part6-context-compression.md">Context Compression</a> — Fix the silent context loss bug, configure compression thresholds, survive long sessions</li>
 <li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part7-memory-system.md">Memory System</a> — The three-tier memory architecture: persistent facts, conversation recall, procedural memory</li>
 <li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part8-subagent-patterns.md">Subagent Patterns</a> — Orchestrator/worker delegation, ACP subagents, parallel task execution</li>
-<li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part9-custom-models.md">Custom Model Providers</a> — Cerebras, Fireworks, Ollama, model aliases, fallback chains</li>
+<li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part9-custom-models.md">Custom Model Providers</a> — Cerebras, Fireworks, Ollama, native xAI/MiMo/z.ai/Kimi/MiniMax/Arcee, Nous Portal, model aliases, fallback chains</li>
 <li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part10-soul-antipatterns.md">SOUL.md Anti-Patterns</a> — What makes an agent annoying vs useful, the formula that works</li>
 <li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part11-gateway-recovery.md">Gateway Recovery</a> — Crash detection, auto-recovery, common failure modes, health checks</li>
+<li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part12-web-dashboard.md">Web Dashboard</a> — <strong>New.</strong> <code>hermes dashboard</code>, the full browser UI — config, keys, sessions, logs, analytics, cron, skills, REST API, plugins</li>
+<li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part13-tool-gateway.md">Nous Tool Gateway</a> — <strong>New.</strong> Web search, image gen, TTS, and browser automation through a single Nous Portal subscription</li>
+<li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part14-fast-mode-watchers.md">Fast Mode &amp; Background Watchers</a> — <strong>New.</strong> <code>/fast</code> priority tier, <code>watch_patterns</code> real-time process monitoring, pluggable context engine, <code>/compress &lt;topic&gt;</code></li>
+<li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part15-new-platforms.md">New Platforms (iMessage, WeChat, Android)</a> — <strong>New.</strong> BlueBubbles/iMessage, Weixin/WeCom, Android via Termux — the full 16-platform lineup</li>
+<li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part16-backup-debug.md">Backup, Import &amp; <code>/debug</code></a> — <strong>New.</strong> Portable <code>hermes backup</code>/<code>import</code>, <code>/debug</code> bundler, <code>hermes debug share</code>, security hardening</li>
+<li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part17-mcp-servers.md">MCP Servers</a> — <strong>NEW (April 17).</strong> The viral tool-protocol standard. stdio + HTTP transports, sampling, the 14 MCP servers worth installing today, writing your own</li>
+<li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part18-coding-agents.md">Delegating to Coding Agents</a> — <strong>NEW (April 17).</strong> Claude Code, Codex, Gemini CLI, OpenCode, Aider. Print-mode, thread-bound sessions (OpenClaw pattern), ACP, git isolation, cost routing</li>
+<li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part19-security-playbook.md">Security Playbook</a> — <strong>NEW (April 17).</strong> Defending against &quot;Comment and Control&quot; prompt injection. Provenance labels, approval layers, secrets redaction, MCP trust model, quarantine mode</li>
+<li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part20-observability.md">Observability &amp; Cost Control</a> — <strong>NEW (April 17).</strong> Langfuse, Helicone, OpenTelemetry → Phoenix. The cost-routing playbook that drops spend 90%. Eval-driven regression</li>
+<li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part21-remote-sandboxes.md">Remote Sandboxes &amp; Bulk File Sync</a> — <strong>NEW (April 17).</strong> SSH, Modal, Daytona, Fly Machines, E2B. &quot;Phone drives, beefy remote does the work.&quot; Diff-based sync-back on teardown</li>
 </ol>
 <hr>
 <h2>The Problem</h2>
@@ -272,10 +442,11 @@
 <hr>
 <h2>Prerequisites</h2>
 <ul>
-<li>A Linux/macOS machine (or WSL2 on Windows)</li>
+<li>A Linux/macOS machine (or WSL2 on Windows, or <strong>Android via Termux</strong> — see <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part15-new-platforms.md#android--termux-running-hermes-on-your-phone">Part 15</a>)</li>
 <li>Python 3.11+ and Git</li>
-<li>An API key for at least one LLM provider (Anthropic, OpenAI, OpenRouter, etc.)</li>
+<li>An API key for at least one LLM provider (Anthropic, OpenAI, OpenRouter, Nous Portal, etc.)</li>
 <li>Optional: Ollama for local embeddings (free vector search)</li>
+<li>Optional: A paid <a href="https://portal.nousresearch.com">Nous Portal</a> subscription to use the <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part13-tool-gateway.md">Tool Gateway</a> — web search, image gen, TTS, and browser automation with no extra keys</li>
 </ul>
 <hr>
 <h2>How the Pieces Fit Together</h2>
@@ -295,15 +466,19 @@ LLM Provider (Claude, GPT, local models)
 <p><strong>The key insight:</strong> Everything is modular. Install what you need, skip what you don&#39;t. The agent adapts.</p>
 <hr>
 <h2>Quick Start</h2>
-<pre><code class="language-bash"># 1. Install Hermes
+<pre><code class="language-bash"># 1. Install Hermes (Linux/macOS/WSL2/Android)
 curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
 
-# 2. Configure
+# 2. Configure providers and tools
 hermes setup
 
-# 3. Start chatting
+# 3a. Start chatting in the terminal
 hermes
+
+# 3b. Or launch the new browser dashboard (v0.9+)
+hermes dashboard
 </code></pre>
+<p>The dashboard is the fastest way to configure everything without touching YAML. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part12-web-dashboard.md">Part 12</a> for the full tour.</p>
 <p>For the full walkthrough including optimization, read each part in order.</p>
 <hr>
 <h2>Part 1: Setup (Stop Fumbling With Installation)</h2>
@@ -321,6 +496,9 @@ bash install.sh
 </blockquote>
 <blockquote>
 <p><strong>Windows users:</strong> Native Windows is not supported. Install <a href="https://learn.microsoft.com/en-us/windows/wsl/install">WSL2</a> and run the command from inside WSL. It works perfectly.</p>
+</blockquote>
+<blockquote>
+<p><strong>Android users (new in v0.9):</strong> the same installer detects Termux and installs the tested <code>[termux]</code> extra bundle automatically — CLI, cron, PTY/background terminal, Telegram gateway, MCP, Honcho, ACP. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part15-new-platforms.md#android--termux-running-hermes-on-your-phone">Part 15 — Android / Termux</a>.</p>
 </blockquote>
 <h3>What the Installer Does</h3>
 <p>The installer handles everything automatically:</p>
@@ -356,22 +534,46 @@ hermes             # Start chatting!
 </tr>
 </thead>
 <tbody><tr>
+<td><strong>Nous Portal</strong></td>
+<td>Hermes 5, Hermes 4 405B</td>
+<td>Built-in <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part13-tool-gateway.md">Tool Gateway</a> — web search/image/TTS/browser with no extra keys</td>
+<td>Auth via <code>hermes model</code></td>
+</tr>
+<tr>
 <td><strong>Anthropic</strong></td>
 <td>Opus 4.6, Sonnet 4</td>
-<td>Best reasoning, complex tasks, coding</td>
+<td>Best reasoning, complex tasks, coding, <code>/fast</code> priority tier</td>
 <td><code>ANTHROPIC_API_KEY</code></td>
 </tr>
 <tr>
 <td><strong>OpenAI</strong></td>
 <td>GPT-5.4 Pro, o3, GPT-4.1</td>
-<td>Strong tool use, fast inference, huge context</td>
+<td>Strong tool use, fast inference, huge context, <code>/fast</code> priority tier</td>
 <td><code>OPENAI_API_KEY</code></td>
 </tr>
 <tr>
-<td><strong>Xiaomi</strong></td>
-<td>MiMo V2 Pro</td>
-<td>Fast, cheap, great for orchestration and routing</td>
-<td><code>OPENROUTER_API_KEY</code></td>
+<td><strong>Xiaomi MiMo</strong></td>
+<td>MiMo V2 Pro <em>(native adapter)</em></td>
+<td>Fast, cheap, native reasoning modes, great for orchestration</td>
+<td><code>XIAOMI_API_KEY</code></td>
+</tr>
+<tr>
+<td><strong>xAI</strong></td>
+<td>Grok 3, Grok 3 Mini <em>(native adapter)</em></td>
+<td>Fast, good reasoning, native live-X search</td>
+<td><code>XAI_API_KEY</code></td>
+</tr>
+<tr>
+<td><strong>Kimi / Moonshot</strong></td>
+<td>Kimi 2.5</td>
+<td>Big context, excellent for entity extraction / LightRAG ingestion</td>
+<td><code>MOONSHOT_API_KEY</code></td>
+</tr>
+<tr>
+<td><strong>z.ai / GLM</strong></td>
+<td>GLM-5, GLM-5 Air</td>
+<td>Strongest open-weights model, great for translation + tools</td>
+<td><code>ZAI_API_KEY</code></td>
 </tr>
 <tr>
 <td><strong>Google</strong></td>
@@ -383,13 +585,7 @@ hermes             # Start chatting!
 <td><strong>MiniMax</strong></td>
 <td>M2.7</td>
 <td>Good balance of speed and quality</td>
-<td><code>OPENROUTER_API_KEY</code></td>
-</tr>
-<tr>
-<td><strong>xAI</strong></td>
-<td>Grok 3, Grok 3 Mini</td>
-<td>Fast, good reasoning, real-time X/Twitter access</td>
-<td><code>XAI_API_KEY</code></td>
+<td><code>MINIMAX_API_KEY</code></td>
 </tr>
 <tr>
 <td><strong>Cerebras</strong></td>
@@ -404,8 +600,20 @@ hermes             # Start chatting!
 <td><code>GROQ_API_KEY</code></td>
 </tr>
 <tr>
+<td><strong>Arcee</strong></td>
+<td>AFM-4.5, Caller</td>
+<td>Function-calling specialists, cheap</td>
+<td><code>ARCEE_API_KEY</code></td>
+</tr>
+<tr>
+<td><strong>Hugging Face</strong></td>
+<td>Any TGI/TEI endpoint</td>
+<td>Self-hosted and Inference Endpoints</td>
+<td><code>HF_TOKEN</code></td>
+</tr>
+<tr>
 <td><strong>OpenRouter</strong></td>
-<td>All of the above + 100 more</td>
+<td>All of the above + 200 more</td>
 <td>Access every model from one key, auto-fallback</td>
 <td><code>OPENROUTER_API_KEY</code></td>
 </tr>
@@ -1293,526 +1501,7 @@ entity_extract_max_gleaning: 5    # Default: 3. Higher = more thorough
 chunk_token_size: 1200             # Default: 1200. Smaller = more entities per doc
 chunk_overlap_token_size: 100      # Default: 100
 </code></pre>
-<h3>2. Use High-Quality Embeddings</h3>
-<p>Embedding quality directly impacts vector search accuracy:</p>
-<table>
-<thead>
-<tr>
-<th>Model</th>
-<th>Dimensions</th>
-<th>Quality</th>
-<th>Cost</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>nomic-embed-text (Ollama)</td>
-<td>768</td>
-<td>Good</td>
-<td>Free (local)</td>
-</tr>
-<tr>
-<td>Qwen3-Embedding-8B (Fireworks)</td>
-<td>4096</td>
-<td>Excellent</td>
-<td>~$0.001/1K tokens</td>
-</tr>
-<tr>
-<td>text-embedding-3-large (OpenAI)</td>
-<td>3072</td>
-<td>Very Good</td>
-<td>~$0.00013/1K tokens</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p><strong>If search quality matters, use 4096-dimension embeddings.</strong> The difference between 768 and 4096 dims is like the difference between 720p and 4K — you catch details you&#39;d otherwise miss.</p>
-</blockquote>
-<h3>3. Reindex After Bulk Changes</h3>
-<p>After ingesting a large batch of new documents:</p>
-<pre><code class="language-bash"># Check entity count
-curl http://localhost:9623/graph/label/list | python3 -c &quot;import sys,json; d=json.load(sys.stdin); print(f&#39;{len(d)} entities&#39;)&quot;
-</code></pre>
-<h3>4. Use the Right Query Mode</h3>
-<p>Don&#39;t always default to <code>hybrid</code>. Use:</p>
-<ul>
-<li><code>local</code> when asking about a specific thing (&quot;Tell me about the GPU setup&quot;)</li>
-<li><code>global</code> when asking about connections (&quot;How do the projects relate?&quot;)</li>
-<li><code>hybrid</code> for general questions (&quot;What decisions were made last week?&quot;)</li>
-</ul>
-<h3>5. Monitor and Prune</h3>
-<p>The Web UI at <code>http://localhost:9623/webui</code> lets you:</p>
-<ul>
-<li>Browse the knowledge graph visually</li>
-<li>See entity relationships</li>
-<li>Identify orphaned or redundant entities</li>
-</ul>
-<hr>
-<h2>Web UI</h2>
-<p>Once the server is running, open <code>http://localhost:9623/webui</code> in your browser. You can:</p>
-<ul>
-<li><strong>Search</strong> the graph with any query mode</li>
-<li><strong>Visualize</strong> entity relationships as a network graph</li>
-<li><strong>Browse</strong> all entities and their connections</li>
-<li><strong>Inspect</strong> raw chunks and their source documents</li>
-</ul>
-<p>Here&#39;s what a populated LightRAG knowledge graph looks like in the Web UI (screenshot from the <a href="https://github.com/HKUDS/LightRAG">LightRAG project</a>):</p>
-<p><img src="https://raw.githubusercontent.com/OnlyTerp/hermes-optimization-guide/main/screenshots/lightrag_webui.png" alt="LightRAG Knowledge Graph Web UI"></p>
-<p><em>The Web UI showing entity extraction, graph relationships, and document indexing. Once you ingest your own data, your graph fills up with your specific entities — people, projects, decisions, hardware, configs — all connected by the relationships LightRAG extracts automatically.</em></p>
-<hr>
-<h2>Troubleshooting</h2>
-<h3>&quot;Connection refused&quot; on query</h3>
-<p>The server isn&#39;t running. Start it:</p>
-<pre><code class="language-bash">cd ~/.hermes/lightrag/LightRAG &amp;&amp; lightrag-server --port 9623
-</code></pre>
-<h3>Slow ingestion</h3>
-<p>Entity extraction is LLM-bound. Speed it up:</p>
-<ul>
-<li>Use a faster model for ingestion (Cerebras + Qwen 3 is the fastest option, or Kimi 2.5)</li>
-<li>Process documents in parallel batches</li>
-<li>Use a local model if you have GPU capacity</li>
-</ul>
-<h3>Empty or irrelevant results</h3>
-<ul>
-<li>Check that documents were actually ingested (Web UI → entities)</li>
-<li>Try different query modes (<code>local</code> vs <code>global</code> vs <code>hybrid</code>)</li>
-<li>Rephrase your query — be more specific about entities</li>
-<li>Check embedding model is actually running (<code>curl http://localhost:11434/api/tags</code> for Ollama)</li>
-</ul>
-<h3>Duplicate entities after re-ingestion</h3>
-<p>LightRAG merges similar entities automatically, but exact duplicates can happen. Use the Web UI to manually clean up, or reindex from scratch:</p>
-<pre><code class="language-bash"># Nuclear option: wipe and reingest
-rm -rf ~/.hermes/lightrag/LightRAG/rag_storage/*
-# Then re-ingest your documents
-</code></pre>
-<hr>
-<h2>What&#39;s Next</h2>
-<ul>
-<li><strong>Need mobile access?</strong> → <a href="#part-4-telegram-setup-chat-from-anywhere">Part 4: Telegram Setup</a></li>
-<li><strong>Want the agent to self-improve?</strong> → <a href="#part-5-on-the-fly-skills-let-hermes-build-its-own-playbook">Part 5: On-the-Fly Skills</a></li>
-</ul>
-<hr>
-<h2>Part 4: Telegram Setup (Chat From Anywhere)</h2>
-<h2>Why Telegram</h2>
-<p>Your agent is only useful if you can access it. Sitting at a terminal works until you need to:</p>
-<ul>
-<li>Check something from your phone while away from your desk</li>
-<li>Get notified when a long-running task finishes</li>
-<li>Use Hermes in a group chat with your team</li>
-<li>Send voice memos that get auto-transcribed and processed</li>
-<li>Receive scheduled task results (cron jobs) on mobile</li>
-</ul>
-<p>Telegram is the best messaging platform for Hermes bots — it supports text, voice, images, files, inline buttons, and group chats with minimal setup.</p>
-<hr>
-<h2>Step 1: Create a Bot via BotFather</h2>
-<p>Every Telegram bot requires an API token from <a href="https://t.me/BotFather">@BotFather</a>, Telegram&#39;s official bot management tool.</p>
-<ol>
-<li>Open Telegram and search for <strong>@BotFather</strong>, or visit <a href="https://t.me/BotFather">t.me/BotFather</a></li>
-<li>Send <code>/newbot</code></li>
-<li>Choose a <strong>display name</strong> (e.g., &quot;Hermes Agent&quot;) — this can be anything</li>
-<li>Choose a <strong>username</strong> — this must be unique and end in <code>bot</code> (e.g., <code>my_hermes_bot</code>)</li>
-<li>BotFather replies with your <strong>API token</strong>. It looks like this:</li>
-</ol>
-<pre><code>123456789:ABCdefGHIjklMNOpqrSTUvwxYZ
-</code></pre>
-<blockquote>
-<p><strong>Keep your bot token secret.</strong> Anyone with this token can control your bot. If it leaks, revoke it immediately via <code>/revoke</code> in BotFather.</p>
-</blockquote>
-<hr>
-<h2>Step 2: Customize Your Bot (Optional)</h2>
-<p>These BotFather commands improve the user experience:</p>
-<table>
-<thead>
-<tr>
-<th>Command</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>/setdescription</code></td>
-<td>The &quot;What can this bot do?&quot; text shown before chatting</td>
-</tr>
-<tr>
-<td><code>/setabouttext</code></td>
-<td>Short text on the bot&#39;s profile page</td>
-</tr>
-<tr>
-<td><code>/setuserpic</code></td>
-<td>Upload an avatar for your bot</td>
-</tr>
-<tr>
-<td><code>/setcommands</code></td>
-<td>Define the command menu (the <code>/</code> button in chat)</td>
-</tr>
-</tbody></table>
-<p>For <code>/setcommands</code>, a useful starting set:</p>
-<pre><code>help - Show help information
-new - Start a new conversation
-sethome - Set this chat as the home channel
-status - Show agent status
-</code></pre>
-<hr>
-<h2>Step 3: Privacy Mode (Critical for Groups)</h2>
-<p>Telegram bots have <strong>privacy mode</strong> enabled by default. This is the single most common source of confusion.</p>
-<p><strong>With privacy mode ON</strong>, your bot can only see:</p>
-<ul>
-<li>Messages that start with a <code>/</code> command</li>
-<li>Replies directly to the bot&#39;s own messages</li>
-<li>Service messages (member joins/leaves, pinned messages)</li>
-</ul>
-<p><strong>With privacy mode OFF</strong>, the bot receives every message in the group.</p>
-<h3>How to Disable Privacy Mode</h3>
-<ol>
-<li>Message <strong>@BotFather</strong></li>
-<li>Send <code>/mybots</code></li>
-<li>Select your bot</li>
-<li>Go to <strong>Bot Settings → Group Privacy → Turn off</strong></li>
-</ol>
-<blockquote>
-<p><strong>You must remove and re-add the bot to any group</strong> after changing the privacy setting. Telegram caches the privacy state when a bot joins a group — it won&#39;t update until removed and re-added.</p>
-</blockquote>
-<blockquote>
-<p><strong>Alternative:</strong> Promote the bot to <strong>group admin</strong>. Admin bots always receive all messages regardless of privacy settings.</p>
-</blockquote>
-<hr>
-<h2>Step 4: Find Your User ID</h2>
-<p>Hermes uses numeric Telegram user IDs to control access. Your user ID is <strong>not</strong> your username — it&#39;s a number like <code>123456789</code>.</p>
-<p><strong>Method 1 (recommended):</strong> Message <a href="https://t.me/userinfobot">@userinfobot</a> — it instantly replies with your user ID.</p>
-<p><strong>Method 2:</strong> Message <a href="https://t.me/get_id_bot">@get_id_bot</a> — another reliable option.</p>
-<p>Save this number; you&#39;ll need it for the next step.</p>
-<hr>
-<h2>Step 5: Configure Hermes</h2>
-<h3>Option A: Interactive Setup (Recommended)</h3>
-<pre><code class="language-bash">hermes gateway setup
-</code></pre>
-<p>Select <strong>Telegram</strong> when prompted. The wizard asks for your bot token and allowed user IDs, then writes the configuration for you.</p>
-<h3>Option B: Manual Configuration</h3>
-<p>Add the following to <code>~/.hermes/.env</code>:</p>
-<pre><code class="language-bash">TELEGRAM_BOT_TOKEN=&lt;your-bot-token-from-botfather&gt;
-TELEGRAM_ALLOWED_USERS=&lt;your-numeric-user-id&gt;    # Comma-separated for multiple users
-</code></pre>
-<p>For groups, also add the group chat ID (negative number, like <code>-1001234567890</code>):</p>
-<pre><code class="language-bash">TELEGRAM_ALLOWED_CHATS=-1001234567890
-</code></pre>
-<hr>
-<h2>Step 6: Start the Gateway</h2>
-<pre><code class="language-bash">hermes gateway
-</code></pre>
-<p>The bot should come online within seconds. Send it a message on Telegram to verify.</p>
-<hr>
-<h2>Gateway Management</h2>
-<pre><code class="language-bash"># Check gateway status
-hermes gateway status
-
-# Stop the gateway
-hermes gateway stop
-
-# Restart after config changes
-hermes gateway restart
-
-# Run as a system service (auto-start on boot)
-hermes gateway install   # Sets up systemd/launchd service
-</code></pre>
-<hr>
-<h2>Features Available on Telegram</h2>
-<h3>Text Chat</h3>
-<p>Full conversation support — the bot processes your messages the same as the CLI.</p>
-<h3>Voice Messages</h3>
-<p>Send a voice memo and Hermes:</p>
-<ol>
-<li>Auto-transcribes it using Whisper</li>
-<li>Processes the transcription as a text message</li>
-<li>Responds with text (or voice via TTS)</li>
-</ol>
-<h3>Image Analysis</h3>
-<p>Send a photo and Hermes analyzes it using vision models. Describe what you want to know about the image in the caption.</p>
-<h3>File Attachments</h3>
-<p>Send documents, code files, or data files — Hermes can read and process them.</p>
-<h3>Inline Buttons</h3>
-<p>For dangerous commands, Hermes shows confirmation buttons instead of executing immediately.</p>
-<h3>Slash Commands</h3>
-<p>The bot supports Telegram&#39;s native command menu (the <code>/</code> button in chat).</p>
-<h3>Scheduled Messages</h3>
-<p>Cron job results are delivered directly to your Telegram chat:</p>
-<pre><code class="language-bash"># Deliver cron results to Telegram
-hermes cron create --deliver telegram &quot;Check server status every hour&quot; --schedule &quot;every 1h&quot;
-</code></pre>
-<hr>
-<h2>Webhook Mode (For Cloud Deployments)</h2>
-<p>By default, Hermes uses <strong>long polling</strong> — the gateway makes outbound requests to Telegram. This works for local and always-on servers.</p>
-<p>For <strong>cloud deployments</strong> (Fly.io, Railway, Render), <strong>webhook mode</strong> is better. These platforms auto-wake on inbound HTTP traffic but not on outbound connections.</p>
-<h3>Configuration</h3>
-<p>Add to <code>~/.hermes/.env</code>:</p>
-<pre><code class="language-bash">TELEGRAM_WEBHOOK_URL=https://your-app.fly.dev
-TELEGRAM_WEBHOOK_SECRET=&lt;generate-with-command-below&gt;
-</code></pre>
-<p>Generate a strong secret — never use a guessable value:</p>
-<pre><code class="language-bash">openssl rand -hex 32
-</code></pre>
-<p>Copy the output and paste it as your <code>TELEGRAM_WEBHOOK_SECRET</code> value.</p>
-<blockquote>
-<p><strong>Warning:</strong> A weak or default webhook secret lets attackers forge Telegram webhook requests and inject messages into your agent. Always use a cryptographically random value.</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>Polling (default)</th>
-<th>Webhook</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Direction</td>
-<td>Gateway → Telegram</td>
-<td>Telegram → Gateway</td>
-</tr>
-<tr>
-<td>Best for</td>
-<td>Local, always-on servers</td>
-<td>Cloud platforms</td>
-</tr>
-<tr>
-<td>Extra config</td>
-<td>None</td>
-<td><code>TELEGRAM_WEBHOOK_URL</code></td>
-</tr>
-<tr>
-<td>Idle cost</td>
-<td>Machine must stay on</td>
-<td>Machine can sleep</td>
-</tr>
-</tbody></table>
-<hr>
-<h2>Multi-User Setup</h2>
-<p>To allow multiple users to interact with the bot:</p>
-<pre><code class="language-bash">TELEGRAM_ALLOWED_USERS=123456789,987654321,555555555
-</code></pre>
-<p>Each user gets their own conversation session. The bot tracks sessions per user ID.</p>
-<hr>
-<h2>Troubleshooting</h2>
-<h3>Bot not responding</h3>
-<ol>
-<li>Check the token is correct: <code>echo $TELEGRAM_BOT_TOKEN</code></li>
-<li>Verify the gateway is running: <code>hermes gateway status</code></li>
-<li>Check logs: <code>hermes gateway logs</code></li>
-</ol>
-<h3>Bot in group but not seeing messages</h3>
-<p>Privacy mode is still on. You must:</p>
-<ol>
-<li>Disable privacy in BotFather (<code>/mybots</code> → Bot Settings → Group Privacy → Turn off)</li>
-<li><strong>Remove the bot from the group</strong></li>
-<li><strong>Re-add the bot to the group</strong></li>
-</ol>
-<h3>Voice messages not transcribed</h3>
-<p>Hermes needs <code>ffmpeg</code> for audio conversion. The installer includes it, but if you installed manually:</p>
-<pre><code class="language-bash">sudo apt install ffmpeg   # Ubuntu/Debian
-brew install ffmpeg        # macOS
-</code></pre>
-<h3>Rate limiting</h3>
-<p>Telegram limits bots to 30 messages/second to different chats and 20 messages/minute to the same group. If you&#39;re hitting limits, add a delay:</p>
-<pre><code class="language-bash">hermes config set telegram.rate_limit_delay 1
-</code></pre>
-<hr>
-<h2>What&#39;s Next</h2>
-<ul>
-<li><strong>Want the agent to self-improve?</strong> → <a href="#part-5-on-the-fly-skills-let-hermes-build-its-own-playbook">Part 5: On-the-Fly Skills</a></li>
-</ul>
-<hr>
-<h2>Part 5: On-the-Fly Skills (Let Hermes Build Its Own Playbook)</h2>
-<h2>What Are Skills</h2>
-<p>Skills are procedural knowledge — step-by-step instructions that teach Hermes how to handle specific tasks. Unlike memory (which is factual), skills are <strong>how-to guides</strong> the agent follows automatically.</p>
-<p><strong>Skills vs Memory:</strong></p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>Skills</th>
-<th>Memory</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>What</strong></td>
-<td>How to do things</td>
-<td>What things are</td>
-</tr>
-<tr>
-<td><strong>When</strong></td>
-<td>Loaded on demand, only when relevant</td>
-<td>Injected every session automatically</td>
-</tr>
-<tr>
-<td><strong>Size</strong></td>
-<td>Can be large (hundreds of lines)</td>
-<td>Should be compact (key facts only)</td>
-</tr>
-<tr>
-<td><strong>Cost</strong></td>
-<td>Zero tokens until loaded</td>
-<td>Small but constant token cost</td>
-</tr>
-<tr>
-<td><strong>Examples</strong></td>
-<td>&quot;How to deploy to Kubernetes&quot;</td>
-<td>&quot;User prefers dark mode, lives in EST&quot;</td>
-</tr>
-<tr>
-<td><strong>Who creates</strong></td>
-<td>You, the agent, or installed from Hub</td>
-<td>The agent, based on conversations</td>
-</tr>
-</tbody></table>
-<p><strong>Rule of thumb:</strong> If you&#39;d put it in a reference document, it&#39;s a skill. If you&#39;d put it on a sticky note, it&#39;s memory.</p>
-<hr>
-<h2>The Skill Creation Workflow</h2>
-<p>Hermes can create skills itself. Here&#39;s how it works:</p>
-<h3>1. Do a Complex Task</h3>
-<p>Ask Hermes to do something multi-step. For example:</p>
-<pre><code>Set up a monitoring script that checks my server health every 5 minutes
-and alerts me on Telegram if CPU goes above 90% or memory above 80%.
-</code></pre>
-<p>Hermes will:</p>
-<ul>
-<li>Research the best approach</li>
-<li>Write the script</li>
-<li>Test it</li>
-<li>Set up the cron job</li>
-<li>Fix any issues along the way</li>
-</ul>
-<h3>2. Hermes Offers to Save It</h3>
-<p>After completing a complex task (5+ tool calls), fixing a tricky error, or discovering a non-trivial workflow, Hermes will offer:</p>
-<pre><code>This was a multi-step process. Want me to save this as a skill
-so I can reuse it next time?
-</code></pre>
-<h3>3. Say Yes</h3>
-<p>The agent uses <code>skill_manage</code> to create a new skill file at <code>~/.hermes/skills/&lt;category&gt;/&lt;skill-name&gt;/SKILL.md</code>. This file contains:</p>
-<ul>
-<li><strong>When to use</strong> — the trigger conditions</li>
-<li><strong>Exact steps</strong> — commands, files, configurations</li>
-<li><strong>Pitfalls</strong> — problems encountered and how to fix them</li>
-<li><strong>Verification</strong> — how to confirm it worked</li>
-</ul>
-<h3>4. It&#39;s Available Immediately</h3>
-<p>The skill appears in <code>skills_list</code> and becomes available as a slash command. Next time you (or the agent) encounter a similar task, the skill is loaded automatically.</p>
-<hr>
-<h2>How to Ask Hermes to Create a Skill</h2>
-<h3>Direct Request</h3>
-<p>Just ask:</p>
-<pre><code>Create a skill for deploying Docker containers to my server.
-Include the build, push, SSH deploy, and health check steps.
-</code></pre>
-<p>Hermes will:</p>
-<ol>
-<li>Research the best deployment workflow</li>
-<li>Create the skill directory at <code>~/.hermes/skills/</code></li>
-<li>Write <code>SKILL.md</code> with the full procedure</li>
-<li>Add reference files, templates, or scripts if needed</li>
-<li>Test that it works</li>
-</ol>
-<h3>After Solving a Problem</h3>
-<p>If Hermes just solved a tricky problem for you:</p>
-<pre><code>Save that as a skill so you remember how to do it next time.
-</code></pre>
-<p>The agent captures:</p>
-<ul>
-<li>The exact steps taken</li>
-<li>The errors encountered and fixes</li>
-<li>The configuration needed</li>
-<li>Edge cases discovered</li>
-</ul>
-<h3>Iterative Improvement</h3>
-<p>If a skill is outdated or incomplete:</p>
-<pre><code>That skill doesn&#39;t cover the new deployment method. Update it
-with what we just learned.
-</code></pre>
-<p>Hermes patches the skill with new information using <code>skill_manage(action=&#39;patch&#39;)</code>.</p>
-<hr>
-<h2>Skill Structure</h2>
-<p>Every skill is a directory with a <code>SKILL.md</code> file:</p>
-<pre><code>~/.hermes/skills/
-├── my-category/
-│   ├── my-skill/
-│   │   ├── SKILL.md              # Main instructions (required)
-│   │   ├── references/           # Supporting docs (optional)
-│   │   │   ├── api-docs.md
-│   │   │   └── examples.md
-│   │   ├── templates/            # Template files (optional)
-│   │   │   └── config.yaml
-│   │   └── scripts/              # Executable scripts (optional)
-│   │       └── setup.sh
-│   └── another-skill/
-│       └── SKILL.md
-└── openclaw-imports/             # Migrated from OpenClaw
-    └── old-skill/
-        └── SKILL.md
-</code></pre>
-<h3>SKILL.md Format</h3>
-<pre><code class="language-markdown">---
-name: my-skill
-description: Brief description of what this skill does
-version: 1.0.0
-metadata:
-  hermes:
-    tags: [deployment, docker, devops]
-    category: my-category
----
-
-# My Skill
-
-## When to Use
-Use this skill when the user asks to deploy containers or manage Docker services.
-
-## Procedure
-1. Check Docker is running: `docker ps`
-2. Build the image: `docker build -t app:latest .`
-3. Push to registry: `docker push registry/app:latest`
-4. SSH to server and pull: `ssh server &#39;docker pull registry/app:latest &amp;&amp; docker-compose up -d&#39;`
-5. Health check: `curl -f http://server:8080/health`
-
-## Pitfalls
-- Docker build fails if Dockerfile has COPY paths wrong — fix by checking working directory
-- SSH needs key-based auth — set up with `ssh-keygen` and `ssh-copy-id`
-- Health check may take 10s to respond — add retry logic
-
-## Verification
-Run `docker ps` on the server and confirm the container is `Up` and healthy.
-</code></pre>
-<hr>
-<h2>Using Skills</h2>
-<h3>Via Slash Command</h3>
-<p>Every skill becomes a slash command automatically:</p>
-<pre><code class="language-bash">/my-skill deploy the latest version to production
-</code></pre>
-<h3>Via Natural Conversation</h3>
-<p>Just ask Hermes to use a skill:</p>
-<pre><code>Use the docker-deploy skill to push the new build.
-</code></pre>
-<p>Hermes loads the skill via <code>skill_view</code> and follows its instructions.</p>
-<h3>Automatic Loading</h3>
-<p>Hermes scans available skills at session start. When your request matches a skill&#39;s &quot;When to Use&quot; conditions, it loads automatically — you don&#39;t need to explicitly invoke it.</p>
-<hr>
-<h2>Managing Skills</h2>
-<h3>List All Skills</h3>
-<pre><code class="language-bash">/skills
-# Or
-hermes skills list
-</code></pre>
-<h3>Search for a Skill</h3>
-<pre><code class="language-bash">/skills search docker
-/skills search deployment
-</code></pre>
-<h3>View a Skill&#39;s Content</h3>
-<pre><code class="language-bash">/skills view my-skill
-</code></pre>
-<h3>Enable/Disable Per Platform</h3>
-<pre><code class="language-bash">hermes skills
-</code></pre>
-<p>This opens an interactive TUI where you can enable or disable skills per platform (CLI, Telegram, Discord, etc.). Useful when you want certain skills only available in specific contexts.</p>
-<h3>Install from the Hub</h3>
-<p>Official optional skills (heavier or niche):</p>
-<pre><code class="language-bash">/skills install official/research/arxiv
-/skills install official/creative/songwriting-and-ai-music
-</code></pre>
-<h3>Update a Skill</h3>
-<p>If a skill is outdated or missing steps:</p>
-<p>``</p>
+<h3>2. Use High-Qual</h3>
 <hr>
 <p><em>README truncated. <a href="https://github.com/OnlyTerp/hermes-optimization-guide#readme">Continue reading on GitHub</a></em></p>
 

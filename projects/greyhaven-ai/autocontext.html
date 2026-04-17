@@ -187,11 +187,11 @@
   <p class="project-desc">a recursive self-improving harness designed to help your agents (and future iterations of those agents) succeed on any task</p>
 
   <div class="meta-row">
-    <span class="stars">★ 738</span>
+    <span class="stars">★ 740</span>
     <span class="badge badge-lang">Python</span>
     <span class="badge badge-lang">Apache-2.0</span>
     
-    <span>Updated 4/16/2026</span>
+    <span>Updated 4/17/2026</span>
   </div>
 
   <div class="actions">
@@ -441,7 +441,7 @@ AUTOCONTEXT_CLAUDE_MODEL=sonnet \
 AUTOCONTEXT_CLAUDE_TIMEOUT=300 \
 uv run autoctx solve --description &quot;improve customer-support replies for billing disputes&quot; --gens 3
 </code></pre>
-<p>For longer <code>autoctx judge</code> / <code>autoctx improve</code> prompts on <code>claude-cli</code>, use <code>--timeout &lt;seconds&gt;</code> or set <code>AUTOCONTEXT_CLAUDE_TIMEOUT</code>.</p>
+<p>For longer live prompts, <code>autoctx solve</code>, <code>autoctx judge</code>, and <code>autoctx improve</code> all accept <code>--timeout &lt;seconds&gt;</code>. <code>autoctx solve</code> also accepts <code>--generation-time-budget &lt;seconds&gt;</code> to cap per-generation solve runtime. You can still use provider env vars such as <code>AUTOCONTEXT_CLAUDE_TIMEOUT</code> or <code>AUTOCONTEXT_PI_TIMEOUT</code>.</p>
 <p>Run with Codex CLI:</p>
 <pre><code class="language-bash">cd autocontext
 AUTOCONTEXT_AGENT_PROVIDER=codex \
