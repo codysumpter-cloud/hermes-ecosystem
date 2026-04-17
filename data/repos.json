@@ -848,5 +848,95 @@
     "url": "https://github.com/xaspx/hermes-control-interface",
     "official": false,
     "category": "Workspaces & GUIs"
+  },
+  {
+    "owner": "ksimback",
+    "repo": "hermes-ecosystem",
+    "name": "hermes-ecosystem",
+    "description": "Hermes Atlas — the community map of every tool, skill, and integration for Hermes Agent by Nous Research",
+    "stars": 263,
+    "url": "https://github.com/ksimback/hermes-ecosystem",
+    "official": false,
+    "category": "Guides & Docs"
+  },
+  {
+    "owner": "dodo-reach",
+    "repo": "hermes-desktop",
+    "name": "hermes-desktop",
+    "description": "A native Mac workspace for Hermes: real SSH, real terminal, real session data.",
+    "stars": 313,
+    "url": "https://github.com/dodo-reach/hermes-desktop",
+    "official": false,
+    "category": "Workspaces & GUIs"
+  },
+  {
+    "owner": "clawshell",
+    "repo": "clawshell",
+    "name": "clawshell",
+    "description": "The Runtime Security Layer for OpenClaw/Hermes-agent, the essential safety harness for PII & sensitive credentials protection.",
+    "stars": 255,
+    "url": "https://github.com/clawshell/clawshell",
+    "official": false,
+    "category": "Plugins & Extensions"
+  },
+  {
+    "owner": "nesquena",
+    "repo": "hermes-webui",
+    "name": "hermes-webui",
+    "description": "Hermes WebUI: The best way to use Hermes Agent from the web or from your phone!",
+    "stars": 2479,
+    "url": "https://github.com/nesquena/hermes-webui",
+    "official": false,
+    "category": "Workspaces & GUIs"
+  },
+  {
+    "owner": "garrytan",
+    "repo": "gbrain",
+    "name": "gbrain",
+    "description": "Garry's Opinionated OpenClaw/Hermes Agent Brain",
+    "stars": 8857,
+    "url": "https://github.com/garrytan/gbrain",
+    "official": false,
+    "category": "Memory & Context"
+  },
+  {
+    "owner": "pyrate-llama",
+    "repo": "hermes-ui",
+    "name": "hermes-ui",
+    "description": "Glassmorphic web interface for Hermes Agent — your self-hosted AI assistant",
+    "stars": 25,
+    "url": "https://github.com/pyrate-llama/hermes-ui",
+    "official": false,
+    "category": "Workspaces & GUIs"
+  },
+  {
+    "owner": "kevinmarmstrong",
+    "repo": "hermes-claude-code-rc",
+    "name": "hermes-claude-code-rc",
+    "description": "Hermes Agent plugin for remote controlling Claude Code sessions via Telegram",
+    "stars": 1,
+    "url": "https://github.com/kevinmarmstrong/hermes-claude-code-rc",
+    "official": false,
+    "category": "Integrations & Bridges"
+  },
+  {
+    "owner": "AaronWong1999",
+    "repo": "hermesclaw",
+    "name": "hermesclaw",
+    "description": "Run Hermes Agent and OpenClaw on the same WeChat account",
+    "stars": 112,
+    "url": "https://github.com/AaronWong1999/hermesclaw",
+    "official": false,
+    "category": "Integrations & Bridges"
+  },
+  {
+    "owner": "stephenschoettler",
+    "repo": "hermes-lcm",
+    "name": "hermes-lcm",
+    "description": "Lossless Context Management plugin for Hermes Agent — DAG-based context engine that never loses a message",
+    "stars": 178,
+    "url": "https://github.com/stephenschoettler/hermes-lcm",
+    "official": false,
+    "category": "Memory & Context"
   }
 ]
