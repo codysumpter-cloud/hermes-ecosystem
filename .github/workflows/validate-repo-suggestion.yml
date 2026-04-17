@@ -80,14 +80,25 @@ jobs:
       - name: Run validation checks
         id: validate
         uses: actions/github-script@v7
+        env:
+          REPO_OWNER: ${{ steps.extract.outputs.owner }}
+          REPO_NAME: ${{ steps.extract.outputs.repo }}
+          REPO_STARS: ${{ steps.metadata.outputs.stars }}
+          REPO_CREATED: ${{ steps.metadata.outputs.created_at }}
+          REPO_UPDATED: ${{ steps.metadata.outputs.updated_at }}
+          REPO_IS_FORK: ${{ steps.metadata.outputs.is_fork }}
+          REPO_DESC: ${{ steps.metadata.outputs.description }}
+          REPO_LANGUAGE: ${{ steps.metadata.outputs.language }}
+          REPO_LICENSE: ${{ steps.metadata.outputs.license }}
+          REPO_HTML_URL: ${{ steps.metadata.outputs.html_url }}
         with:
           script: |
-            const owner = '${{ steps.extract.outputs.owner }}';
-            const repo = '${{ steps.extract.outputs.repo }}';
-            const stars = parseInt('${{ steps.metadata.outputs.stars }}') || 0;
-            const createdAt = new Date('${{ steps.metadata.outputs.created_at }}');
-            const isFork = '${{ steps.metadata.outputs.is_fork }}' === 'true';
-            const description = '${{ steps.metadata.outputs.description }}';
+            const owner = process.env.REPO_OWNER;
+            const repo = process.env.REPO_NAME;
+            const stars = parseInt(process.env.REPO_STARS) || 0;
+            const createdAt = new Date(process.env.REPO_CREATED);
+            const isFork = process.env.REPO_IS_FORK === 'true';
+            const description = process.env.REPO_DESC;
             const hermesLaunch = new Date('2025-07-22');
 
             const issues = [];
@@ -131,12 +142,12 @@ jobs:
 
             let report = `## Automated Validation Report\n\n`;
             report += `| Field | Value |\n|-------|-------|\n`;
-            report += `| **Repo** | [${owner}/${repo}](${{ steps.metadata.outputs.html_url }}) |\n`;
-            report += `| **Stars** | ${{ steps.metadata.outputs.stars }} |\n`;
-            report += `| **Language** | ${{ steps.metadata.outputs.language }} |\n`;
-            report += `| **License** | ${{ steps.metadata.outputs.license }} |\n`;
-            report += `| **Created** | ${{ steps.metadata.outputs.created_at }} |\n`;
-            report += `| **Last push** | ${{ steps.metadata.outputs.updated_at }} |\n`;
+            report += `| **Repo** | [${owner}/${repo}](${process.env.REPO_HTML_URL}) |\n`;
+            report += `| **Stars** | ${stars} |\n`;
+            report += `| **Language** | ${process.env.REPO_LANGUAGE} |\n`;
+            report += `| **License** | ${process.env.REPO_LICENSE} |\n`;
+            report += `| **Created** | ${process.env.REPO_CREATED} |\n`;
+            report += `| **Last push** | ${process.env.REPO_UPDATED} |\n`;
             report += `| **Fork** | ${isFork} |\n`;
             report += `| **Description** | ${description} |\n\n`;
 
@@ -158,9 +169,11 @@ jobs:
 
       - name: Comment validation report on issue
         uses: actions/github-script@v7
+        env:
+          REPORT: ${{ steps.validate.outputs.report }}
         with:
           script: |
-            const report = `${{ steps.validate.outputs.report }}`.replace(/\\n/g, '\n');
+            const report = process.env.REPORT.replace(/\\n/g, '\n');
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -171,15 +184,22 @@ jobs:
       - name: Create PR to add repo (if passed)
         if: steps.validate.outputs.passed == 'true'
         uses: actions/github-script@v7
+        env:
+          REPO_OWNER: ${{ steps.extract.outputs.owner }}
+          REPO_NAME: ${{ steps.extract.outputs.repo }}
+          REPO_STARS: ${{ steps.metadata.outputs.stars }}
+          REPO_DESC: ${{ steps.metadata.outputs.description }}
+          REPO_HTML_URL: ${{ steps.metadata.outputs.html_url }}
+          REPO_CATEGORY: ${{ steps.extract.outputs.category }}
         with:
           script: |
             const fs = require('fs');
-            const owner = '${{ steps.extract.outputs.owner }}';
-            const repo = '${{ steps.extract.outputs.repo }}';
-            const stars = parseInt('${{ steps.metadata.outputs.stars }}') || 0;
-            const description = '${{ steps.metadata.outputs.description }}';
-            const htmlUrl = '${{ steps.metadata.outputs.html_url }}';
-            let category = '${{ steps.extract.outputs.category }}';
+            const owner = process.env.REPO_OWNER;
+            const repo = process.env.REPO_NAME;
+            const stars = parseInt(process.env.REPO_STARS) || 0;
+            const description = process.env.REPO_DESC;
+            const htmlUrl = process.env.REPO_HTML_URL;
+            let category = process.env.REPO_CATEGORY;
             if (category === 'Not sure') category = 'Developer Tools';
 
             // Read current repos.json
