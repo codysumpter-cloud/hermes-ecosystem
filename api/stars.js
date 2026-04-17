@@ -45,14 +45,20 @@ export default async function handler(req, res) {
       return res.status(200).json(fallback);
     }
 
-    // Batch all repos into one GraphQL query
-    const repoQueries = repoList.map((r, i) =>
-      `repo${i}: repository(owner: "${r.owner}", name: "${r.repo}") {
+    // Batch all repos into one GraphQL query.
+    // For NousResearch/hermes-agent, also pull latestRelease so the site can
+    // render live Hermes version in the masthead without staleness.
+    const repoQueries = repoList.map((r, i) => {
+      const releaseField = (r.owner === "NousResearch" && r.repo === "hermes-agent")
+        ? "latestRelease { tagName publishedAt }"
+        : "";
+      return `repo${i}: repository(owner: "${r.owner}", name: "${r.repo}") {
         stargazerCount
         updatedAt
         pushedAt
-      }`
-    ).join("\n");
+        ${releaseField}
+      }`;
+    }).join("\n");
 
     const query = `query { ${repoQueries} }`;
 
@@ -77,8 +83,15 @@ export default async function handler(req, res) {
     }
 
     // Map results back to repos
+    let hermesRelease = null;
     const starData = repoList.map((r, i) => {
       const node = ghData.data?.[`repo${i}`];
+      if (r.owner === "NousResearch" && r.repo === "hermes-agent" && node?.latestRelease) {
+        hermesRelease = {
+          version: node.latestRelease.tagName,
+          publishedAt: node.latestRelease.publishedAt
+        };
+      }
       return {
         owner: r.owner,
         repo: r.repo,
@@ -87,7 +100,7 @@ export default async function handler(req, res) {
       };
     });
 
-    const response = buildResponse(starData);
+    const response = buildResponse(starData, hermesRelease);
 
     // Cache the result
     await kvSet(CACHE_KEY, response, { ex: CACHE_TTL });
@@ -115,7 +128,7 @@ export default async function handler(req, res) {
   }
 }
 
-function buildResponse(starData) {
+function buildResponse(starData, hermesRelease = null) {
   const totalStars = starData.reduce((sum, r) => sum + r.stars, 0);
 
   // Build a lookup map
@@ -133,6 +146,7 @@ function buildResponse(starData) {
       stars: totalStars,
       count: starData.length,
       updated: new Date().toISOString()
-    }
+    },
+    hermes: hermesRelease
   };
 }

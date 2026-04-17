@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hermes Atlas — The community map for Hermes Agent</title>
-<meta name="description" content="Hermes Atlas is the community-curated map of every tool, skill, plugin, and integration for Hermes Agent by Nous Research. 80+ quality-filtered, security-reviewed projects. Live data, RAG-powered search.">
+<meta name="description" content="Hermes Atlas is the community-curated map of every tool, skill, plugin, and integration for Hermes Agent by Nous Research. 90+ quality-filtered, security-reviewed projects. Live data, RAG-powered search.">
 <link rel="canonical" href="https://hermesatlas.com/">
 <meta property="og:title" content="Hermes Atlas — The community map for Hermes Agent">
-<meta property="og:description" content="80+ tools, skills, plugins, and integrations for the self-improving AI agent by Nous Research. Quality-filtered, security-reviewed, live data.">
+<meta property="og:description" content="90+ tools, skills, plugins, and integrations for the self-improving AI agent by Nous Research. Quality-filtered, security-reviewed, live data.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://hermesatlas.com/">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Hermes Atlas — The community map for Hermes Agent">
-<meta name="twitter:description" content="80+ tools, skills, plugins, and integrations for Hermes Agent by Nous Research. Quality-filtered. Live data.">
+<meta name="twitter:description" content="90+ tools, skills, plugins, and integrations for Hermes Agent by Nous Research. Quality-filtered. Live data.">
 <meta name="twitter:image" content="https://hermesatlas.com/reports/assets/og-home.jpg">
 <meta name="twitter:url" content="https://hermesatlas.com/">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
@@ -777,7 +777,7 @@
   <div class="header-icon">🗺️</div>
   <h1>Hermes Atlas</h1>
   <div class="subtitle">The community map of every tool, skill, and integration for <span>Hermes Agent</span> by Nous Research</div>
-  <div class="meta">April 2026 · 80+ Projects · Security Reviewed · Quality Filtered · Hermes v0.9.0</div>
+  <div class="meta"><span id="meta-month">April 2026</span> · <span id="meta-count">90+</span> Projects · Security Reviewed · Quality Filtered · Hermes <span id="meta-version">v0.9.0</span></div>
 </div>
 
 <!-- Tooltip (single shared element, positioned via JS) -->
@@ -812,7 +812,7 @@
 <!-- Stats Bar -->
 <div class="stats-bar" id="stats-bar">
   <div class="stat-item">Total Stars: <span class="stat-val" id="stat-total-stars">--</span></div>
-  <div class="stat-item">Repos: <span class="stat-val" id="stat-total-repos">94</span></div>
+  <div class="stat-item">Repos: <span class="stat-val" id="stat-total-repos">93</span></div>
   <div class="stat-item">Last Updated: <span class="stat-val" id="stat-updated">--</span></div>
   <div class="stat-item" style="color: var(--text-muted); font-size: 11px;">+/- figures reflect weekly change</div>
 </div>
@@ -967,7 +967,6 @@
       <a class="item" href="/projects/roli-lpci/lintlang" data-github="https://github.com/roli-lpci/lintlang" data-desc="Static linter for AI agent configs, tool descriptions, and system prompts. HERM v1.1 scoring.">lintlang <span class="stars">★ 24</span></a>
       <a class="item" href="/projects/0xNyk/openclaw-to-hermes" data-github="https://github.com/0xNyk/openclaw-to-hermes" data-desc="Migration tool from OpenClaw to Hermes Agent">openclaw-to-hermes <span class="stars">★ 21</span></a>
       <a class="item" href="/projects/42-evey/evey-setup" data-github="https://github.com/42-evey/evey-setup" data-desc="Get a hermes-agent stack running in minutes — free models, 29 plugins, zero cost">evey-setup <span class="stars">★ 7</span></a>
-      <a class="item" href="/projects/rookiemann/portable-hermes-agent" data-github="https://github.com/rookiemann/portable-hermes-agent" data-desc="Windows desktop agent — 100 tools, GUI, local models, no install required">portable-hermes <span class="stars">★ 7</span></a>
     </div>
   </div>
 
@@ -1232,6 +1231,20 @@
         document.getElementById('stat-total-repos').textContent = data.totals.count;
         document.getElementById('stat-updated').textContent = new Date(data.totals.updated).toLocaleDateString();
         statsBar.classList.add('loaded');
+      }
+
+      // Update masthead meta (month is always live; count + version come from API)
+      const metaMonth = document.getElementById('meta-month');
+      if (metaMonth) {
+        metaMonth.textContent = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      }
+      const metaCount = document.getElementById('meta-count');
+      if (metaCount && data.totals?.count) {
+        metaCount.textContent = data.totals.count;
+      }
+      const metaVersion = document.getElementById('meta-version');
+      if (metaVersion && data.hermes?.version) {
+        metaVersion.textContent = data.hermes.version;
       }
 
       // Update hero stat

@@ -660,16 +660,6 @@
     "category": "Developer Tools"
   },
   {
-    "owner": "rookiemann",
-    "repo": "portable-hermes-agent",
-    "name": "portable-hermes",
-    "description": "Windows desktop agent — 100 tools, GUI, local models, no install required",
-    "stars": 7,
-    "url": "https://github.com/rookiemann/portable-hermes-agent",
-    "official": false,
-    "category": "Developer Tools"
-  },
-  {
     "owner": "ucsandman",
     "repo": "DashClaw",
     "name": "DashClaw",
