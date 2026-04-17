@@ -29,6 +29,12 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Generate summaries
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: node scripts/generate-summaries.js
+
       - name: Build project pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -37,7 +43,7 @@ jobs:
       - name: Check for changes
         id: diff
         run: |
-          git add projects/ lists/ sitemap.xml robots.txt
+          git add projects/ lists/ sitemap.xml robots.txt data/summaries.json data/list-summaries.json
           if git diff --cached --quiet; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else

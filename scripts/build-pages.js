@@ -14,6 +14,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { marked } from "marked";
+import { githubHeaders, fetchReadme, fetchAllMetadata } from "../lib/github.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -25,11 +26,7 @@ if (!GITHUB_TOKEN) {
   process.exit(1);
 }
 
-const GITHUB_HEADERS = {
-  Authorization: `Bearer ${GITHUB_TOKEN}`,
-  Accept: "application/vnd.github+json",
-  "User-Agent": "hermes-atlas-build",
-};
+const GITHUB_HEADERS = githubHeaders(GITHUB_TOKEN);
 
 // ── Check if a URL is absolute (skip rewriting) ──
 function isAbsoluteUrl(url) {
@@ -118,85 +115,7 @@ if (fs.existsSync(listsPath)) {
   lists = JSON.parse(fs.readFileSync(listsPath, "utf-8"));
 }
 
-// ── Fetch metadata via GraphQL (batch all repos) ──
-async function fetchAllMetadata() {
-  const repoQueries = repos
-    .map(
-      (r, i) =>
-        `repo${i}: repository(owner: "${r.owner}", name: "${r.repo}") {
-        stargazerCount
-        description
-        homepageUrl
-        primaryLanguage { name }
-        licenseInfo { spdxId }
-        pushedAt
-      }`
-    )
-    .join("\n");
-
-  const query = `query { ${repoQueries} }`;
-
-  const res = await fetch("https://api.github.com/graphql", {
-    method: "POST",
-    headers: { ...GITHUB_HEADERS, "Content-Type": "application/json" },
-    body: JSON.stringify({ query }),
-  });
-
-  if (!res.ok) {
-    console.error(`GraphQL error: ${res.status}`);
-    return {};
-  }
-
-  const data = await res.json();
-  const metadata = {};
-
-  repos.forEach((r, i) => {
-    const node = data.data?.[`repo${i}`];
-    if (node) {
-      metadata[`${r.owner}/${r.repo}`] = {
-        stars: node.stargazerCount,
-        description: node.description || r.description,
-        homepage: node.homepageUrl || null,
-        language: node.primaryLanguage?.name || null,
-        license: node.licenseInfo?.spdxId || null,
-        pushedAt: node.pushedAt,
-      };
-    }
-  });
-
-  return metadata;
-}
-
-// ── Fetch README for a single repo ──
-async function fetchReadme(owner, repo) {
-  try {
-    const res = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/readme`,
-      {
-        headers: {
-          ...GITHUB_HEADERS,
-          Accept: "application/vnd.github.raw+json",
-        },
-      }
-    );
-
-    if (!res.ok) return null;
-
-    let text = await res.text();
-
-    // Truncate very long READMEs
-    if (text.length > 50000) {
-      text =
-        text.slice(0, 50000) +
-        `\n\n---\n\n*README truncated. [Continue reading on GitHub](https://github.com/${owner}/${repo}#readme)*`;
-    }
-
-    return text;
-  } catch (e) {
-    console.warn(`  Failed to fetch README for ${owner}/${repo}: ${e.message}`);
-    return null;
-  }
-}
+// fetchAllMetadata and fetchReadme imported from lib/github.js
 
 // ── Format star count ──
 function formatStars(n) {
@@ -222,7 +141,7 @@ for (const list of lists) {
 }
 
 // ── Project page template ──
-function renderProjectPage(repo, meta, readmeHtml, relatedRepos) {
+function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary) {
   const title = `${repo.name} — Hermes Agent ${repo.category} | Hermes Atlas`;
   const desc = escapeHtml(
     (meta.description || repo.description).slice(0, 160)
@@ -384,6 +303,28 @@ function renderProjectPage(repo, meta, readmeHtml, relatedRepos) {
   .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
   .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
 
+  /* Project summary (LLM-generated) */
+  .project-summary { margin-bottom: 32px; }
+  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+  .summary-highlights {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .summary-highlights li {
+    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Collapsed README */
+  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
+  .readme-toggle {
+    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
+    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .readme-toggle:hover { color: var(--text-primary); }
+
   /* Related projects */
   .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
   .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
@@ -441,9 +382,21 @@ function renderProjectPage(repo, meta, readmeHtml, relatedRepos) {
     ${meta.homepage ? `<a href="${escapeHtml(meta.homepage)}" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>` : ""}
   </div>
 
-  <section class="readme">
-    ${readmeHtml || '<div class="no-readme">This project doesn\'t have a README yet. <a href="' + escapeHtml(repo.url) + '" target="_blank">Visit GitHub</a> for more details.</div>'}
-  </section>
+  ${summary ? `
+  <section class="project-summary">
+    <h2>Overview</h2>
+    <p class="summary-text">${escapeHtml(summary.summary)}</p>
+    <ul class="summary-highlights">
+      ${summary.highlights.map(h => `<li>${escapeHtml(h)}</li>`).join("\n      ")}
+    </ul>
+  </section>` : ""}
+
+  <details class="readme-details"${summary ? "" : " open"}>
+    <summary class="readme-toggle">${summary ? "Full README from GitHub" : "README"}</summary>
+    <section class="readme" data-nosnippet>
+      ${readmeHtml || '<div class="no-readme">This project doesn\'t have a README yet. <a href="' + escapeHtml(repo.url) + '" target="_blank">Visit GitHub</a> for more details.</div>'}
+    </section>
+  </details>
 
   <aside class="related">
     <h2>More in ${escapeHtml(repo.category)}</h2>
@@ -471,7 +424,7 @@ function renderProjectPage(repo, meta, readmeHtml, relatedRepos) {
 }
 
 // ── List page template ──
-function renderListPage(list, matchedRepos) {
+function renderListPage(list, matchedRepos, listSummaryEntries) {
   const title = `${list.title} | Hermes Atlas`;
   const desc = escapeHtml(list.description.slice(0, 160));
   const canonicalUrl = `${SITE_URL}/lists/${list.slug}`;
@@ -549,6 +502,12 @@ function renderListPage(list, matchedRepos) {
   .list-page th { text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-tertiary); border-bottom: 1px solid var(--border-subtle); background: var(--overlay-medium); }
   .list-page td { padding: 10px 12px; border-bottom: 1px solid var(--border-subtle); }
   .list-page tr:hover td { background: var(--overlay-medium); }
+  .listicle { margin-top: 32px; border-top: 1px solid var(--border-subtle); padding-top: 24px; }
+  .listicle h2 { font-size: 18px; font-weight: 800; margin-bottom: 16px; }
+  .listicle-entry { margin-bottom: 20px; }
+  .listicle-entry h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .listicle-entry h3 a { color: var(--text-link); }
+  .listicle-entry p { font-size: 14px; line-height: 1.7; color: var(--text-secondary); margin: 0; }
   .back-link { margin-top: 24px; font-size: 13px; }
   .page-footer { text-align: center; margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border-subtle); font-size: 11px; color: var(--text-muted); }
   .page-footer a { color: var(--text-link); }
@@ -570,6 +529,23 @@ function renderListPage(list, matchedRepos) {
     <thead><tr><th>#</th><th>Project</th><th>Stars</th><th>Description</th></tr></thead>
     <tbody>${repoRows}</tbody>
   </table>
+  ${listSummaryEntries && Object.keys(listSummaryEntries).length > 0 ? `
+  <section class="listicle">
+    <h2>Project Breakdown</h2>
+    ${matchedRepos
+      .sort((a, b) => (b.meta?.stars || b.stars) - (a.meta?.stars || a.stars))
+      .map(r => {
+        const key = `${r.owner}/${r.repo}`;
+        const desc = listSummaryEntries[key];
+        if (!desc) return "";
+        return `<div class="listicle-entry">
+      <h3><a href="/projects/${r.owner}/${r.repo}">${escapeHtml(r.name)}</a></h3>
+      <p>${escapeHtml(desc)}</p>
+    </div>`;
+      })
+      .filter(Boolean)
+      .join("\n    ")}
+  </section>` : ""}
   <p class="back-link"><a href="/">← Back to Ecosystem Map</a></p>
 </article>
 <div class="page-footer">
@@ -611,8 +587,21 @@ async function main() {
 
   // Fetch metadata in one batch
   console.log("Fetching metadata via GraphQL...");
-  const metadata = await fetchAllMetadata();
+  const metadata = await fetchAllMetadata(repos, GITHUB_HEADERS);
   console.log(`  Got metadata for ${Object.keys(metadata).length} repos\n`);
+
+  // Load generated summaries (if available)
+  let summaries = {};
+  let listSummaries = {};
+  try {
+    summaries = JSON.parse(fs.readFileSync(path.join(ROOT, "data", "summaries.json"), "utf-8"));
+    console.log(`  Loaded ${Object.keys(summaries).length} project summaries`);
+  } catch { console.log("  No summaries.json found — pages will show README only"); }
+  try {
+    listSummaries = JSON.parse(fs.readFileSync(path.join(ROOT, "data", "list-summaries.json"), "utf-8"));
+    console.log(`  Loaded ${Object.keys(listSummaries).length} list summaries`);
+  } catch { console.log("  No list-summaries.json found"); }
+  console.log();
 
   // Ensure output directories exist
   const projectsDir = path.join(ROOT, "projects");
@@ -630,7 +619,7 @@ async function main() {
     const meta = metadata[key] || {};
 
     // Fetch README
-    const readmeRaw = await fetchReadme(repo.owner, repo.repo);
+    const readmeRaw = await fetchReadme(repo.owner, repo.repo, GITHUB_HEADERS);
     let readmeHtml = null;
     if (readmeRaw) {
       try {
@@ -652,7 +641,8 @@ async function main() {
       repo,
       { ...repo, ...meta },
       readmeHtml,
-      relatedRepos
+      relatedRepos,
+      summaries[key] || null
     );
 
     // Write file
@@ -682,7 +672,7 @@ async function main() {
         meta: metadata[`${r.owner}/${r.repo}`],
       }));
 
-    const html = renderListPage(list, matchedRepos);
+    const html = renderListPage(list, matchedRepos, listSummaries[list.slug]?.entries || {});
     fs.writeFileSync(path.join(listsDir, `${list.slug}.html`), html, "utf-8");
     console.log(`  ${list.slug} (${matchedRepos.length} repos)`);
   }
