@@ -4,238 +4,90 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>hermes-desktop — Hermes Agent Workspaces &amp; GUIs | Hermes Atlas</title>
-<meta name="description" content="Desktop Companion for Hermes Agent">
+<meta name="description" content="Desktop companion app for installing, configuring, and chatting with Hermes Agent">
 <link rel="canonical" href="https://hermesatlas.com/projects/fathah/hermes-desktop">
 <meta property="og:title" content="hermes-desktop — Hermes Atlas">
-<meta property="og:description" content="Desktop Companion for Hermes Agent">
+<meta property="og:description" content="Desktop companion app for installing, configuring, and chatting with Hermes Agent">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/fathah/hermes-desktop">
 <meta property="og:site_name" content="Hermes Atlas">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hermes-desktop — Hermes Atlas">
-<meta name="twitter:description" content="Desktop Companion for Hermes Agent">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
-<script>
-  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
-</script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-  :root {
-    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
-    --border-subtle: #1e1e30; --border-default: #2a2a44;
-    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
-    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
-    --brand-purple: #a78bfa; --brand-star: #fbbf24;
-    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
-  }
-  [data-theme="light"] {
-    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
-    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
-    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
-    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
-    --brand-star: #d97706;
-    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
-  }
-
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: var(--bg-base); color: var(--text-primary);
-    font-family: 'Inter', -apple-system, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    transition: background 0.2s, color 0.2s;
-  }
-  a { color: var(--text-link); text-decoration: none; }
-  a:hover { color: var(--text-link-hover); text-decoration: underline; }
-
-  .nav {
-    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
-    display: flex; justify-content: space-between; align-items: center;
-    max-width: 960px; margin: 0 auto;
-  }
-  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
-  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
-  .nav-actions { display: flex; gap: 8px; align-items: center; }
-  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
-  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
-  #theme-toggle {
-    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
-    border: 1px solid var(--border-subtle); color: var(--text-secondary);
-    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
-  }
-  #theme-toggle:hover { border-color: var(--brand-purple); }
-  #theme-toggle .icon-sun { display: none; }
-  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
-  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
-
-  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
-
-  .breadcrumb { margin-bottom: 16px; }
-  .breadcrumb a {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
-    background: var(--overlay-medium); color: var(--text-tertiary);
-  }
-  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
-
-  .project h1 {
-    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
-  }
-  .project-desc {
-    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
-  }
-  .meta-row {
-    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
-    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
-  }
-  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
-  .meta-row .badge {
-    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.3px;
-  }
-  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
-  .meta-row .badge-lang { background: var(--overlay-medium); }
-
-  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
-  .actions a {
-    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
-    transition: opacity 0.15s;
-  }
-  .actions .btn-primary {
-    background: linear-gradient(135deg, #a78bfa, #818cf8);
-    color: #fff;
-  }
-  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
-  .actions .btn-secondary {
-    background: var(--overlay-medium); color: var(--text-secondary);
-    border: 1px solid var(--border-subtle);
-  }
-  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
-
-  /* README styles */
-  .readme {
-    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
-  }
-  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
-  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
-  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
-  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
-  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
-  .readme a { color: var(--text-link); }
-  .readme strong { color: var(--text-primary); }
-  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
-  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
-  .readme li { margin-bottom: 4px; }
-  .readme code {
-    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
-    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
-  }
-  .readme pre {
-    background: var(--bg-card); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
-  }
-  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
-  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
-  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
-  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
-  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
-  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
-  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
-
-  /* Project summary (LLM-generated) */
-  .project-summary { margin-bottom: 32px; }
-  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
-  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
-  .summary-highlights {
-    list-style: none; margin: 0; padding: 0;
-    display: flex; flex-wrap: wrap; gap: 8px;
-  }
-  .summary-highlights li {
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
-    color: var(--text-secondary);
-  }
-
-  /* Collapsed README */
-  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
-  .readme-toggle {
-    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
-    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .readme-toggle:hover { color: var(--text-primary); }
-
-  /* Related projects */
-  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
-  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
-  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-  .related-chip {
-    display: inline-flex; align-items: center; gap: 5px;
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
-    color: var(--text-secondary); white-space: nowrap;
-  }
-  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
-  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
-  .list-link { margin-top: 12px; font-size: 13px; }
-
-  .page-footer {
-    text-align: center; margin-top: 40px; padding-top: 24px;
-    border-top: 1px solid var(--border-subtle);
-    font-size: 11px; color: var(--text-muted);
-  }
-  .page-footer a { color: var(--text-link); }
-
-  @media (max-width: 600px) {
-    .project { padding: 24px 16px 60px; }
-    .project h1 { font-size: 22px; }
-  }
-</style>
+<meta name="twitter:description" content="Desktop companion app for installing, configuring, and chatting with Hermes Agent">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
+<script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
 </head>
 <body>
-<nav class="nav">
-  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
-  <div class="nav-actions">
-    <a href="/" class="nav-link">Ecosystem Map</a>
-    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
-  </div>
-</nav>
 
-<article class="project">
-  <div class="breadcrumb">
-    <a href="/">Workspaces &amp; GUIs</a>
-  </div>
+<a class="skip-link" href="#main">Skip to content</a>
 
-  <h1>hermes-desktop</h1>
-  <p class="project-desc">Desktop Companion for Hermes Agent</p>
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span>apr·2026</span>
+    <span>93·repos</span>
+    <span>hermes·v0.10.0</span>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/" class="active">map</a>
+    <a href="/#curated-lists">lists</a>
+    <a href="/reports/state-of-hermes-april-2026">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="/lists/workspaces-and-guis">workspaces &amp; guis</a><span class="sep">/</span>hermes-desktop
+</div>
+
+<article id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">fathah</span><span class="slash">/</span>hermes-desktop
+  </h1>
+  <p class="project-desc">Desktop companion app for installing, configuring, and chatting with Hermes Agent</p>
 
   <div class="meta-row">
-    <span class="stars">★ 264</span>
-    <span class="badge badge-lang">TypeScript</span>
-    <span class="badge badge-lang">MIT</span>
+    <span class="stars">★ 65</span>
     
-    <span>Updated 4/14/2026</span>
+    
+    
+    
   </div>
 
   <div class="actions">
-    <a href="https://github.com/fathah/hermes-desktop" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
-    <a href="https://github.com/fathah/hermes-desktop" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
+    <a href="https://github.com/fathah/hermes-desktop" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    
   </div>
+</section>
 
-  
-  <section class="project-summary">
-    <h2>Overview</h2>
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
     <p class="summary-text">Hermes Desktop is a native GUI companion designed to simplify the installation, configuration, and management of the Hermes Agent AI assistant. It replaces manual CLI management by providing a guided setup process and a centralized interface for interacting with the agent. Users can manage multiple LLM providers, configure messaging gateways, and control complex toolsets through a visual workspace. The application also includes features for session history, memory management, and scheduled task automation.</p>
     <ul class="summary-highlights">
       <li>Guided installation and dependency resolution for Hermes Agent</li>
       <li>Support for diverse LLM providers and local endpoints</li>
       <li>Integrated messaging gateways for platforms like Discord and Telegram</li>
     </ul>
-  </section>
+  </div>
+</section>
 
-  <details class="readme-details">
-    <summary class="readme-toggle">Full README from GitHub</summary>
-    <section class="readme" data-nosnippet>
-      <img width="100%" alt="HERMES DESKTOP" src="https://github.com/user-attachments/assets/80585955-3bae-4aee-af90-a1e61757ccb8" />
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <img width="100%" alt="HERMES DESKTOP" src="https://github.com/user-attachments/assets/80585955-3bae-4aee-af90-a1e61757ccb8" />
 
 <br/>
 <p align="center">
@@ -250,7 +102,7 @@
 </blockquote>
 <p>Hermes Desktop is a native desktop app for installing, configuring, and chatting with <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — a self-improving AI assistant with tool use, multi-platform messaging, and a closed learning loop.</p>
 <p>Instead of managing the CLI by hand, the app walks through install, provider setup, and day-to-day usage in one place. It uses the official Hermes install script, stores Hermes in <code>~/.hermes</code>, and gives you a GUI for chat, sessions, profiles, memory, skills, tools, scheduling, messaging gateways, and more.</p>
-<h2>Install</h2>
+<h5>Install</h5>
 <p>Download the latest build from the <a href="https://github.com/fathah/hermes-desktop/releases/">Releases</a> page.</p>
 <table>
 <thead>
@@ -274,7 +126,7 @@
 </code></pre>
 <p>Or right-click the app → <strong>Open</strong> → click <strong>Open</strong> in the confirmation dialog.</p>
 </blockquote>
-<h2>Features</h2>
+<h5>Features</h5>
 <ul>
 <li><strong>Guided first-run install</strong> for Hermes Agent with progress tracking and dependency resolution</li>
 <li><strong>Multi-provider support</strong> — OpenRouter, Anthropic, OpenAI, Google (Gemini), xAI (Grok), Nous Portal, Qwen, MiniMax, Hugging Face, Groq, and local OpenAI-compatible endpoints (LM Studio, Ollama, vLLM, llama.cpp)</li>
@@ -296,7 +148,7 @@
 <li><strong>i18n ready</strong> — internationalization framework with English locale covering all screens, ready for community translations</li>
 <li><strong>Test suite</strong> — SSE parser, IPC handlers, preload API surface, installer utilities, and constants validation with Vitest</li>
 </ul>
-<h2>Preview</h2>
+<h5>Preview</h5>
 <table>
 <tr>
 <td width="50%" align="center"><b>Office</b><br/><img width="100%" alt="Office" src="https://github.com/user-attachments/assets/214bfa60-48ec-4449-be40-370628205147" /></td>
@@ -312,7 +164,7 @@
 </tr>
 </table>
 
-<h2>How It Works</h2>
+<h5>How It Works</h5>
 <p>On first launch, the app:</p>
 <ol>
 <li>Checks whether Hermes is already installed in <code>~/.hermes</code>.</li>
@@ -322,7 +174,7 @@
 <li>Launches the main workspace once setup is complete.</li>
 </ol>
 <p>Chat requests go through a local API server (<code>http://127.0.0.1:8642</code>) with SSE streaming. The desktop app parses the stream in real time, rendering tool progress, markdown content, and token usage as it arrives.</p>
-<h2>Screens</h2>
+<h5>Screens</h5>
 <table>
 <thead>
 <tr>
@@ -379,8 +231,8 @@
 <td>Provider config, credential pools, backup/import, log viewer, network settings, theme</td>
 </tr>
 </tbody></table>
-<h2>Supported Providers</h2>
-<h3>LLM Providers</h3>
+<h5>Supported Providers</h5>
+<h6>LLM Providers</h6>
 <table>
 <thead>
 <tr>
@@ -434,32 +286,32 @@
 </tr>
 </tbody></table>
 <p>Local presets are included for LM Studio, Ollama, vLLM, and llama.cpp.</p>
-<h3>Messaging Platforms</h3>
+<h6>Messaging Platforms</h6>
 <p>Telegram, Discord, Slack, WhatsApp, Signal, Matrix/Element, Mattermost, Email (IMAP/SMTP), SMS (Twilio &amp; Vonage), iMessage (BlueBubbles), DingTalk, Feishu/Lark, WeCom, WeChat (iLink Bot), Webhooks, and Home Assistant.</p>
-<h3>Tool Integrations</h3>
+<h6>Tool Integrations</h6>
 <p>Exa Search, Parallel API, Tavily, Firecrawl, FAL.ai (image generation), Honcho, Browserbase, Weights &amp; Biases, and Tinker.</p>
-<h2>Development</h2>
-<h3>Prerequisites</h3>
+<h5>Development</h5>
+<h6>Prerequisites</h6>
 <ul>
 <li>Node.js and npm</li>
 <li>A Unix-like shell environment for the Hermes installer</li>
 <li>Network access for downloading Hermes during first-run install</li>
 </ul>
-<h3>Install dependencies</h3>
+<h6>Install dependencies</h6>
 <pre><code class="language-bash">npm install
 </code></pre>
-<h3>Start the app in development</h3>
+<h6>Start the app in development</h6>
 <pre><code class="language-bash">npm run dev
 </code></pre>
-<h3>Run checks</h3>
+<h6>Run checks</h6>
 <pre><code class="language-bash">npm run lint
 npm run typecheck
 </code></pre>
-<h3>Run tests</h3>
+<h6>Run tests</h6>
 <pre><code class="language-bash">npm run test
 npm run test:watch
 </code></pre>
-<h3>Build the desktop app</h3>
+<h6>Build the desktop app</h6>
 <pre><code class="language-bash">npm run build
 </code></pre>
 <p>Platform packaging:</p>
@@ -467,7 +319,7 @@ npm run test:watch
 npm run build:win
 npm run build:linux
 </code></pre>
-<h2>First-Time Setup</h2>
+<h5>First-Time Setup</h5>
 <p>When the app opens for the first time, it will either detect an existing Hermes installation or offer to install it for you.</p>
 <p>Supported setup paths in the UI:</p>
 <ul>
@@ -493,7 +345,7 @@ npm run build:linux
 <li><code>~/.hermes/state.db</code> — session history database</li>
 <li><code>~/.hermes/cron/jobs.json</code> — scheduled tasks</li>
 </ul>
-<h2>Tech Stack</h2>
+<h5>Tech Stack</h5>
 <ul>
 <li><strong>Electron</strong> 39 — cross-platform desktop shell</li>
 <li><strong>React</strong> 19 — UI framework</li>
@@ -504,50 +356,70 @@ npm run build:linux
 <li><strong>i18next</strong> — internationalization framework</li>
 <li><strong>Vitest</strong> — test runner</li>
 </ul>
-<h2>Notes</h2>
+<h5>Notes</h5>
 <ul>
 <li>The desktop app depends on the upstream Hermes Agent project for agent behavior and tool execution.</li>
 <li>The built-in installer runs the official Hermes install script with <code>--skip-setup</code>, then completes provider configuration in the GUI.</li>
 <li>Local model providers do not require an API key, but the compatible server must already be running.</li>
 <li>Alternative npm registry routes are supported for environments with restricted network access.</li>
 </ul>
-<h2>Contributing</h2>
+<h5>Contributing</h5>
 <p>Contributions are welcome! Check out the <a href="https://github.com/fathah/hermes-desktop/blob/main/CONTRIBUTING.md">Contributing Guide</a> to get started. If you&#39;re not sure where to begin, take a look at the <a href="https://github.com/NousResearch/hermes-desktop/issues">open issues</a>. Found a bug or have a feature request? <a href="https://github.com/NousResearch/hermes-desktop/issues/new">File an issue</a>.</p>
-<h2>Related Project</h2>
+<h5>Related Project</h5>
 <p>For the core agent, docs, and CLI workflows, see the main Hermes Agent repository:</p>
 <ul>
 <li><a href="https://github.com/NousResearch/hermes-agent">https://github.com/NousResearch/hermes-agent</a></li>
 </ul>
+  </section>
+</details>
 
-    </section>
-  </details>
-
-  <aside class="related">
-    <h2>More in Workspaces &amp; GUIs</h2>
-    <div class="related-grid">
-      <a href="/projects/outsourc-e/hermes-workspace" class="related-chip">hermes-workspace <span class="related-stars">830</span></a>
-          <a href="/projects/sanchomuzax/hermes-webui" class="related-chip">hermes-webui <span class="related-stars">57</span></a>
-          <a href="/projects/Euraika-Labs/pan-ui" class="related-chip">pan-ui <span class="related-stars">27</span></a>
-          <a href="/projects/xaspx/hermes-control-interface" class="related-chip">hermes-control-interface <span class="related-stars">323</span></a>
-          <a href="/projects/dodo-reach/hermes-desktop" class="related-chip">hermes-desktop <span class="related-stars">313</span></a>
-          <a href="/projects/nesquena/hermes-webui" class="related-chip">hermes-webui <span class="related-stars">2.5K</span></a>
-          <a href="/projects/pyrate-llama/hermes-ui" class="related-chip">hermes-ui <span class="related-stars">25</span></a>
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in workspaces &amp; guis</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/outsourc-e/hermes-workspace">
+        <div class="stars">★ 830</div>
+        <div class="name"><span class="org">outsourc-e /</span> hermes-workspace</div>
+      </a>
+      <a class="related-row" href="/projects/sanchomuzax/hermes-webui">
+        <div class="stars">★ 57</div>
+        <div class="name"><span class="org">sanchomuzax /</span> hermes-webui</div>
+      </a>
+      <a class="related-row" href="/projects/Euraika-Labs/pan-ui">
+        <div class="stars">★ 27</div>
+        <div class="name"><span class="org">Euraika-Labs /</span> pan-ui</div>
+      </a>
+      <a class="related-row" href="/projects/xaspx/hermes-control-interface">
+        <div class="stars">★ 323</div>
+        <div class="name"><span class="org">xaspx /</span> hermes-control-interface</div>
+      </a>
+      <a class="related-row" href="/projects/dodo-reach/hermes-desktop">
+        <div class="stars">★ 313</div>
+        <div class="name"><span class="org">dodo-reach /</span> hermes-desktop</div>
+      </a>
+      <a class="related-row" href="/projects/nesquena/hermes-webui">
+        <div class="stars">★ 2.5K</div>
+        <div class="name"><span class="org">nesquena /</span> hermes-webui</div>
+      </a>
+      <a class="related-row" href="/projects/pyrate-llama/hermes-ui">
+        <div class="stars">★ 25</div>
+        <div class="name"><span class="org">pyrate-llama /</span> hermes-ui</div>
+      </a>
     </div>
-    <p class="list-link"><a href="/lists/workspaces-and-guis">See all Workspaces &amp; GUIs projects →</a></p>
-  </aside>
+    <p class="list-link"><a href="/lists/workspaces-and-guis">see all workspaces &amp; guis →</a></p>
+  </div>
+</aside>
+
 </article>
 
-<div class="page-footer">
-  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
-</div>
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
 
-<script>
-  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
-    const c=document.documentElement.getAttribute('data-theme');
-    const n=c==='light'?'dark':'light';
-    document.documentElement.setAttribute('data-theme',n);
-    try{localStorage.setItem('theme',n)}catch(e){}
-  });
-</script>
+<script>(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();</script>
 </body>
 </html>

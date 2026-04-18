@@ -21,16 +21,22 @@ const ROOT = path.resolve(__dirname, "..");
 const SITE_URL = "https://hermesatlas.com";
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-if (!GITHUB_TOKEN) {
-  console.error("Error: GITHUB_TOKEN environment variable required");
-  process.exit(1);
+const SKIP_FETCH = !GITHUB_TOKEN;
+if (SKIP_FETCH) {
+  console.warn("⚠ GITHUB_TOKEN not set — rendering pages from repos.json only (no README, no live metadata). CI will re-fetch.");
 }
 
-const GITHUB_HEADERS = githubHeaders(GITHUB_TOKEN);
+const GITHUB_HEADERS = GITHUB_TOKEN ? githubHeaders(GITHUB_TOKEN) : null;
 
 // ── Check if a URL is absolute (skip rewriting) ──
 function isAbsoluteUrl(url) {
   return /^(?:https?:\/\/|data:|mailto:|#|\/\/)/.test(url.trim());
+}
+
+// ── Safe external link (http/https only; blocks javascript:, data:, etc.) ──
+function safeExternalUrl(url) {
+  if (!url || typeof url !== "string") return null;
+  return /^https?:\/\//i.test(url.trim()) ? url.trim() : null;
 }
 
 // ── Strip leading ./ from paths and encode spaces ──
@@ -98,6 +104,14 @@ renderer.image = function ({ href, title, text }) {
   return `<img src="${escapeHtml(src)}" alt="${escapeHtml(text || "")}"${titleAttr}>`;
 };
 
+// Demote README heading levels so each page has a single <h1> (DESIGN.md §11).
+// README h1 → h2, h2 → h3, ..., h5 → h6, h6 clamped to h6.
+renderer.heading = function ({ tokens, depth }) {
+  const text = this.parser.parseInline(tokens);
+  const level = Math.min(depth + 1, 6);
+  return `<h${level}>${text}</h${level}>\n`;
+};
+
 marked.setOptions({
   gfm: true,
   breaks: false,
@@ -140,6 +154,55 @@ for (const list of lists) {
   }
 }
 
+// ── Shared favicon (brutalist amber square + H) ──
+const FAVICON = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>`;
+
+// ── Shared theme init + toggle script ──
+const THEME_INIT = `(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();`;
+
+const THEME_TOGGLE_SCRIPT = `(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();`;
+
+// ── Shared masthead ──
+function renderMasthead(activeNav) {
+  const nav = [
+    { href: "/", label: "map", id: "map" },
+    { href: "/#curated-lists", label: "lists", id: "lists" },
+    { href: "/reports/state-of-hermes-april-2026", label: "reports", id: "reports" },
+    { href: "https://github.com/ksimback/hermes-ecosystem", label: "source", id: "source" },
+  ];
+  const navHtml = nav
+    .map(n => `<a href="${n.href}"${n.id === activeNav ? ' class="active"' : ""}>${n.label}</a>`)
+    .join("\n    ");
+  return `<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span>apr·2026</span>
+    <span>93·repos</span>
+    <span>hermes·v0.10.0</span>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    ${navHtml}
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
+</header>`;
+}
+
+// ── Shared footer ──
+const PAGE_FOOTER = `<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a></div>
+  <div>v2 · 2026.04</div>
+</footer>`;
+
+// ── Split owner/repo for display ──
+function splitName(full) {
+  // display name sometimes includes an `owner/` prefix; strip it for the repo portion
+  const idx = full.indexOf("/");
+  if (idx > -1) return { org: full.slice(0, idx).trim(), name: full.slice(idx + 1).trim() };
+  return { org: "", name: full };
+}
+
 // ── Project page template ──
 function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary) {
   const title = `${repo.name} — Hermes Agent ${repo.category} | Hermes Atlas`;
@@ -150,14 +213,19 @@ function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary) {
   const stars = meta.stars || repo.stars;
   const listSlug = categoryToListSlug[repo.category];
 
-  const relatedHtml = relatedRepos
+  const related = relatedRepos
     .filter((r) => r.repo !== repo.repo || r.owner !== repo.owner)
-    .slice(0, 8)
-    .map(
-      (r) =>
-        `<a href="/projects/${r.owner}/${r.repo}" class="related-chip">${r.name} <span class="related-stars">${formatStars(r.stars)}</span></a>`
-    )
-    .join("\n          ");
+    .slice(0, 8);
+
+  const relatedHtml = related
+    .map((r) => {
+      const s = r.meta?.stars || r.stars;
+      return `<a class="related-row" href="/projects/${r.owner}/${r.repo}">
+        <div class="stars">★ ${formatStars(s)}</div>
+        <div class="name"><span class="org">${escapeHtml(r.owner)} /</span> ${escapeHtml(r.repo)}</div>
+      </a>`;
+    })
+    .join("\n      ");
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -175,250 +243,83 @@ function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary) {
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="${escapeHtml(repo.name)} — Hermes Atlas">
 <meta name="twitter:description" content="${desc}">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
-<script>
-  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
-</script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-  :root {
-    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
-    --border-subtle: #1e1e30; --border-default: #2a2a44;
-    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
-    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
-    --brand-purple: #a78bfa; --brand-star: #fbbf24;
-    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
-  }
-  [data-theme="light"] {
-    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
-    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
-    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
-    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
-    --brand-star: #d97706;
-    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
-  }
-
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: var(--bg-base); color: var(--text-primary);
-    font-family: 'Inter', -apple-system, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    transition: background 0.2s, color 0.2s;
-  }
-  a { color: var(--text-link); text-decoration: none; }
-  a:hover { color: var(--text-link-hover); text-decoration: underline; }
-
-  .nav {
-    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
-    display: flex; justify-content: space-between; align-items: center;
-    max-width: 960px; margin: 0 auto;
-  }
-  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
-  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
-  .nav-actions { display: flex; gap: 8px; align-items: center; }
-  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
-  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
-  #theme-toggle {
-    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
-    border: 1px solid var(--border-subtle); color: var(--text-secondary);
-    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
-  }
-  #theme-toggle:hover { border-color: var(--brand-purple); }
-  #theme-toggle .icon-sun { display: none; }
-  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
-  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
-
-  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
-
-  .breadcrumb { margin-bottom: 16px; }
-  .breadcrumb a {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
-    background: var(--overlay-medium); color: var(--text-tertiary);
-  }
-  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
-
-  .project h1 {
-    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
-  }
-  .project-desc {
-    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
-  }
-  .meta-row {
-    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
-    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
-  }
-  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
-  .meta-row .badge {
-    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.3px;
-  }
-  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
-  .meta-row .badge-lang { background: var(--overlay-medium); }
-
-  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
-  .actions a {
-    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
-    transition: opacity 0.15s;
-  }
-  .actions .btn-primary {
-    background: linear-gradient(135deg, #a78bfa, #818cf8);
-    color: #fff;
-  }
-  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
-  .actions .btn-secondary {
-    background: var(--overlay-medium); color: var(--text-secondary);
-    border: 1px solid var(--border-subtle);
-  }
-  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
-
-  /* README styles */
-  .readme {
-    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
-  }
-  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
-  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
-  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
-  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
-  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
-  .readme a { color: var(--text-link); }
-  .readme strong { color: var(--text-primary); }
-  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
-  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
-  .readme li { margin-bottom: 4px; }
-  .readme code {
-    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
-    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
-  }
-  .readme pre {
-    background: var(--bg-card); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
-  }
-  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
-  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
-  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
-  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
-  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
-  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
-  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
-
-  /* Project summary (LLM-generated) */
-  .project-summary { margin-bottom: 32px; }
-  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
-  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
-  .summary-highlights {
-    list-style: none; margin: 0; padding: 0;
-    display: flex; flex-wrap: wrap; gap: 8px;
-  }
-  .summary-highlights li {
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
-    color: var(--text-secondary);
-  }
-
-  /* Collapsed README */
-  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
-  .readme-toggle {
-    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
-    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .readme-toggle:hover { color: var(--text-primary); }
-
-  /* Related projects */
-  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
-  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
-  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-  .related-chip {
-    display: inline-flex; align-items: center; gap: 5px;
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
-    color: var(--text-secondary); white-space: nowrap;
-  }
-  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
-  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
-  .list-link { margin-top: 12px; font-size: 13px; }
-
-  .page-footer {
-    text-align: center; margin-top: 40px; padding-top: 24px;
-    border-top: 1px solid var(--border-subtle);
-    font-size: 11px; color: var(--text-muted);
-  }
-  .page-footer a { color: var(--text-link); }
-
-  @media (max-width: 600px) {
-    .project { padding: 24px 16px 60px; }
-    .project h1 { font-size: 22px; }
-  }
-</style>
+<link rel="icon" href="${FAVICON}">
+<script>${THEME_INIT}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
 </head>
 <body>
-<nav class="nav">
-  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
-  <div class="nav-actions">
-    <a href="/" class="nav-link">Ecosystem Map</a>
-    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
-  </div>
-</nav>
 
-<article class="project">
-  <div class="breadcrumb">
-    <a href="/">${escapeHtml(repo.category)}</a>
-  </div>
+<a class="skip-link" href="#main">Skip to content</a>
 
-  <h1>${escapeHtml(repo.name)}${repo.official ? ' <span style="font-size:14px;color:var(--brand-purple)">OFFICIAL</span>' : ""}</h1>
+${renderMasthead("map")}
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="${listSlug ? `/lists/${listSlug}` : "/"}">${escapeHtml(repo.category.toLowerCase())}</a><span class="sep">/</span>${escapeHtml(repo.repo.toLowerCase())}
+</div>
+
+<article id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">${escapeHtml(repo.owner)}</span><span class="slash">/</span>${escapeHtml(repo.repo)}${repo.official ? ' <span class="repo-flag">official</span>' : ""}
+  </h1>
   <p class="project-desc">${escapeHtml(meta.description || repo.description)}</p>
 
   <div class="meta-row">
-    <span class="stars">★ ${formatStars(stars).toLocaleString()}</span>
-    ${meta.language ? `<span class="badge badge-lang">${escapeHtml(meta.language)}</span>` : ""}
-    ${meta.license && meta.license !== "NOASSERTION" ? `<span class="badge badge-lang">${escapeHtml(meta.license)}</span>` : ""}
-    ${repo.official ? '<span class="badge badge-official">Nous Research</span>' : ""}
-    ${meta.pushedAt ? `<span>Updated ${new Date(meta.pushedAt).toLocaleDateString()}</span>` : ""}
+    <span class="stars">★ ${formatStars(stars)}</span>
+    ${meta.language ? `<span><span class="meta-label">lang</span>${escapeHtml(meta.language)}</span>` : ""}
+    ${meta.license && meta.license !== "NOASSERTION" ? `<span><span class="meta-label">license</span>${escapeHtml(meta.license)}</span>` : ""}
+    ${repo.official ? '<span><span class="meta-label">maintainer</span>Nous Research</span>' : ""}
+    ${meta.pushedAt ? `<span><span class="meta-label">updated</span>${new Date(meta.pushedAt).toISOString().slice(0, 10)}</span>` : ""}
   </div>
 
   <div class="actions">
-    <a href="${escapeHtml(repo.url)}" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
-    ${meta.homepage ? `<a href="${escapeHtml(meta.homepage)}" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>` : ""}
+    <a href="${escapeHtml(safeExternalUrl(repo.url) || "#")}" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    ${safeExternalUrl(meta.homepage) ? `<a href="${escapeHtml(safeExternalUrl(meta.homepage))}" target="_blank" rel="noopener" class="btn-secondary">homepage</a>` : ""}
   </div>
+</section>
 
-  ${summary ? `
-  <section class="project-summary">
-    <h2>Overview</h2>
+${summary ? `
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
     <p class="summary-text">${escapeHtml(summary.summary)}</p>
     <ul class="summary-highlights">
       ${summary.highlights.map(h => `<li>${escapeHtml(h)}</li>`).join("\n      ")}
     </ul>
-  </section>` : ""}
+  </div>
+</section>` : ""}
 
-  <details class="readme-details"${summary ? "" : " open"}>
-    <summary class="readme-toggle">${summary ? "Full README from GitHub" : "README"}</summary>
-    <section class="readme" data-nosnippet>
-      ${readmeHtml || '<div class="no-readme">This project doesn\'t have a README yet. <a href="' + escapeHtml(repo.url) + '" target="_blank">Visit GitHub</a> for more details.</div>'}
-    </section>
-  </details>
+<details class="readme-details"${summary ? "" : " open"}>
+  <summary class="readme-toggle">${summary ? "full readme from github" : "readme"}</summary>
+  <section class="readme" data-nosnippet>
+    ${readmeHtml || '<div class="no-readme">This project doesn\'t have a README yet. <a href="' + escapeHtml(repo.url) + '" target="_blank">Visit GitHub</a> for more details.</div>'}
+  </section>
+</details>
 
-  <aside class="related">
-    <h2>More in ${escapeHtml(repo.category)}</h2>
-    <div class="related-grid">
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in ${escapeHtml(repo.category.toLowerCase())}</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
       ${relatedHtml}
     </div>
-    ${listSlug ? `<p class="list-link"><a href="/lists/${listSlug}">See all ${escapeHtml(repo.category)} projects →</a></p>` : ""}
-  </aside>
+    ${listSlug ? `<p class="list-link"><a href="/lists/${listSlug}">see all ${escapeHtml(repo.category.toLowerCase())} →</a></p>` : ""}
+  </div>
+</aside>
+
 </article>
 
-<div class="page-footer">
-  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
-</div>
+${PAGE_FOOTER}
 
-<script>
-  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
-    const c=document.documentElement.getAttribute('data-theme');
-    const n=c==='light'?'dark':'light';
-    document.documentElement.setAttribute('data-theme',n);
-    try{localStorage.setItem('theme',n)}catch(e){}
-  });
-</script>
+<script>${THEME_TOGGLE_SCRIPT}</script>
 </body>
 </html>`;
 }
@@ -429,18 +330,42 @@ function renderListPage(list, matchedRepos, listSummaryEntries) {
   const desc = escapeHtml(list.description.slice(0, 160));
   const canonicalUrl = `${SITE_URL}/lists/${list.slug}`;
 
-  const repoRows = matchedRepos
-    .sort((a, b) => (b.meta?.stars || b.stars) - (a.meta?.stars || a.stars))
-    .map(
-      (r, i) => `
-      <tr>
-        <td style="font-weight:700;color:var(--text-tertiary)">${i + 1}</td>
-        <td><a href="/projects/${r.owner}/${r.repo}"><strong>${escapeHtml(r.name)}</strong></a>${r.official ? ' <span style="font-size:10px;color:var(--brand-purple);font-weight:700">OFFICIAL</span>' : ""}</td>
-        <td style="color:var(--brand-star);font-weight:700">★ ${formatStars(r.meta?.stars || r.stars)}</td>
-        <td style="color:var(--text-secondary);font-size:13px">${escapeHtml((r.meta?.description || r.description).slice(0, 120))}</td>
-      </tr>`
-    )
-    .join("");
+  const sorted = matchedRepos.slice().sort((a, b) => (b.meta?.stars || b.stars) - (a.meta?.stars || a.stars));
+
+  const repoRows = sorted
+    .map((r, i) => {
+      const s = r.meta?.stars || r.stars;
+      const rank = String(i + 1).padStart(2, '0');
+      return `<a class="list-row" href="/projects/${r.owner}/${r.repo}">
+    <div class="list-rank">${rank}</div>
+    <div class="list-cell-body">
+      <div class="list-cell-name"><span class="org">${escapeHtml(r.owner)} /</span> ${escapeHtml(r.repo)}${r.official ? ' <span class="repo-flag">official</span>' : ""}</div>
+      <div class="list-cell-desc">${escapeHtml((r.meta?.description || r.description).slice(0, 140))}</div>
+    </div>
+    <div class="list-cell-stars">★ ${formatStars(s)}</div>
+  </a>`;
+    })
+    .join("\n  ");
+
+  const hasListicle = listSummaryEntries && Object.keys(listSummaryEntries).length > 0;
+  const listicleHtml = hasListicle ? `
+<section class="listicle" aria-label="Per-project breakdown">
+  <div class="section-label">breakdown</div>
+  <div class="listicle-entries">
+    ${sorted
+      .map(r => {
+        const key = `${r.owner}/${r.repo}`;
+        const entry = listSummaryEntries[key];
+        if (!entry) return "";
+        return `<article class="listicle-entry">
+      <h3><a href="/projects/${r.owner}/${r.repo}">${escapeHtml(r.owner)} / ${escapeHtml(r.repo)}</a></h3>
+      <p>${escapeHtml(entry)}</p>
+    </article>`;
+      })
+      .filter(Boolean)
+      .join("\n    ")}
+  </div>
+</section>` : "";
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -457,108 +382,49 @@ function renderListPage(list, matchedRepos, listSummaryEntries) {
 <meta property="og:site_name" content="Hermes Atlas">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="${escapeHtml(list.title)}">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
-<script>
-  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
-</script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-  :root {
-    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
-    --border-subtle: #1e1e30;
-    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
-    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
-    --brand-purple: #a78bfa; --brand-star: #fbbf24;
-    --overlay-medium: rgba(255,255,255,0.08);
-  }
-  [data-theme="light"] {
-    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
-    --border-subtle: #e8e8f0;
-    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
-    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
-    --brand-star: #d97706;
-    --overlay-medium: rgba(20,20,40,0.08);
-  }
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: var(--bg-base); color: var(--text-primary); font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased; transition: background 0.2s; }
-  a { color: var(--text-link); text-decoration: none; }
-  a:hover { color: var(--text-link-hover); text-decoration: underline; }
-  .nav { padding: 16px 24px; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; max-width: 960px; margin: 0 auto; }
-  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
-  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
-  .nav-actions { display: flex; gap: 8px; align-items: center; }
-  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
-  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
-  #theme-toggle { width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card); border: 1px solid var(--border-subtle); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; }
-  #theme-toggle:hover { border-color: var(--brand-purple); }
-  #theme-toggle .icon-sun { display: none; }
-  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
-  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
-
-  .list-page { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
-  .list-page h1 { font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px; }
-  .list-page .intro { font-size: 15px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px; }
-  .list-page table { width: 100%; border-collapse: collapse; }
-  .list-page th { text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-tertiary); border-bottom: 1px solid var(--border-subtle); background: var(--overlay-medium); }
-  .list-page td { padding: 10px 12px; border-bottom: 1px solid var(--border-subtle); }
-  .list-page tr:hover td { background: var(--overlay-medium); }
-  .listicle { margin-top: 32px; border-top: 1px solid var(--border-subtle); padding-top: 24px; }
-  .listicle h2 { font-size: 18px; font-weight: 800; margin-bottom: 16px; }
-  .listicle-entry { margin-bottom: 20px; }
-  .listicle-entry h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
-  .listicle-entry h3 a { color: var(--text-link); }
-  .listicle-entry p { font-size: 14px; line-height: 1.7; color: var(--text-secondary); margin: 0; }
-  .back-link { margin-top: 24px; font-size: 13px; }
-  .page-footer { text-align: center; margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border-subtle); font-size: 11px; color: var(--text-muted); }
-  .page-footer a { color: var(--text-link); }
-  @media (max-width: 600px) { .list-page { padding: 24px 16px 60px; } .list-page h1 { font-size: 22px; } }
-</style>
+<link rel="icon" href="${FAVICON}">
+<script>${THEME_INIT}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
 </head>
 <body>
-<nav class="nav">
-  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
-  <div class="nav-actions">
-    <a href="/" class="nav-link">Ecosystem Map</a>
-    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
-  </div>
-</nav>
-<article class="list-page">
-  <h1>${escapeHtml(list.title)}</h1>
-  <p class="intro">${escapeHtml(list.description)}</p>
-  <table>
-    <thead><tr><th>#</th><th>Project</th><th>Stars</th><th>Description</th></tr></thead>
-    <tbody>${repoRows}</tbody>
-  </table>
-  ${listSummaryEntries && Object.keys(listSummaryEntries).length > 0 ? `
-  <section class="listicle">
-    <h2>Project Breakdown</h2>
-    ${matchedRepos
-      .sort((a, b) => (b.meta?.stars || b.stars) - (a.meta?.stars || a.stars))
-      .map(r => {
-        const key = `${r.owner}/${r.repo}`;
-        const desc = listSummaryEntries[key];
-        if (!desc) return "";
-        return `<div class="listicle-entry">
-      <h3><a href="/projects/${r.owner}/${r.repo}">${escapeHtml(r.name)}</a></h3>
-      <p>${escapeHtml(desc)}</p>
-    </div>`;
-      })
-      .filter(Boolean)
-      .join("\n    ")}
-  </section>` : ""}
-  <p class="back-link"><a href="/">← Back to Ecosystem Map</a></p>
-</article>
-<div class="page-footer">
-  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+${renderMasthead("lists")}
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="/#curated-lists">lists</a><span class="sep">/</span>${escapeHtml(list.slug)}
 </div>
-<script>
-  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
-    const c=document.documentElement.getAttribute('data-theme');
-    const n=c==='light'?'dark':'light';
-    document.documentElement.setAttribute('data-theme',n);
-    try{localStorage.setItem('theme',n)}catch(e){}
-  });
-</script>
+
+<article id="main">
+
+<section class="list-page">
+  <h1 class="list-title">${escapeHtml(list.title)}</h1>
+  <p class="list-intro">${escapeHtml(list.description)}</p>
+</section>
+
+<div class="list-table" aria-label="Ranked list">
+  <div class="list-table-head">
+    <div>#</div>
+    <div>project</div>
+    <div style="text-align:right">stars</div>
+  </div>
+  ${repoRows}
+</div>
+${listicleHtml}
+
+<div class="back-link"><a href="/">← back to the map</a></div>
+
+</article>
+
+${PAGE_FOOTER}
+
+<script>${THEME_TOGGLE_SCRIPT}</script>
 </body>
 </html>`;
 }
@@ -585,10 +451,15 @@ function generateSitemap(projectPages, listPages) {
 async function main() {
   console.log(`Building pages for ${repos.length} repos + ${lists.length} lists...\n`);
 
-  // Fetch metadata in one batch
-  console.log("Fetching metadata via GraphQL...");
-  const metadata = await fetchAllMetadata(repos, GITHUB_HEADERS);
-  console.log(`  Got metadata for ${Object.keys(metadata).length} repos\n`);
+  // Fetch metadata in one batch (skipped if no GITHUB_TOKEN)
+  let metadata = {};
+  if (GITHUB_HEADERS) {
+    console.log("Fetching metadata via GraphQL...");
+    metadata = await fetchAllMetadata(repos, GITHUB_HEADERS);
+    console.log(`  Got metadata for ${Object.keys(metadata).length} repos\n`);
+  } else {
+    console.log("Skipping GitHub metadata fetch (no token).\n");
+  }
 
   // Load generated summaries (if available)
   let summaries = {};
@@ -618,16 +489,38 @@ async function main() {
     const key = `${repo.owner}/${repo.repo}`;
     const meta = metadata[key] || {};
 
-    // Fetch README
-    const readmeRaw = await fetchReadme(repo.owner, repo.repo, GITHUB_HEADERS);
+    // Fetch README, or extract from existing page if offline
     let readmeHtml = null;
-    if (readmeRaw) {
-      try {
-        currentRawBase = `https://raw.githubusercontent.com/${repo.owner}/${repo.repo}/main/`;
-        const readmeFixed = rewriteRelativeUrls(readmeRaw, repo.owner, repo.repo);
-        readmeHtml = marked.parse(readmeFixed);
-      } catch (e) {
-        console.warn(`  Markdown parse error for ${key}: ${e.message}`);
+    if (GITHUB_HEADERS) {
+      const readmeRaw = await fetchReadme(repo.owner, repo.repo, GITHUB_HEADERS);
+      if (readmeRaw) {
+        try {
+          currentRawBase = `https://raw.githubusercontent.com/${repo.owner}/${repo.repo}/main/`;
+          const readmeFixed = rewriteRelativeUrls(readmeRaw, repo.owner, repo.repo);
+          readmeHtml = marked.parse(readmeFixed);
+        } catch (e) {
+          console.warn(`  Markdown parse error for ${key}: ${e.message}`);
+        }
+      }
+    } else {
+      // Offline: reuse the README HTML already baked into the existing page.
+      // Demote heading levels (h1→h2, ..., h5→h6) so the page has one <h1>,
+      // matching what the online `marked` renderer emits.
+      const existingPath = path.join(projectsDir, repo.owner, `${repo.repo}.html`);
+      if (fs.existsSync(existingPath)) {
+        try {
+          const existing = fs.readFileSync(existingPath, "utf-8");
+          const match = existing.match(/<section class="readme"[^>]*>([\s\S]*?)<\/section>/);
+          if (match && !match[1].includes("no-readme")) {
+            readmeHtml = match[1]
+              .replace(/<(\/?)h5(\s|>)/g, "<$1h6$2")
+              .replace(/<(\/?)h4(\s|>)/g, "<$1h5$2")
+              .replace(/<(\/?)h3(\s|>)/g, "<$1h4$2")
+              .replace(/<(\/?)h2(\s|>)/g, "<$1h3$2")
+              .replace(/<(\/?)h1(\s|>)/g, "<$1h2$2")
+              .trim();
+          }
+        } catch {}
       }
     }
 
@@ -653,8 +546,8 @@ async function main() {
     generated++;
     process.stdout.write(`  ${generated}/${repos.length} ${key}\r`);
 
-    // Small delay to be polite to GitHub API
-    await new Promise((r) => setTimeout(r, 100));
+    // Small delay to be polite to GitHub API (only if fetching)
+    if (GITHUB_HEADERS) await new Promise((r) => setTimeout(r, 100));
   }
 
   console.log(`\n  Generated ${generated} project pages (${errors} errors)\n`);

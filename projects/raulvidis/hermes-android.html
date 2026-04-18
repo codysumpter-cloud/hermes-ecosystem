@@ -4,245 +4,97 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>hermes-android — Hermes Agent Integrations &amp; Bridges | Hermes Atlas</title>
-<meta name="description" content="Android device control for hermes-agent — bridge app + Python toolset">
+<meta name="description" content="Android device control — bridge app + Python toolset for mobile automation">
 <link rel="canonical" href="https://hermesatlas.com/projects/raulvidis/hermes-android">
 <meta property="og:title" content="hermes-android — Hermes Atlas">
-<meta property="og:description" content="Android device control for hermes-agent — bridge app + Python toolset">
+<meta property="og:description" content="Android device control — bridge app + Python toolset for mobile automation">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/raulvidis/hermes-android">
 <meta property="og:site_name" content="Hermes Atlas">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hermes-android — Hermes Atlas">
-<meta name="twitter:description" content="Android device control for hermes-agent — bridge app + Python toolset">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
-<script>
-  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
-</script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-  :root {
-    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
-    --border-subtle: #1e1e30; --border-default: #2a2a44;
-    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
-    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
-    --brand-purple: #a78bfa; --brand-star: #fbbf24;
-    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
-  }
-  [data-theme="light"] {
-    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
-    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
-    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
-    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
-    --brand-star: #d97706;
-    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
-  }
-
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: var(--bg-base); color: var(--text-primary);
-    font-family: 'Inter', -apple-system, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    transition: background 0.2s, color 0.2s;
-  }
-  a { color: var(--text-link); text-decoration: none; }
-  a:hover { color: var(--text-link-hover); text-decoration: underline; }
-
-  .nav {
-    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
-    display: flex; justify-content: space-between; align-items: center;
-    max-width: 960px; margin: 0 auto;
-  }
-  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
-  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
-  .nav-actions { display: flex; gap: 8px; align-items: center; }
-  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
-  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
-  #theme-toggle {
-    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
-    border: 1px solid var(--border-subtle); color: var(--text-secondary);
-    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
-  }
-  #theme-toggle:hover { border-color: var(--brand-purple); }
-  #theme-toggle .icon-sun { display: none; }
-  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
-  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
-
-  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
-
-  .breadcrumb { margin-bottom: 16px; }
-  .breadcrumb a {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
-    background: var(--overlay-medium); color: var(--text-tertiary);
-  }
-  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
-
-  .project h1 {
-    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
-  }
-  .project-desc {
-    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
-  }
-  .meta-row {
-    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
-    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
-  }
-  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
-  .meta-row .badge {
-    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.3px;
-  }
-  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
-  .meta-row .badge-lang { background: var(--overlay-medium); }
-
-  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
-  .actions a {
-    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
-    transition: opacity 0.15s;
-  }
-  .actions .btn-primary {
-    background: linear-gradient(135deg, #a78bfa, #818cf8);
-    color: #fff;
-  }
-  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
-  .actions .btn-secondary {
-    background: var(--overlay-medium); color: var(--text-secondary);
-    border: 1px solid var(--border-subtle);
-  }
-  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
-
-  /* README styles */
-  .readme {
-    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
-  }
-  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
-  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
-  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
-  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
-  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
-  .readme a { color: var(--text-link); }
-  .readme strong { color: var(--text-primary); }
-  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
-  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
-  .readme li { margin-bottom: 4px; }
-  .readme code {
-    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
-    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
-  }
-  .readme pre {
-    background: var(--bg-card); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
-  }
-  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
-  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
-  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
-  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
-  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
-  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
-  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
-
-  /* Project summary (LLM-generated) */
-  .project-summary { margin-bottom: 32px; }
-  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
-  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
-  .summary-highlights {
-    list-style: none; margin: 0; padding: 0;
-    display: flex; flex-wrap: wrap; gap: 8px;
-  }
-  .summary-highlights li {
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
-    color: var(--text-secondary);
-  }
-
-  /* Collapsed README */
-  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
-  .readme-toggle {
-    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
-    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .readme-toggle:hover { color: var(--text-primary); }
-
-  /* Related projects */
-  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
-  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
-  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-  .related-chip {
-    display: inline-flex; align-items: center; gap: 5px;
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
-    color: var(--text-secondary); white-space: nowrap;
-  }
-  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
-  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
-  .list-link { margin-top: 12px; font-size: 13px; }
-
-  .page-footer {
-    text-align: center; margin-top: 40px; padding-top: 24px;
-    border-top: 1px solid var(--border-subtle);
-    font-size: 11px; color: var(--text-muted);
-  }
-  .page-footer a { color: var(--text-link); }
-
-  @media (max-width: 600px) {
-    .project { padding: 24px 16px 60px; }
-    .project h1 { font-size: 22px; }
-  }
-</style>
+<meta name="twitter:description" content="Android device control — bridge app + Python toolset for mobile automation">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
+<script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
 </head>
 <body>
-<nav class="nav">
-  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
-  <div class="nav-actions">
-    <a href="/" class="nav-link">Ecosystem Map</a>
-    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
-  </div>
-</nav>
 
-<article class="project">
-  <div class="breadcrumb">
-    <a href="/">Integrations &amp; Bridges</a>
-  </div>
+<a class="skip-link" href="#main">Skip to content</a>
 
-  <h1>hermes-android</h1>
-  <p class="project-desc">Android device control for hermes-agent — bridge app + Python toolset</p>
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span>apr·2026</span>
+    <span>93·repos</span>
+    <span>hermes·v0.10.0</span>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/" class="active">map</a>
+    <a href="/#curated-lists">lists</a>
+    <a href="/reports/state-of-hermes-april-2026">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="/">integrations &amp; bridges</a><span class="sep">/</span>hermes-android
+</div>
+
+<article id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">raulvidis</span><span class="slash">/</span>hermes-android
+  </h1>
+  <p class="project-desc">Android device control — bridge app + Python toolset for mobile automation</p>
 
   <div class="meta-row">
-    <span class="stars">★ 56</span>
-    <span class="badge badge-lang">Python</span>
+    <span class="stars">★ 38</span>
     
     
-    <span>Updated 4/11/2026</span>
+    
+    
   </div>
 
   <div class="actions">
-    <a href="https://github.com/raulvidis/hermes-android" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    <a href="https://github.com/raulvidis/hermes-android" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
     
   </div>
+</section>
 
-  
-  <section class="project-summary">
-    <h2>Overview</h2>
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
     <p class="summary-text">Hermes-android is a remote automation bridge that enables Hermes agents to control Android devices through a Kotlin-based mobile app and a Python toolset. The system establishes an outbound WebSocket connection from the phone to a server, bypassing the need for port forwarding or USB cables via a 6-character pairing code. It provides 36 specialized tools for UI interaction, including screen reading, gesture execution, and system-level actions like making calls or sending SMS. This integration allows agents to perform autonomous mobile tasks such as checking notifications, managing contacts, and navigating third-party applications.</p>
     <ul class="summary-highlights">
       <li>Executes 36 tools for UI navigation, media control, and system actions</li>
       <li>Uses AccessibilityService for screen reading and coordinate-based gesture automation</li>
       <li>Connects via WebSocket relay to work behind NAT and firewalls</li>
     </ul>
-  </section>
+  </div>
+</section>
 
-  <details class="readme-details">
-    <summary class="readme-toggle">Full README from GitHub</summary>
-    <section class="readme" data-nosnippet>
-      <h1>hermes-android</h1>
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <h4>hermes-android</h4>
 <p>Give your AI agent hands. Remote Android device control for <a href="https://github.com/NousResearch/hermes-agent">hermes-agent</a>.</p>
-<h2>How it works</h2>
+<h5>How it works</h5>
 <pre><code>Phone (home WiFi)  ──WebSocket──&gt;  Hermes Server (cloud)  &lt;──HTTP──  AI Agent
                                    relay on port 8766
 </code></pre>
 <p>The phone connects <strong>out</strong> to your Hermes server — works behind any NAT, no port forwarding, no VPN, no USB. Just a 6-character pairing code.</p>
-<h2>Repository Structure</h2>
+<h5>Repository Structure</h5>
 <p>This repo contains <strong>two components</strong>:</p>
 <table>
 <thead>
@@ -269,7 +121,7 @@
 <blockquote>
 <p><strong>Note:</strong> The Python code exists here for standalone development and testing (<code>pip install -e .</code>, <code>pytest</code>). The production copy is in the hermes-agent repo. The Android app does not use or depend on the Python files.</p>
 </blockquote>
-<h2>Install as hermes-agent plugin (v0.3.0+)</h2>
+<h5>Install as hermes-agent plugin (v0.3.0+)</h5>
 <pre><code class="language-bash">curl -sSL https://raw.githubusercontent.com/raulvidis/hermes-android/main/install.sh | bash
 </code></pre>
 <p>Or manually:</p>
@@ -277,14 +129,14 @@
 cp -r hermes-android-plugin ~/.hermes/plugins/hermes-android
 </code></pre>
 <p>Restart hermes — run <code>/plugins</code> to verify. Should show: <code>✓ hermes-android v0.3.0 (36 tools)</code></p>
-<h2>Quick Start</h2>
-<h3>1. Install the bridge app on your phone</h3>
+<h5>Quick Start</h5>
+<h6>1. Install the bridge app on your phone</h6>
 <p>Build with Android Studio or from command line:</p>
 <pre><code class="language-bash">cd hermes-android-bridge
 ./gradlew assembleDebug
 adb install app/build/outputs/apk/debug/app-debug.apk
 </code></pre>
-<h3>2. Grant permissions on the phone</h3>
+<h6>2. Grant permissions on the phone</h6>
 <ul>
 <li>Open Hermes Bridge app</li>
 <li>Tap <strong>Enable Accessibility Service</strong> → find Hermes Bridge → toggle ON</li>
@@ -299,15 +151,15 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 </li>
 <li>Enable <strong>Notification Listener</strong> in <strong>Settings &gt; Apps &gt; Special app access &gt; Notification access</strong> → enable Hermes Bridge (for <code>android_notifications</code> / <code>android_events</code>)</li>
 </ul>
-<h3>3. Connect to your Hermes server</h3>
+<h6>3. Connect to your Hermes server</h6>
 <p>Tell hermes (via Telegram, Discord, etc):</p>
 <pre><code>Connect to my phone, code is &lt;CODE&gt;
 </code></pre>
 <p>Where <code>&lt;CODE&gt;</code> is the 6-character pairing code shown in the app.</p>
 <p>Hermes will reply with the server address. Enter it in the app and tap <strong>Connect</strong>.</p>
-<h3>4. Done</h3>
+<h6>4. Done</h6>
 <p>The agent can now control your phone. Try: &quot;open Instagram&quot;, &quot;take a screenshot&quot;, &quot;what apps do I have?&quot;</p>
-<h2>Tools (36)</h2>
+<h5>Tools (36)</h5>
 <table>
 <thead>
 <tr>
@@ -464,7 +316,7 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 <td>Stop text-to-speech</td>
 </tr>
 </tbody></table>
-<h2>Permissions</h2>
+<h5>Permissions</h5>
 <table>
 <thead>
 <tr>
@@ -514,7 +366,7 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 <td><code>android_notifications</code>, <code>android_events</code></td>
 </tr>
 </tbody></table>
-<h2>Architecture</h2>
+<h5>Architecture</h5>
 <p><strong>Android app (Kotlin):</strong></p>
 <ul>
 <li>AccessibilityService reads the UI tree and performs taps/types/swipes</li>
@@ -531,7 +383,7 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 <li>Rate-limited authentication (5 attempts / 60s, then 5min block)</li>
 <li>Auto-detects server public IP for setup instructions</li>
 </ul>
-<h2>Security</h2>
+<h5>Security</h5>
 <p>See <a href="https://github.com/raulvidis/hermes-android/blob/main/SECURITY.md">SECURITY.md</a> for details. Key points:</p>
 <ul>
 <li>Pairing code authentication with rate limiting</li>
@@ -539,7 +391,7 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 <li>Currently unencrypted (<code>ws://</code>) — use TLS proxy for production</li>
 <li>Full device access once paired — only connect to trusted servers</li>
 </ul>
-<h2>Development</h2>
+<h5>Development</h5>
 <pre><code class="language-bash"># Python tests
 pip install -e &quot;.[dev]&quot;
 python -m pytest tests/
@@ -548,9 +400,9 @@ python -m pytest tests/
 cd hermes-android-bridge
 ./gradlew assembleDebug
 </code></pre>
-<h2>Roadmap</h2>
+<h5>Roadmap</h5>
 <p>This is a working prototype. The vision: <strong>give Hermes its own phone</strong> — a fully autonomous mobile presence.</p>
-<h3>v0.2 — Polish &amp; Reliability</h3>
+<h6>v0.2 — Polish &amp; Reliability</h6>
 <ul>
 <li><input disabled="" type="checkbox"> TLS/WSS support for encrypted phone-server communication</li>
 <li><input disabled="" type="checkbox"> Persistent relay service (systemd unit, auto-start with gateway)</li>
@@ -558,7 +410,7 @@ cd hermes-android-bridge
 <li><input disabled="" type="checkbox"> Better error reporting (screenshot + annotated explanation on failure)</li>
 <li><input disabled="" type="checkbox"> Auto-reconnect relay on gateway restart</li>
 </ul>
-<h3>v0.3 — Richer Phone Interaction</h3>
+<h6>v0.3 — Richer Phone Interaction</h6>
 <ul>
 <li><input checked="" disabled="" type="checkbox"> <strong>Notification listener</strong> — agent reads incoming notifications in real-time</li>
 <li><input checked="" disabled="" type="checkbox"> <strong>Clipboard bridge</strong> — copy/paste between server and phone</li>
@@ -566,66 +418,83 @@ cd hermes-android-bridge
 <li><input checked="" disabled="" type="checkbox"> <strong>Direct SMS/calls</strong> — send texts and make calls without navigating the UI</li>
 <li><input checked="" disabled="" type="checkbox"> <strong>Location sharing</strong> — agent knows where the phone is for contextual tasks</li>
 </ul>
-<h3>v0.4 — Multi-Device &amp; Automation</h3>
+<h6>v0.4 — Multi-Device &amp; Automation</h6>
 <ul>
 <li><input disabled="" type="checkbox"> <strong>Multiple phones</strong> — connect more than one device to the same relay</li>
 <li><input disabled="" type="checkbox"> <strong>Scheduled automations</strong> — &quot;every morning, check my commute price on Bolt&quot;</li>
 <li><input disabled="" type="checkbox"> <strong>Event triggers</strong> — &quot;when a notification arrives from this app, do X&quot;</li>
 <li><input disabled="" type="checkbox"> <strong>Macro recording</strong> — watch a workflow once, replay it on demand</li>
 </ul>
-<h3>v0.5 — Hermes Gets a Voice</h3>
+<h6>v0.5 — Hermes Gets a Voice</h6>
 <ul>
 <li><input disabled="" type="checkbox"> <strong>Phone call capability</strong> — agent can answer and speak in phone calls using TTS/STT</li>
 <li><input disabled="" type="checkbox"> <strong>Voice assistant mode</strong> — always-listening on the phone, responds via speaker</li>
 <li><input disabled="" type="checkbox"> <strong>Call handling</strong> — &quot;answer my phone, take a message, tell them I&#39;ll call back&quot;</li>
 </ul>
-<h3>v0.6 — On-Device Intelligence</h3>
+<h6>v0.6 — On-Device Intelligence</h6>
 <ul>
 <li><input disabled="" type="checkbox"> <strong>Local model execution</strong> — run small models (Qwen 0.5B, Gemma 2B) directly on the phone</li>
 <li><input disabled="" type="checkbox"> <strong>Offline fallback</strong> — basic commands work without server connection using on-device model</li>
 <li><input disabled="" type="checkbox"> <strong>Hybrid routing</strong> — simple tasks run locally, complex tasks go to the server</li>
 <li><input disabled="" type="checkbox"> <strong>On-device app adapters</strong> — fast structured parsing without round-tripping to server</li>
 </ul>
-<h3>Future Ideas</h3>
+<h6>Future Ideas</h6>
 <ul>
 <li><input disabled="" type="checkbox"> iOS support via Shortcuts/accessibility bridge</li>
 <li><input disabled="" type="checkbox"> Web dashboard for monitoring phone activity</li>
 <li><input disabled="" type="checkbox"> Cross-app workflows (&quot;find a restaurant on Maps, share on WhatsApp, book an Uber there&quot;)</li>
 <li><input disabled="" type="checkbox"> Dedicated &quot;Hermes Phone&quot; — a phone that boots straight into agent mode</li>
 </ul>
-<h2>Links</h2>
+<h5>Links</h5>
 <ul>
 <li><strong>hermes-agent</strong>: <a href="https://github.com/NousResearch/hermes-agent">github.com/NousResearch/hermes-agent</a></li>
 </ul>
+  </section>
+</details>
 
-    </section>
-  </details>
-
-  <aside class="related">
-    <h2>More in Integrations &amp; Bridges</h2>
-    <div class="related-grid">
-      <a href="/projects/teknium1/hermes-miniverse" class="related-chip">hermes-miniverse <span class="related-stars">8</span></a>
-          <a href="/projects/Ridwannurudeen/hermes-council" class="related-chip">hermes-council <span class="related-stars">6</span></a>
-          <a href="/projects/marlandoj/zouroboros-swarm-executors" class="related-chip">zouroboros-swarm-executors <span class="related-stars">4</span></a>
-          <a href="/projects/gizdusum/hermes-blockchain-oracle" class="related-chip">hermes-blockchain-oracle <span class="related-stars">3</span></a>
-          <a href="/projects/kevinmarmstrong/hermes-claude-code-rc" class="related-chip">hermes-claude-code-rc <span class="related-stars">1</span></a>
-          <a href="/projects/AaronWong1999/hermesclaw" class="related-chip">hermesclaw <span class="related-stars">112</span></a>
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in integrations &amp; bridges</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/teknium1/hermes-miniverse">
+        <div class="stars">★ 8</div>
+        <div class="name"><span class="org">teknium1 /</span> hermes-miniverse</div>
+      </a>
+      <a class="related-row" href="/projects/Ridwannurudeen/hermes-council">
+        <div class="stars">★ 6</div>
+        <div class="name"><span class="org">Ridwannurudeen /</span> hermes-council</div>
+      </a>
+      <a class="related-row" href="/projects/marlandoj/zouroboros-swarm-executors">
+        <div class="stars">★ 4</div>
+        <div class="name"><span class="org">marlandoj /</span> zouroboros-swarm-executors</div>
+      </a>
+      <a class="related-row" href="/projects/gizdusum/hermes-blockchain-oracle">
+        <div class="stars">★ 3</div>
+        <div class="name"><span class="org">gizdusum /</span> hermes-blockchain-oracle</div>
+      </a>
+      <a class="related-row" href="/projects/kevinmarmstrong/hermes-claude-code-rc">
+        <div class="stars">★ 1</div>
+        <div class="name"><span class="org">kevinmarmstrong /</span> hermes-claude-code-rc</div>
+      </a>
+      <a class="related-row" href="/projects/AaronWong1999/hermesclaw">
+        <div class="stars">★ 112</div>
+        <div class="name"><span class="org">AaronWong1999 /</span> hermesclaw</div>
+      </a>
     </div>
     
-  </aside>
+  </div>
+</aside>
+
 </article>
 
-<div class="page-footer">
-  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
-</div>
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
 
-<script>
-  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
-    const c=document.documentElement.getAttribute('data-theme');
-    const n=c==='light'?'dark':'light';
-    document.documentElement.setAttribute('data-theme',n);
-    try{localStorage.setItem('theme',n)}catch(e){}
-  });
-</script>
+<script>(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();</script>
 </body>
 </html>

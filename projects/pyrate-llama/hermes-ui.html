@@ -14,243 +14,95 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hermes-ui — Hermes Atlas">
 <meta name="twitter:description" content="Glassmorphic web interface for Hermes Agent — your self-hosted AI assistant">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
-<script>
-  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
-</script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-  :root {
-    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
-    --border-subtle: #1e1e30; --border-default: #2a2a44;
-    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
-    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
-    --brand-purple: #a78bfa; --brand-star: #fbbf24;
-    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
-  }
-  [data-theme="light"] {
-    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
-    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
-    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
-    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
-    --brand-star: #d97706;
-    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
-  }
-
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: var(--bg-base); color: var(--text-primary);
-    font-family: 'Inter', -apple-system, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    transition: background 0.2s, color 0.2s;
-  }
-  a { color: var(--text-link); text-decoration: none; }
-  a:hover { color: var(--text-link-hover); text-decoration: underline; }
-
-  .nav {
-    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
-    display: flex; justify-content: space-between; align-items: center;
-    max-width: 960px; margin: 0 auto;
-  }
-  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
-  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
-  .nav-actions { display: flex; gap: 8px; align-items: center; }
-  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
-  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
-  #theme-toggle {
-    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
-    border: 1px solid var(--border-subtle); color: var(--text-secondary);
-    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
-  }
-  #theme-toggle:hover { border-color: var(--brand-purple); }
-  #theme-toggle .icon-sun { display: none; }
-  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
-  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
-
-  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
-
-  .breadcrumb { margin-bottom: 16px; }
-  .breadcrumb a {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
-    background: var(--overlay-medium); color: var(--text-tertiary);
-  }
-  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
-
-  .project h1 {
-    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
-  }
-  .project-desc {
-    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
-  }
-  .meta-row {
-    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
-    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
-  }
-  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
-  .meta-row .badge {
-    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.3px;
-  }
-  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
-  .meta-row .badge-lang { background: var(--overlay-medium); }
-
-  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
-  .actions a {
-    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
-    transition: opacity 0.15s;
-  }
-  .actions .btn-primary {
-    background: linear-gradient(135deg, #a78bfa, #818cf8);
-    color: #fff;
-  }
-  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
-  .actions .btn-secondary {
-    background: var(--overlay-medium); color: var(--text-secondary);
-    border: 1px solid var(--border-subtle);
-  }
-  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
-
-  /* README styles */
-  .readme {
-    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
-  }
-  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
-  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
-  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
-  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
-  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
-  .readme a { color: var(--text-link); }
-  .readme strong { color: var(--text-primary); }
-  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
-  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
-  .readme li { margin-bottom: 4px; }
-  .readme code {
-    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
-    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
-  }
-  .readme pre {
-    background: var(--bg-card); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
-  }
-  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
-  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
-  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
-  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
-  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
-  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
-  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
-
-  /* Project summary (LLM-generated) */
-  .project-summary { margin-bottom: 32px; }
-  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
-  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
-  .summary-highlights {
-    list-style: none; margin: 0; padding: 0;
-    display: flex; flex-wrap: wrap; gap: 8px;
-  }
-  .summary-highlights li {
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
-    color: var(--text-secondary);
-  }
-
-  /* Collapsed README */
-  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
-  .readme-toggle {
-    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
-    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .readme-toggle:hover { color: var(--text-primary); }
-
-  /* Related projects */
-  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
-  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
-  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-  .related-chip {
-    display: inline-flex; align-items: center; gap: 5px;
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
-    color: var(--text-secondary); white-space: nowrap;
-  }
-  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
-  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
-  .list-link { margin-top: 12px; font-size: 13px; }
-
-  .page-footer {
-    text-align: center; margin-top: 40px; padding-top: 24px;
-    border-top: 1px solid var(--border-subtle);
-    font-size: 11px; color: var(--text-muted);
-  }
-  .page-footer a { color: var(--text-link); }
-
-  @media (max-width: 600px) {
-    .project { padding: 24px 16px 60px; }
-    .project h1 { font-size: 22px; }
-  }
-</style>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
+<script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
 </head>
 <body>
-<nav class="nav">
-  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
-  <div class="nav-actions">
-    <a href="/" class="nav-link">Ecosystem Map</a>
-    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
-  </div>
-</nav>
 
-<article class="project">
-  <div class="breadcrumb">
-    <a href="/">Workspaces &amp; GUIs</a>
-  </div>
+<a class="skip-link" href="#main">Skip to content</a>
 
-  <h1>hermes-ui</h1>
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span>apr·2026</span>
+    <span>93·repos</span>
+    <span>hermes·v0.10.0</span>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/" class="active">map</a>
+    <a href="/#curated-lists">lists</a>
+    <a href="/reports/state-of-hermes-april-2026">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="/lists/workspaces-and-guis">workspaces &amp; guis</a><span class="sep">/</span>hermes-ui
+</div>
+
+<article id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">pyrate-llama</span><span class="slash">/</span>hermes-ui
+  </h1>
   <p class="project-desc">Glassmorphic web interface for Hermes Agent — your self-hosted AI assistant</p>
 
   <div class="meta-row">
-    <span class="stars">★ 27</span>
-    <span class="badge badge-lang">HTML</span>
-    <span class="badge badge-lang">MIT</span>
+    <span class="stars">★ 25</span>
     
-    <span>Updated 4/18/2026</span>
+    
+    
+    
   </div>
 
   <div class="actions">
-    <a href="https://github.com/pyrate-llama/hermes-ui" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    <a href="https://github.com/pyrate-llama/hermes-ui" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
     
   </div>
+</section>
 
-  
-  <section class="project-summary">
-    <h2>Overview</h2>
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
     <p class="summary-text">Hermes UI is a glassmorphic web interface designed to provide a visual management layer for the self-hosted Hermes Agent. It operates as a single-file React application served via a lightweight Python proxy that handles real-time log streaming and API communication without external pip dependencies. The interface includes specialized panels for monitoring system stats, inspecting internal memory files, and browsing Model Context Protocol (MCP) tools. Users can also preview generated artifacts like HTML or SVG files in a sandboxed environment and manage their agent's skills and session history.</p>
     <ul class="summary-highlights">
       <li>Single-file React architecture with no build steps or dependencies</li>
       <li>Real-time log streaming and tool call visualization via SSE</li>
       <li>Integrated file browser and memory inspector for agent configuration</li>
     </ul>
-  </section>
+  </div>
+</section>
 
-  <details class="readme-details">
-    <summary class="readme-toggle">Full README from GitHub</summary>
-    <section class="readme" data-nosnippet>
-      <h1>Hermes UI</h1>
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <h4>Hermes UI</h4>
 <p>A sleek, glassmorphic web interface for <a href="https://github.com/pyrate-llama/hermes-agent">Hermes Agent</a> — your self-hosted AI assistant.</p>
 <p>Built as a single-file HTML application with React 18, Hermes UI provides a full-featured chat interface, real-time log streaming, file browsing, memory inspection, and more — all through a lightweight Python proxy server.</p>
 <p><img src="https://img.shields.io/badge/theme-glassmorphism-7c6fe0?style=for-the-badge" alt="Dark glassmorphic UI with ambient glow effects">
 <img src="https://img.shields.io/badge/architecture-single_file-44d88a?style=for-the-badge" alt="Single file HTML">
 <img src="https://img.shields.io/badge/react-18.2-61dafb?style=for-the-badge" alt="React 18"></p>
-<h3>Artifact Panel</h3>
+<h6>Artifact Panel</h6>
 <p><img src="https://raw.githubusercontent.com/pyrate-llama/hermes-ui/main/screenshots/screenshot-artifacts.png" alt="Artifact Panel"></p>
-<h3>Midnight (default)</h3>
+<h6>Midnight (default)</h6>
 <p><img src="https://raw.githubusercontent.com/pyrate-llama/hermes-ui/main/screenshots/screenshot-midnight.png" alt="Midnight Theme"></p>
-<h3>Twilight</h3>
+<h6>Twilight</h6>
 <p><img src="https://raw.githubusercontent.com/pyrate-llama/hermes-ui/main/screenshots/screenshot-twilight.png" alt="Twilight Theme"></p>
-<h3>Dawn</h3>
+<h6>Dawn</h6>
 <p><img src="https://raw.githubusercontent.com/pyrate-llama/hermes-ui/main/screenshots/screenshot-dawn.png" alt="Dawn Theme"></p>
 <hr>
-<h2>Features</h2>
+<h5>Features</h5>
 <p><strong>Chat Interface</strong></p>
 <ul>
 <li>SSE streaming with real-time token display</li>
@@ -327,14 +179,14 @@
 <li>Touch-optimized targets and safe-area inset support for notched devices</li>
 </ul>
 <hr>
-<h2>Quick Start</h2>
-<h3>Prerequisites</h3>
+<h5>Quick Start</h5>
+<h6>Prerequisites</h6>
 <ul>
 <li>Python 3.8+</li>
 <li>A running <a href="https://github.com/pyrate-llama/hermes-agent">Hermes Agent</a> instance on <code>localhost:8642</code></li>
 <li>(Optional) <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code CLI</a> for the Claude terminal tab</li>
 </ul>
-<h3>Install &amp; Run</h3>
+<h6>Install &amp; Run</h6>
 <pre><code class="language-bash"># Clone the repo
 git clone https://github.com/pyrate-llama/hermes-ui.git
 cd hermes-ui
@@ -350,10 +202,10 @@ python3 serve_lite.py --port 8080
 </blockquote>
 <p>Open <strong><a href="http://localhost:3333/hermes-ui.html">http://localhost:3333/hermes-ui.html</a></strong> in your browser.</p>
 <p>That&#39;s it — no <code>npm install</code>, no build step, no dependencies beyond Python&#39;s standard library.</p>
-<h3>Configuration</h3>
+<h6>Configuration</h6>
 <p>The proxy server connects to Hermes at <code>http://127.0.0.1:8642</code> by default. To change this, edit the <code>HERMES</code> variable at the top of <code>serve_lite.py</code>.</p>
 <p>For image analysis (paste/drop images in chat), add your Gemini API key in the Settings modal within the UI.</p>
-<h3>Using OpenRouter or Custom Inference Endpoints</h3>
+<h6>Using OpenRouter or Custom Inference Endpoints</h6>
 <p>Hermes supports any OpenAI-compatible API endpoint, which means you can use <a href="https://openrouter.ai">OpenRouter</a> to access Claude, GPT-4, Llama, Mistral, and dozens of other models through a single API key.</p>
 <p>In your <code>~/.hermes/config.yaml</code>, set your inference endpoint and API key:</p>
 <pre><code class="language-yaml">inference:
@@ -363,7 +215,7 @@ python3 serve_lite.py --port 8080
 </code></pre>
 <p>This also works with other compatible providers like <a href="https://github.com/BerriAI/litellm">LiteLLM</a> (self-hosted proxy), <a href="https://ollama.ai">Ollama</a> (<code>http://localhost:11434/v1</code>), or any endpoint that speaks the OpenAI chat completions format.</p>
 <hr>
-<h2>Remote Access (Tailscale)</h2>
+<h5>Remote Access (Tailscale)</h5>
 <p>Access Hermes UI from your phone, tablet, or any device using <a href="https://tailscale.com">Tailscale</a> — a zero-config mesh VPN built on WireGuard. No ports exposed to the internet, no DNS to configure, all traffic encrypted end-to-end.</p>
 <ol>
 <li><p><strong>Install Tailscale on your server</strong> (the machine running Hermes):</p>
@@ -386,7 +238,7 @@ tailscale up
 </ol>
 <p>A built-in setup guide is also available in the app under <strong>Settings &gt; Remote Access</strong>.</p>
 <hr>
-<h2>Architecture</h2>
+<h5>Architecture</h5>
 <pre><code>┌─────────────┐    ┌────────────────┐    ┌──────────────────┐
 │  Browser     │───▶│  serve_lite.py │───▶│  Hermes Agent    │
 │  (React 18)  │    │  port 3333     │    │  port 8642       │
@@ -399,7 +251,7 @@ tailscale up
 <li><strong><code>serve_lite.py</code></strong> — A lightweight Python proxy (stdlib only, no pip dependencies) that serves static files, proxies the <code>/api/chat/*</code> two-step SSE flow to the Hermes agent, streams logs via SSE, provides shell/Claude CLI execution, and enables file browsing/editing within <code>~/.hermes</code>. This is the canonical server.</li>
 <li><strong><code>serve.py</code></strong> — Backwards-compatibility shim. Prints a deprecation notice and execs <code>serve_lite.py</code>. Kept so existing systemd units and launchers don&#39;t break.</li>
 </ul>
-<h3>CDN Dependencies</h3>
+<h6>CDN Dependencies</h6>
 <p>All loaded from cdnjs.cloudflare.com at runtime:</p>
 <table>
 <thead>
@@ -446,7 +298,7 @@ tailscale up
 </tr>
 </tbody></table>
 <hr>
-<h2>Keyboard Shortcuts</h2>
+<h5>Keyboard Shortcuts</h5>
 <table>
 <thead>
 <tr>
@@ -488,7 +340,7 @@ tailscale up
 </tr>
 </tbody></table>
 <hr>
-<h2>Themes</h2>
+<h5>Themes</h5>
 <p>Hermes UI ships with three built-in themes, accessible via the theme switcher in the header:</p>
 <ul>
 <li><strong>Midnight</strong> (default) — Deep indigo/purple glassmorphism with ambient purple and green glow</li>
@@ -496,7 +348,7 @@ tailscale up
 <li><strong>Dawn</strong> — Soft light theme with blue-gray tones for daytime use</li>
 </ul>
 <hr>
-<h2>Troubleshooting</h2>
+<h5>Troubleshooting</h5>
 <p><strong>Hermes stops responding / hangs after a few messages</strong></p>
 <p>If Hermes responds once or twice then goes silent, check your <code>~/.hermes/config.yaml</code> for this bug in the context compression config:</p>
 <pre><code class="language-yaml">compression:
@@ -520,42 +372,62 @@ tailscale up
 </ol>
 <p>If you still see silent hangs, open the browser console — the client now surfaces SSE errors as visible chat messages rather than stalling.</p>
 <hr>
-<h2>License</h2>
+<h5>License</h5>
 <p>MIT — see <a href="LICENSE">LICENSE</a>.</p>
 <hr>
-<h2>Credits</h2>
+<h5>Credits</h5>
 <p>Built by <a href="https://pyrate-llama.com">Pyrate Llama</a> with help from Claude (Anthropic).</p>
 <p>Powered by <a href="https://github.com/pyrate-llama/hermes-agent">Hermes Agent</a>.</p>
+  </section>
+</details>
 
-    </section>
-  </details>
-
-  <aside class="related">
-    <h2>More in Workspaces &amp; GUIs</h2>
-    <div class="related-grid">
-      <a href="/projects/outsourc-e/hermes-workspace" class="related-chip">hermes-workspace <span class="related-stars">830</span></a>
-          <a href="/projects/fathah/hermes-desktop" class="related-chip">hermes-desktop <span class="related-stars">65</span></a>
-          <a href="/projects/sanchomuzax/hermes-webui" class="related-chip">hermes-webui <span class="related-stars">57</span></a>
-          <a href="/projects/Euraika-Labs/pan-ui" class="related-chip">pan-ui <span class="related-stars">27</span></a>
-          <a href="/projects/xaspx/hermes-control-interface" class="related-chip">hermes-control-interface <span class="related-stars">323</span></a>
-          <a href="/projects/dodo-reach/hermes-desktop" class="related-chip">hermes-desktop <span class="related-stars">313</span></a>
-          <a href="/projects/nesquena/hermes-webui" class="related-chip">hermes-webui <span class="related-stars">2.5K</span></a>
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in workspaces &amp; guis</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/outsourc-e/hermes-workspace">
+        <div class="stars">★ 830</div>
+        <div class="name"><span class="org">outsourc-e /</span> hermes-workspace</div>
+      </a>
+      <a class="related-row" href="/projects/fathah/hermes-desktop">
+        <div class="stars">★ 65</div>
+        <div class="name"><span class="org">fathah /</span> hermes-desktop</div>
+      </a>
+      <a class="related-row" href="/projects/sanchomuzax/hermes-webui">
+        <div class="stars">★ 57</div>
+        <div class="name"><span class="org">sanchomuzax /</span> hermes-webui</div>
+      </a>
+      <a class="related-row" href="/projects/Euraika-Labs/pan-ui">
+        <div class="stars">★ 27</div>
+        <div class="name"><span class="org">Euraika-Labs /</span> pan-ui</div>
+      </a>
+      <a class="related-row" href="/projects/xaspx/hermes-control-interface">
+        <div class="stars">★ 323</div>
+        <div class="name"><span class="org">xaspx /</span> hermes-control-interface</div>
+      </a>
+      <a class="related-row" href="/projects/dodo-reach/hermes-desktop">
+        <div class="stars">★ 313</div>
+        <div class="name"><span class="org">dodo-reach /</span> hermes-desktop</div>
+      </a>
+      <a class="related-row" href="/projects/nesquena/hermes-webui">
+        <div class="stars">★ 2.5K</div>
+        <div class="name"><span class="org">nesquena /</span> hermes-webui</div>
+      </a>
     </div>
-    <p class="list-link"><a href="/lists/workspaces-and-guis">See all Workspaces &amp; GUIs projects →</a></p>
-  </aside>
+    <p class="list-link"><a href="/lists/workspaces-and-guis">see all workspaces &amp; guis →</a></p>
+  </div>
+</aside>
+
 </article>
 
-<div class="page-footer">
-  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
-</div>
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
 
-<script>
-  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
-    const c=document.documentElement.getAttribute('data-theme');
-    const n=c==='light'?'dark':'light';
-    document.documentElement.setAttribute('data-theme',n);
-    try{localStorage.setItem('theme',n)}catch(e){}
-  });
-</script>
+<script>(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();</script>
 </body>
 </html>

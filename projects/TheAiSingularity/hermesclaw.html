@@ -4,238 +4,90 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>hermesclaw — Hermes Agent Deployment &amp; Infra | Hermes Atlas</title>
-<meta name="description" content="Hermes Agent (NousResearch) sandboxed by NVIDIA OpenShell — hardware-enforced network/filesystem/syscall policy, full memory + gateway stack">
+<meta name="description" content="Hermes Agent sandboxed with hardware-level enforcement">
 <link rel="canonical" href="https://hermesatlas.com/projects/TheAiSingularity/hermesclaw">
 <meta property="og:title" content="hermesclaw — Hermes Atlas">
-<meta property="og:description" content="Hermes Agent (NousResearch) sandboxed by NVIDIA OpenShell — hardware-enforced network/filesystem/syscall policy, full memory + gateway stack">
+<meta property="og:description" content="Hermes Agent sandboxed with hardware-level enforcement">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/TheAiSingularity/hermesclaw">
 <meta property="og:site_name" content="Hermes Atlas">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hermesclaw — Hermes Atlas">
-<meta name="twitter:description" content="Hermes Agent (NousResearch) sandboxed by NVIDIA OpenShell — hardware-enforced network/filesystem/syscall policy, full memory + gateway stack">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
-<script>
-  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
-</script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-  :root {
-    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
-    --border-subtle: #1e1e30; --border-default: #2a2a44;
-    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
-    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
-    --brand-purple: #a78bfa; --brand-star: #fbbf24;
-    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
-  }
-  [data-theme="light"] {
-    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
-    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
-    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
-    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
-    --brand-star: #d97706;
-    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
-  }
-
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: var(--bg-base); color: var(--text-primary);
-    font-family: 'Inter', -apple-system, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    transition: background 0.2s, color 0.2s;
-  }
-  a { color: var(--text-link); text-decoration: none; }
-  a:hover { color: var(--text-link-hover); text-decoration: underline; }
-
-  .nav {
-    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
-    display: flex; justify-content: space-between; align-items: center;
-    max-width: 960px; margin: 0 auto;
-  }
-  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
-  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
-  .nav-actions { display: flex; gap: 8px; align-items: center; }
-  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
-  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
-  #theme-toggle {
-    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
-    border: 1px solid var(--border-subtle); color: var(--text-secondary);
-    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
-  }
-  #theme-toggle:hover { border-color: var(--brand-purple); }
-  #theme-toggle .icon-sun { display: none; }
-  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
-  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
-
-  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
-
-  .breadcrumb { margin-bottom: 16px; }
-  .breadcrumb a {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
-    background: var(--overlay-medium); color: var(--text-tertiary);
-  }
-  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
-
-  .project h1 {
-    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
-  }
-  .project-desc {
-    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
-  }
-  .meta-row {
-    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
-    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
-  }
-  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
-  .meta-row .badge {
-    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.3px;
-  }
-  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
-  .meta-row .badge-lang { background: var(--overlay-medium); }
-
-  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
-  .actions a {
-    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
-    transition: opacity 0.15s;
-  }
-  .actions .btn-primary {
-    background: linear-gradient(135deg, #a78bfa, #818cf8);
-    color: #fff;
-  }
-  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
-  .actions .btn-secondary {
-    background: var(--overlay-medium); color: var(--text-secondary);
-    border: 1px solid var(--border-subtle);
-  }
-  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
-
-  /* README styles */
-  .readme {
-    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
-  }
-  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
-  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
-  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
-  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
-  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
-  .readme a { color: var(--text-link); }
-  .readme strong { color: var(--text-primary); }
-  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
-  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
-  .readme li { margin-bottom: 4px; }
-  .readme code {
-    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
-    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
-  }
-  .readme pre {
-    background: var(--bg-card); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
-  }
-  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
-  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
-  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
-  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
-  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
-  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
-  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
-
-  /* Project summary (LLM-generated) */
-  .project-summary { margin-bottom: 32px; }
-  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
-  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
-  .summary-highlights {
-    list-style: none; margin: 0; padding: 0;
-    display: flex; flex-wrap: wrap; gap: 8px;
-  }
-  .summary-highlights li {
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
-    color: var(--text-secondary);
-  }
-
-  /* Collapsed README */
-  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
-  .readme-toggle {
-    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
-    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .readme-toggle:hover { color: var(--text-primary); }
-
-  /* Related projects */
-  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
-  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
-  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-  .related-chip {
-    display: inline-flex; align-items: center; gap: 5px;
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
-    color: var(--text-secondary); white-space: nowrap;
-  }
-  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
-  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
-  .list-link { margin-top: 12px; font-size: 13px; }
-
-  .page-footer {
-    text-align: center; margin-top: 40px; padding-top: 24px;
-    border-top: 1px solid var(--border-subtle);
-    font-size: 11px; color: var(--text-muted);
-  }
-  .page-footer a { color: var(--text-link); }
-
-  @media (max-width: 600px) {
-    .project { padding: 24px 16px 60px; }
-    .project h1 { font-size: 22px; }
-  }
-</style>
+<meta name="twitter:description" content="Hermes Agent sandboxed with hardware-level enforcement">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
+<script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
 </head>
 <body>
-<nav class="nav">
-  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
-  <div class="nav-actions">
-    <a href="/" class="nav-link">Ecosystem Map</a>
-    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
-  </div>
-</nav>
 
-<article class="project">
-  <div class="breadcrumb">
-    <a href="/">Deployment &amp; Infra</a>
-  </div>
+<a class="skip-link" href="#main">Skip to content</a>
 
-  <h1>hermesclaw</h1>
-  <p class="project-desc">Hermes Agent (NousResearch) sandboxed by NVIDIA OpenShell — hardware-enforced network/filesystem/syscall policy, full memory + gateway stack</p>
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span>apr·2026</span>
+    <span>93·repos</span>
+    <span>hermes·v0.10.0</span>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/" class="active">map</a>
+    <a href="/#curated-lists">lists</a>
+    <a href="/reports/state-of-hermes-april-2026">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="/lists/deployment-options">deployment &amp; infra</a><span class="sep">/</span>hermesclaw
+</div>
+
+<article id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">TheAiSingularity</span><span class="slash">/</span>hermesclaw
+  </h1>
+  <p class="project-desc">Hermes Agent sandboxed with hardware-level enforcement</p>
 
   <div class="meta-row">
-    <span class="stars">★ 28</span>
-    <span class="badge badge-lang">Shell</span>
-    <span class="badge badge-lang">MIT</span>
+    <span class="stars">★ 16</span>
     
-    <span>Updated 3/31/2026</span>
+    
+    
+    
   </div>
 
   <div class="actions">
-    <a href="https://github.com/TheAiSingularity/hermesclaw" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    <a href="https://github.com/TheAiSingularity/hermesclaw" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
     
   </div>
+</section>
 
-  
-  <section class="project-summary">
-    <h2>Overview</h2>
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
     <p class="summary-text">HermesClaw is a deployment framework that runs the Hermes Agent within a hardware-enforced sandbox using NVIDIA OpenShell. It secures agent operations by intercepting system calls at the kernel level to block unauthorized network egress, filesystem writes, and dangerous syscalls. The system features three security policy presets—strict, gateway, and permissive—allowing users to toggle access to external tools like Telegram, Discord, and web search without restarting the environment. It supports over 40 built-in tools, persistent memory, and a library of pre-built skills for automated research, code review, and system monitoring.</p>
     <ul class="summary-highlights">
       <li>Hardware-level enforcement of network, filesystem, and process boundaries</li>
       <li>Three security policy presets to control agent capabilities and access</li>
       <li>Integrates with Telegram, Discord, and Slack via secure gateways</li>
     </ul>
-  </section>
+  </div>
+</section>
 
-  <details class="readme-details">
-    <summary class="readme-toggle">Full README from GitHub</summary>
-    <section class="readme" data-nosnippet>
-      <p align="center">
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <p align="center">
   <img src="https://raw.githubusercontent.com/TheAiSingularity/hermesclaw/main/assets/banner.png" alt="HermesClaw" width="100%">
 </p>
 
@@ -249,7 +101,7 @@
 <p><strong>Hermes Agent (NousResearch) running inside NVIDIA OpenShell.</strong></p>
 <p>NVIDIA built OpenShell to hardware-enforce AI agent behavior — blocking network egress, filesystem writes, and dangerous syscalls at the kernel level. HermesClaw is a community implementation that puts Hermes Agent inside the same sandbox. The agent gets its full capability stack while the OS enforces hard limits. If a skill goes rogue, the kernel stops it.</p>
 <hr>
-<h2>Table of Contents</h2>
+<h5>Table of Contents</h5>
 <ul>
 <li><a href="#architecture">Architecture</a></li>
 <li><a href="#quick-start">Quick Start</a><ul>
@@ -271,15 +123,15 @@
 <li><a href="#related">Related Projects</a></li>
 </ul>
 <hr>
-<h2>Architecture</h2>
+<h5>Architecture</h5>
 <p align="center">
   <img src="https://raw.githubusercontent.com/TheAiSingularity/hermesclaw/main/assets/architecture.png" alt="HermesClaw Architecture" width="780">
 </p>
 
 <p>OpenShell intercepts every call to <code>inference.local</code> inside the sandbox and routes it to the configured backend. Hermes never knows it&#39;s sandboxed.</p>
 <hr>
-<h2>Quick Start</h2>
-<h3>Path 1 — Docker (no NVIDIA hardware required)</h3>
+<h5>Quick Start</h5>
+<h6>Path 1 — Docker (no NVIDIA hardware required)</h6>
 <p>All Hermes features work. No kernel-level sandbox enforcement — Docker isolation only.</p>
 <p><strong>Step 1 — Clone and configure</strong></p>
 <pre><code class="language-bash">git clone https://github.com/TheAiSingularity/hermesclaw
@@ -310,7 +162,7 @@ llama-server -m models/your-model.gguf --port 8080 --ctx-size 32768 -ngl 99 --lo
 docker exec -it hermesclaw hermes chat -q &quot;hello&quot;
 </code></pre>
 <hr>
-<h3>Path 2 — OpenShell Sandbox (full hardware enforcement)</h3>
+<h6>Path 2 — OpenShell Sandbox (full hardware enforcement)</h6>
 <p>Requires Linux + NVIDIA GPU + OpenShell installed.</p>
 <pre><code class="language-bash"># Install OpenShell (requires NVIDIA account)
 curl -fsSL https://www.nvidia.com/openshell.sh | bash
@@ -334,7 +186,7 @@ llama-server -m models/your-model.gguf --port 8080 --ctx-size 32768 -ngl 99
 ./scripts/hermesclaw chat &quot;hello&quot;  # one-shot message
 </code></pre>
 <hr>
-<h2>What OpenShell Enforces</h2>
+<h5>What OpenShell Enforces</h5>
 <table>
 <thead>
 <tr>
@@ -366,7 +218,7 @@ llama-server -m models/your-model.gguf --port 8080 --ctx-size 32768 -ngl 99
 </tbody></table>
 <p>All four layers are enforced <strong>out-of-process</strong> — even a fully compromised Hermes instance cannot override them.</p>
 <hr>
-<h2>Policy Presets</h2>
+<h5>Policy Presets</h5>
 <p>Switch security posture <strong>without restarting</strong> the sandbox:</p>
 <pre><code class="language-bash">./scripts/hermesclaw policy-set strict      # inference only (default)
 ./scripts/hermesclaw policy-set gateway     # + Telegram + Discord
@@ -405,7 +257,7 @@ llama-server -m models/your-model.gguf --port 8080 --ctx-size 32768 -ngl 99
 </tr>
 </tbody></table>
 <hr>
-<h2>Hermes Features Inside the Sandbox</h2>
+<h5>Hermes Features Inside the Sandbox</h5>
 <table>
 <thead>
 <tr>
@@ -481,7 +333,7 @@ llama-server -m models/your-model.gguf --port 8080 --ctx-size 32768 -ngl 99
 </tr>
 </tbody></table>
 <hr>
-<h2>Skills Library</h2>
+<h5>Skills Library</h5>
 <p>Pre-built skills that encode recurring workflows. Install with one command, invoke via chat:</p>
 <pre><code class="language-bash">./skills/install.sh research-digest     # weekly arXiv digest → Telegram
 ./skills/install.sh code-review         # local code review (CLI or VS Code ACP)
@@ -497,7 +349,7 @@ llama-server -m models/your-model.gguf --port 8080 --ctx-size 32768 -ngl 99
 </code></pre>
 <p>Full index: <a href="skills/">skills/README.md</a></p>
 <hr>
-<h2>Use Cases</h2>
+<h5>Use Cases</h5>
 <p>Seven end-to-end guides covering real deployment scenarios — each with prerequisites, setup steps, automated tests, and a NemoClaw comparison:</p>
 <table>
 <thead>
@@ -545,7 +397,7 @@ llama-server -m models/your-model.gguf --port 8080 --ctx-size 32768 -ngl 99
 </tbody></table>
 <p>Full index and NemoClaw compatibility table: <a href="docs/use-cases/">docs/use-cases/</a></p>
 <hr>
-<h2>HermesClaw vs NemoClaw</h2>
+<h5>HermesClaw vs NemoClaw</h5>
 <p>Full comparison and test results: <a href="https://github.com/TheAiSingularity/hermesclaw/blob/main/docs/test-results.md">docs/test-results.md</a> · <a href="https://github.com/TheAiSingularity/hermesclaw/blob/main/docs/test-results-uc.md">docs/test-results-uc.md</a></p>
 <table>
 <thead>
@@ -617,7 +469,7 @@ llama-server -m models/your-model.gguf --port 8080 --ctx-size 32768 -ngl 99
 </tr>
 </tbody></table>
 <hr>
-<h2>hermesclaw CLI</h2>
+<h5>hermesclaw CLI</h5>
 <pre><code>hermesclaw onboard                    First-time setup and prerequisite check
 hermesclaw start [--gpu] [--policy]   Start sandbox (OpenShell) or docker compose
 hermesclaw stop                       Stop sandbox (memories + skills preserved)
@@ -632,12 +484,12 @@ hermesclaw version                    Print version
 hermesclaw uninstall                  Remove Docker image (data preserved)
 </code></pre>
 <hr>
-<h2>Personalise Hermes</h2>
+<h5>Personalise Hermes</h5>
 <pre><code class="language-bash">cp configs/persona.yaml.example configs/persona.yaml
 </code></pre>
 <p>Edit <code>configs/persona.yaml</code> — set your name, role, expertise, ticker watchlist, and response style. Hermes loads this into every session. For deeper personalisation, edit <code>~/.hermes/SOUL.md</code> — this goes directly into the system prompt.</p>
 <hr>
-<h2>Project Structure</h2>
+<h5>Project Structure</h5>
 <pre><code>hermesclaw/
 ├── Dockerfile                          # Hermes Agent on debian:bookworm-slim
 ├── docker-compose.yml                  # Hermes container (llama-server runs on host)
@@ -676,7 +528,7 @@ hermesclaw uninstall                  Remove Docker image (data preserved)
 └── models/                            # Drop .gguf model weights here
 </code></pre>
 <hr>
-<h2>Diagnostics &amp; Testing</h2>
+<h5>Diagnostics &amp; Testing</h5>
 <pre><code class="language-bash"># Check your environment
 ./scripts/doctor.sh           # full diagnostic
 ./scripts/doctor.sh --quick   # skip slow checks
@@ -692,7 +544,7 @@ bash scripts/test-uc-04.sh          # data analyst (Postgres + anomaly detection
 bash scripts/test-uc-07.sh          # trader (latency measurement)
 </code></pre>
 <hr>
-<h2>Contributing</h2>
+<h5>Contributing</h5>
 <p>HermesClaw welcomes contributions — especially:</p>
 <ul>
 <li><strong>OpenShell policy corrections</strong> — if you have access to a real OpenShell environment, correctness fixes are the highest-value contribution</li>
@@ -709,42 +561,59 @@ shellcheck scripts/hermesclaw  # lint before submitting
 </code></pre>
 <p>Full guide: <a href="https://github.com/TheAiSingularity/hermesclaw/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> · <a href="https://github.com/TheAiSingularity/hermesclaw/blob/main/CODE_OF_CONDUCT.md">Code of Conduct</a> · <a href="https://github.com/TheAiSingularity/hermesclaw/blob/main/CHANGELOG.md">Changelog</a></p>
 <hr>
-<h2>Related</h2>
+<h5>Related</h5>
 <ul>
 <li><a href="https://github.com/TheAiSingularity/hermes-agent-nemoclaw-openclaw">hermes-agent-nemoclaw-openclaw</a> — The parent repo: Hermes + NemoClaw + lightweight bots in one stack</li>
 <li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — NousResearch&#39;s agent (18k ⭐)</li>
 <li><a href="https://github.com/NVIDIA/NemoClaw">NemoClaw</a> — NVIDIA&#39;s OpenClaw + OpenShell reference implementation</li>
 <li><a href="https://docs.nvidia.com/openshell/latest/">OpenShell</a> — NVIDIA&#39;s hardware-enforced AI sandbox</li>
 </ul>
+  </section>
+</details>
 
-    </section>
-  </details>
-
-  <aside class="related">
-    <h2>More in Deployment &amp; Infra</h2>
-    <div class="related-grid">
-      <a href="/projects/numtide/llm-agents.nix" class="related-chip">llm-agents.nix <span class="related-stars">967</span></a>
-          <a href="/projects/0xrsydn/nix-hermes-agent" class="related-chip">nix-hermes-agent <span class="related-stars">11</span></a>
-          <a href="/projects/rookiemann/portable-hermes-agent" class="related-chip">portable-hermes-agent <span class="related-stars">7</span></a>
-          <a href="/projects/xmbshwll/hermes-agent-docker" class="related-chip">hermes-agent-docker <span class="related-stars">6</span></a>
-          <a href="/projects/JackTheGit/hermes-autonomous-server" class="related-chip">hermes-autonomous-server <span class="related-stars">2</span></a>
-          <a href="/projects/ellickjohnson/portainer-stack-hermes" class="related-chip">portainer-stack-hermes <span class="related-stars">1</span></a>
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in deployment &amp; infra</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/numtide/llm-agents.nix">
+        <div class="stars">★ 967</div>
+        <div class="name"><span class="org">numtide /</span> llm-agents.nix</div>
+      </a>
+      <a class="related-row" href="/projects/0xrsydn/nix-hermes-agent">
+        <div class="stars">★ 11</div>
+        <div class="name"><span class="org">0xrsydn /</span> nix-hermes-agent</div>
+      </a>
+      <a class="related-row" href="/projects/rookiemann/portable-hermes-agent">
+        <div class="stars">★ 7</div>
+        <div class="name"><span class="org">rookiemann /</span> portable-hermes-agent</div>
+      </a>
+      <a class="related-row" href="/projects/xmbshwll/hermes-agent-docker">
+        <div class="stars">★ 6</div>
+        <div class="name"><span class="org">xmbshwll /</span> hermes-agent-docker</div>
+      </a>
+      <a class="related-row" href="/projects/JackTheGit/hermes-autonomous-server">
+        <div class="stars">★ 2</div>
+        <div class="name"><span class="org">JackTheGit /</span> hermes-autonomous-server</div>
+      </a>
+      <a class="related-row" href="/projects/ellickjohnson/portainer-stack-hermes">
+        <div class="stars">★ 1</div>
+        <div class="name"><span class="org">ellickjohnson /</span> portainer-stack-hermes</div>
+      </a>
     </div>
-    <p class="list-link"><a href="/lists/deployment-options">See all Deployment &amp; Infra projects →</a></p>
-  </aside>
+    <p class="list-link"><a href="/lists/deployment-options">see all deployment &amp; infra →</a></p>
+  </div>
+</aside>
+
 </article>
 
-<div class="page-footer">
-  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
-</div>
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
 
-<script>
-  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
-    const c=document.documentElement.getAttribute('data-theme');
-    const n=c==='light'?'dark':'light';
-    document.documentElement.setAttribute('data-theme',n);
-    try{localStorage.setItem('theme',n)}catch(e){}
-  });
-</script>
+<script>(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();</script>
 </body>
 </html>

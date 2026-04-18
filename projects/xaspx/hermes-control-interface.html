@@ -14,233 +14,85 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hermes-control-interface — Hermes Atlas">
 <meta name="twitter:description" content="A self-hosted web dashboard for the Hermes AI agent stack. Provides a browser-based terminal, file explorer, session overview, cron management, system metrics, ">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
-<script>
-  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
-</script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-  :root {
-    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
-    --border-subtle: #1e1e30; --border-default: #2a2a44;
-    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
-    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
-    --brand-purple: #a78bfa; --brand-star: #fbbf24;
-    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
-  }
-  [data-theme="light"] {
-    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
-    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
-    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
-    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
-    --brand-star: #d97706;
-    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
-  }
-
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: var(--bg-base); color: var(--text-primary);
-    font-family: 'Inter', -apple-system, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    transition: background 0.2s, color 0.2s;
-  }
-  a { color: var(--text-link); text-decoration: none; }
-  a:hover { color: var(--text-link-hover); text-decoration: underline; }
-
-  .nav {
-    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
-    display: flex; justify-content: space-between; align-items: center;
-    max-width: 960px; margin: 0 auto;
-  }
-  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
-  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
-  .nav-actions { display: flex; gap: 8px; align-items: center; }
-  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
-  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
-  #theme-toggle {
-    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
-    border: 1px solid var(--border-subtle); color: var(--text-secondary);
-    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
-  }
-  #theme-toggle:hover { border-color: var(--brand-purple); }
-  #theme-toggle .icon-sun { display: none; }
-  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
-  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
-
-  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
-
-  .breadcrumb { margin-bottom: 16px; }
-  .breadcrumb a {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
-    background: var(--overlay-medium); color: var(--text-tertiary);
-  }
-  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
-
-  .project h1 {
-    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
-  }
-  .project-desc {
-    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
-  }
-  .meta-row {
-    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
-    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
-  }
-  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
-  .meta-row .badge {
-    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.3px;
-  }
-  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
-  .meta-row .badge-lang { background: var(--overlay-medium); }
-
-  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
-  .actions a {
-    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
-    transition: opacity 0.15s;
-  }
-  .actions .btn-primary {
-    background: linear-gradient(135deg, #a78bfa, #818cf8);
-    color: #fff;
-  }
-  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
-  .actions .btn-secondary {
-    background: var(--overlay-medium); color: var(--text-secondary);
-    border: 1px solid var(--border-subtle);
-  }
-  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
-
-  /* README styles */
-  .readme {
-    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
-  }
-  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
-  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
-  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
-  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
-  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
-  .readme a { color: var(--text-link); }
-  .readme strong { color: var(--text-primary); }
-  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
-  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
-  .readme li { margin-bottom: 4px; }
-  .readme code {
-    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
-    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
-  }
-  .readme pre {
-    background: var(--bg-card); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
-  }
-  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
-  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
-  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
-  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
-  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
-  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
-  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
-
-  /* Project summary (LLM-generated) */
-  .project-summary { margin-bottom: 32px; }
-  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
-  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
-  .summary-highlights {
-    list-style: none; margin: 0; padding: 0;
-    display: flex; flex-wrap: wrap; gap: 8px;
-  }
-  .summary-highlights li {
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
-    color: var(--text-secondary);
-  }
-
-  /* Collapsed README */
-  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
-  .readme-toggle {
-    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
-    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .readme-toggle:hover { color: var(--text-primary); }
-
-  /* Related projects */
-  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
-  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
-  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-  .related-chip {
-    display: inline-flex; align-items: center; gap: 5px;
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
-    color: var(--text-secondary); white-space: nowrap;
-  }
-  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
-  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
-  .list-link { margin-top: 12px; font-size: 13px; }
-
-  .page-footer {
-    text-align: center; margin-top: 40px; padding-top: 24px;
-    border-top: 1px solid var(--border-subtle);
-    font-size: 11px; color: var(--text-muted);
-  }
-  .page-footer a { color: var(--text-link); }
-
-  @media (max-width: 600px) {
-    .project { padding: 24px 16px 60px; }
-    .project h1 { font-size: 22px; }
-  }
-</style>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
+<script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
 </head>
 <body>
-<nav class="nav">
-  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
-  <div class="nav-actions">
-    <a href="/" class="nav-link">Ecosystem Map</a>
-    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
-  </div>
-</nav>
 
-<article class="project">
-  <div class="breadcrumb">
-    <a href="/">Workspaces &amp; GUIs</a>
-  </div>
+<a class="skip-link" href="#main">Skip to content</a>
 
-  <h1>hermes-control-interface</h1>
-  <p class="project-desc">A self-hosted web dashboard for the Hermes AI agent stack. Provides a browser-based terminal, file explorer, session overview, cron management, system metrics, and an agent status panel — all behind a single password gate.</p>
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span>apr·2026</span>
+    <span>93·repos</span>
+    <span>hermes·v0.10.0</span>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/" class="active">map</a>
+    <a href="/#curated-lists">lists</a>
+    <a href="/reports/state-of-hermes-april-2026">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="/lists/workspaces-and-guis">workspaces &amp; guis</a><span class="sep">/</span>hermes-control-interface
+</div>
+
+<article id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">xaspx</span><span class="slash">/</span>hermes-control-interface
+  </h1>
+  <p class="project-desc">A self-hosted web dashboard for the Hermes AI agent stack. Provides a browser-based terminal, file explorer, session overview, cron management, system metrics, and an agent status panel — all behind a</p>
 
   <div class="meta-row">
-    <span class="stars">★ 351</span>
-    <span class="badge badge-lang">JavaScript</span>
-    <span class="badge badge-lang">MIT</span>
+    <span class="stars">★ 323</span>
     
-    <span>Updated 4/17/2026</span>
+    
+    
+    
   </div>
 
   <div class="actions">
-    <a href="https://github.com/xaspx/hermes-control-interface" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
-    <a href="https://x.com/bayendor" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
+    <a href="https://github.com/xaspx/hermes-control-interface" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    
   </div>
+</section>
 
-  
-  <section class="project-summary">
-    <h2>Overview</h2>
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
     <p class="summary-text">The Hermes Control Interface is a self-hosted web dashboard designed to manage the Hermes AI agent stack through a centralized graphical interface. It utilizes a Node.js and Express backend with WebSockets to provide real-time system monitoring, multi-agent gateway management, and a browser-based terminal. Users can configure over 80 agent settings, track detailed token analytics across different models, and manage scheduled cron jobs for automated tasks. The platform also includes a revamped chat interface with collapsible tool call cards and a secure file explorer scoped to the agent's directory.</p>
     <ul class="summary-highlights">
       <li>Multi-agent gateway for starting, stopping, and configuring individual profiles.</li>
       <li>Detailed token analytics tracking costs and usage by model and platform.</li>
       <li>Role-based access control with 28 permissions across 12 functional groups.</li>
     </ul>
-  </section>
+  </div>
+</section>
 
-  <details class="readme-details">
-    <summary class="readme-toggle">Full README from GitHub</summary>
-    <section class="readme" data-nosnippet>
-      <h1>Hermes Control Interface</h1>
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <h4>Hermes Control Interface</h4>
 <p>A self-hosted web dashboard for the <a href="https://github.com/NousResearch/hermes-agent">Hermes AI agent</a> stack. Manage terminals, files, sessions, cron jobs, token analytics, multi-agent gateways, and team access — all behind a password gate.</p>
 <p><strong>Stack:</strong> Vanilla JS + Vite · Node.js · Express · WebSocket · xterm.js
 <strong>Version:</strong> 3.3.2</p>
 <hr>
-<h2>Highlights</h2>
+<h5>Highlights</h5>
 <blockquote>
 <p><strong>Chat Revamped</strong> — Collapsible tool call cards with JSON viewer, session sidebar with model tags, banner-free output.</p>
 </blockquote>
@@ -254,10 +106,10 @@
 <p><strong>Token Analytics</strong> — Track sessions, messages, tokens, cost by model, platform, and time range.</p>
 </blockquote>
 <hr>
-<h2>Screenshots</h2>
-<h3>Navigation — 8 Pages</h3>
+<h5>Screenshots</h5>
+<h6>Navigation — 8 Pages</h6>
 <p><strong>Home · Agents · Usage · Skills · Chat · Logs · Maintenance · Files</strong></p>
-<h3>Dark Mode</h3>
+<h6>Dark Mode</h6>
 <table>
 <thead>
 <tr>
@@ -342,7 +194,7 @@
 <td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/dark/13-agent-cron.png" alt="Cron"></td>
 </tr>
 </tbody></table>
-<h3>Light Mode</h3>
+<h6>Light Mode</h6>
 <table>
 <thead>
 <tr>
@@ -370,8 +222,8 @@
 </tr>
 </tbody></table>
 <hr>
-<h2>Features</h2>
-<h3>🔐 Authentication</h3>
+<h5>Features</h5>
+<h6>🔐 Authentication</h6>
 <ul>
 <li>Single password login (configurable via <code>HERMES_CONTROL_PASSWORD</code>)</li>
 <li>bcrypt password hashing (cost factor 10)</li>
@@ -381,7 +233,7 @@
 <li>Multi-user support with role-based access control (RBAC)</li>
 </ul>
 <hr>
-<h3>🏠 Home Dashboard</h3>
+<h6>🏠 Home Dashboard</h6>
 <p>System overview at a glance:</p>
 <ul>
 <li><strong>System Health</strong>: CPU usage, RAM usage, Disk usage, Uptime</li>
@@ -390,7 +242,7 @@
 <li><strong>Token Usage (7d)</strong>: sessions count, messages, total tokens, estimated cost, models used, platforms breakdown, top tools</li>
 </ul>
 <hr>
-<h3>🤖 Agents — Multi-Agent Management</h3>
+<h6>🤖 Agents — Multi-Agent Management</h6>
 <p>Manage all Hermes profiles from one place:</p>
 <ul>
 <li>List all profiles with status badge (running/stopped) and active model</li>
@@ -402,7 +254,7 @@
 <li>Quick gateway log viewer</li>
 </ul>
 <hr>
-<h3>💬 Chat — Revamped Interface</h3>
+<h6>💬 Chat — Revamped Interface</h6>
 <p>The chat interface got a full overhaul in v3.3.0:</p>
 <p><strong>Tool Call Cards</strong></p>
 <ul>
@@ -432,7 +284,7 @@
 <li>Export session transcript</li>
 </ul>
 <hr>
-<h3>📊 Usage &amp; Analytics — Token Insights</h3>
+<h6>📊 Usage &amp; Analytics — Token Insights</h6>
 <p>Full breakdown of LLM usage:</p>
 <ul>
 <li><strong>Time Range</strong>: Today, 7d, 30d, 90d filters</li>
@@ -443,16 +295,16 @@
 <li><strong>Top Tools</strong>: most called tools with call counts and success rates</li>
 </ul>
 <hr>
-<h3>🛠️ Agent Detail — Per-Agent Management</h3>
+<h6>🛠️ Agent Detail — Per-Agent Management</h6>
 <p>Six-tab interface for deep agent configuration:</p>
-<h4>Dashboard Tab</h4>
+<h6>Dashboard Tab</h6>
 <ul>
 <li>Agent identity: name, model, provider</li>
 <li>Gateway service status</li>
 <li>Quick token usage summary</li>
 <li>Active platforms</li>
 </ul>
-<h4>Sessions Tab</h4>
+<h6>Sessions Tab</h6>
 <ul>
 <li>List all sessions for this profile</li>
 <li>Search by keyword</li>
@@ -461,14 +313,14 @@
 <li>Export session (JSON format)</li>
 <li>Resume session in CLI (one click)</li>
 </ul>
-<h4>Gateway Tab</h4>
+<h6>Gateway Tab</h6>
 <ul>
 <li>Start/Stop/Restart gateway service</li>
 <li>Real-time log stream (WebSocket)</li>
 <li>Systemd service management (for non-root users: <code>hermes-gateway-&lt;profile&gt;</code>)</li>
 <li>Gateway configuration panel</li>
 </ul>
-<h4>Config Tab</h4>
+<h6>Config Tab</h6>
 <ul>
 <li>13 categories, 80+ settings</li>
 <li>Structured form editor with labeled fields</li>
@@ -476,14 +328,14 @@
 <li>Reset to defaults per category</li>
 <li>Apply changes with validation</li>
 </ul>
-<h4>Memory Tab</h4>
+<h6>Memory Tab</h6>
 <ul>
 <li>Dynamic memory provider panel</li>
 <li>Provider options: Built-in MEMORY.md, Honcho (self-hosted), External providers</li>
 <li>Honcho status: connected/disconnected</li>
 <li>Memory usage stats</li>
 </ul>
-<h4>Cron Tab</h4>
+<h6>Cron Tab</h6>
 <ul>
 <li>List all scheduled jobs for this profile</li>
 <li>Create new cron job with schedule presets (hourly, daily, weekly, custom cron expression)</li>
@@ -493,7 +345,7 @@
 <li>Next run time display</li>
 </ul>
 <hr>
-<h3>📦 Skills Marketplace</h3>
+<h6>📦 Skills Marketplace</h6>
 <p>Browse and manage installed Hermes skills:</p>
 <ul>
 <li>Grouped by category (devops, mlops, creative, etc.)</li>
@@ -504,7 +356,7 @@
 <li>Uninstall skills</li>
 </ul>
 <hr>
-<h3>🔧 Maintenance — System Administration</h3>
+<h6>🔧 Maintenance — System Administration</h6>
 <p>Full admin panel:</p>
 <ul>
 <li><strong>Doctor</strong>: Run diagnostics — detects common issues, auto-fix where possible</li>
@@ -518,7 +370,7 @@
 <li><strong>Audit</strong>: Timestampped activity log — who did what and when</li>
 </ul>
 <hr>
-<h3>📁 File Explorer</h3>
+<h6>📁 File Explorer</h6>
 <p>Split-view file editor:</p>
 <ul>
 <li><strong>Left panel</strong>: Directory tree browser</li>
@@ -528,7 +380,7 @@
 <li><strong>Multiple roots</strong>: Configurable via <code>HERMES_CONTROL_ROOTS</code></li>
 </ul>
 <hr>
-<h3>💻 Terminal</h3>
+<h6>💻 Terminal</h6>
 <p>Real browser-based terminal:</p>
 <ul>
 <li>Full PTY via node-pty + xterm.js over WebSocket</li>
@@ -538,7 +390,7 @@
 <li>Rate limited: 30 commands/minute per IP</li>
 </ul>
 <hr>
-<h3>🔔 Notifications</h3>
+<h6>🔔 Notifications</h6>
 <ul>
 <li>Bell icon with unread count badge (top-right)</li>
 <li>Dropdown panel with notification list</li>
@@ -547,7 +399,7 @@
 <li>Persistent: stored in <code>~/.hermes/hci-notifications.json</code></li>
 </ul>
 <hr>
-<h3>🎨 Theme</h3>
+<h6>🎨 Theme</h6>
 <ul>
 <li><strong>Dark mode</strong> (default): <code>#0b201f</code> background, <code>#dccbb5</code> foreground, <code>#7c945c</code> accent</li>
 <li><strong>Light mode</strong>: <code>#e4ebdf</code> background, <code>#0b201f</code> foreground, <code>#2e6fb0</code> accent</li>
@@ -556,7 +408,7 @@
 <li>Login page: themed background image with overlay</li>
 </ul>
 <hr>
-<h3>🔒 Security</h3>
+<h6>🔒 Security</h6>
 <ul>
 <li><strong>Multi-user RBAC</strong>: 28 permissions across 12 groups</li>
 <li><strong>Roles</strong>: <code>admin</code> (full access), <code>viewer</code> (read-only), <code>custom</code> (your choice)</li>
@@ -574,7 +426,7 @@
 </ul>
 <p>See full security audit: <a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/SECURITY_AUDIT.md">docs/SECURITY_AUDIT.md</a></p>
 <hr>
-<h2>Where HCI Can Be Installed</h2>
+<h5>Where HCI Can Be Installed</h5>
 <p>HCI runs as a single Node.js process — any server environment that supports Node.js works.</p>
 <table>
 <thead>
@@ -626,7 +478,7 @@
 </tr>
 </tbody></table>
 <hr>
-<h2>Requirements</h2>
+<h5>Requirements</h5>
 <table>
 <thead>
 <tr>
@@ -676,8 +528,8 @@
 <li><code>cookie-parser</code>, <code>dotenv</code>, <code>js-yaml</code>, etc.</li>
 </ul>
 <hr>
-<h2>Installation Methods</h2>
-<h3>Manual (Recommended)</h3>
+<h5>Installation Methods</h5>
+<h6>Manual (Recommended)</h6>
 <pre><code class="language-bash"># 1. Clone
 git clone https://github.com/xaspx/hermes-control-interface.git
 cd hermes-control-interface
@@ -698,7 +550,7 @@ npm run build
 npm start
 </code></pre>
 <p>Access at <code>http://localhost:10272</code> (default PORT).</p>
-<h3>Systemd Service (Production)</h3>
+<h6>Systemd Service (Production)</h6>
 <pre><code class="language-bash"># Use the provided gateway service script as reference
 bash scripts/setup-gateway-service.sh
 </code></pre>
@@ -722,7 +574,7 @@ WantedBy=multi-user.target
 sudo systemctl start hermes-control
 </code></pre>
 <hr>
-<h2>Environment Variables</h2>
+<h5>Environment Variables</h5>
 <table>
 <thead>
 <tr>
@@ -763,7 +615,7 @@ sudo systemctl start hermes-control
 </tr>
 </tbody></table>
 <hr>
-<h2>Reset Password Without Dashboard Access</h2>
+<h5>Reset Password Without Dashboard Access</h5>
 <p>If you can&#39;t log in to the dashboard, reset the password via CLI:</p>
 <p><strong>Option 1 — Edit .env directly</strong></p>
 <pre><code class="language-bash"># SSH into your server
@@ -780,7 +632,7 @@ sudo systemctl restart hermes-control
 </code></pre>
 <p><strong>Key point:</strong> <code>.env</code> is the source of truth. Dashboard access = server access. If you lose access to both, you must have server/SSH access to reset.</p>
 <hr>
-<h2>Architecture</h2>
+<h5>Architecture</h5>
 <pre><code>src/                    # Vite source (ES modules)
 ├── index.html          # Entry point
 ├── js/main.js          # App logic (~4800 lines, modular sections)
@@ -797,7 +649,7 @@ server.js               # Express + WebSocket + PTY + API (~2300 lines)
 auth.js                 # Multi-user auth + RBAC (bcrypt, sessions, permissions)
 </code></pre>
 <hr>
-<h2>Development</h2>
+<h5>Development</h5>
 <pre><code class="language-bash"># Edit source in src/
 npx vite build
 
@@ -806,7 +658,7 @@ kill $(lsof -t -i:10272) 2&gt;/dev/null
 nohup node server.js &amp;&gt;/dev/null &amp; disown
 </code></pre>
 <hr>
-<h2>API</h2>
+<h5>API</h5>
 <p>100+ endpoints covering:</p>
 <ul>
 <li><strong>Auth</strong>: login, logout, session management, setup</li>
@@ -827,7 +679,7 @@ nohup node server.js &amp;&gt;/dev/null &amp; disown
 </ul>
 <p>See <code>docs/API.md</code> for full reference.</p>
 <hr>
-<h2>Security Audit</h2>
+<h5>Security Audit</h5>
 <p>Full audit report: <a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/SECURITY_AUDIT.md">docs/SECURITY_AUDIT.md</a>
 <strong>Score: 7.0/10</strong> — Production-ready.</p>
 <p>Issues found and fixed in v3.3.0:</p>
@@ -838,7 +690,7 @@ nohup node server.js &amp;&gt;/dev/null &amp; disown
 <li>Token cleanup interval — now runs every 15 minutes</li>
 </ul>
 <hr>
-<h2>Updating HCI</h2>
+<h5>Updating HCI</h5>
 <pre><code class="language-bash"># 1. Pull latest code
 cd /root/projects/hermes-control-interface
 git pull origin main
@@ -857,8 +709,8 @@ nohup node server.js &amp;&gt;/dev/null &amp; disown
 <p><strong>Non-root users:</strong> Replace <code>/root/projects</code> with your user&#39;s project directory.
 If running via systemd, use <code>sudo systemctl restart hermes-control</code>.</p>
 <hr>
-<h2>Changelog</h2>
-<h3>v3.3.2 (2026-04-17)</h3>
+<h5>Changelog</h5>
+<h6>v3.3.2 (2026-04-17)</h6>
 <p><strong>🐛 Bug Fixes:</strong></p>
 <ul>
 <li><strong>HTTP-only deployments:</strong> Disable <code>upgrade-insecure-requests</code> CSP directive that broke UI on Tailscale/LAN/dev environments</li>
@@ -868,7 +720,7 @@ If running via systemd, use <code>sudo systemctl restart hermes-control</code>.<
 <ul>
 <li>@hifiguy — 2 fixes (HOST env + CSP HTTP fix)</li>
 </ul>
-<h3>v3.3.0 (2026-04-17)</h3>
+<h6>v3.3.0 (2026-04-17)</h6>
 <p><strong>💬 Chat Revamp:</strong></p>
 <ul>
 <li>Tool call cards: collapsible cards with JSON viewer, collapsed by default</li>
@@ -912,7 +764,7 @@ If running via systemd, use <code>sudo systemctl restart hermes-control</code>.<
 <li>Removed outdated script references (install.sh, reset-password.sh)</li>
 <li>Screenshots: 13 dark mode, 6 light mode</li>
 </ul>
-<h3>v3.2.0 (2026-04-14)</h3>
+<h6>v3.2.0 (2026-04-14)</h6>
 <p><strong>⚡ Performance:</strong></p>
 <ul>
 <li>Insights speed: 60s+ timeout → 0.65s via IPv4 adapter on model_metadata.py</li>
@@ -939,48 +791,68 @@ If running via systemd, use <code>sudo systemctl restart hermes-control</code>.<
 <li>Auth panel: data loaded async, doesn&#39;t block page load</li>
 <li>CPR stripping: removed ANSI escape from terminal</li>
 </ul>
-<h3>v3.1.0 (2026-04-12)</h3>
+<h6>v3.1.0 (2026-04-12)</h6>
 <ul>
 <li>Skills Hub + Honcho panel + Gateway connections</li>
 <li>HTTPS support</li>
 <li>Maintenance UI: Backup &amp; Import, HCI Restart buttons</li>
 </ul>
 <hr>
-<h2>License</h2>
+<h5>License</h5>
 <p>MIT</p>
-<h2>Credits</h2>
+<h5>Credits</h5>
 <p>Built for the <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> ecosystem.</p>
 <p><a href="https://x.com/bayendor">@bayendor</a> — GitHub: <a href="https://github.com/xaspx">xaspx</a></p>
+  </section>
+</details>
 
-    </section>
-  </details>
-
-  <aside class="related">
-    <h2>More in Workspaces &amp; GUIs</h2>
-    <div class="related-grid">
-      <a href="/projects/outsourc-e/hermes-workspace" class="related-chip">hermes-workspace <span class="related-stars">830</span></a>
-          <a href="/projects/fathah/hermes-desktop" class="related-chip">hermes-desktop <span class="related-stars">65</span></a>
-          <a href="/projects/sanchomuzax/hermes-webui" class="related-chip">hermes-webui <span class="related-stars">57</span></a>
-          <a href="/projects/Euraika-Labs/pan-ui" class="related-chip">pan-ui <span class="related-stars">27</span></a>
-          <a href="/projects/dodo-reach/hermes-desktop" class="related-chip">hermes-desktop <span class="related-stars">313</span></a>
-          <a href="/projects/nesquena/hermes-webui" class="related-chip">hermes-webui <span class="related-stars">2.5K</span></a>
-          <a href="/projects/pyrate-llama/hermes-ui" class="related-chip">hermes-ui <span class="related-stars">25</span></a>
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in workspaces &amp; guis</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/outsourc-e/hermes-workspace">
+        <div class="stars">★ 830</div>
+        <div class="name"><span class="org">outsourc-e /</span> hermes-workspace</div>
+      </a>
+      <a class="related-row" href="/projects/fathah/hermes-desktop">
+        <div class="stars">★ 65</div>
+        <div class="name"><span class="org">fathah /</span> hermes-desktop</div>
+      </a>
+      <a class="related-row" href="/projects/sanchomuzax/hermes-webui">
+        <div class="stars">★ 57</div>
+        <div class="name"><span class="org">sanchomuzax /</span> hermes-webui</div>
+      </a>
+      <a class="related-row" href="/projects/Euraika-Labs/pan-ui">
+        <div class="stars">★ 27</div>
+        <div class="name"><span class="org">Euraika-Labs /</span> pan-ui</div>
+      </a>
+      <a class="related-row" href="/projects/dodo-reach/hermes-desktop">
+        <div class="stars">★ 313</div>
+        <div class="name"><span class="org">dodo-reach /</span> hermes-desktop</div>
+      </a>
+      <a class="related-row" href="/projects/nesquena/hermes-webui">
+        <div class="stars">★ 2.5K</div>
+        <div class="name"><span class="org">nesquena /</span> hermes-webui</div>
+      </a>
+      <a class="related-row" href="/projects/pyrate-llama/hermes-ui">
+        <div class="stars">★ 25</div>
+        <div class="name"><span class="org">pyrate-llama /</span> hermes-ui</div>
+      </a>
     </div>
-    <p class="list-link"><a href="/lists/workspaces-and-guis">See all Workspaces &amp; GUIs projects →</a></p>
-  </aside>
+    <p class="list-link"><a href="/lists/workspaces-and-guis">see all workspaces &amp; guis →</a></p>
+  </div>
+</aside>
+
 </article>
 
-<div class="page-footer">
-  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
-</div>
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
 
-<script>
-  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
-    const c=document.documentElement.getAttribute('data-theme');
-    const n=c==='light'?'dark':'light';
-    document.documentElement.setAttribute('data-theme',n);
-    try{localStorage.setItem('theme',n)}catch(e){}
-  });
-</script>
+<script>(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();</script>
 </body>
 </html>

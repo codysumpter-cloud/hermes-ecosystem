@@ -4,238 +4,90 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>infra-monitoring-toolkit — Hermes Agent Domain Applications | Hermes Atlas</title>
-<meta name="description" content="Autonomous AI infrastructure monitoring using Hermes Agent. Cron-based research ingestion, cost forecasting, and headless systemd deployment.">
+<meta name="description" content="Autonomous monitoring — cron-based research ingestion, cost forecasting, headless systemd">
 <link rel="canonical" href="https://hermesatlas.com/projects/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit">
 <meta property="og:title" content="infra-monitoring-toolkit — Hermes Atlas">
-<meta property="og:description" content="Autonomous AI infrastructure monitoring using Hermes Agent. Cron-based research ingestion, cost forecasting, and headless systemd deployment.">
+<meta property="og:description" content="Autonomous monitoring — cron-based research ingestion, cost forecasting, headless systemd">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit">
 <meta property="og:site_name" content="Hermes Atlas">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="infra-monitoring-toolkit — Hermes Atlas">
-<meta name="twitter:description" content="Autonomous AI infrastructure monitoring using Hermes Agent. Cron-based research ingestion, cost forecasting, and headless systemd deployment.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
-<script>
-  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
-</script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-  :root {
-    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
-    --border-subtle: #1e1e30; --border-default: #2a2a44;
-    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
-    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
-    --brand-purple: #a78bfa; --brand-star: #fbbf24;
-    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
-  }
-  [data-theme="light"] {
-    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
-    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
-    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
-    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
-    --brand-star: #d97706;
-    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
-  }
-
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: var(--bg-base); color: var(--text-primary);
-    font-family: 'Inter', -apple-system, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    transition: background 0.2s, color 0.2s;
-  }
-  a { color: var(--text-link); text-decoration: none; }
-  a:hover { color: var(--text-link-hover); text-decoration: underline; }
-
-  .nav {
-    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
-    display: flex; justify-content: space-between; align-items: center;
-    max-width: 960px; margin: 0 auto;
-  }
-  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
-  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
-  .nav-actions { display: flex; gap: 8px; align-items: center; }
-  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
-  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
-  #theme-toggle {
-    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
-    border: 1px solid var(--border-subtle); color: var(--text-secondary);
-    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
-  }
-  #theme-toggle:hover { border-color: var(--brand-purple); }
-  #theme-toggle .icon-sun { display: none; }
-  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
-  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
-
-  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
-
-  .breadcrumb { margin-bottom: 16px; }
-  .breadcrumb a {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
-    background: var(--overlay-medium); color: var(--text-tertiary);
-  }
-  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
-
-  .project h1 {
-    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
-  }
-  .project-desc {
-    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
-  }
-  .meta-row {
-    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
-    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
-  }
-  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
-  .meta-row .badge {
-    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.3px;
-  }
-  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
-  .meta-row .badge-lang { background: var(--overlay-medium); }
-
-  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
-  .actions a {
-    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
-    transition: opacity 0.15s;
-  }
-  .actions .btn-primary {
-    background: linear-gradient(135deg, #a78bfa, #818cf8);
-    color: #fff;
-  }
-  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
-  .actions .btn-secondary {
-    background: var(--overlay-medium); color: var(--text-secondary);
-    border: 1px solid var(--border-subtle);
-  }
-  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
-
-  /* README styles */
-  .readme {
-    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
-  }
-  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
-  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
-  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
-  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
-  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
-  .readme a { color: var(--text-link); }
-  .readme strong { color: var(--text-primary); }
-  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
-  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
-  .readme li { margin-bottom: 4px; }
-  .readme code {
-    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
-    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
-  }
-  .readme pre {
-    background: var(--bg-card); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
-  }
-  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
-  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
-  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
-  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
-  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
-  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
-  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
-
-  /* Project summary (LLM-generated) */
-  .project-summary { margin-bottom: 32px; }
-  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
-  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
-  .summary-highlights {
-    list-style: none; margin: 0; padding: 0;
-    display: flex; flex-wrap: wrap; gap: 8px;
-  }
-  .summary-highlights li {
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
-    color: var(--text-secondary);
-  }
-
-  /* Collapsed README */
-  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
-  .readme-toggle {
-    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
-    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .readme-toggle:hover { color: var(--text-primary); }
-
-  /* Related projects */
-  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
-  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
-  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-  .related-chip {
-    display: inline-flex; align-items: center; gap: 5px;
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
-    color: var(--text-secondary); white-space: nowrap;
-  }
-  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
-  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
-  .list-link { margin-top: 12px; font-size: 13px; }
-
-  .page-footer {
-    text-align: center; margin-top: 40px; padding-top: 24px;
-    border-top: 1px solid var(--border-subtle);
-    font-size: 11px; color: var(--text-muted);
-  }
-  .page-footer a { color: var(--text-link); }
-
-  @media (max-width: 600px) {
-    .project { padding: 24px 16px 60px; }
-    .project h1 { font-size: 22px; }
-  }
-</style>
+<meta name="twitter:description" content="Autonomous monitoring — cron-based research ingestion, cost forecasting, headless systemd">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
+<script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
 </head>
 <body>
-<nav class="nav">
-  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
-  <div class="nav-actions">
-    <a href="/" class="nav-link">Ecosystem Map</a>
-    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
-  </div>
-</nav>
 
-<article class="project">
-  <div class="breadcrumb">
-    <a href="/">Domain Applications</a>
-  </div>
+<a class="skip-link" href="#main">Skip to content</a>
 
-  <h1>infra-monitoring-toolkit</h1>
-  <p class="project-desc">Autonomous AI infrastructure monitoring using Hermes Agent. Cron-based research ingestion, cost forecasting, and headless systemd deployment.</p>
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span>apr·2026</span>
+    <span>93·repos</span>
+    <span>hermes·v0.10.0</span>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/" class="active">map</a>
+    <a href="/#curated-lists">lists</a>
+    <a href="/reports/state-of-hermes-april-2026">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="/">domain applications</a><span class="sep">/</span>hermes-ai-infrastructure-monitoring-toolkit
+</div>
+
+<article id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">JackTheGit</span><span class="slash">/</span>hermes-ai-infrastructure-monitoring-toolkit
+  </h1>
+  <p class="project-desc">Autonomous monitoring — cron-based research ingestion, cost forecasting, headless systemd</p>
 
   <div class="meta-row">
-    <span class="stars">★ 10</span>
+    <span class="stars">★ 9</span>
     
     
     
-    <span>Updated 3/16/2026</span>
+    
   </div>
 
   <div class="actions">
-    <a href="https://github.com/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    <a href="https://github.com/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
     
   </div>
+</section>
 
-  
-  <section class="project-summary">
-    <h2>Overview</h2>
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
     <p class="summary-text">This project is a reference implementation for autonomous AI infrastructure monitoring using the Hermes Agent framework. It utilizes scheduled cron-based workflows to ingest research from arXiv and track trending repositories on GitHub to identify infrastructure risks and ecosystem shifts. The system automatically generates structured markdown reports, including cost projections, compute bottleneck alerts, and an ASCII monitoring dashboard. It serves as a template for developers building long-running, headless agentic systems for operational intelligence.</p>
     <ul class="summary-highlights">
       <li>Automated research ingestion via arXiv API and GitHub ecosystem tracking.</li>
       <li>Cron-based workflows for cost modeling and infrastructure risk analysis.</li>
       <li>Generates structured markdown reports and ASCII-style monitoring dashboards.</li>
     </ul>
-  </section>
+  </div>
+</section>
 
-  <details class="readme-details">
-    <summary class="readme-toggle">Full README from GitHub</summary>
-    <section class="readme" data-nosnippet>
-      <h1>🧠 Hermes AI Infrastructure Monitoring Toolkit</h1>
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <h4>🧠 Hermes AI Infrastructure Monitoring Toolkit</h4>
 <p><img src="https://img.shields.io/badge/Hermes-Autonomous-blue" alt="Automation">
 <img src="https://img.shields.io/badge/AI-Infrastructure-purple" alt="Infrastructure">
 <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
@@ -244,19 +96,19 @@
 <p>Autonomous AI infrastructure monitoring with Hermes Agent.<br>Continuously analyzes AI research, infrastructure risks, and ecosystem trends using scheduled autonomous workflows.<br>Designed as a minimal reference implementation for building safe long-running Hermes agent systems.</p>
 </blockquote>
 <hr>
-<h2>Project Status</h2>
+<h5>Project Status</h5>
 <p>This project was originally created for the Hermes Agent Hackathon (Nous Research) as a demonstration of autonomous Hermes workflows.</p>
 <p>It demonstrates how scheduled Hermes workflows can power autonomous infrastructure intelligence systems.</p>
 <hr>
-<h2>Demo</h2>
+<h5>Demo</h5>
 <p><img src="https://raw.githubusercontent.com/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit/main/hermes_demo.gif" alt="Hermes Demo"></p>
 <hr>
-<h2>⭐ Support the Project</h2>
+<h5>⭐ Support the Project</h5>
 <p>If you find this project interesting or useful:</p>
 <p>• ⭐ Star the repository<br>• 🍴 Fork it to experiment with Hermes workflows<br>• 🧠 Use it as a template for autonomous AI monitoring systems</p>
 <p>This helps the project reach more developers exploring Hermes agents.</p>
 <hr>
-<h2>Key Capabilities</h2>
+<h5>Key Capabilities</h5>
 <ul>
 <li>Autonomous AI research monitoring</li>
 <li>Infrastructure trend detection</li>
@@ -267,7 +119,7 @@
 <li>Cron-based autonomous agent workflows</li>
 </ul>
 <hr>
-<h2>Why This Matters</h2>
+<h5>Why This Matters</h5>
 <p>AI infrastructure evolves rapidly as new research introduces more efficient training
 methods, inference optimizations, and deployment techniques.</p>
 <p>This project shows how autonomous Hermes agents can continuously monitor the research
@@ -280,7 +132,7 @@ landscape and generate actionable infrastructure intelligence.</p>
 <li>generate monitoring dashboards</li>
 </ul>
 <hr>
-<h2>What This Toolkit Includes</h2>
+<h5>What This Toolkit Includes</h5>
 <p>This repository provides a minimal reference implementation of autonomous
 Hermes workflows for monitoring AI infrastructure research.</p>
 <p>It includes:</p>
@@ -294,13 +146,13 @@ Hermes workflows for monitoring AI infrastructure research.</p>
 <p>The repository also contains reproducible cron configurations and example
 report outputs generated by the agent.</p>
 <hr>
-<h2>System Architecture</h2>
+<h5>System Architecture</h5>
 <p>The system runs autonomous Hermes workflows that continuously ingest AI research,
 monitor infrastructure ecosystem signals, analyze trends, and generate monitoring reports.</p>
 <p>Each component runs as an independent Hermes cron workflow producing structured reports.</p>
 <p><img src="https://raw.githubusercontent.com/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit/main/system-architecture.png" alt="Architecture"></p>
 <hr>
-<h2>⚡ Quick Start</h2>
+<h5>⚡ Quick Start</h5>
 <p>Install Hermes and launch the system.</p>
 <pre><code class="language-bash">pip install hermes-agent
 hermes login
@@ -316,13 +168,13 @@ mkdir reports
 <p>Then create the cron jobs described in the full deployment guide.</p>
 <p>➡ See <a href="https://github.com/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit/blob/main/guide.md"><code>guide.md</code></a></p>
 <hr>
-<h2>▶ Quick Demo</h2>
+<h5>▶ Quick Demo</h5>
 <p>Trigger scheduled workflows manually (if supported by your Hermes CLI):</p>
 <pre><code class="language-bash">hermes cron tick
 hermes cron list
 </code></pre>
 <hr>
-<h2>Workflow Overview</h2>
+<h5>Workflow Overview</h5>
 <pre><code class="language-text">Hermes Cron Scheduler
         ↓
 AI Research Ingestion (arXiv)
@@ -339,8 +191,8 @@ Infrastructure Intelligence Pipeline
 Markdown Reports &amp; Infrastructure Intelligence
 </code></pre>
 <hr>
-<h2>🔬 Components</h2>
-<h3>1️⃣ AI Research Digest</h3>
+<h5>🔬 Components</h5>
+<h6>1️⃣ AI Research Digest</h6>
 <p>Runs every 6 hours.</p>
 <ul>
 <li>Fetches latest AI papers from arXiv</li>
@@ -348,7 +200,7 @@ Markdown Reports &amp; Infrastructure Intelligence
 <li>Generates structured digest reports</li>
 <li>Saves to <code>/reports/</code></li>
 </ul>
-<h3>2️⃣ Usage Projection Monitor</h3>
+<h6>2️⃣ Usage Projection Monitor</h6>
 <p>Runs every 12 hours.</p>
 <ul>
 <li>Estimates monthly execution volume</li>
@@ -356,7 +208,7 @@ Markdown Reports &amp; Infrastructure Intelligence
 <li>Calculates estimated cost</li>
 <li>Generates structured cost report</li>
 </ul>
-<h3>3️⃣ Infrastructure Monitoring Dashboard</h3>
+<h6>3️⃣ Infrastructure Monitoring Dashboard</h6>
 <p>Generates an ASCII dashboard summarizing detected infrastructure trends.</p>
 <p>The dashboard is produced automatically by Hermes cron jobs and reflects the latest research signals detected by the agent.</p>
 <p>Includes:</p>
@@ -393,7 +245,7 @@ Inference Optimization        2        4.5%         → STABLE
 ────────────────────────────────────────────────────────────
 TOTAL KEYWORDS ANALYZED       44       100%
 </code></pre>
-<h3>4️⃣ Infrastructure Risk Monitor</h3>
+<h6>4️⃣ Infrastructure Risk Monitor</h6>
 <p>Runs every 12 hours.</p>
 <ul>
 <li>Scans research digest reports</li>
@@ -403,7 +255,7 @@ TOTAL KEYWORDS ANALYZED       44       100%
 </ul>
 <p>Output file:</p>
 <p><a href="https://github.com/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit/blob/main/reports/example_infrastructure_alerts.md"><code>reports/example_infrastructure_alerts.md</code></a></p>
-<h3>5️⃣ AI Infrastructure Ecosystem Monitor</h3>
+<h6>5️⃣ AI Infrastructure Ecosystem Monitor</h6>
 <p>Runs every 12 hours.</p>
 <ul>
 <li>Scans GitHub for trending AI infrastructure repositories</li>
@@ -414,7 +266,7 @@ TOTAL KEYWORDS ANALYZED       44       100%
 <p>Output file:</p>
 <p><a href="https://github.com/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit/blob/main/reports/example_ai_ecosystem_report.md"><code>reports/example_ai_ecosystem_report.md</code></a></p>
 <hr>
-<h2>📦 Folder Structure</h2>
+<h5>📦 Folder Structure</h5>
 <pre><code class="language-text">hermes-ai-infrastructure-monitoring-toolkit/
 
 ├ README.md
@@ -431,7 +283,7 @@ TOTAL KEYWORDS ANALYZED       44       100%
 │   ├ example_ai_ecosystem_report.md
 </code></pre>
 <hr>
-<h2>📄 Example Output</h2>
+<h5>📄 Example Output</h5>
 <p>Sample generated artifacts:</p>
 <ul>
 <li><a href="https://github.com/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit/blob/main/reports/example_research_digest.md"><code>reports/example_research_digest.md</code></a></li>
@@ -442,7 +294,7 @@ TOTAL KEYWORDS ANALYZED       44       100%
 </ul>
 <p>These files are example outputs generated by the Hermes monitoring pipeline.<br>Runtime reports are written to the <code>/reports/</code> directory and are not version-controlled.</p>
 <hr>
-<h2>⚠ Cron Configuration Notes</h2>
+<h5>⚠ Cron Configuration Notes</h5>
 <p>Production intervals are intentionally conservative:</p>
 <ul>
 <li>Research Digest → every 6 hours (360m)</li>
@@ -459,43 +311,63 @@ TOTAL KEYWORDS ANALYZED       44       100%
 <li>Remove the job immediately</li>
 </ul>
 <p>This ensures predictable cost and stable long-term operation.</p>
-<h2>📖 Full Deployment Guide</h2>
+<h5>📖 Full Deployment Guide</h5>
 <p>For a detailed step-by-step guide see:</p>
 <p><a href="https://github.com/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit/blob/main/guide.md">guide.md</a></p>
 <hr>
-<h2>🎯 Purpose</h2>
+<h5>🎯 Purpose</h5>
 <p>This repository serves as a minimal, reproducible example of Hermes-based AI infrastructure automation.</p>
 <p>It is not affiliated with or endorsed by Nous Research.</p>
+  </section>
+</details>
 
-    </section>
-  </details>
-
-  <aside class="related">
-    <h2>More in Domain Applications</h2>
-    <div class="related-grid">
-      <a href="/projects/ucsandman/DashClaw" class="related-chip">DashClaw <span class="related-stars">204</span></a>
-          <a href="/projects/Lethe044/hermes-incident-commander" class="related-chip">hermes-incident-commander <span class="related-stars">11</span></a>
-          <a href="/projects/Christabel337/job-scout-agent" class="related-chip">job-scout-agent <span class="related-stars">11</span></a>
-          <a href="/projects/rodmarkun/anihermes" class="related-chip">anihermes <span class="related-stars">9</span></a>
-          <a href="/projects/bigph00t/hermescraft" class="related-chip">hermescraft <span class="related-stars">8</span></a>
-          <a href="/projects/hxsteric/mercury" class="related-chip">mercury <span class="related-stars">5</span></a>
-          <a href="/projects/bryercowan/hermes-embodied" class="related-chip">hermes-embodied <span class="related-stars">2</span></a>
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in domain applications</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/ucsandman/DashClaw">
+        <div class="stars">★ 204</div>
+        <div class="name"><span class="org">ucsandman /</span> DashClaw</div>
+      </a>
+      <a class="related-row" href="/projects/Lethe044/hermes-incident-commander">
+        <div class="stars">★ 11</div>
+        <div class="name"><span class="org">Lethe044 /</span> hermes-incident-commander</div>
+      </a>
+      <a class="related-row" href="/projects/Christabel337/job-scout-agent">
+        <div class="stars">★ 11</div>
+        <div class="name"><span class="org">Christabel337 /</span> job-scout-agent</div>
+      </a>
+      <a class="related-row" href="/projects/rodmarkun/anihermes">
+        <div class="stars">★ 9</div>
+        <div class="name"><span class="org">rodmarkun /</span> anihermes</div>
+      </a>
+      <a class="related-row" href="/projects/bigph00t/hermescraft">
+        <div class="stars">★ 8</div>
+        <div class="name"><span class="org">bigph00t /</span> hermescraft</div>
+      </a>
+      <a class="related-row" href="/projects/hxsteric/mercury">
+        <div class="stars">★ 5</div>
+        <div class="name"><span class="org">hxsteric /</span> mercury</div>
+      </a>
+      <a class="related-row" href="/projects/bryercowan/hermes-embodied">
+        <div class="stars">★ 2</div>
+        <div class="name"><span class="org">bryercowan /</span> hermes-embodied</div>
+      </a>
     </div>
     
-  </aside>
+  </div>
+</aside>
+
 </article>
 
-<div class="page-footer">
-  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
-</div>
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
 
-<script>
-  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
-    const c=document.documentElement.getAttribute('data-theme');
-    const n=c==='light'?'dark':'light';
-    document.documentElement.setAttribute('data-theme',n);
-    try{localStorage.setItem('theme',n)}catch(e){}
-  });
-</script>
+<script>(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();</script>
 </body>
 </html>

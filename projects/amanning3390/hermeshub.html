@@ -4,245 +4,97 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>hermeshub — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
-<meta name="description" content="HermesHub - The Skills Hub for Hermes Agent by Nous Research. Browse, share, and install community skills.">
+<meta name="description" content="Community skill browsing, search, and one-click installation hub">
 <link rel="canonical" href="https://hermesatlas.com/projects/amanning3390/hermeshub">
 <meta property="og:title" content="hermeshub — Hermes Atlas">
-<meta property="og:description" content="HermesHub - The Skills Hub for Hermes Agent by Nous Research. Browse, share, and install community skills.">
+<meta property="og:description" content="Community skill browsing, search, and one-click installation hub">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/amanning3390/hermeshub">
 <meta property="og:site_name" content="Hermes Atlas">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hermeshub — Hermes Atlas">
-<meta name="twitter:description" content="HermesHub - The Skills Hub for Hermes Agent by Nous Research. Browse, share, and install community skills.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
-<script>
-  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
-</script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-  :root {
-    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
-    --border-subtle: #1e1e30; --border-default: #2a2a44;
-    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
-    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
-    --brand-purple: #a78bfa; --brand-star: #fbbf24;
-    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
-  }
-  [data-theme="light"] {
-    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
-    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
-    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
-    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
-    --brand-star: #d97706;
-    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
-  }
-
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: var(--bg-base); color: var(--text-primary);
-    font-family: 'Inter', -apple-system, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    transition: background 0.2s, color 0.2s;
-  }
-  a { color: var(--text-link); text-decoration: none; }
-  a:hover { color: var(--text-link-hover); text-decoration: underline; }
-
-  .nav {
-    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
-    display: flex; justify-content: space-between; align-items: center;
-    max-width: 960px; margin: 0 auto;
-  }
-  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
-  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
-  .nav-actions { display: flex; gap: 8px; align-items: center; }
-  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
-  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
-  #theme-toggle {
-    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
-    border: 1px solid var(--border-subtle); color: var(--text-secondary);
-    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
-  }
-  #theme-toggle:hover { border-color: var(--brand-purple); }
-  #theme-toggle .icon-sun { display: none; }
-  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
-  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
-
-  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
-
-  .breadcrumb { margin-bottom: 16px; }
-  .breadcrumb a {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
-    background: var(--overlay-medium); color: var(--text-tertiary);
-  }
-  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
-
-  .project h1 {
-    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
-  }
-  .project-desc {
-    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
-  }
-  .meta-row {
-    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
-    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
-  }
-  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
-  .meta-row .badge {
-    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.3px;
-  }
-  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
-  .meta-row .badge-lang { background: var(--overlay-medium); }
-
-  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
-  .actions a {
-    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
-    transition: opacity 0.15s;
-  }
-  .actions .btn-primary {
-    background: linear-gradient(135deg, #a78bfa, #818cf8);
-    color: #fff;
-  }
-  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
-  .actions .btn-secondary {
-    background: var(--overlay-medium); color: var(--text-secondary);
-    border: 1px solid var(--border-subtle);
-  }
-  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
-
-  /* README styles */
-  .readme {
-    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
-  }
-  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
-  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
-  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
-  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
-  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
-  .readme a { color: var(--text-link); }
-  .readme strong { color: var(--text-primary); }
-  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
-  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
-  .readme li { margin-bottom: 4px; }
-  .readme code {
-    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
-    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
-  }
-  .readme pre {
-    background: var(--bg-card); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
-  }
-  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
-  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
-  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
-  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
-  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
-  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
-  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
-
-  /* Project summary (LLM-generated) */
-  .project-summary { margin-bottom: 32px; }
-  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
-  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
-  .summary-highlights {
-    list-style: none; margin: 0; padding: 0;
-    display: flex; flex-wrap: wrap; gap: 8px;
-  }
-  .summary-highlights li {
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
-    color: var(--text-secondary);
-  }
-
-  /* Collapsed README */
-  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
-  .readme-toggle {
-    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
-    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .readme-toggle:hover { color: var(--text-primary); }
-
-  /* Related projects */
-  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
-  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
-  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-  .related-chip {
-    display: inline-flex; align-items: center; gap: 5px;
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
-    color: var(--text-secondary); white-space: nowrap;
-  }
-  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
-  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
-  .list-link { margin-top: 12px; font-size: 13px; }
-
-  .page-footer {
-    text-align: center; margin-top: 40px; padding-top: 24px;
-    border-top: 1px solid var(--border-subtle);
-    font-size: 11px; color: var(--text-muted);
-  }
-  .page-footer a { color: var(--text-link); }
-
-  @media (max-width: 600px) {
-    .project { padding: 24px 16px 60px; }
-    .project h1 { font-size: 22px; }
-  }
-</style>
+<meta name="twitter:description" content="Community skill browsing, search, and one-click installation hub">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
+<script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
 </head>
 <body>
-<nav class="nav">
-  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
-  <div class="nav-actions">
-    <a href="/" class="nav-link">Ecosystem Map</a>
-    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
-  </div>
-</nav>
 
-<article class="project">
-  <div class="breadcrumb">
-    <a href="/">Skills &amp; Skill Registries</a>
-  </div>
+<a class="skip-link" href="#main">Skip to content</a>
 
-  <h1>hermeshub</h1>
-  <p class="project-desc">HermesHub - The Skills Hub for Hermes Agent by Nous Research. Browse, share, and install community skills.</p>
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span>apr·2026</span>
+    <span>93·repos</span>
+    <span>hermes·v0.10.0</span>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/" class="active">map</a>
+    <a href="/#curated-lists">lists</a>
+    <a href="/reports/state-of-hermes-april-2026">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="/lists/top-skills">skills &amp; skill registries</a><span class="sep">/</span>hermeshub
+</div>
+
+<article id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">amanning3390</span><span class="slash">/</span>hermeshub
+  </h1>
+  <p class="project-desc">Community skill browsing, search, and one-click installation hub</p>
 
   <div class="meta-row">
-    <span class="stars">★ 27</span>
-    <span class="badge badge-lang">TypeScript</span>
+    <span class="stars">★ 15</span>
     
     
-    <span>Updated 4/6/2026</span>
+    
+    
   </div>
 
   <div class="actions">
-    <a href="https://github.com/amanning3390/hermeshub" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
-    <a href="https://hermeshub.vercel.app" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
+    <a href="https://github.com/amanning3390/hermeshub" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    
   </div>
+</section>
 
-  
-  <section class="project-summary">
-    <h2>Overview</h2>
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
     <p class="summary-text">HermesHub is a curated registry and marketplace for AI agent skills built on the agentskills.io open standard. It provides a centralized platform for browsing, searching, and installing verified capabilities for Hermes Agent via a command-line interface. The system utilizes an automated security scanner with over 65 rules to detect threats like prompt injection and data exfiltration before skills are listed. It also features a creator marketplace supporting crypto-based micropayments and an agent-to-agent feedback protocol for building trust scores.</p>
     <ul class="summary-highlights">
       <li>Automated security scanning for prompt injection and malicious payloads</li>
       <li>One-click installation via Hermes Agent command-line interface</li>
       <li>Creator marketplace with x402 and Micropayment Protocol support</li>
     </ul>
-  </section>
+  </div>
+</section>
 
-  <details class="readme-details">
-    <summary class="readme-toggle">Full README from GitHub</summary>
-    <section class="readme" data-nosnippet>
-      <h1>HermesHub</h1>
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <h4>HermesHub</h4>
 <p><strong>The Skills Hub for <a href="https://hermes-agent.nousresearch.com/">Hermes Agent</a> by Nous Research.</strong></p>
 <p>Browse, install, and share verified skills for the self-improving AI agent. Security-scanned. Open standard. Community-driven.</p>
 <p><strong><a href="https://hermeshub.xyz">hermeshub.xyz</a></strong></p>
-<h2>What is HermesHub?</h2>
+<h5>What is HermesHub?</h5>
 <p>HermesHub is a curated skills registry for Hermes Agent — the autonomous AI agent with a built-in learning loop by Nous Research. Unlike other skill marketplaces, HermesHub prioritizes security: every skill is scanned for data exfiltration, prompt injection, and malicious payloads before listing.</p>
 <p>Skills follow the <a href="https://agentskills.io">agentskills.io</a> open standard and work with Hermes Agent&#39;s progressive disclosure, conditional activation, and self-improvement systems.</p>
-<h2>Features</h2>
+<h5>Features</h5>
 <ul>
 <li><strong>Automated Security Scanning</strong> — 65+ threat rules across 8 categories (exfiltration, prompt injection, destructive commands, obfuscation, hardcoded secrets, network abuse, env abuse, supply-chain). Critical findings block merges. Even admins can&#39;t bypass.</li>
 <li><strong>Reviewed Domains System</strong> — Known-safe external services get advisory-level annotations instead of false-positive blocks, with prominent security notes so users understand any risks.</li>
@@ -250,7 +102,7 @@
 <li><strong>Agent-to-Agent Feedback</strong> — Structured review protocol where agents submit proof-of-use reviews, build trust scores, and surface the most reliable skills.</li>
 <li><strong>GitHub OAuth</strong> — Creators authenticate via GitHub. Wallet and profile management through the creator dashboard.</li>
 </ul>
-<h2>Installing Skills</h2>
+<h5>Installing Skills</h5>
 <pre><code class="language-bash"># Install from HermesHub
 hermes skills install github:amanning3390/hermeshub/skills/&lt;skill-name&gt;
 
@@ -260,8 +112,8 @@ hermes skills browse
 # Search skills
 hermes skills search &lt;query&gt;
 </code></pre>
-<h2>Available Skills (22)</h2>
-<h3>Development</h3>
+<h5>Available Skills (22)</h5>
+<h6>Development</h6>
 <table>
 <thead>
 <tr>
@@ -282,7 +134,7 @@ hermes skills search &lt;query&gt;
 <td>Run and manage test suites across Jest, pytest, Go test, Mocha</td>
 </tr>
 </tbody></table>
-<h3>Research</h3>
+<h6>Research</h6>
 <table>
 <thead>
 <tr>
@@ -303,7 +155,7 @@ hermes skills search &lt;query&gt;
 <td>Multi-source research with DuckDuckGo, Tavily, and direct URL extraction</td>
 </tr>
 </tbody></table>
-<h3>Productivity</h3>
+<h6>Productivity</h6>
 <table>
 <thead>
 <tr>
@@ -328,7 +180,7 @@ hermes skills search &lt;query&gt;
 <td>Task decomposition, Gantt charts, dependency graphs, status reports</td>
 </tr>
 </tbody></table>
-<h3>Security</h3>
+<h6>Security</h6>
 <table>
 <thead>
 <tr>
@@ -345,7 +197,7 @@ hermes skills search &lt;query&gt;
 <td>Scan code for vulnerabilities, audit dependencies, review configurations</td>
 </tr>
 </tbody></table>
-<h3>Data &amp; Analytics</h3>
+<h6>Data &amp; Analytics</h6>
 <table>
 <thead>
 <tr>
@@ -362,7 +214,7 @@ hermes skills search &lt;query&gt;
 <td>Undetectable, adaptive web data extraction that survives site changes</td>
 </tr>
 </tbody></table>
-<h3>DevOps</h3>
+<h6>DevOps</h6>
 <table>
 <thead>
 <tr>
@@ -375,7 +227,7 @@ hermes skills search &lt;query&gt;
 <td>Docker container lifecycle, Dockerfile creation, docker-compose workflows</td>
 </tr>
 </tbody></table>
-<h3>Communication</h3>
+<h6>Communication</h6>
 <table>
 <thead>
 <tr>
@@ -396,7 +248,7 @@ hermes skills search &lt;query&gt;
 <td>Send messages, monitor channels, manage threads and alerts</td>
 </tr>
 </tbody></table>
-<h3>Agents &amp; Swarms</h3>
+<h6>Agents &amp; Swarms</h6>
 <table>
 <thead>
 <tr>
@@ -413,7 +265,7 @@ hermes skills search &lt;query&gt;
 <td>Multi-agent cognitive swarm with ZERO, NOVA, TITAN agents for visual analysis</td>
 </tr>
 </tbody></table>
-<h3>Documentation</h3>
+<h6>Documentation</h6>
 <table>
 <thead>
 <tr>
@@ -426,7 +278,7 @@ hermes skills search &lt;query&gt;
 <td>Generate correct Mermaid diagrams from natural language</td>
 </tr>
 </tbody></table>
-<h3>Meta</h3>
+<h6>Meta</h6>
 <table>
 <thead>
 <tr>
@@ -439,20 +291,20 @@ hermes skills search &lt;query&gt;
 <td>Meta-skill that watches workflows and auto-generates reusable Hermes skills</td>
 </tr>
 </tbody></table>
-<h2>Creator Marketplace</h2>
+<h5>Creator Marketplace</h5>
 <p>HermesHub supports paid premium skills through two payment protocols:</p>
-<h3>x402 Protocol</h3>
+<h6>x402 Protocol</h6>
 <p>The <a href="https://www.x402.org/">x402 payment protocol</a> enables pay-per-download using crypto. When a buyer requests a premium skill download without payment, the API returns a <code>402 Payment Required</code> response with x402-compliant payment instructions. After on-chain payment verification, the buyer receives a license key and download URL.</p>
-<h3>Micropayment Protocol (MPP)</h3>
+<h6>Micropayment Protocol (MPP)</h6>
 <p>For Stripe-based payments, creators and buyers can use MPP sessions. Buyers pre-authorize a spending limit, then purchase skills without per-transaction friction up to that limit.</p>
-<h3>For Creators</h3>
+<h6>For Creators</h6>
 <ol>
 <li>Sign in via GitHub OAuth at hermeshub.xyz</li>
 <li>Configure your wallet address (Base, Solana, or Tempo)</li>
 <li>Upload skills with pricing via the creator dashboard</li>
 <li>Receive 95% of each sale (5% platform fee)</li>
 </ol>
-<h2>Contributing a Skill</h2>
+<h5>Contributing a Skill</h5>
 <ol>
 <li><strong>Fork and clone</strong> — Fork this repo and clone it locally</li>
 <li><strong>Create your skill</strong> — Add a directory under <code>skills/</code> with a <code>SKILL.md</code> following the <a href="https://agentskills.io/specification">agentskills.io spec</a></li>
@@ -467,7 +319,7 @@ hermes skills search &lt;query&gt;
 <li><strong>Review and merge</strong> — After passing security scan and code review, your skill goes live on hermeshub.xyz</li>
 </ol>
 <p>See the <a href="https://hermeshub.xyz/#/submit">submission guide</a> for detailed instructions, templates, and security requirements.</p>
-<h3>Contributor Guidelines</h3>
+<h6>Contributor Guidelines</h6>
 <ul>
 <li>Each skill must have a <code>SKILL.md</code> with proper YAML frontmatter (name, description, version, license, metadata)</li>
 <li>Declare all environment variables and permissions your skill needs</li>
@@ -475,8 +327,8 @@ hermes skills search &lt;query&gt;
 <li>External network calls should be to well-known services and documented in your skill description</li>
 <li>Skills should be self-contained — avoid dependencies on other skills</li>
 </ul>
-<h2>Security Architecture</h2>
-<h3>Automated Scanning</h3>
+<h5>Security Architecture</h5>
+<h6>Automated Scanning</h6>
 <p>Every PR triggers <code>scripts/scan-skill.py</code> via GitHub Actions. The scanner checks all <code>.md</code> and <code>.py</code> files for:</p>
 <ul>
 <li>Data exfiltration patterns (curl/wget POSTs, base64-encoded URLs)</li>
@@ -488,11 +340,11 @@ hermes skills search &lt;query&gt;
 <li>Environment variable manipulation</li>
 <li>Supply-chain attack vectors</li>
 </ul>
-<h3>Branch Protection</h3>
+<h6>Branch Protection</h6>
 <p>The <code>main</code> branch requires the &quot;Security Scan&quot; check to pass. <code>enforce_admins</code> is enabled — even repository owners cannot bypass this.</p>
-<h3>Reviewed Domains</h3>
+<h6>Reviewed Domains</h6>
 <p>The scanner maintains a whitelist of reviewed external domains. Services like <code>relayfortelegram.com</code> that have been manually verified receive <code>ADVISORY</code> severity instead of blocking, with detailed comments explaining what the service does and any residual risks.</p>
-<h2>API Endpoints</h2>
+<h5>API Endpoints</h5>
 <p>HermesHub exposes a REST API under <code>https://hermeshub.xyz/api/v1/</code>:</p>
 <table>
 <thead>
@@ -588,7 +440,7 @@ hermes skills search &lt;query&gt;
 <td>Aggregated trust score</td>
 </tr>
 </tbody></table>
-<h2>Tech Stack</h2>
+<h5>Tech Stack</h5>
 <ul>
 <li><strong>Frontend</strong>: Vite + React + Tailwind CSS + shadcn/ui</li>
 <li><strong>Backend</strong>: Vercel Serverless Functions (TypeScript)</li>
@@ -598,7 +450,7 @@ hermes skills search &lt;query&gt;
 <li><strong>Security</strong>: Custom Python scanner in GitHub Actions</li>
 <li><strong>Hosting</strong>: Vercel at hermeshub.xyz</li>
 </ul>
-<h2>Links</h2>
+<h5>Links</h5>
 <ul>
 <li><a href="https://hermes-agent.nousresearch.com/">Hermes Agent</a> — The self-improving AI agent</li>
 <li><a href="https://hermes-agent.nousresearch.com/docs/">Hermes Agent Docs</a> — Full documentation</li>
@@ -606,39 +458,62 @@ hermes skills search &lt;query&gt;
 <li><a href="https://nousresearch.com/">Nous Research</a> — The lab behind Hermes</li>
 <li><a href="https://www.x402.org/">x402 Protocol</a> — Open payment protocol for AI agents</li>
 </ul>
-<h2>License</h2>
+<h5>License</h5>
 <p>MIT</p>
+  </section>
+</details>
 
-    </section>
-  </details>
-
-  <aside class="related">
-    <h2>More in Skills &amp; Skill Registries</h2>
-    <div class="related-grid">
-      <a href="/projects/mukul975/Anthropic-Cybersecurity-Skills" class="related-chip">Anthropic-Cybersecurity-Skills <span class="related-stars">4.1K</span></a>
-          <a href="/projects/conorbronsdon/avoid-ai-writing" class="related-chip">avoid-ai-writing <span class="related-stars">759</span></a>
-          <a href="/projects/wondelai/skills" class="related-chip">wondelai/skills <span class="related-stars">480</span></a>
-          <a href="/projects/DougTrajano/pydantic-ai-skills" class="related-chip">pydantic-ai-skills <span class="related-stars">220</span></a>
-          <a href="/projects/Agents365-ai/drawio-skill" class="related-chip">drawio-skill <span class="related-stars">131</span></a>
-          <a href="/projects/smartcontractkit/chainlink-agent-skills" class="related-chip">chainlink-agent-skills <span class="related-stars">85</span></a>
-          <a href="/projects/tlehman/litprog-skill" class="related-chip">litprog-skill <span class="related-stars">81</span></a>
-          <a href="/projects/esaradev/icarus-plugin" class="related-chip">icarus-plugin <span class="related-stars">51</span></a>
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in skills &amp; skill registries</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/mukul975/Anthropic-Cybersecurity-Skills">
+        <div class="stars">★ 4.1K</div>
+        <div class="name"><span class="org">mukul975 /</span> Anthropic-Cybersecurity-Skills</div>
+      </a>
+      <a class="related-row" href="/projects/conorbronsdon/avoid-ai-writing">
+        <div class="stars">★ 759</div>
+        <div class="name"><span class="org">conorbronsdon /</span> avoid-ai-writing</div>
+      </a>
+      <a class="related-row" href="/projects/wondelai/skills">
+        <div class="stars">★ 480</div>
+        <div class="name"><span class="org">wondelai /</span> skills</div>
+      </a>
+      <a class="related-row" href="/projects/DougTrajano/pydantic-ai-skills">
+        <div class="stars">★ 220</div>
+        <div class="name"><span class="org">DougTrajano /</span> pydantic-ai-skills</div>
+      </a>
+      <a class="related-row" href="/projects/Agents365-ai/drawio-skill">
+        <div class="stars">★ 131</div>
+        <div class="name"><span class="org">Agents365-ai /</span> drawio-skill</div>
+      </a>
+      <a class="related-row" href="/projects/smartcontractkit/chainlink-agent-skills">
+        <div class="stars">★ 85</div>
+        <div class="name"><span class="org">smartcontractkit /</span> chainlink-agent-skills</div>
+      </a>
+      <a class="related-row" href="/projects/tlehman/litprog-skill">
+        <div class="stars">★ 81</div>
+        <div class="name"><span class="org">tlehman /</span> litprog-skill</div>
+      </a>
+      <a class="related-row" href="/projects/esaradev/icarus-plugin">
+        <div class="stars">★ 51</div>
+        <div class="name"><span class="org">esaradev /</span> icarus-plugin</div>
+      </a>
     </div>
-    <p class="list-link"><a href="/lists/top-skills">See all Skills &amp; Skill Registries projects →</a></p>
-  </aside>
+    <p class="list-link"><a href="/lists/top-skills">see all skills &amp; skill registries →</a></p>
+  </div>
+</aside>
+
 </article>
 
-<div class="page-footer">
-  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
-</div>
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
 
-<script>
-  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
-    const c=document.documentElement.getAttribute('data-theme');
-    const n=c==='light'?'dark':'light';
-    document.documentElement.setAttribute('data-theme',n);
-    try{localStorage.setItem('theme',n)}catch(e){}
-  });
-</script>
+<script>(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();</script>
 </body>
 </html>

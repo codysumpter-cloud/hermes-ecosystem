@@ -4,252 +4,104 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>hermes-council — Hermes Agent Integrations &amp; Bridges | Hermes Atlas</title>
-<meta name="description" content="Adversarial multi-perspective council MCP server for hermes-agent">
+<meta name="description" content="Adversarial multi-perspective council MCP server for decision-making">
 <link rel="canonical" href="https://hermesatlas.com/projects/Ridwannurudeen/hermes-council">
 <meta property="og:title" content="hermes-council — Hermes Atlas">
-<meta property="og:description" content="Adversarial multi-perspective council MCP server for hermes-agent">
+<meta property="og:description" content="Adversarial multi-perspective council MCP server for decision-making">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/Ridwannurudeen/hermes-council">
 <meta property="og:site_name" content="Hermes Atlas">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hermes-council — Hermes Atlas">
-<meta name="twitter:description" content="Adversarial multi-perspective council MCP server for hermes-agent">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
-<script>
-  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
-</script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-  :root {
-    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
-    --border-subtle: #1e1e30; --border-default: #2a2a44;
-    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
-    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
-    --brand-purple: #a78bfa; --brand-star: #fbbf24;
-    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
-  }
-  [data-theme="light"] {
-    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
-    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
-    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
-    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
-    --brand-star: #d97706;
-    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
-  }
-
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: var(--bg-base); color: var(--text-primary);
-    font-family: 'Inter', -apple-system, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    transition: background 0.2s, color 0.2s;
-  }
-  a { color: var(--text-link); text-decoration: none; }
-  a:hover { color: var(--text-link-hover); text-decoration: underline; }
-
-  .nav {
-    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
-    display: flex; justify-content: space-between; align-items: center;
-    max-width: 960px; margin: 0 auto;
-  }
-  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
-  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
-  .nav-actions { display: flex; gap: 8px; align-items: center; }
-  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
-  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
-  #theme-toggle {
-    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
-    border: 1px solid var(--border-subtle); color: var(--text-secondary);
-    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
-  }
-  #theme-toggle:hover { border-color: var(--brand-purple); }
-  #theme-toggle .icon-sun { display: none; }
-  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
-  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
-
-  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
-
-  .breadcrumb { margin-bottom: 16px; }
-  .breadcrumb a {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
-    background: var(--overlay-medium); color: var(--text-tertiary);
-  }
-  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
-
-  .project h1 {
-    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
-  }
-  .project-desc {
-    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
-  }
-  .meta-row {
-    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
-    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
-  }
-  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
-  .meta-row .badge {
-    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.3px;
-  }
-  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
-  .meta-row .badge-lang { background: var(--overlay-medium); }
-
-  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
-  .actions a {
-    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
-    transition: opacity 0.15s;
-  }
-  .actions .btn-primary {
-    background: linear-gradient(135deg, #a78bfa, #818cf8);
-    color: #fff;
-  }
-  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
-  .actions .btn-secondary {
-    background: var(--overlay-medium); color: var(--text-secondary);
-    border: 1px solid var(--border-subtle);
-  }
-  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
-
-  /* README styles */
-  .readme {
-    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
-  }
-  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
-  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
-  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
-  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
-  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
-  .readme a { color: var(--text-link); }
-  .readme strong { color: var(--text-primary); }
-  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
-  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
-  .readme li { margin-bottom: 4px; }
-  .readme code {
-    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
-    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
-  }
-  .readme pre {
-    background: var(--bg-card); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
-  }
-  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
-  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
-  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
-  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
-  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
-  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
-  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
-
-  /* Project summary (LLM-generated) */
-  .project-summary { margin-bottom: 32px; }
-  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
-  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
-  .summary-highlights {
-    list-style: none; margin: 0; padding: 0;
-    display: flex; flex-wrap: wrap; gap: 8px;
-  }
-  .summary-highlights li {
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
-    color: var(--text-secondary);
-  }
-
-  /* Collapsed README */
-  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
-  .readme-toggle {
-    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
-    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .readme-toggle:hover { color: var(--text-primary); }
-
-  /* Related projects */
-  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
-  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
-  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-  .related-chip {
-    display: inline-flex; align-items: center; gap: 5px;
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
-    color: var(--text-secondary); white-space: nowrap;
-  }
-  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
-  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
-  .list-link { margin-top: 12px; font-size: 13px; }
-
-  .page-footer {
-    text-align: center; margin-top: 40px; padding-top: 24px;
-    border-top: 1px solid var(--border-subtle);
-    font-size: 11px; color: var(--text-muted);
-  }
-  .page-footer a { color: var(--text-link); }
-
-  @media (max-width: 600px) {
-    .project { padding: 24px 16px 60px; }
-    .project h1 { font-size: 22px; }
-  }
-</style>
+<meta name="twitter:description" content="Adversarial multi-perspective council MCP server for decision-making">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
+<script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
 </head>
 <body>
-<nav class="nav">
-  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
-  <div class="nav-actions">
-    <a href="/" class="nav-link">Ecosystem Map</a>
-    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
-  </div>
-</nav>
 
-<article class="project">
-  <div class="breadcrumb">
-    <a href="/">Integrations &amp; Bridges</a>
-  </div>
+<a class="skip-link" href="#main">Skip to content</a>
 
-  <h1>hermes-council</h1>
-  <p class="project-desc">Adversarial multi-perspective council MCP server for hermes-agent</p>
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span>apr·2026</span>
+    <span>93·repos</span>
+    <span>hermes·v0.10.0</span>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/" class="active">map</a>
+    <a href="/#curated-lists">lists</a>
+    <a href="/reports/state-of-hermes-april-2026">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="/">integrations &amp; bridges</a><span class="sep">/</span>hermes-council
+</div>
+
+<article id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">Ridwannurudeen</span><span class="slash">/</span>hermes-council
+  </h1>
+  <p class="project-desc">Adversarial multi-perspective council MCP server for decision-making</p>
 
   <div class="meta-row">
-    <span class="stars">★ 12</span>
-    <span class="badge badge-lang">Python</span>
-    <span class="badge badge-lang">MIT</span>
+    <span class="stars">★ 6</span>
     
-    <span>Updated 3/18/2026</span>
+    
+    
+    
   </div>
 
   <div class="actions">
-    <a href="https://github.com/Ridwannurudeen/hermes-council" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    <a href="https://github.com/Ridwannurudeen/hermes-council" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
     
   </div>
+</section>
 
-  
-  <section class="project-summary">
-    <h2>Overview</h2>
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
     <p class="summary-text">Hermes-council is an MCP server designed to provide adversarial, multi-perspective decision-making for the hermes-agent ecosystem. It functions by orchestrating five distinct personas—Advocate, Skeptic, Oracle, Contrarian, and Arbiter—to debate complex questions through structured deliberation. The system produces calibrated verdicts with confidence scores and evidence links, and it can be used to generate DPO preference pairs for Reinforcement Learning training.</p>
     <ul class="summary-highlights">
       <li>Five distinct intellectual personas for adversarial deliberation</li>
       <li>Generates DPO preference pairs for RL training</li>
       <li>Supports custom persona configuration via YAML</li>
     </ul>
-  </section>
+  </div>
+</section>
 
-  <details class="readme-details">
-    <summary class="readme-toggle">Full README from GitHub</summary>
-    <section class="readme" data-nosnippet>
-      <p><a href="https://github.com/Ridwannurudeen/hermes-council/actions/workflows/ci.yml"><img src="https://github.com/Ridwannurudeen/hermes-council/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <p><a href="https://github.com/Ridwannurudeen/hermes-council/actions/workflows/ci.yml"><img src="https://github.com/Ridwannurudeen/hermes-council/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
 <a href="https://github.com/Ridwannurudeen/hermes-council/actions/workflows/ci.yml"><img src="https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/Ridwannurudeen/316e2a72a4089fdb4fddc9980ed1c28b/raw/coverage.json" alt="Coverage"></a></p>
-<h1>hermes-council</h1>
+<h4>hermes-council</h4>
 <p>Adversarial multi-perspective council MCP server for <a href="https://github.com/NousResearch/hermes-agent">hermes-agent</a>.</p>
 <p>Five personas from distinct intellectual traditions debate questions through structured adversarial deliberation, producing calibrated verdicts with confidence scores, evidence links, and DPO preference pairs for RL training.</p>
 <blockquote>
 <p><strong>Origin</strong>: This project was built in response to feedback on <a href="https://github.com/NousResearch/hermes-agent/pull/848">hermes-agent PR #848</a>, where the adversarial council concept was proposed as a core subsystem. The recommendation was to rebuild it as an external MCP server to avoid core tool injection, provider bypass, hidden LLM costs, and brittle parsing. Integration PR: <a href="https://github.com/NousResearch/hermes-agent/pull/1972">#1972</a>.</p>
 </blockquote>
-<h2>Install</h2>
+<h5>Install</h5>
 <pre><code class="language-bash">pip install git+https://github.com/Ridwannurudeen/hermes-council.git
 </code></pre>
 <p>For RL components:</p>
 <pre><code class="language-bash">pip install &quot;hermes-council[rl] @ git+https://github.com/Ridwannurudeen/hermes-council.git&quot;
 </code></pre>
-<h2>Quick Start</h2>
+<h5>Quick Start</h5>
 <p>Add to your hermes-agent config (<code>~/.hermes/config.yaml</code>):</p>
 <pre><code class="language-yaml">mcp_servers:
   council:
@@ -258,7 +110,7 @@
 <p>Set your API key:</p>
 <pre><code class="language-bash">export OPENROUTER_API_KEY=your-key-here
 </code></pre>
-<h2>Tools</h2>
+<h5>Tools</h5>
 <table>
 <thead>
 <tr>
@@ -283,7 +135,7 @@
 <td>Skeptic + Oracle + Arbiter</td>
 </tr>
 </tbody></table>
-<h2>Configuration</h2>
+<h5>Configuration</h5>
 <p>All configuration is via environment variables:</p>
 <table>
 <thead>
@@ -334,7 +186,7 @@
 <td><code>~/.hermes-council/config.yaml</code></td>
 </tr>
 </tbody></table>
-<h2>Custom Personas</h2>
+<h5>Custom Personas</h5>
 <p>Create <code>~/.hermes-council/config.yaml</code>:</p>
 <pre><code class="language-yaml">personas:
   security_analyst:
@@ -347,7 +199,7 @@
     tags: [&quot;security&quot;, &quot;adversarial&quot;]
 </code></pre>
 <p>Custom personas merge with the 5 defaults. Use the same name to override a default.</p>
-<h2>The Five Personas</h2>
+<h5>The Five Personas</h5>
 <table>
 <thead>
 <tr>
@@ -382,7 +234,7 @@
 <td>Synthesizes all views with explicit prior/posterior updates</td>
 </tr>
 </tbody></table>
-<h2>Skills</h2>
+<h5>Skills</h5>
 <p>Install council skills for hermes-agent:</p>
 <pre><code class="language-bash">hermes-council install-skills
 </code></pre>
@@ -392,8 +244,8 @@
 <li><code>bayesian-synthesis</code> — Bayesian reasoning and evidence synthesis</li>
 <li><code>adversarial-critique</code> — Stress-testing and safety gating</li>
 </ul>
-<h2>RL Integration</h2>
-<h3>CouncilEvaluator</h3>
+<h5>RL Integration</h5>
+<h6>CouncilEvaluator</h6>
 <p>Use the council as a reward signal for RL training:</p>
 <pre><code class="language-python">from hermes_council.rl.evaluator import CouncilEvaluator
 
@@ -412,48 +264,65 @@ reward = evaluator.normalized_reward(verdict)
 # Extract DPO preference pairs
 dpo_pairs = evaluator.extract_dpo_pairs(verdict)
 </code></pre>
-<h3>OuroborosEnv</h3>
+<h6>OuroborosEnv</h6>
 <p>An example Atropos RL environment is provided in <code>examples/ouroboros_env.py</code>. Copy it into your hermes-agent installation:</p>
 <pre><code class="language-bash">cp examples/ouroboros_env.py /path/to/hermes-agent/environments/
 cp examples/ouroboros.yaml /path/to/hermes-agent/datagen-config-examples/
 </code></pre>
-<h2>Development</h2>
+<h5>Development</h5>
 <pre><code class="language-bash">git clone https://github.com/Ridwannurudeen/hermes-council.git
 cd hermes-council
 pip install -e &quot;.[dev]&quot;
 pytest
 </code></pre>
-<h2>License</h2>
+<h5>License</h5>
 <p>MIT</p>
+  </section>
+</details>
 
-    </section>
-  </details>
-
-  <aside class="related">
-    <h2>More in Integrations &amp; Bridges</h2>
-    <div class="related-grid">
-      <a href="/projects/raulvidis/hermes-android" class="related-chip">hermes-android <span class="related-stars">38</span></a>
-          <a href="/projects/teknium1/hermes-miniverse" class="related-chip">hermes-miniverse <span class="related-stars">8</span></a>
-          <a href="/projects/marlandoj/zouroboros-swarm-executors" class="related-chip">zouroboros-swarm-executors <span class="related-stars">4</span></a>
-          <a href="/projects/gizdusum/hermes-blockchain-oracle" class="related-chip">hermes-blockchain-oracle <span class="related-stars">3</span></a>
-          <a href="/projects/kevinmarmstrong/hermes-claude-code-rc" class="related-chip">hermes-claude-code-rc <span class="related-stars">1</span></a>
-          <a href="/projects/AaronWong1999/hermesclaw" class="related-chip">hermesclaw <span class="related-stars">112</span></a>
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in integrations &amp; bridges</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/raulvidis/hermes-android">
+        <div class="stars">★ 38</div>
+        <div class="name"><span class="org">raulvidis /</span> hermes-android</div>
+      </a>
+      <a class="related-row" href="/projects/teknium1/hermes-miniverse">
+        <div class="stars">★ 8</div>
+        <div class="name"><span class="org">teknium1 /</span> hermes-miniverse</div>
+      </a>
+      <a class="related-row" href="/projects/marlandoj/zouroboros-swarm-executors">
+        <div class="stars">★ 4</div>
+        <div class="name"><span class="org">marlandoj /</span> zouroboros-swarm-executors</div>
+      </a>
+      <a class="related-row" href="/projects/gizdusum/hermes-blockchain-oracle">
+        <div class="stars">★ 3</div>
+        <div class="name"><span class="org">gizdusum /</span> hermes-blockchain-oracle</div>
+      </a>
+      <a class="related-row" href="/projects/kevinmarmstrong/hermes-claude-code-rc">
+        <div class="stars">★ 1</div>
+        <div class="name"><span class="org">kevinmarmstrong /</span> hermes-claude-code-rc</div>
+      </a>
+      <a class="related-row" href="/projects/AaronWong1999/hermesclaw">
+        <div class="stars">★ 112</div>
+        <div class="name"><span class="org">AaronWong1999 /</span> hermesclaw</div>
+      </a>
     </div>
     
-  </aside>
+  </div>
+</aside>
+
 </article>
 
-<div class="page-footer">
-  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
-</div>
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
 
-<script>
-  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
-    const c=document.documentElement.getAttribute('data-theme');
-    const n=c==='light'?'dark':'light';
-    document.documentElement.setAttribute('data-theme',n);
-    try{localStorage.setItem('theme',n)}catch(e){}
-  });
-</script>
+<script>(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();</script>
 </body>
 </html>

@@ -14,228 +14,80 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hermes-lcm — Hermes Atlas">
 <meta name="twitter:description" content="Lossless Context Management plugin for Hermes Agent — DAG-based context engine that never loses a message">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
-<script>
-  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
-</script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-  :root {
-    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
-    --border-subtle: #1e1e30; --border-default: #2a2a44;
-    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
-    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
-    --brand-purple: #a78bfa; --brand-star: #fbbf24;
-    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
-  }
-  [data-theme="light"] {
-    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
-    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
-    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
-    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
-    --brand-star: #d97706;
-    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
-  }
-
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: var(--bg-base); color: var(--text-primary);
-    font-family: 'Inter', -apple-system, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    transition: background 0.2s, color 0.2s;
-  }
-  a { color: var(--text-link); text-decoration: none; }
-  a:hover { color: var(--text-link-hover); text-decoration: underline; }
-
-  .nav {
-    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
-    display: flex; justify-content: space-between; align-items: center;
-    max-width: 960px; margin: 0 auto;
-  }
-  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
-  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
-  .nav-actions { display: flex; gap: 8px; align-items: center; }
-  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
-  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
-  #theme-toggle {
-    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
-    border: 1px solid var(--border-subtle); color: var(--text-secondary);
-    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
-  }
-  #theme-toggle:hover { border-color: var(--brand-purple); }
-  #theme-toggle .icon-sun { display: none; }
-  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
-  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
-
-  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
-
-  .breadcrumb { margin-bottom: 16px; }
-  .breadcrumb a {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
-    background: var(--overlay-medium); color: var(--text-tertiary);
-  }
-  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
-
-  .project h1 {
-    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
-  }
-  .project-desc {
-    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
-  }
-  .meta-row {
-    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
-    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
-  }
-  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
-  .meta-row .badge {
-    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.3px;
-  }
-  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
-  .meta-row .badge-lang { background: var(--overlay-medium); }
-
-  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
-  .actions a {
-    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
-    transition: opacity 0.15s;
-  }
-  .actions .btn-primary {
-    background: linear-gradient(135deg, #a78bfa, #818cf8);
-    color: #fff;
-  }
-  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
-  .actions .btn-secondary {
-    background: var(--overlay-medium); color: var(--text-secondary);
-    border: 1px solid var(--border-subtle);
-  }
-  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
-
-  /* README styles */
-  .readme {
-    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
-  }
-  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
-  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
-  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
-  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
-  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
-  .readme a { color: var(--text-link); }
-  .readme strong { color: var(--text-primary); }
-  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
-  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
-  .readme li { margin-bottom: 4px; }
-  .readme code {
-    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
-    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
-  }
-  .readme pre {
-    background: var(--bg-card); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
-  }
-  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
-  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
-  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
-  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
-  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
-  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
-  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
-
-  /* Project summary (LLM-generated) */
-  .project-summary { margin-bottom: 32px; }
-  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
-  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
-  .summary-highlights {
-    list-style: none; margin: 0; padding: 0;
-    display: flex; flex-wrap: wrap; gap: 8px;
-  }
-  .summary-highlights li {
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
-    color: var(--text-secondary);
-  }
-
-  /* Collapsed README */
-  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
-  .readme-toggle {
-    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
-    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .readme-toggle:hover { color: var(--text-primary); }
-
-  /* Related projects */
-  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
-  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
-  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-  .related-chip {
-    display: inline-flex; align-items: center; gap: 5px;
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
-    color: var(--text-secondary); white-space: nowrap;
-  }
-  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
-  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
-  .list-link { margin-top: 12px; font-size: 13px; }
-
-  .page-footer {
-    text-align: center; margin-top: 40px; padding-top: 24px;
-    border-top: 1px solid var(--border-subtle);
-    font-size: 11px; color: var(--text-muted);
-  }
-  .page-footer a { color: var(--text-link); }
-
-  @media (max-width: 600px) {
-    .project { padding: 24px 16px 60px; }
-    .project h1 { font-size: 22px; }
-  }
-</style>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
+<script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
 </head>
 <body>
-<nav class="nav">
-  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
-  <div class="nav-actions">
-    <a href="/" class="nav-link">Ecosystem Map</a>
-    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
-  </div>
-</nav>
 
-<article class="project">
-  <div class="breadcrumb">
-    <a href="/">Memory &amp; Context</a>
-  </div>
+<a class="skip-link" href="#main">Skip to content</a>
 
-  <h1>hermes-lcm</h1>
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span>apr·2026</span>
+    <span>93·repos</span>
+    <span>hermes·v0.10.0</span>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/" class="active">map</a>
+    <a href="/#curated-lists">lists</a>
+    <a href="/reports/state-of-hermes-april-2026">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="/lists/best-memory-providers">memory &amp; context</a><span class="sep">/</span>hermes-lcm
+</div>
+
+<article id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">stephenschoettler</span><span class="slash">/</span>hermes-lcm
+  </h1>
   <p class="project-desc">Lossless Context Management plugin for Hermes Agent — DAG-based context engine that never loses a message</p>
 
   <div class="meta-row">
-    <span class="stars">★ 187</span>
-    <span class="badge badge-lang">Python</span>
+    <span class="stars">★ 178</span>
     
     
-    <span>Updated 4/18/2026</span>
+    
+    
   </div>
 
   <div class="actions">
-    <a href="https://github.com/stephenschoettler/hermes-lcm" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
+    <a href="https://github.com/stephenschoettler/hermes-lcm" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
     
   </div>
+</section>
 
-  
-  <section class="project-summary">
-    <h2>Overview</h2>
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
     <p class="summary-text">Hermes-LCM is a context management plugin for the Hermes Agent that prevents information loss during long-running conversations. It replaces standard lossy compression with a hierarchical Directed Acyclic Graph (DAG) engine that persists every message in an immutable SQLite store. When context limits are reached, the system performs multi-level escalation from detailed summaries to deterministic truncation while maintaining retrieval paths. This allows the agent to use specialized tools like grep and expansion to drill back into original message content from compacted summaries.</p>
     <ul class="summary-highlights">
       <li>Immutable SQLite storage ensures no conversation data is ever deleted</li>
       <li>Hierarchical DAG structure enables multi-level summary escalation and retrieval</li>
       <li>Built-in agent tools for searching, describing, and expanding compacted context</li>
     </ul>
-  </section>
+  </div>
+</section>
 
-  <details class="readme-details">
-    <summary class="readme-toggle">Full README from GitHub</summary>
-    <section class="readme" data-nosnippet>
-      <p align="center">
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <p align="center">
   <img src="https://raw.githubusercontent.com/stephenschoettler/hermes-lcm/main/banner.png" alt="HERMES-LCM" width="800">
 </p>
 
@@ -249,14 +101,14 @@
 <p>Based on the <a href="https://papers.voltropy.com/LCM">LCM paper</a> by Ehrlich &amp; Blackman (Voltropy PBC, Feb 2026).
 Inspired by <a href="https://github.com/martian-engineering/lossless-claw">lossless-claw</a> for OpenClaw.</p>
 <hr>
-<h2>The Problem</h2>
+<h5>The Problem</h5>
 <p>When context fills up, agents replace your conversation with a flat lossy summary.
 Details get lost. The model confidently misremembers. No way to go back.</p>
 <p align="center">
   <img src="https://raw.githubusercontent.com/stephenschoettler/hermes-lcm/main/docs/standard_compression.png" alt="Standard compression" width="700">
 </p>
 
-<h2>The Fix</h2>
+<h5>The Fix</h5>
 <p>Every message persisted. Hierarchical DAG summaries. Agent tools to drill back
 into anything that was compacted.</p>
 <p align="center">
@@ -267,25 +119,27 @@ into anything that was compacted.</p>
   <img src="https://raw.githubusercontent.com/stephenschoettler/hermes-lcm/main/docs/architecture.png" alt="Architecture" width="700">
 </p>
 
-<h2>Why This Plugin</h2>
-<p>~5,000 lines of Python. Zero external dependencies. 192 tests that run standalone in under a second. Full lossless context management — immutable store, hierarchical DAG, agent retrieval tools, guided compression, assembly guardrails, session filtering — in a single lightweight plugin that drops into Hermes with no build step, no runtime overhead, and nothing to configure beyond <code>context.engine: lcm</code>.</p>
-<h2>What It Does</h2>
+<h5>Why This Plugin</h5>
+<p>~5,000 lines of Python. Zero external dependencies. 200+ tests that run standalone in under a second. Full lossless context management — immutable-first store, hierarchical DAG, agent retrieval tools, guided compression, assembly guardrails, session filtering — in a single lightweight plugin that drops into Hermes with no build step, no runtime overhead, and nothing to configure beyond <code>context.engine: lcm</code>.</p>
+<h5>What It Does</h5>
 <ul>
-<li><strong>Immutable store</strong> — every message persisted in SQLite, never modified</li>
+<li><strong>Immutable-first store</strong> — every message persisted in SQLite, with only narrow explicit opt-in GC tombstones for already-externalized summarized tool results</li>
 <li><strong>Summary DAG</strong> — hierarchical compaction (D0 minutes → D1 hours → D2 days)</li>
 <li><strong>3-level escalation</strong> — L1 detailed → L2 bullets → L3 deterministic truncate (guaranteed convergence)</li>
 <li><strong>Agent tools</strong> — <code>lcm_grep</code>, <code>lcm_describe</code>, <code>lcm_expand</code>, <code>lcm_expand_query</code> for structured retrieval</li>
+<li><strong>Large tool-output handling</strong> — opt-in externalization for oversized tool results, inspectable later via <code>externalized_ref</code></li>
+<li><strong>Optional transcript GC</strong> — opt-in rewrite of already-externalized summarized tool-result rows to compact GC placeholders instead of deleting them</li>
 <li><strong>Current-turn search</strong> — live messages ingested before tool execution</li>
 <li><strong>Session filtering</strong> — exclude noisy sessions entirely or mark them read-only with glob patterns</li>
 <li><strong>Profile-scoped</strong> — separate DB per Hermes profile</li>
 </ul>
-<h2>Requirements</h2>
+<h5>Requirements</h5>
 <ul>
 <li>Hermes Agent with the <strong>pluggable context engine slot</strong> (<a href="https://github.com/NousResearch/hermes-agent/pull/7464">PR #7464</a>)</li>
 <li>Python 3.11+</li>
 <li>No additional dependencies (uses Hermes auxiliary LLM for summarization)</li>
 </ul>
-<h2>Install</h2>
+<h5>Install</h5>
 <pre><code class="language-bash"># Clone into the context engine plugin directory
 git clone https://github.com/stephenschoettler/hermes-lcm \
   ~/.hermes/hermes-agent/plugins/context_engine/lcm
@@ -294,7 +148,7 @@ git clone https://github.com/stephenschoettler/hermes-lcm \
 git clone https://github.com/stephenschoettler/hermes-lcm \
   ~/.hermes/profiles/myprofile/hermes-agent/plugins/context_engine/lcm
 </code></pre>
-<h2>Update</h2>
+<h5>Update</h5>
 <pre><code class="language-bash">cd ~/.hermes/hermes-agent/plugins/context_engine/lcm &amp;&amp; git pull
 </code></pre>
 <p>Restart Hermes after updating.</p>
@@ -320,7 +174,7 @@ Select <strong>Context Engine</strong> and pick <code>lcm</code> from the radiol
 Provider Plugins:
   Context Engine: lcm
 </code></pre>
-<h2>Configuration</h2>
+<h5>Configuration</h5>
 <p>Environment variables (all optional):</p>
 <table>
 <thead>
@@ -386,6 +240,26 @@ Provider Plugins:
 <td>Comma-separated glob patterns for sessions that stay read-only (<code>platform:session_id</code> matching supported)</td>
 </tr>
 <tr>
+<td><code>LCM_LARGE_OUTPUT_EXTERNALIZATION_ENABLED</code></td>
+<td><code>false</code></td>
+<td>Opt-in externalization of oversized tool-result content into plugin-managed storage</td>
+</tr>
+<tr>
+<td><code>LCM_LARGE_OUTPUT_EXTERNALIZATION_THRESHOLD_CHARS</code></td>
+<td><code>12000</code></td>
+<td>Character threshold above which tool results are externalized</td>
+</tr>
+<tr>
+<td><code>LCM_LARGE_OUTPUT_EXTERNALIZATION_PATH</code></td>
+<td><code>~/.hermes/lcm-large-outputs</code></td>
+<td>Override storage directory for externalized payloads</td>
+</tr>
+<tr>
+<td><code>LCM_LARGE_OUTPUT_TRANSCRIPT_GC_ENABLED</code></td>
+<td><code>false</code></td>
+<td>Opt-in rewrite of already-externalized summarized tool-result transcript rows to compact GC placeholders</td>
+</tr>
+<tr>
 <td><code>LCM_SUMMARY_MODEL</code></td>
 <td><em>(auxiliary)</em></td>
 <td>Override model for summarization</td>
@@ -417,6 +291,22 @@ Provider Plugins:
 </tr>
 </tbody></table>
 <p>The point-8 compaction knobs are intentionally opt-in. <code>cache_friendly_*</code> is a plugin-local prompt-stability heuristic, not a claim that Hermes currently passes true prompt-cache metrics into <code>hermes-lcm</code>.</p>
+<h6>Large tool-output handling</h6>
+<p><code>hermes-lcm</code> now has a three-step opt-in path for oversized tool results:</p>
+<ol>
+<li><strong>9B externalization</strong> — large tool results are written to plugin-managed JSON files instead of being kept inline for compaction prompts</li>
+<li><strong>9C retrieval</strong> — those payloads stay inspectable later through <code>lcm_describe(externalized_ref=...)</code>, <code>lcm_expand(externalized_ref=...)</code>, or expanded summary sources that attach <code>externalized</code> metadata</li>
+<li><strong>9D transcript GC</strong> — if <code>LCM_LARGE_OUTPUT_TRANSCRIPT_GC_ENABLED=true</code>, already-externalized tool-result rows that were successfully summarized can be rewritten to compact GC placeholders instead of keeping the full raw blob inline forever</li>
+</ol>
+<p>Important boundaries:</p>
+<ul>
+<li>all of this remains <strong>opt-in</strong></li>
+<li>transcript GC rewrites only <strong>tool-role</strong> rows that already have a same-session externalized payload</li>
+<li>the row itself is kept (same <code>store_id</code>), so summary <code>source_ids</code> still resolve cleanly</li>
+<li>pinned messages are skipped</li>
+<li>payload files are <strong>not</strong> deleted by transcript GC; retrieval stays lossless via <code>externalized_ref</code></li>
+<li>transcript GC updates the stored row content and therefore changes raw-message searchability: search should still find summaries / refs, but <code>lcm_grep</code> will no longer match the original giant tool blob text after GC</li>
+</ul>
 <p>Pattern syntax matches <code>lossless-claw</code>:</p>
 <ul>
 <li><code>*</code> matches within one colon-delimited segment</li>
@@ -429,7 +319,7 @@ Provider Plugins:
 <li><code>platform:session_id</code></li>
 </ul>
 <p>That means patterns like <code>cron:*</code> can catch Hermes cron sessions today, while plain raw session-id matching still works if you know the exact IDs you want to target.</p>
-<h2>Agent Tools</h2>
+<h5>Agent Tools</h5>
 <table>
 <thead>
 <tr>
@@ -443,11 +333,11 @@ Provider Plugins:
 </tr>
 <tr>
 <td><code>lcm_describe</code></td>
-<td>Inspect DAG structure — token counts, children, expand hints. No node_id = session overview.</td>
+<td>Inspect DAG structure or an <code>externalized_ref</code> payload preview without loading full payload content. No node_id/externalized_ref = session overview.</td>
 </tr>
 <tr>
 <td><code>lcm_expand</code></td>
-<td>Recover original content from a summary node. Token-budgeted.</td>
+<td>Recover original content from a summary node, or open a stored <code>externalized_ref</code> payload directly.</td>
 </tr>
 <tr>
 <td><code>lcm_expand_query</code></td>
@@ -462,16 +352,17 @@ Provider Plugins:
 <td>Run diagnostics — database integrity, FTS index sync, orphaned nodes, config validation, context pressure.</td>
 </tr>
 </tbody></table>
-<h2>Gateway Slash Commands</h2>
-<p>When Hermes host support for plugin slash commands is available, <code>hermes-lcm</code> also exposes a <code>/lcm</code> operator surface for quick read-only diagnostics from chat:</p>
+<h5>Gateway Slash Commands</h5>
+<p>When Hermes host support for plugin slash commands is available, <code>hermes-lcm</code> also exposes a <code>/lcm</code> operator surface for quick diagnostics and safe maintenance prep from chat:</p>
 <ul>
 <li><code>/lcm</code> or <code>/lcm status</code> — current session/runtime status</li>
 <li><code>/lcm doctor</code> — SQLite + FTS health checks and store/node totals</li>
 <li><code>/lcm doctor clean</code> — best-effort read-only scan for obvious junk/noise sessions matched from stored session keys</li>
+<li><code>/lcm doctor clean apply</code> — backup-first cleanup for safe pattern-matched junk/noise session candidates</li>
 <li><code>/lcm backup</code> — create a timestamped SQLite backup before any future cleanup workflow</li>
 </ul>
-<p><code>/lcm doctor clean apply</code> is intentionally not implemented yet. This slice is diagnostics-first and backup-first.</p>
-<h2>How It Works</h2>
+<p>The cleanup path stays intentionally narrow and backup-first; broader retention/prune workflows should still start with diagnostics before any apply/delete step.</p>
+<h5>How It Works</h5>
 <ol>
 <li><strong>Ingest</strong> — every message persisted verbatim in an immutable SQLite store</li>
 <li><strong>Compact</strong> — when context pressure builds, older messages outside the fresh tail are summarized into D0 leaf nodes</li>
@@ -480,7 +371,7 @@ Provider Plugins:
 <li><strong>Assemble</strong> — active context = system prompt + highest-depth summaries + fresh tail</li>
 <li><strong>Retrieve</strong> — agent uses <code>lcm_grep</code>/<code>lcm_describe</code>/<code>lcm_expand</code>/<code>lcm_expand_query</code> to drill into compacted history or synthesize answers from expanded context</li>
 </ol>
-<h2>Architecture</h2>
+<h5>Architecture</h5>
 <pre><code>hermes-lcm/
 ├── plugin.yaml      # manifest
 ├── __init__.py      # register(ctx) → ctx.register_context_engine()
@@ -500,7 +391,7 @@ Provider Plugins:
 python -m pytest tests/ -v
 </code></pre>
 <p>No Hermes Agent checkout required — the test suite includes a lightweight ABC stub so it runs standalone.</p>
-<h2>Context Engine Slot</h2>
+<h5>Context Engine Slot</h5>
 <p>Requires the <strong>pluggable context engine slot</strong> — an ABC (<code>ContextEngine</code>) in
 hermes-agent core that makes the <code>ContextCompressor</code> swappable via the plugin
 system. Config-driven selection via <code>context.engine</code> in config.yaml, with a
@@ -511,46 +402,67 @@ system. Config-driven selection via <code>context.engine</code> in config.yaml, 
 <li><strong>Issue:</strong> <a href="https://github.com/NousResearch/hermes-agent/issues/5701">NousResearch/hermes-agent#5701</a> (closed by #7464)</li>
 <li><strong>Paper:</strong> <a href="https://papers.voltropy.com/LCM">papers.voltropy.com/LCM</a></li>
 </ul>
-<h2>Contributing</h2>
+<h5>Contributing</h5>
 <p>Issues and PRs welcome. This project has active community contributors and CI runs on every push and PR.</p>
 <ul>
 <li><strong>Bug fixes</strong> and <strong>correctness improvements</strong> are always top priority</li>
 <li><strong>New features</strong> should be scoped and backwards-compatible</li>
 <li><strong>Tests required</strong> — run <code>python -m pytest tests/ -v</code> before submitting</li>
 </ul>
-<p>See the <a href="https://github.com/stephenschoettler/hermes-lcm/releases">releases page</a> for changelogs.</p>
-<h2>License</h2>
+<p>See <a href="https://github.com/stephenschoettler/hermes-lcm/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> for issue, branch, validation, and PR guidance.
+See the <a href="https://github.com/stephenschoettler/hermes-lcm/releases">releases page</a> for changelogs.</p>
+<h5>License</h5>
 <p>MIT</p>
+  </section>
+</details>
 
-    </section>
-  </details>
-
-  <aside class="related">
-    <h2>More in Memory &amp; Context</h2>
-    <div class="related-grid">
-      <a href="/projects/vectorize-io/hindsight" class="related-chip">hindsight <span class="related-stars">8.4K</span></a>
-          <a href="/projects/greyhaven-ai/autocontext" class="related-chip">autocontext <span class="related-stars">711</span></a>
-          <a href="/projects/elkimek/honcho-self-hosted" class="related-chip">honcho-self-hosted <span class="related-stars">126</span></a>
-          <a href="/projects/yoloshii/ClawMem" class="related-chip">ClawMem <span class="related-stars">86</span></a>
-          <a href="/projects/plur-ai/plur" class="related-chip">plur <span class="related-stars">31</span></a>
-          <a href="/projects/amanning3390/flowstate-qmd" class="related-chip">flowstate-qmd <span class="related-stars">5</span></a>
-          <a href="/projects/garrytan/gbrain" class="related-chip">gbrain <span class="related-stars">8.9K</span></a>
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in memory &amp; context</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/vectorize-io/hindsight">
+        <div class="stars">★ 8.4K</div>
+        <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
+      </a>
+      <a class="related-row" href="/projects/greyhaven-ai/autocontext">
+        <div class="stars">★ 711</div>
+        <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
+      </a>
+      <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
+        <div class="stars">★ 126</div>
+        <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
+      </a>
+      <a class="related-row" href="/projects/yoloshii/ClawMem">
+        <div class="stars">★ 86</div>
+        <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
+      </a>
+      <a class="related-row" href="/projects/plur-ai/plur">
+        <div class="stars">★ 31</div>
+        <div class="name"><span class="org">plur-ai /</span> plur</div>
+      </a>
+      <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
+        <div class="stars">★ 5</div>
+        <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
+      </a>
+      <a class="related-row" href="/projects/garrytan/gbrain">
+        <div class="stars">★ 8.9K</div>
+        <div class="name"><span class="org">garrytan /</span> gbrain</div>
+      </a>
     </div>
-    <p class="list-link"><a href="/lists/best-memory-providers">See all Memory &amp; Context projects →</a></p>
-  </aside>
+    <p class="list-link"><a href="/lists/best-memory-providers">see all memory &amp; context →</a></p>
+  </div>
+</aside>
+
 </article>
 
-<div class="page-footer">
-  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
-</div>
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
 
-<script>
-  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
-    const c=document.documentElement.getAttribute('data-theme');
-    const n=c==='light'?'dark':'light';
-    document.documentElement.setAttribute('data-theme',n);
-    try{localStorage.setItem('theme',n)}catch(e){}
-  });
-</script>
+<script>(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();</script>
 </body>
 </html>

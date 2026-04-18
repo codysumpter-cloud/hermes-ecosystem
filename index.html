@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hermes Atlas — The community map for Hermes Agent</title>
-<meta name="description" content="Hermes Atlas is the community-curated map of every tool, skill, plugin, and integration for Hermes Agent by Nous Research. 90+ quality-filtered, security-reviewed projects. Live data, RAG-powered search.">
+<meta name="description" content="Hermes Atlas is the community-curated map of every tool, skill, plugin, and integration for Hermes Agent by Nous Research. 93 quality-filtered, security-reviewed projects. Live data, RAG-powered search.">
 <link rel="canonical" href="https://hermesatlas.com/">
 <meta property="og:title" content="Hermes Atlas — The community map for Hermes Agent">
-<meta property="og:description" content="90+ tools, skills, plugins, and integrations for the self-improving AI agent by Nous Research. Quality-filtered, security-reviewed, live data.">
+<meta property="og:description" content="93 tools, skills, plugins, and integrations for the self-improving AI agent by Nous Research. Quality-filtered, security-reviewed, live data.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://hermesatlas.com/">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,10 +16,10 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Hermes Atlas — The community map for Hermes Agent">
-<meta name="twitter:description" content="90+ tools, skills, plugins, and integrations for Hermes Agent by Nous Research. Quality-filtered. Live data.">
+<meta name="twitter:description" content="93 tools, skills, plugins, and integrations for Hermes Agent by Nous Research. Quality-filtered. Live data.">
 <meta name="twitter:image" content="https://hermesatlas.com/reports/assets/og-home.jpg">
 <meta name="twitter:url" content="https://hermesatlas.com/">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>
   // Theme init — runs synchronously before any content renders to prevent flash
   (function() {
@@ -33,1057 +33,1050 @@
     }
   })();
 </script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-  /* ═══════════════════════════════════════════════
-     THEME VARIABLES — DARK (default)
-     ═══════════════════════════════════════════════ */
-  :root {
-    /* Surfaces */
-    --bg-base: #0a0a0f;
-    --bg-card-from: #13131f;
-    --bg-card-to: #0f0f1a;
-    --bg-elevated: #13131f;
-    --bg-tooltip: #1c1c2e;
-    --bg-chat-panel: #0d0d18;
-    --bg-input: #13131f;
-
-    /* Translucent overlays — for chips, hovers, etc. */
-    --overlay-subtle: rgba(255,255,255,0.04);
-    --overlay-soft: rgba(255,255,255,0.06);
-    --overlay-medium: rgba(255,255,255,0.08);
-    --overlay-strong: rgba(255,255,255,0.1);
-    --overlay-strongest: rgba(255,255,255,0.18);
-
-    /* Borders */
-    --border-subtle: #1e1e30;
-    --border-default: #2a2a44;
-    --border-tooltip: #2e2e48;
-    --border-hero: #3d2d6b;
-    --border-hero-hover: #5b45a0;
-    --border-footer: #1a1a2a;
-    --border-core: #2d2560;
-
-    /* Text */
-    --text-primary: #e0e0e8;
-    --text-strong: #e8e0ff;
-    --text-secondary: #c8c8d8;
-    --text-on-card: #c8c8d8;
-    --text-tertiary: #b0b0c8;
-    --text-meta: #9494b0;
-    --text-muted: #8888a8;
-    --text-placeholder: #8a8aa8;
-    --text-tooltip: #b8b8d0;
-    --text-tooltip-strong: #e0e0f0;
-    --text-hero-desc: #a89cca;
-    --text-hero-stat-label: #b0a8d0;
-    --text-on-elevated: #b8b8cc;
-
-    /* Hero box (purple-tinted dark) */
-    --hero-bg-from: #1a1430;
-    --hero-bg-to: #12101f;
-    --hero-glow: rgba(167,139,250,0.08);
-
-    /* Stats bar */
-    --stats-bg: rgba(167,139,250,0.06);
-    --stats-border: rgba(167,139,250,0.12);
-
-    /* Chat */
-    --chat-user-bg: rgba(167,139,250,0.12);
-    --chat-user-text: #d4c4ff;
-    --chat-assistant-bg: #13131f;
-    --chat-code-bg: rgba(255,255,255,0.08);
-    --chat-citation-bg: rgba(99,102,241,0.15);
-    --chat-close-hover-bg: rgba(255,255,255,0.06);
-
-    /* Official chip */
-    --official-bg: rgba(167,139,250,0.1);
-    --official-bg-hover: rgba(167,139,250,0.18);
-    --official-border: rgba(167,139,250,0.2);
-    --official-border-hover: rgba(167,139,250,0.35);
-    --official-text: #d4c4ff;
-
-    /* Sort buttons */
-    --sort-active-bg: rgba(167,139,250,0.18);
-    --sort-active-border: rgba(167,139,250,0.4);
-    --sort-active-text: #c4b5fd;
-
-    /* Brand colors (constant across themes) */
-    --brand-purple: #a78bfa;
-    --brand-purple-dark: #818cf8;
-    --brand-blue: #60a5fa;
-    --brand-indigo: #6366f1;
-    --brand-star: #fbbf24;
-    --brand-error: #f87171;
-
-    /* Shadows */
-    --shadow-tooltip: 0 8px 32px rgba(0,0,0,0.5);
-    --shadow-chat-btn: 0 4px 20px rgba(167,139,250,0.4);
-    --shadow-chat-btn-hover: 0 6px 28px rgba(167,139,250,0.5);
-  }
-
-  /* ═══════════════════════════════════════════════
-     THEME VARIABLES — LIGHT
-     ═══════════════════════════════════════════════ */
-  [data-theme="light"] {
-    /* Surfaces */
-    --bg-base: #fafafc;
-    --bg-card-from: #ffffff;
-    --bg-card-to: #f8f8fc;
-    --bg-elevated: #ffffff;
-    --bg-tooltip: #1c1c2e;          /* keep dark for contrast */
-    --bg-chat-panel: #ffffff;
-    --bg-input: #ffffff;
-
-    /* Translucent overlays — darken instead of lighten */
-    --overlay-subtle: rgba(20,20,40,0.03);
-    --overlay-soft: rgba(20,20,40,0.06);
-    --overlay-medium: rgba(20,20,40,0.08);
-    --overlay-strong: rgba(20,20,40,0.1);
-    --overlay-strongest: rgba(20,20,40,0.16);
-
-    /* Borders */
-    --border-subtle: #e8e8f0;
-    --border-default: #d0d0dc;
-    --border-tooltip: #2e2e48;       /* keep dark tooltip border */
-    --border-hero: #c4b5fd;
-    --border-hero-hover: #a78bfa;
-    --border-footer: #e8e8f0;
-    --border-core: #c4b5fd;
-
-    /* Text */
-    --text-primary: #1a1a2e;
-    --text-strong: #1a1a2e;
-    --text-secondary: #2a2a44;
-    --text-on-card: #2a2a44;
-    --text-tertiary: #4a4a68;
-    --text-meta: #5a5a78;
-    --text-muted: #6a6a88;
-    --text-placeholder: #9a9ab0;
-    --text-tooltip: #b8b8d0;         /* keep light text on dark tooltip */
-    --text-tooltip-strong: #ffffff;
-    --text-hero-desc: #5a4a8c;
-    --text-hero-stat-label: #6a5a9c;
-    --text-on-elevated: #2a2a44;
-
-    /* Hero box (subtle purple tint on white) */
-    --hero-bg-from: #f5f0ff;
-    --hero-bg-to: #faf8ff;
-    --hero-glow: rgba(167,139,250,0.12);
-
-    /* Stats bar */
-    --stats-bg: rgba(167,139,250,0.08);
-    --stats-border: rgba(167,139,250,0.2);
-
-    /* Chat */
-    --chat-user-bg: rgba(167,139,250,0.15);
-    --chat-user-text: #5b3fb5;
-    --chat-assistant-bg: #f5f5fa;
-    --chat-code-bg: rgba(20,20,40,0.08);
-    --chat-citation-bg: rgba(99,102,241,0.15);
-    --chat-close-hover-bg: rgba(20,20,40,0.06);
-
-    /* Official chip */
-    --official-bg: rgba(167,139,250,0.12);
-    --official-bg-hover: rgba(167,139,250,0.2);
-    --official-border: rgba(167,139,250,0.35);
-    --official-border-hover: rgba(167,139,250,0.5);
-    --official-text: #5b3fb5;
-
-    /* Sort buttons */
-    --sort-active-bg: rgba(167,139,250,0.18);
-    --sort-active-border: rgba(167,139,250,0.5);
-    --sort-active-text: #6d4fc4;
-
-    /* Brand star — slightly darker amber for white bg contrast */
-    --brand-star: #d97706;
-
-    /* Shadows */
-    --shadow-tooltip: 0 8px 32px rgba(40,40,80,0.18);
-    --shadow-chat-btn: 0 4px 20px rgba(167,139,250,0.35);
-    --shadow-chat-btn-hover: 0 6px 28px rgba(167,139,250,0.45);
-  }
-
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg-base);
-    color: var(--text-primary);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    min-height: 100vh;
-    padding: 48px 40px 32px;
-    -webkit-font-smoothing: antialiased;
-    transition: background 0.2s, color 0.2s;
-  }
-
-  a { color: inherit; text-decoration: none; }
-
-  /* ── Theme toggle ── */
-  #theme-toggle {
-    position: fixed; top: 20px; right: 20px; z-index: 800;
-    width: 40px; height: 40px; border-radius: 50%;
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-subtle);
-    color: var(--text-secondary);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
-    transition: background 0.15s, border-color 0.15s, transform 0.1s;
-  }
-  #theme-toggle:hover {
-    border-color: var(--brand-purple);
-    transform: scale(1.05);
-  }
-  #theme-toggle .icon-sun { display: none; }
-  #theme-toggle .icon-moon { display: block; }
-  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
-  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
-
-  /* ── Header ── */
-  .header { text-align: center; margin-bottom: 44px; }
-  .header-icon {
-    font-size: 42px;
-    margin-bottom: 8px;
-    filter: drop-shadow(0 0 24px rgba(168, 130, 255, 0.4));
-  }
-  .header h1 {
-    font-size: 36px;
-    font-weight: 900;
-    letter-spacing: -0.5px;
-    background: linear-gradient(135deg, #c084fc, #818cf8, #60a5fa);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 6px;
-  }
-  .header .subtitle { font-size: 15px; color: var(--text-tertiary); font-weight: 500; }
-  .header .subtitle span { color: var(--brand-purple); font-weight: 700; }
-  .header .meta {
-    font-size: 12px; color: var(--text-meta); margin-top: 8px;
-    letter-spacing: 0.5px; text-transform: uppercase;
-  }
-
-  /* ── Grid ── */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-
-  /* ── Category Box ── */
-  .category {
-    background: linear-gradient(145deg, var(--bg-card-from), var(--bg-card-to));
-    border: 1px solid var(--border-subtle);
-    border-radius: 14px;
-    padding: 20px 18px 18px;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .category::before {
-    content: ''; position: absolute;
-    top: 0; left: 0; right: 0; height: 3px;
-    border-radius: 14px 14px 0 0;
-  }
-  .category:hover { border-color: var(--border-default); }
-  .category.span-2 { grid-column: span 2; }
-
-  /* ── Color accents (constant across themes — brand colors) ── */
-  .cat-core::before { background: linear-gradient(90deg, #a78bfa, #818cf8); }
-  .cat-core { border-color: var(--border-core); }
-  .cat-core .cat-label { color: #a78bfa; }
-
-  .cat-workspace::before { background: linear-gradient(90deg, #60a5fa, #38bdf8); }
-  .cat-workspace .cat-label { color: #3b82f6; }
-
-  .cat-skills::before { background: linear-gradient(90deg, #34d399, #2dd4bf); }
-  .cat-skills .cat-label { color: #10b981; }
-
-  .cat-plugins::before { background: linear-gradient(90deg, #f472b6, #e879f9); }
-  .cat-plugins .cat-label { color: #ec4899; }
-
-  .cat-memory::before { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
-  .cat-memory .cat-label { color: #d97706; }
-
-  .cat-orchestration::before { background: linear-gradient(90deg, #f87171, #fb923c); }
-  .cat-orchestration .cat-label { color: #ef4444; }
-
-  .cat-deploy::before { background: linear-gradient(90deg, #22d3ee, #2dd4bf); }
-  .cat-deploy .cat-label { color: #0891b2; }
-
-  .cat-integrations::before { background: linear-gradient(90deg, #a3e635, #4ade80); }
-  .cat-integrations .cat-label { color: #65a30d; }
-
-  .cat-devtools::before { background: linear-gradient(90deg, #c084fc, #a78bfa); }
-  .cat-devtools .cat-label { color: #9333ea; }
-
-  .cat-domain::before { background: linear-gradient(90deg, #fb923c, #fbbf24); }
-  .cat-domain .cat-label { color: #ea580c; }
-
-  .cat-guides::before { background: linear-gradient(90deg, #94a3b8, #cbd5e1); }
-  .cat-guides .cat-label { color: #64748b; }
-
-  .cat-forks::before { background: linear-gradient(90deg, #6366f1, #818cf8); }
-  .cat-forks .cat-label { color: #4f46e5; }
-
-  /* Dark mode uses brighter category label colors (the ones above are tuned for light mode) */
-  :root[data-theme="dark"] .cat-workspace .cat-label,
-  :root:not([data-theme="light"]) .cat-workspace .cat-label { color: #60a5fa; }
-  :root[data-theme="dark"] .cat-skills .cat-label,
-  :root:not([data-theme="light"]) .cat-skills .cat-label { color: #34d399; }
-  :root[data-theme="dark"] .cat-plugins .cat-label,
-  :root:not([data-theme="light"]) .cat-plugins .cat-label { color: #f472b6; }
-  :root[data-theme="dark"] .cat-memory .cat-label,
-  :root:not([data-theme="light"]) .cat-memory .cat-label { color: #fbbf24; }
-  :root[data-theme="dark"] .cat-orchestration .cat-label,
-  :root:not([data-theme="light"]) .cat-orchestration .cat-label { color: #f87171; }
-  :root[data-theme="dark"] .cat-deploy .cat-label,
-  :root:not([data-theme="light"]) .cat-deploy .cat-label { color: #22d3ee; }
-  :root[data-theme="dark"] .cat-integrations .cat-label,
-  :root:not([data-theme="light"]) .cat-integrations .cat-label { color: #a3e635; }
-  :root[data-theme="dark"] .cat-devtools .cat-label,
-  :root:not([data-theme="light"]) .cat-devtools .cat-label { color: #c084fc; }
-  :root[data-theme="dark"] .cat-domain .cat-label,
-  :root:not([data-theme="light"]) .cat-domain .cat-label { color: #fb923c; }
-  :root[data-theme="dark"] .cat-guides .cat-label,
-  :root:not([data-theme="light"]) .cat-guides .cat-label { color: #94a3b8; }
-  :root[data-theme="dark"] .cat-forks .cat-label,
-  :root:not([data-theme="light"]) .cat-forks .cat-label { color: #6366f1; }
-
-  /* Category label */
-  .cat-label {
-    font-size: 11px; font-weight: 800;
-    text-transform: uppercase; letter-spacing: 1.2px;
-    margin-bottom: 14px;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .cat-label .count {
-    font-size: 10px; font-weight: 600;
-    background: var(--overlay-medium);
-    padding: 2px 7px; border-radius: 10px; color: var(--text-tertiary);
-  }
-
-  /* ── Item chips ── */
-  .items { display: flex; flex-wrap: wrap; gap: 6px; }
-
-  .item {
-    display: inline-flex; align-items: center; gap: 5px;
-    background: var(--overlay-subtle);
-    border: 1px solid var(--overlay-soft);
-    border-radius: 8px;
-    padding: 6px 10px;
-    font-size: 12.5px; font-weight: 500;
-    color: var(--text-on-card); white-space: nowrap;
-    cursor: pointer; position: relative;
-    transition: background 0.15s, border-color 0.15s, transform 0.1s;
-  }
-  .item:hover {
-    background: var(--overlay-strong);
-    border-color: var(--overlay-strongest);
-    transform: translateY(-1px);
-  }
-  .item.official {
-    background: var(--official-bg);
-    border-color: var(--official-border);
-    color: var(--official-text);
-  }
-  .item.official:hover {
-    background: var(--official-bg-hover);
-    border-color: var(--official-border-hover);
-  }
-  .stars { font-size: 10px; font-weight: 700; color: var(--brand-star); opacity: 0.85; }
-
-  /* Delta indicator (e.g. "+12") */
-  .delta {
-    font-size: 9px; font-weight: 700;
-    margin-left: 3px;
-    padding: 1px 4px; border-radius: 4px;
-    background: rgba(34, 197, 94, 0.15);
-    color: #22c55e;
-  }
-  [data-theme="light"] .delta {
-    background: rgba(22, 163, 74, 0.12);
-    color: #16a34a;
-  }
-  .delta.negative {
-    background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
-  }
-
-  /* Trending flame badge */
-  .trending {
-    display: inline-block;
-    margin-left: 3px;
-    font-size: 11px;
-    filter: drop-shadow(0 0 4px rgba(251, 146, 60, 0.5));
-    animation: flame-flicker 2s ease-in-out infinite;
-  }
-  @keyframes flame-flicker {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.12); }
-  }
-
-  /* ── Tooltip ── */
-  .tooltip {
-    display: none;
-    position: fixed;
-    background: var(--bg-tooltip);
-    border: 1px solid var(--border-tooltip);
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 12px;
-    line-height: 1.5;
-    color: var(--text-tooltip);
-    max-width: 340px;
-    z-index: 1000;
-    pointer-events: none;
-    box-shadow: var(--shadow-tooltip);
-  }
-  .tooltip .tt-name {
-    font-weight: 700; color: var(--text-tooltip-strong);
-    margin-bottom: 4px; font-size: 12.5px;
-  }
-  .tooltip .tt-desc { color: var(--text-tooltip); }
-  .tooltip .tt-link {
-    margin-top: 6px; font-size: 10px; color: var(--brand-indigo);
-    font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
-  }
-
-  /* ── Hero box ── */
-  .hero-box {
-    grid-column: 1 / -1;
-    background: linear-gradient(145deg, var(--hero-bg-from), var(--hero-bg-to));
-    border: 1.5px solid var(--border-hero);
-    border-radius: 16px;
-    padding: 28px 32px;
-    text-align: center;
-    position: relative; overflow: hidden;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .hero-box:hover { border-color: var(--border-hero-hover); }
-  .hero-box::before {
-    content: ''; position: absolute;
-    top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, #a78bfa, #818cf8, #60a5fa, #818cf8, #a78bfa);
-  }
-  .hero-box::after {
-    content: ''; position: absolute;
-    top: -80px; left: 50%; transform: translateX(-50%);
-    width: 400px; height: 200px;
-    background: radial-gradient(ellipse, var(--hero-glow), transparent 70%);
-    pointer-events: none;
-  }
-  .hero-title { font-size: 22px; font-weight: 800; color: var(--text-strong); margin-bottom: 4px; }
-  .hero-desc { font-size: 13px; color: var(--text-hero-desc); margin-bottom: 16px; }
-  .hero-stats { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; }
-  .hero-stat { text-align: center; }
-  .hero-stat .num { font-size: 20px; font-weight: 800; color: #c084fc; }
-  [data-theme="light"] .hero-stat .num { color: #7c3aed; }
-  .hero-stat .num-sub {
-    font-size: 11px; font-weight: 600;
-    color: var(--text-hero-desc);
-    font-family: 'SF Mono', Menlo, Consolas, monospace;
-    letter-spacing: 0.2px;
-    margin-top: 1px;
-    font-variant-numeric: tabular-nums;
-  }
-  .hero-stat .label {
-    font-size: 10px; text-transform: uppercase;
-    letter-spacing: 0.8px; color: var(--text-hero-stat-label); margin-top: 2px;
-  }
-
-  /* ── Footer ── */
-  .footer {
-    text-align: center; margin-top: 40px; padding-top: 24px;
-    border-top: 1px solid var(--border-footer);
-  }
-  .footer p { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
-  .footer a { color: var(--brand-indigo); }
-  .footer a:hover { text-decoration: underline; }
-  .footer .cta {
-    display: inline-block; margin-top: 12px;
-    padding: 8px 20px; border-radius: 8px;
-    background: linear-gradient(135deg, #a78bfa, #818cf8);
-    color: #fff; font-size: 12px; font-weight: 700;
-    letter-spacing: 0.3px;
-    transition: opacity 0.2s;
-  }
-  .footer .cta:hover { opacity: 0.85; text-decoration: none; }
-
-  /* ── Report banner ── */
-  .report-banner {
-    max-width: 1400px; margin: 0 auto 16px;
-    padding: 10px 18px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, rgba(167,139,250,0.12), rgba(96,165,250,0.08));
-    border: 1px solid rgba(167,139,250,0.2);
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    font-size: 13px;
-    animation: banner-fade-in 0.4s ease;
-  }
-  @keyframes banner-fade-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
-  .report-banner.hidden { display: none; }
-  .report-banner-content {
-    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-  }
-  .report-banner-badge {
-    display: inline-block;
-    padding: 2px 8px; border-radius: 4px;
-    background: rgba(167,139,250,0.2);
-    color: var(--brand-purple); font-size: 10px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.4px;
-    white-space: nowrap;
-  }
-  [data-theme="light"] .report-banner-badge { color: #6d4fc4; }
-  .report-banner-text { color: var(--text-secondary); }
-  .report-banner-text a { color: var(--brand-purple); font-weight: 600; }
-  [data-theme="light"] .report-banner-text a { color: #6d4fc4; }
-  .report-banner-text a:hover { text-decoration: underline; }
-  .report-banner-close {
-    background: none; border: none; color: var(--text-muted);
-    cursor: pointer; font-size: 16px; padding: 2px 6px; border-radius: 4px;
-    flex-shrink: 0; line-height: 1;
-  }
-  .report-banner-close:hover { color: var(--text-primary); background: rgba(255,255,255,0.06); }
-  [data-theme="light"] .report-banner-close:hover { background: rgba(0,0,0,0.05); }
-
-  /* ── Search bar ── */
-  .controls {
-    max-width: 1400px; margin: 0 auto 20px;
-    display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
-  }
-  .search-wrap {
-    flex: 1; min-width: 200px; position: relative;
-  }
-  .search-wrap input {
-    width: 100%; padding: 10px 14px 10px 36px;
-    background: var(--bg-input);
-    border: 1px solid var(--border-subtle);
-    border-radius: 10px;
-    color: var(--text-primary); font-size: 13px; font-family: inherit;
-    outline: none; transition: border-color 0.2s, background 0.2s;
-  }
-  .search-wrap input:focus { border-color: var(--brand-purple); }
-  .search-wrap input::placeholder { color: var(--text-placeholder); }
-  .search-wrap::before {
-    content: '\1F50D'; position: absolute; left: 12px; top: 50%;
-    transform: translateY(-50%); font-size: 13px; opacity: 0.6;
-  }
-  .sort-btns { display: flex; gap: 4px; }
-  .sort-btn {
-    padding: 6px 12px; border-radius: 8px;
-    background: var(--overlay-subtle); border: 1px solid var(--overlay-medium);
-    color: var(--text-tertiary); font-size: 11px; font-weight: 600; font-family: inherit;
-    cursor: pointer; transition: all 0.15s;
-  }
-  .sort-btn:hover { background: var(--overlay-strong); color: var(--text-primary); }
-  .sort-btn.active {
-    background: var(--sort-active-bg);
-    border-color: var(--sort-active-border);
-    color: var(--sort-active-text);
-  }
-  #result-count { font-size: 11px; color: var(--text-tertiary); min-width: 80px; }
-
-  /* ── Stats bar ── */
-  .stats-bar {
-    max-width: 1400px; margin: 0 auto 20px;
-    display: flex; gap: 24px; flex-wrap: wrap;
-    padding: 10px 16px; border-radius: 10px;
-    background: var(--stats-bg); border: 1px solid var(--stats-border);
-    font-size: 12px; color: var(--text-tertiary); opacity: 0.5;
-    transition: opacity 0.3s, background 0.2s;
-  }
-  .stats-bar.loaded { opacity: 1; }
-  .stats-bar .stat-item { display: flex; gap: 6px; align-items: center; }
-  .stats-bar .stat-val { color: #c084fc; font-weight: 700; }
-  [data-theme="light"] .stats-bar .stat-val { color: #7c3aed; }
-
-  /* ── Chat widget ── */
-  #chat-btn {
-    position: fixed; bottom: 24px; right: 24px; z-index: 900;
-    width: 52px; height: 52px; border-radius: 50%;
-    background: linear-gradient(135deg, #a78bfa, #818cf8);
-    border: none; cursor: pointer; color: #fff;
-    font-size: 22px; display: flex; align-items: center; justify-content: center;
-    box-shadow: var(--shadow-chat-btn);
-    transition: transform 0.15s, box-shadow 0.15s;
-  }
-  #chat-btn:hover { transform: scale(1.08); box-shadow: var(--shadow-chat-btn-hover); }
-
-  #chat-panel {
-    position: fixed; bottom: 0; right: 0; z-index: 950;
-    width: 420px; height: 100vh; max-height: 100vh;
-    background: var(--bg-chat-panel); border-left: 1px solid var(--border-subtle);
-    display: flex; flex-direction: column;
-    transform: translateX(100%); transition: transform 0.25s ease, background 0.2s;
-  }
-  #chat-panel.open { transform: translateX(0); }
-
-  .chat-header {
-    padding: 16px 18px; border-bottom: 1px solid var(--border-subtle);
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .chat-header h3 {
-    font-size: 14px; font-weight: 700; color: var(--text-strong); margin: 0;
-  }
-  .chat-header span { font-size: 11px; color: var(--text-tertiary); }
-  .chat-header-actions { display: flex; gap: 4px; align-items: center; }
-  #chat-close, #chat-clear {
-    background: none; border: none; color: var(--text-tertiary);
-    cursor: pointer; padding: 4px 8px; border-radius: 6px;
-    line-height: 1;
-  }
-  #chat-close { font-size: 20px; }
-  #chat-clear { font-size: 16px; }
-  #chat-close:hover, #chat-clear:hover {
-    background: var(--chat-close-hover-bg); color: var(--text-primary);
-  }
-
-  #chat-messages {
-    flex: 1; overflow-y: auto; padding: 16px 18px;
-    display: flex; flex-direction: column; gap: 12px;
-  }
-  .chat-msg {
-    padding: 10px 14px; border-radius: 12px;
-    font-size: 13px; line-height: 1.6; max-width: 90%;
-    word-wrap: break-word;
-  }
-  .chat-msg code {
-    background: var(--chat-code-bg); padding: 1px 5px;
-    border-radius: 4px; font-size: 12px;
-  }
-  .chat-msg .citation {
-    display: inline-block; background: var(--chat-citation-bg);
-    padding: 1px 8px; border-radius: 4px; font-size: 10px;
-    color: #818cf8; font-weight: 600; margin: 2px 2px;
-  }
-  .chat-msg a { color: var(--brand-purple); text-decoration: underline; }
-  .chat-user {
-    background: var(--chat-user-bg); color: var(--chat-user-text);
-    align-self: flex-end; border-bottom-right-radius: 4px;
-  }
-  .chat-assistant {
-    background: var(--chat-assistant-bg); color: var(--text-on-elevated);
-    align-self: flex-start; border-bottom-left-radius: 4px;
-  }
-  .chat-model-badge {
-    display: inline-block;
-    margin-top: 6px;
-    padding: 2px 8px;
-    border-radius: 4px;
-    background: rgba(99,102,241,0.1);
-    color: var(--brand-indigo);
-    font-size: 9px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    text-transform: lowercase;
-    font-family: 'SF Mono', Menlo, Consolas, monospace;
-  }
-  [data-theme="light"] .chat-model-badge {
-    background: rgba(99,102,241,0.12);
-  }
-  .chat-msg.loading {
-    color: var(--text-tertiary); font-style: italic;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .chat-msg.loading::before {
-    content: ''; width: 14px; height: 14px;
-    border: 2px solid rgba(167,139,250,0.2);
-    border-top-color: #a78bfa;
-    border-radius: 50%;
-    animation: chat-spin 0.8s linear infinite;
-    flex-shrink: 0;
-  }
-  @keyframes chat-spin { to { transform: rotate(360deg); } }
-  .chat-msg.error { color: var(--brand-error); }
-  #chat-send:disabled {
-    opacity: 0.5; cursor: not-allowed;
-  }
-
-  .chat-input-wrap {
-    padding: 12px 18px; border-top: 1px solid var(--border-subtle);
-    display: flex; gap: 8px;
-  }
-  #chat-input {
-    flex: 1; padding: 10px 14px; border-radius: 10px;
-    background: var(--bg-input); border: 1px solid var(--border-subtle);
-    color: var(--text-primary); font-size: 13px; font-family: inherit;
-    outline: none; resize: none;
-  }
-  #chat-input:focus { border-color: var(--brand-purple); }
-  #chat-input::placeholder { color: var(--text-placeholder); }
-  #chat-send {
-    padding: 10px 16px; border-radius: 10px;
-    background: linear-gradient(135deg, #a78bfa, #818cf8);
-    border: none; color: #fff; font-size: 13px; font-weight: 600;
-    cursor: pointer; font-family: inherit;
-    transition: opacity 0.15s;
-  }
-  #chat-send:hover { opacity: 0.85; }
-
-  /* ── Curated Lists ── */
-  .curated-lists {
-    max-width: 960px; margin: 32px auto 0; padding: 0 4px;
-  }
-  .curated-lists h2 {
-    font-size: 13px; font-weight: 800; text-transform: uppercase;
-    letter-spacing: 1.2px; color: var(--text-meta); margin-bottom: 12px;
-  }
-  .lists-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
-  }
-  .list-card {
-    display: block; padding: 14px 16px; border-radius: 10px;
-    background: linear-gradient(135deg, var(--bg-card-from), var(--bg-card-to));
-    border: 1px solid var(--border-subtle);
-    transition: border-color 0.2s, background 0.15s;
-  }
-  .list-card:hover { border-color: var(--border-default); text-decoration: none; }
-  .list-card .lc-title {
-    font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;
-  }
-  .list-card .lc-desc {
-    font-size: 11.5px; color: var(--text-meta); line-height: 1.5;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-  }
-
-  /* ── Responsive ── */
-  @media (max-width: 1100px) {
-    .grid { grid-template-columns: repeat(3, 1fr); }
-  }
-  @media (max-width: 800px) {
-    .grid { grid-template-columns: repeat(2, 1fr); }
-    .lists-grid { grid-template-columns: repeat(2, 1fr); }
-    body { padding: 24px 16px; }
-    .header h1 { font-size: 28px; }
-    .hero-stats { gap: 16px; }
-    .hero-stat .num { font-size: 16px; }
-    #chat-panel { width: 100%; }
-  }
-  @media (max-width: 500px) {
-    .grid { grid-template-columns: 1fr; }
-    .lists-grid { grid-template-columns: 1fr; }
-    .category.span-2 { grid-column: span 1; }
-    .controls { flex-direction: column; }
-  }
-</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/index.css">
 </head>
 <body>
 
-<!-- Theme toggle -->
-<button id="theme-toggle" aria-label="Toggle dark/light theme" title="Toggle theme">
-  <span class="icon-moon">☾</span>
-  <span class="icon-sun">☀</span>
-</button>
+<a class="skip-link" href="#main">Skip to content</a>
 
-<!-- Header -->
-<div class="header">
-  <div class="header-icon">🗺️</div>
-  <h1>Hermes Atlas</h1>
-  <div class="subtitle">The community map of every tool, skill, and integration for <span>Hermes Agent</span> by Nous Research</div>
-  <div class="meta"><span id="meta-month">April 2026</span> · <span id="meta-count">90+</span> Projects · Security Reviewed · Quality Filtered</div>
+<!-- Masthead -->
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-month">apr·2026</span>
+    <span id="meta-count">93·repos</span>
+    <span id="meta-version">hermes·v0.10.0</span>
+    <span id="meta-sync">last·sync·—</span>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/" class="active">map</a>
+    <a href="#curated-lists">lists</a>
+    <a href="/reports/state-of-hermes-april-2026">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
+</header>
+
+<!-- Hero strip -->
+<section class="hero-strip" id="main">
+  <h1 class="hero-title">the community map of <em>hermes agent</em>.</h1>
+  <p class="hero-sub">
+    <strong><span id="hero-sub-count">93</span> quality-filtered projects</strong> across 12 categories — tools, skills, plugins, workspaces, and integrations for the self-improving AI agent by Nous Research. Live data. Security reviewed. Curated weekly.
+  </p>
+</section>
+
+<!-- Stats row -->
+<section class="stats-row" aria-label="Ecosystem stats">
+  <div class="stat"><span class="n accent" id="stat-total-stars">—</span><div class="l">total stars</div></div>
+  <div class="stat"><span class="n" id="stat-week-delta">—</span><div class="l">this week</div></div>
+  <div class="stat"><span class="n" id="stat-total-repos">93</span><div class="l">repos</div></div>
+  <div class="stat"><span class="n">12</span><div class="l">categories</div></div>
+  <div class="stat"><span class="n">6</span><div class="l">curated lists</div></div>
+</section>
+
+<!-- Report banner -->
+<div class="report-banner" id="report-banner">
+  <div class="report-banner-content">
+    <span class="report-banner-badge">new report</span>
+    <span class="report-banner-text"><a href="/reports/state-of-hermes-april-2026">the state of hermes agent — april 2026</a> · 57k stars in 6 weeks, 90+ ecosystem projects, and what to watch next.</span>
+  </div>
+  <button class="report-banner-close" id="report-banner-close" title="Dismiss" aria-label="Dismiss banner">×</button>
+</div>
+
+<!-- Featured (hero repo) -->
+<section class="featured" aria-label="Featured project">
+  <div>
+    <div class="featured-label">featured · core</div>
+    <a class="featured-name" href="/projects/NousResearch/hermes-agent" data-github="https://github.com/NousResearch/hermes-agent">
+      <span class="org">NousResearch</span><span class="slash">/</span>hermes-agent
+    </a>
+    <p class="featured-desc">The self-improving AI agent that grows with you — persistent memory, auto-generated skills, 16 platforms, 6 execution backends.</p>
+  </div>
+  <div class="featured-nums">
+    <div><span class="big star" id="hero-stars">83.3K</span><div class="lbl">stars</div></div>
+    <div><span class="big">11.2K</span><div class="lbl">forks</div></div>
+    <div><span class="big" id="hero-version">v0.10.0</span><span class="sub" id="hero-version-tag">v2026.4.16</span><div class="lbl">latest</div></div>
+    <div><span class="big">47</span><div class="lbl">built-in tools</div></div>
+    <div><span class="big">20+</span><div class="lbl">llm providers</div></div>
+    <div><span class="big">16</span><div class="lbl">platforms</div></div>
+  </div>
+</section>
+
+<!-- Controls -->
+<div class="controls" role="search">
+  <label class="search-wrap">
+    <span class="sr-only">Search repos</span>
+    <input type="text" id="search-input" placeholder="search repos by name or description..." autocomplete="off" aria-label="Search repos">
+  </label>
+  <div class="sort-btns" role="group" aria-label="Sort by">
+    <span class="lbl">sort</span>
+    <button class="sort-btn active" data-sort="stars">stars</button>
+    <button class="sort-btn" data-sort="name">name</button>
+    <button class="sort-btn" data-sort="updated">recent</button>
+  </div>
+  <span id="result-count" aria-live="polite"></span>
 </div>
 
 <!-- Tooltip (single shared element, positioned via JS) -->
-<div class="tooltip" id="tooltip">
+<div class="tooltip" id="tooltip" role="tooltip">
   <div class="tt-name" id="tt-name"></div>
   <div class="tt-desc" id="tt-desc"></div>
-  <div class="tt-link">Click to open on GitHub →</div>
+  <div class="tt-link">open on github →</div>
 </div>
 
-<!-- Report Banner -->
-<div class="report-banner" id="report-banner">
-  <div class="report-banner-content">
-    <span class="report-banner-badge">New Report</span>
-    <span class="report-banner-text"><a href="/reports/state-of-hermes-april-2026">The State of Hermes Agent — April 2026</a> · 57K stars in 6 weeks, 80+ ecosystem projects, and what to watch next</span>
+<!-- ═══ Category Sections ═══ -->
+
+<section class="cat" data-category="Core & Official">
+  <div class="cat-meta">
+    <div class="cat-num">§01</div>
+    <h2 class="cat-title">Core &amp; official</h2>
+    <p class="cat-desc">Repositories maintained directly by Nous Research — the official stack.</p>
+    <div class="cat-count"><span class="cat-count-n">5</span> repos</div>
   </div>
-  <button class="report-banner-close" id="report-banner-close" title="Dismiss" aria-label="Dismiss banner">✕</button>
-</div>
-
-<!-- Controls -->
-<div class="controls">
-  <div class="search-wrap">
-    <input type="text" id="search-input" placeholder="Search repos by name or description..." autocomplete="off">
-  </div>
-  <div class="sort-btns">
-    <button class="sort-btn active" data-sort="stars">Stars</button>
-    <button class="sort-btn" data-sort="name">Name</button>
-    <button class="sort-btn" data-sort="updated">Recent</button>
-  </div>
-  <span id="result-count"></span>
-</div>
-
-<!-- Stats Bar -->
-<div class="stats-bar" id="stats-bar">
-  <div class="stat-item">Total Stars: <span class="stat-val" id="stat-total-stars">--</span></div>
-  <div class="stat-item">Repos: <span class="stat-val" id="stat-total-repos">93</span></div>
-  <div class="stat-item">Last Updated: <span class="stat-val" id="stat-updated">--</span></div>
-  <div class="stat-item" style="color: var(--text-muted); font-size: 11px;">+/- figures reflect weekly change</div>
-</div>
-
-<div class="grid">
-
-  <!-- ═══ HERO ═══ -->
-  <a href="/projects/NousResearch/hermes-agent" data-github="https://github.com/NousResearch/hermes-agent" class="hero-box">
-    <div class="hero-title">⚕ NousResearch / hermes-agent</div>
-    <div class="hero-desc">The self-improving AI agent that grows with you — persistent memory, auto-generated skills, 16 platforms, 6 execution backends</div>
-    <div class="hero-stats">
-      <div class="hero-stat"><div class="num" id="hero-stars">83.3K</div><div class="label">Stars</div></div>
-      <div class="hero-stat"><div class="num">11.2K</div><div class="label">Forks</div></div>
-      <div class="hero-stat"><div class="num">47</div><div class="label">Built-in Tools</div></div>
-      <div class="hero-stat"><div class="num">20+</div><div class="label">LLM Providers</div></div>
-      <div class="hero-stat"><div class="num">16</div><div class="label">Platforms</div></div>
-      <div class="hero-stat">
-        <div class="num" id="hero-version">v0.10.0</div>
-        <div class="num-sub" id="hero-version-tag">v2026.4.16</div>
-        <div class="label">Latest</div>
+  <div class="cat-list">
+    <a class="repo-row" href="/projects/NousResearch/Hermes-Function-Calling" data-github="https://github.com/NousResearch/Hermes-Function-Calling" data-desc="Function calling examples and training data for Hermes LLM models">
+      <div class="repo-stars">★ 1,249</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">NousResearch /</span> Hermes-Function-Calling <span class="repo-flag">official</span></div>
+        <div class="repo-desc">Function calling examples and training data for Hermes LLM models.</div>
       </div>
-    </div>
-  </a>
-
-  <!-- ═══ CORE & OFFICIAL ═══ -->
-  <div class="category cat-core">
-    <div class="cat-label">Core & Official <span class="count">5</span></div>
-    <div class="items">
-      <a class="item official" href="/projects/NousResearch/Hermes-Function-Calling" data-github="https://github.com/NousResearch/Hermes-Function-Calling" data-desc="Function calling examples and training data for Hermes LLM models">Hermes-Function-Calling <span class="stars">★ 1,249</span></a>
-      <a class="item official" href="/projects/NousResearch/atropos" data-github="https://github.com/NousResearch/atropos" data-desc="RL training environments framework for tool-calling models">atropos <span class="stars">★ 997</span></a>
-      <a class="item official" href="/projects/NousResearch/hermes-agent-self-evolution" data-github="https://github.com/NousResearch/hermes-agent-self-evolution" data-desc="Evolutionary self-improvement using DSPy + GEPA — optimizes skills, prompts, and code">hermes-agent-self-evolution <span class="stars">★ 778</span></a>
-      <a class="item official" href="/projects/NousResearch/hermes-paperclip-adapter" data-github="https://github.com/NousResearch/hermes-paperclip-adapter" data-desc="Run Hermes as a managed employee in Paperclip company systems">hermes-paperclip-adapter <span class="stars">★ 663</span></a>
-      <a class="item official" href="/projects/NousResearch/autonovel" data-github="https://github.com/NousResearch/autonovel" data-desc="Autonomous novel-writing pipeline generating 100k+ word manuscripts">autonovel <span class="stars">★ 401</span></a>
-    </div>
-  </div>
-
-  <!-- ═══ WORKSPACES & GUIs ═══ -->
-  <div class="category cat-workspace">
-    <div class="cat-label">Workspaces & GUIs <span class="count">9</span></div>
-    <div class="items">
-      <a class="item" href="/projects/nesquena/hermes-webui" data-github="https://github.com/nesquena/hermes-webui" data-desc="Hermes WebUI: The best way to use Hermes Agent from the web or from your phone!">nesquena/hermes-webui <span class="stars">★ 2,479</span></a>
-      <a class="item" href="/projects/outsourc-e/hermes-workspace" data-github="https://github.com/outsourc-e/hermes-workspace" data-desc="Native web workspace — chat, terminal, memory browser, skills manager, and inspector panel">hermes-workspace <span class="stars">★ 830</span></a>
-      <a class="item" href="/projects/xaspx/hermes-control-interface" data-github="https://github.com/xaspx/hermes-control-interface" data-desc="Self-hosted web dashboard — terminal, file explorer, cron, metrics, and agent status panel">hermes-control-interface <span class="stars">★ 323</span></a>
-      <a class="item" href="/projects/dodo-reach/hermes-desktop" data-github="https://github.com/dodo-reach/hermes-desktop" data-desc="A native Mac workspace for Hermes: real SSH, real terminal, real session data">dodo-reach/hermes-desktop <span class="stars">★ 313</span></a>
-      <a class="item" href="/projects/fathah/hermes-desktop" data-github="https://github.com/fathah/hermes-desktop" data-desc="Desktop companion app for installing, configuring, and chatting with Hermes Agent">hermes-desktop <span class="stars">★ 65</span></a>
-      <a class="item" href="/projects/sanchomuzax/hermes-webui" data-github="https://github.com/sanchomuzax/hermes-webui" data-desc="Process monitoring and configuration dashboard for Hermes">hermes-webui <span class="stars">★ 57</span></a>
-      <a class="item" href="/projects/Euraika-Labs/pan-ui" data-github="https://github.com/Euraika-Labs/pan-ui" data-desc="Self-hosted AI workspace with chat, skills, extensions, memory, profiles, and runtime controls">pan-ui <span class="stars">★ 27</span></a>
-      <a class="item" href="/projects/pyrate-llama/hermes-ui" data-github="https://github.com/pyrate-llama/hermes-ui" data-desc="Glassmorphic web interface for Hermes Agent — your self-hosted AI assistant">hermes-ui <span class="stars">★ 25</span></a>
-    </div>
-  </div>
-
-  <!-- ═══ SKILLS & REGISTRIES ═══ -->
-  <div class="category cat-skills span-2">
-    <div class="cat-label">Skills & Skill Registries <span class="count">17</span></div>
-    <div class="items">
-      <a class="item" href="/projects/mukul975/Anthropic-Cybersecurity-Skills" data-github="https://github.com/mukul975/Anthropic-Cybersecurity-Skills" data-desc="754 structured cybersecurity skills mapped to MITRE ATT&CK, NIST CSF 2.0, ATLAS, D3FEND & NIST AI RMF">Anthropic-Cybersecurity-Skills <span class="stars">★ 4,132</span></a>
-      <a class="item" href="/projects/conorbronsdon/avoid-ai-writing" data-github="https://github.com/conorbronsdon/avoid-ai-writing" data-desc="Audits and rewrites content to eliminate detectable AI writing patterns">avoid-ai-writing <span class="stars">★ 759</span></a>
-      <a class="item" href="/projects/wondelai/skills" data-github="https://github.com/wondelai/skills" data-desc="Cross-platform skills library for Claude Code and agentskills.io-compatible agents">wondelai/skills <span class="stars">★ 480</span></a>
-      <a class="item" href="/projects/DougTrajano/pydantic-ai-skills" data-github="https://github.com/DougTrajano/pydantic-ai-skills" data-desc="Type-safe agentskills.io support with progressive disclosure for Pydantic AI">pydantic-ai-skills <span class="stars">★ 220</span></a>
-      <a class="item" href="/projects/Agents365-ai/drawio-skill" data-github="https://github.com/Agents365-ai/drawio-skill" data-desc="Generate draw.io diagrams from natural language descriptions">drawio-skill <span class="stars">★ 131</span></a>
-      <a class="item" href="/projects/smartcontractkit/chainlink-agent-skills" data-github="https://github.com/smartcontractkit/chainlink-agent-skills" data-desc="Oracle network and smart contract interaction skills (agentskills.io spec)">chainlink-agent-skills <span class="stars">★ 85</span></a>
-      <a class="item" href="/projects/tlehman/litprog-skill" data-github="https://github.com/tlehman/litprog-skill" data-desc="Literate programming skill — weave code and documentation across agents">litprog-skill <span class="stars">★ 81</span></a>
-      <a class="item" href="/projects/esaradev/icarus-plugin" data-github="https://github.com/esaradev/icarus-plugin" data-desc="Self-memory and replacement models — remember your work, train your replacement">icarus-plugin <span class="stars">★ 51</span></a>
-      <a class="item" href="/projects/chigwell/skilldock.io" data-github="https://github.com/chigwell/skilldock.io" data-desc="Registry of reusable AI skills based on AgentSkills specification">skilldock.io <span class="stars">★ 50</span></a>
-      <a class="item" href="/projects/black-forest-labs/skills" data-github="https://github.com/black-forest-labs/skills" data-desc="Official FLUX image generation skills — prompting guidelines and API integration">black-forest-labs/skills <span class="stars">★ 44</span></a>
-      <a class="item" href="/projects/Romanescu11/hermes-skill-factory" data-github="https://github.com/Romanescu11/hermes-skill-factory" data-desc="Meta-skill plugin that watches workflows and auto-generates reusable skills">hermes-skill-factory <span class="stars">★ 34</span></a>
-      <a class="item" href="/projects/ReinaMacCredy/maestro" data-github="https://github.com/ReinaMacCredy/maestro" data-desc="Harness for long-running AI agents — structured memory, cross-feature learning, plan-approve-execute">maestro <span class="stars">★ 25</span></a>
-      <a class="item" href="/projects/tiann/execplan-skill" data-github="https://github.com/tiann/execplan-skill" data-desc="Complex multi-step task execution with checkpoints and recovery">execplan-skill <span class="stars">★ 24</span></a>
-      <a class="item" href="/projects/cablate/Agentic-MCP-Skill" data-github="https://github.com/cablate/Agentic-MCP-Skill" data-desc="Progressive MCP client with three-layer lazy loading — validates agentskills.io pattern">Agentic-MCP-Skill <span class="stars">★ 22</span></a>
-      <a class="item" href="/projects/armelhbobdad/bmad-module-skill-forge" data-github="https://github.com/armelhbobdad/bmad-module-skill-forge" data-desc="Converts repos, docs, and developer discourse into agentskills.io-compliant skills">bmad-module-skill-forge <span class="stars">★ 17</span></a>
-      <a class="item" href="/projects/amanning3390/hermeshub" data-github="https://github.com/amanning3390/hermeshub" data-desc="Community skill browsing, search, and one-click installation hub">hermeshub <span class="stars">★ 15</span></a>
-      <a class="item" href="/projects/PederHP/skillsdotnet" data-github="https://github.com/PederHP/skillsdotnet" data-desc="C# / .NET implementation of agentskills.io with MCP integration">skillsdotnet <span class="stars">★ 6</span></a>
-    </div>
-  </div>
-
-  <!-- ═══ MEMORY & CONTEXT ═══ -->
-  <div class="category cat-memory">
-    <div class="cat-label">Memory & Context <span class="count">8</span></div>
-    <div class="items">
-      <a class="item" href="/projects/garrytan/gbrain" data-github="https://github.com/garrytan/gbrain" data-desc="Garry's Opinionated OpenClaw/Hermes Agent Brain">gbrain <span class="stars">★ 8,857</span></a>
-      <a class="item" href="/projects/vectorize-io/hindsight" data-github="https://github.com/vectorize-io/hindsight" data-desc="Agent memory that learns — long-term retain/recall/reflect workflows">hindsight <span class="stars">★ 8,362</span></a>
-      <a class="item" href="/projects/greyhaven-ai/autocontext" data-github="https://github.com/greyhaven-ai/autocontext" data-desc="Recursive self-improving context harness — helps agents succeed on complex tasks">autocontext <span class="stars">★ 711</span></a>
-      <a class="item" href="/projects/stephenschoettler/hermes-lcm" data-github="https://github.com/stephenschoettler/hermes-lcm" data-desc="Lossless Context Management — DAG-based context engine that never loses a message">hermes-lcm <span class="stars">★ 178</span></a>
-      <a class="item" href="/projects/elkimek/honcho-self-hosted" data-github="https://github.com/elkimek/honcho-self-hosted" data-desc="Self-hosted Honcho memory backend for cross-session persistence">honcho-self-hosted <span class="stars">★ 126</span></a>
-      <a class="item" href="/projects/yoloshii/ClawMem" data-github="https://github.com/yoloshii/ClawMem" data-desc="On-device memory and context engine for agents — local-first, no cloud dependencies">ClawMem <span class="stars">★ 86</span></a>
-      <a class="item" href="/projects/plur-ai/plur" data-github="https://github.com/plur-ai/plur" data-desc="Shared memory layer with open engram YAML format for multi-agent systems">plur <span class="stars">★ 31</span></a>
-      <a class="item" href="/projects/amanning3390/flowstate-qmd" data-github="https://github.com/amanning3390/flowstate-qmd" data-desc="Anticipatory memory with RAG and vector search — Hermes 2026 Hackathon entry">flowstate-qmd <span class="stars">★ 5</span></a>
-    </div>
-  </div>
-
-  <!-- ═══ PLUGINS & EXTENSIONS ═══ -->
-  <div class="category cat-plugins">
-    <div class="cat-label">Plugins & Extensions <span class="count">7</span></div>
-    <div class="items">
-      <a class="item" href="/projects/clawshell/clawshell" data-github="https://github.com/clawshell/clawshell" data-desc="Runtime Security Layer for OpenClaw/Hermes — PII & sensitive credentials protection">clawshell <span class="stars">★ 255</span></a>
-      <a class="item" href="/projects/robbyczgw-cla/hermes-web-search-plus" data-github="https://github.com/robbyczgw-cla/hermes-web-search-plus" data-desc="Multi-provider web search (Serper, Tavily, Exa, Querit, Perplexity) with auto-routing">hermes-web-search-plus <span class="stars">★ 21</span></a>
-      <a class="item" href="/projects/42-evey/hermes-plugins" data-github="https://github.com/42-evey/hermes-plugins" data-desc="Goal management, inter-agent bridge, model selection, and cost control plugins">hermes-plugins <span class="stars">★ 16</span></a>
-      <a class="item" href="/projects/FahrenheitResearch/hermes-weather-plugin" data-github="https://github.com/FahrenheitResearch/hermes-weather-plugin" data-desc="NWS-grade model imagery, NEXRAD radar, and verified meteorological calculations. Pure Rust.">hermes-weather-plugin <span class="stars">★ 7</span></a>
-      <a class="item" href="/projects/42-evey/evey-bridge-plugin" data-github="https://github.com/42-evey/evey-bridge-plugin" data-desc="Claude Code and Hermes context sharing bridge — auto-checks messages, Mother Mode loop">evey-bridge-plugin <span class="stars">★ 4</span></a>
-      <a class="item" href="/projects/nativ3ai/hermes-payguard" data-github="https://github.com/nativ3ai/hermes-payguard" data-desc="Safe-by-design USDC and x402 payment plugin for Hermes Agent">hermes-payguard <span class="stars">★ 4</span></a>
-      <a class="item" href="/projects/raulvidis/hermes-cloudflare" data-github="https://github.com/raulvidis/hermes-cloudflare" data-desc="Cloudflare Browser Rendering plugin — crawl, scrape, extract content from web pages">hermes-cloudflare <span class="stars">★ 1</span></a>
-    </div>
-  </div>
-
-  <!-- ═══ MULTI-AGENT & ORCHESTRATION ═══ -->
-  <div class="category cat-orchestration">
-    <div class="cat-label">Multi-Agent & Orchestration <span class="count">7</span></div>
-    <div class="items">
-      <a class="item" href="/projects/builderz-labs/mission-control" data-github="https://github.com/builderz-labs/mission-control" data-desc="Self-hosted AI agent orchestration — dispatch tasks, run multi-agent workflows, monitor spend">mission-control <span class="stars">★ 3,875</span></a>
-      <a class="item" href="/projects/swarmclawai/swarmclaw" data-github="https://github.com/swarmclawai/swarmclaw" data-desc="Build autonomous AI agent swarms with orchestration, skills, and multiple model providers">swarmclaw <span class="stars">★ 285</span></a>
-      <a class="item" href="/projects/howdymary/hermes-agent-metaharness" data-github="https://github.com/howdymary/hermes-agent-metaharness" data-desc="Meta-harness for Hermes Agent — meta-optimization with arxiv paper reference">hermes-agent-metaharness <span class="stars">★ 46</span></a>
-      <a class="item" href="/projects/runtimenoteslabs/gladiator" data-github="https://github.com/runtimenoteslabs/gladiator" data-desc="Autonomous AI companies competing for GitHub stars — agent-vs-agent arena">gladiator <span class="stars">★ 29</span></a>
-      <a class="item" href="/projects/1ilkhamov/opencode-hermes-multiagent" data-github="https://github.com/1ilkhamov/opencode-hermes-multiagent" data-desc="17 specialized agents for research, planning, implementation, quality, and infrastructure">opencode-hermes-multiagent <span class="stars">★ 28</span></a>
-      <a class="item" href="/projects/supermodeltools/bigiron" data-github="https://github.com/supermodeltools/bigiron" data-desc="AI-native SDLC — Hermes Agent + Supermodel code graph, graph-gated at every phase">bigiron <span class="stars">★ 7</span></a>
-      <a class="item" href="/projects/Rainhoole/hermes-agent-acp-skill" data-github="https://github.com/Rainhoole/hermes-agent-acp-skill" data-desc="ACP-style multi-agent delegation — routes tasks to Hermes, Codex, or Claude Code">hermes-agent-acp-skill <span class="stars">★ 4</span></a>
-    </div>
-  </div>
-
-  <!-- ═══ DEPLOYMENT & INFRA ═══ -->
-  <div class="category cat-deploy">
-    <div class="cat-label">Deployment & Infra <span class="count">7</span></div>
-    <div class="items">
-      <a class="item" href="/projects/numtide/llm-agents.nix" data-github="https://github.com/numtide/llm-agents.nix" data-desc="Nix packages for AI coding agents including Hermes">llm-agents.nix <span class="stars">★ 967</span></a>
-      <a class="item" href="/projects/TheAiSingularity/hermesclaw" data-github="https://github.com/TheAiSingularity/hermesclaw" data-desc="Hermes Agent sandboxed with hardware-level enforcement">hermesclaw <span class="stars">★ 16</span></a>
-      <a class="item" href="/projects/0xrsydn/nix-hermes-agent" data-github="https://github.com/0xrsydn/nix-hermes-agent" data-desc="Nix package and NixOS module for reproducible Hermes deployment">nix-hermes-agent <span class="stars">★ 11</span></a>
-      <a class="item" href="/projects/rookiemann/portable-hermes-agent" data-github="https://github.com/rookiemann/portable-hermes-agent" data-desc="Windows desktop agent — 100 tools, GUI, local models, TTS, ComfyUI. No install, no Docker.">portable-hermes-agent <span class="stars">★ 7</span></a>
-      <a class="item" href="/projects/xmbshwll/hermes-agent-docker" data-github="https://github.com/xmbshwll/hermes-agent-docker" data-desc="Simple Docker sandbox image for Hermes Agent">hermes-agent-docker <span class="stars">★ 6</span></a>
-      <a class="item" href="/projects/JackTheGit/hermes-autonomous-server" data-github="https://github.com/JackTheGit/hermes-autonomous-server" data-desc="Headless systemd deployment with Nous Portal integration — production-ready">hermes-autonomous-server <span class="stars">★ 2</span></a>
-      <a class="item" href="/projects/ellickjohnson/portainer-stack-hermes" data-github="https://github.com/ellickjohnson/portainer-stack-hermes" data-desc="Docker Compose stack with Portainer UI and ttyd web terminal">portainer-stack-hermes <span class="stars">★ 1</span></a>
-    </div>
-  </div>
-
-  <!-- ═══ INTEGRATIONS & BRIDGES ═══ -->
-  <div class="category cat-integrations">
-    <div class="cat-label">Integrations & Bridges <span class="count">7</span></div>
-    <div class="items">
-      <a class="item" href="/projects/AaronWong1999/hermesclaw" data-github="https://github.com/AaronWong1999/hermesclaw" data-desc="Run Hermes Agent and OpenClaw on the same WeChat account">hermesclaw <span class="stars">★ 112</span></a>
-      <a class="item" href="/projects/raulvidis/hermes-android" data-github="https://github.com/raulvidis/hermes-android" data-desc="Android device control — bridge app + Python toolset for mobile automation">hermes-android <span class="stars">★ 38</span></a>
-      <a class="item" href="/projects/teknium1/hermes-miniverse" data-github="https://github.com/teknium1/hermes-miniverse" data-desc="Bridge Hermes to Miniverse pixel worlds — agent embodiment in virtual environments">hermes-miniverse <span class="stars">★ 8</span></a>
-      <a class="item" href="/projects/Ridwannurudeen/hermes-council" data-github="https://github.com/Ridwannurudeen/hermes-council" data-desc="Adversarial multi-perspective council MCP server for decision-making">hermes-council <span class="stars">★ 6</span></a>
-      <a class="item" href="/projects/marlandoj/zouroboros-swarm-executors" data-github="https://github.com/marlandoj/zouroboros-swarm-executors" data-desc="Claude Code and Hermes task handoff bridge for zo-swarm-orchestrator">zouroboros-swarm-executors <span class="stars">★ 4</span></a>
-      <a class="item" href="/projects/gizdusum/hermes-blockchain-oracle" data-github="https://github.com/gizdusum/hermes-blockchain-oracle" data-desc="Solana blockchain intelligence MCP server — wallets, whales, tokens, NFTs, network health">hermes-blockchain-oracle <span class="stars">★ 3</span></a>
-      <a class="item" href="/projects/kevinmarmstrong/hermes-claude-code-rc" data-github="https://github.com/kevinmarmstrong/hermes-claude-code-rc" data-desc="Hermes Agent plugin for remote controlling Claude Code sessions via Telegram">hermes-claude-code-rc <span class="stars">★ 1</span></a>
-    </div>
-  </div>
-
-  <!-- ═══ DEVELOPER TOOLS ═══ -->
-  <div class="category cat-devtools">
-    <div class="cat-label">Developer Tools <span class="count">9</span></div>
-    <div class="items">
-      <a class="item" href="/projects/junhoyeo/tokscale" data-github="https://github.com/junhoyeo/tokscale" data-desc="CLI tool for tracking token usage from Claude Code, OpenClaw, Hermes, Codex, Gemini, and more">tokscale <span class="stars">★ 1,690</span></a>
-      <a class="item" href="/projects/joeynyc/hermes-skins" data-github="https://github.com/joeynyc/hermes-skins" data-desc="Community CLI skins and themes for Hermes terminal UI">hermes-skins <span class="stars">★ 76</span></a>
-      <a class="item" href="/projects/AlexAI-MCP/hermes-CCC" data-github="https://github.com/AlexAI-MCP/hermes-CCC" data-desc="Hermes Agent ported to Claude Code Channel — 46 native skills, no OAuth, no external process">hermes-CCC <span class="stars">★ 56</span></a>
-      <a class="item" href="/projects/unmodeled-tyler/vessel-browser" data-github="https://github.com/unmodeled-tyler/vessel-browser" data-desc="AI-native browser built for autonomous agent control via MCP">vessel-browser <span class="stars">★ 44</span></a>
-      <a class="item" href="/projects/Abruptive/Ankh.md" data-github="https://github.com/Abruptive/Ankh.md" data-desc="TAW Agent framework for creating scoped Hermes Agents">Ankh.md <span class="stars">★ 25</span></a>
-      <a class="item" href="/projects/roli-lpci/lintlang" data-github="https://github.com/roli-lpci/lintlang" data-desc="Static linter for AI agent configs, tool descriptions, and system prompts. HERM v1.1 scoring.">lintlang <span class="stars">★ 24</span></a>
-      <a class="item" href="/projects/0xNyk/openclaw-to-hermes" data-github="https://github.com/0xNyk/openclaw-to-hermes" data-desc="Migration tool from OpenClaw to Hermes Agent">openclaw-to-hermes <span class="stars">★ 21</span></a>
-      <a class="item" href="/projects/42-evey/evey-setup" data-github="https://github.com/42-evey/evey-setup" data-desc="Get a hermes-agent stack running in minutes — free models, 29 plugins, zero cost">evey-setup <span class="stars">★ 7</span></a>
-    </div>
-  </div>
-
-  <!-- ═══ DOMAIN APPLICATIONS ═══ -->
-  <div class="category cat-domain span-2">
-    <div class="cat-label">Domain Applications <span class="count">8</span></div>
-    <div class="items">
-      <a class="item" href="/projects/ucsandman/DashClaw" data-github="https://github.com/ucsandman/DashClaw" data-desc="Decision infrastructure with guard policies and risk assessment for agents">DashClaw <span class="stars">★ 204</span></a>
-      <a class="item" href="/projects/Lethe044/hermes-incident-commander" data-github="https://github.com/Lethe044/hermes-incident-commander" data-desc="Autonomous SRE agent — detects, heals, and learns from production incidents">hermes-incident-commander <span class="stars">★ 11</span></a>
-      <a class="item" href="/projects/Christabel337/job-scout-agent" data-github="https://github.com/Christabel337/job-scout-agent" data-desc="Autonomous job hunting — scans listings, writes cover letters, tracks applications">job-scout-agent <span class="stars">★ 11</span></a>
-      <a class="item" href="/projects/rodmarkun/anihermes" data-github="https://github.com/rodmarkun/anihermes" data-desc="Local anime server and tracker via natural language for Hermes Agent">anihermes <span class="stars">★ 9</span></a>
-      <a class="item" href="/projects/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit" data-github="https://github.com/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit" data-desc="Autonomous monitoring — cron-based research ingestion, cost forecasting, headless systemd">infra-monitoring-toolkit <span class="stars">★ 9</span></a>
-      <a class="item" href="/projects/bigph00t/hermescraft" data-github="https://github.com/bigph00t/hermescraft" data-desc="Embodied AI companion for Minecraft — persistent memory, vision, learning, multi-agent">hermescraft <span class="stars">★ 8</span></a>
-      <a class="item" href="/projects/hxsteric/mercury" data-github="https://github.com/hxsteric/mercury" data-desc="Blockchain cash flow analyzer — multi-chain analysis, fraud detection, WebGL dashboard">mercury <span class="stars">★ 5</span></a>
-      <a class="item" href="/projects/bryercowan/hermes-embodied" data-github="https://github.com/bryercowan/hermes-embodied" data-desc="Self-improving robotics via VLA model fine-tuning on cloud GPUs">hermes-embodied <span class="stars">★ 2</span></a>
-    </div>
-  </div>
-
-  <!-- ═══ GUIDES & DOCS ═══ -->
-  <div class="category cat-guides">
-    <div class="cat-label">Guides & Docs <span class="count">7</span></div>
-    <div class="items">
-      <a class="item" href="/projects/0xNyk/awesome-hermes-agent" data-github="https://github.com/0xNyk/awesome-hermes-agent" data-desc="Curated list of awesome skills, tools, integrations, and resources for Hermes Agent">awesome-hermes-agent <span class="stars">★ 898</span></a>
-      <a class="item" href="/projects/alchaincyf/hermes-agent-orange-book" data-github="https://github.com/alchaincyf/hermes-agent-orange-book" data-desc="Hermes Agent practical guide — Orange Book series (Chinese language)">hermes-agent-orange-book <span class="stars">★ 315</span></a>
-      <a class="item" href="/projects/ksimback/hermes-ecosystem" data-github="https://github.com/ksimback/hermes-ecosystem" data-desc="Hermes Atlas — the community map of every tool, skill, and integration for Hermes Agent">hermes-ecosystem <span class="stars">★ 263</span></a>
-      <a class="item" href="/projects/OnlyTerp/hermes-optimization-guide" data-github="https://github.com/OnlyTerp/hermes-optimization-guide" data-desc="Performance optimization guide for Hermes deployments">hermes-optimization-guide <span class="stars">★ 51</span></a>
-      <a class="item" href="/projects/metantonio/hermes-wsl-ubuntu" data-github="https://github.com/metantonio/hermes-wsl-ubuntu" data-desc="Step-by-step WSL2 Ubuntu setup guide for Windows users">hermes-wsl-ubuntu <span class="stars">★ 8</span></a>
-      <a class="item" href="/projects/mudrii/hermes-agent-docs" data-github="https://github.com/mudrii/hermes-agent-docs" data-desc="Community documentation covering deployment patterns and v0.2.0+ workflows">hermes-agent-docs <span class="stars">★ 6</span></a>
-      <a class="item" href="/projects/martymcenroe/HermesWiki" data-github="https://github.com/martymcenroe/HermesWiki" data-desc="Community wiki with deployment patterns and recipes">HermesWiki <span class="stars">★ 2</span></a>
-    </div>
-  </div>
-
-  <!-- ═══ FORKS & DERIVATIVES ═══ -->
-  <div class="category cat-forks">
-    <div class="cat-label">Forks & Derivatives <span class="count">3</span></div>
-    <div class="items">
-      <a class="item" href="/projects/nativ3ai/hermes-agent-camel" data-github="https://github.com/nativ3ai/hermes-agent-camel" data-desc="Hermes with integrated CaMeL trust boundaries for safer autonomous execution">hermes-agent-camel <span class="stars">★ 12</span></a>
-      <a class="item" href="/projects/kaminocorp/hermes-alpha" data-github="https://github.com/kaminocorp/hermes-alpha" data-desc="Cloud-deployed Hermes with pre-configured templates and managed infrastructure">hermes-alpha <span class="stars">★ 8</span></a>
-      <a class="item" href="/projects/beardthelion/hermes-skill-distillation" data-github="https://github.com/beardthelion/hermes-skill-distillation" data-desc="Generate agentic training trajectories from real-world tasks for Hermes 4 fine-tuning">hermes-skill-distillation <span class="stars">★ 1</span></a>
-    </div>
-  </div>
-
-</div>
-
-<!-- Curated Lists -->
-<section class="curated-lists">
-  <h2>Curated Lists</h2>
-  <div class="lists-grid">
-    <a href="/lists/best-memory-providers" class="list-card">
-      <div class="lc-title">Best Memory Providers</div>
-      <div class="lc-desc">Long-term semantic memory, graph-based retrieval, and cross-session persistence tools</div>
+      <div class="repo-delta">— / wk</div>
     </a>
-    <a href="/lists/top-skills" class="list-card">
-      <div class="lc-title">Top Skills</div>
-      <div class="lc-desc">Most popular skills and skill registries following the agentskills.io open standard</div>
+    <a class="repo-row" href="/projects/NousResearch/atropos" data-github="https://github.com/NousResearch/atropos" data-desc="RL training environments framework for tool-calling models">
+      <div class="repo-stars">★ 997</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">NousResearch /</span> atropos <span class="repo-flag">official</span></div>
+        <div class="repo-desc">RL training environments framework for tool-calling models.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
     </a>
-    <a href="/lists/deployment-options" class="list-card">
-      <div class="lc-title">Deployment Options</div>
-      <div class="lc-desc">Docker, Nix, systemd, and managed cloud templates for production deployments</div>
+    <a class="repo-row" href="/projects/NousResearch/hermes-agent-self-evolution" data-github="https://github.com/NousResearch/hermes-agent-self-evolution" data-desc="Evolutionary self-improvement using DSPy + GEPA — optimizes skills, prompts, and code">
+      <div class="repo-stars">★ 778</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">NousResearch /</span> hermes-agent-self-evolution <span class="repo-flag">official</span></div>
+        <div class="repo-desc">Evolutionary self-improvement using DSPy + GEPA — optimizes skills, prompts, and code.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
     </a>
-    <a href="/lists/multi-agent-frameworks" class="list-card">
-      <div class="lc-title">Multi-Agent Frameworks</div>
-      <div class="lc-desc">Fleet management, swarm coordinators, and multi-agent delegation systems</div>
+    <a class="repo-row" href="/projects/NousResearch/hermes-paperclip-adapter" data-github="https://github.com/NousResearch/hermes-paperclip-adapter" data-desc="Run Hermes as a managed employee in Paperclip company systems">
+      <div class="repo-stars">★ 663</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">NousResearch /</span> hermes-paperclip-adapter <span class="repo-flag">official</span></div>
+        <div class="repo-desc">Run Hermes as a managed employee in Paperclip company systems.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
     </a>
-    <a href="/lists/developer-tools" class="list-card">
-      <div class="lc-title">Developer Tools</div>
-      <div class="lc-desc">CLI tools, linters, migration helpers, token trackers, and dev utilities</div>
-    </a>
-    <a href="/lists/workspaces-and-guis" class="list-card">
-      <div class="lc-title">Workspaces & GUIs</div>
-      <div class="lc-desc">Web and desktop interfaces — chat UIs, memory browsers, and config dashboards</div>
+    <a class="repo-row" href="/projects/NousResearch/autonovel" data-github="https://github.com/NousResearch/autonovel" data-desc="Autonomous novel-writing pipeline generating 100k+ word manuscripts">
+      <div class="repo-stars">★ 401</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">NousResearch /</span> autonovel <span class="repo-flag">official</span></div>
+        <div class="repo-desc">Autonomous novel-writing pipeline generating 100k+ word manuscripts.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
     </a>
   </div>
 </section>
 
-<!-- Footer -->
-<div class="footer">
-  <p style="font-size: 14px;">Missing a repo? <a href="https://github.com/ksimback/hermes-ecosystem/issues">Open an issue</a></p>
-  <a class="cta" href="/projects/NousResearch/hermes-agent" data-github="https://github.com/NousResearch/hermes-agent">Get Hermes Agent →</a>
-</div>
+<section class="cat" data-category="Workspaces & GUIs">
+  <div class="cat-meta">
+    <div class="cat-num">§02</div>
+    <h2 class="cat-title">Workspaces &amp; GUIs</h2>
+    <p class="cat-desc">Web and desktop interfaces — chat UIs, memory browsers, config dashboards.</p>
+    <div class="cat-count"><span class="cat-count-n">8</span> repos</div>
+  </div>
+  <div class="cat-list">
+    <a class="repo-row" href="/projects/nesquena/hermes-webui" data-github="https://github.com/nesquena/hermes-webui" data-desc="Hermes WebUI: The best way to use Hermes Agent from the web or from your phone!">
+      <div class="repo-stars">★ 2,479</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">nesquena /</span> hermes-webui</div>
+        <div class="repo-desc">The best way to use Hermes Agent from the web or from your phone.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/outsourc-e/hermes-workspace" data-github="https://github.com/outsourc-e/hermes-workspace" data-desc="Native web workspace — chat, terminal, memory browser, skills manager, and inspector panel">
+      <div class="repo-stars">★ 830</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">outsourc-e /</span> hermes-workspace</div>
+        <div class="repo-desc">Native web workspace — chat, terminal, memory browser, skills manager, inspector panel.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/xaspx/hermes-control-interface" data-github="https://github.com/xaspx/hermes-control-interface" data-desc="Self-hosted web dashboard — terminal, file explorer, cron, metrics, and agent status panel">
+      <div class="repo-stars">★ 323</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">xaspx /</span> hermes-control-interface</div>
+        <div class="repo-desc">Self-hosted dashboard — terminal, file explorer, cron, metrics, agent status panel.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/dodo-reach/hermes-desktop" data-github="https://github.com/dodo-reach/hermes-desktop" data-desc="A native Mac workspace for Hermes: real SSH, real terminal, real session data">
+      <div class="repo-stars">★ 313</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">dodo-reach /</span> hermes-desktop</div>
+        <div class="repo-desc">Native Mac workspace for Hermes — real SSH, real terminal, real session data.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/fathah/hermes-desktop" data-github="https://github.com/fathah/hermes-desktop" data-desc="Desktop companion app for installing, configuring, and chatting with Hermes Agent">
+      <div class="repo-stars">★ 65</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">fathah /</span> hermes-desktop</div>
+        <div class="repo-desc">Desktop companion for installing, configuring, and chatting with Hermes Agent.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/sanchomuzax/hermes-webui" data-github="https://github.com/sanchomuzax/hermes-webui" data-desc="Process monitoring and configuration dashboard for Hermes">
+      <div class="repo-stars">★ 57</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">sanchomuzax /</span> hermes-webui</div>
+        <div class="repo-desc">Process monitoring and configuration dashboard for Hermes.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/Euraika-Labs/pan-ui" data-github="https://github.com/Euraika-Labs/pan-ui" data-desc="Self-hosted AI workspace with chat, skills, extensions, memory, profiles, and runtime controls">
+      <div class="repo-stars">★ 27</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">Euraika-Labs /</span> pan-ui</div>
+        <div class="repo-desc">Self-hosted AI workspace with chat, skills, extensions, memory, profiles, runtime controls.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/pyrate-llama/hermes-ui" data-github="https://github.com/pyrate-llama/hermes-ui" data-desc="Glassmorphic web interface for Hermes Agent — your self-hosted AI assistant">
+      <div class="repo-stars">★ 25</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">pyrate-llama /</span> hermes-ui</div>
+        <div class="repo-desc">Glassmorphic web interface for Hermes Agent — your self-hosted AI assistant.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+  </div>
+</section>
 
-<!-- Chat Widget -->
-<button id="chat-btn" title="Ask the Atlas">💬</button>
-<div id="chat-panel">
+<section class="cat" data-category="Skills & Skill Registries">
+  <div class="cat-meta">
+    <div class="cat-num">§03</div>
+    <h2 class="cat-title">Skills &amp; skill registries</h2>
+    <p class="cat-desc">Reusable capabilities following the agentskills.io open standard — libraries, registries, and meta-tools.</p>
+    <div class="cat-count"><span class="cat-count-n">17</span> repos</div>
+  </div>
+  <div class="cat-list">
+    <a class="repo-row" href="/projects/mukul975/Anthropic-Cybersecurity-Skills" data-github="https://github.com/mukul975/Anthropic-Cybersecurity-Skills" data-desc="754 structured cybersecurity skills mapped to MITRE ATT&CK, NIST CSF 2.0, ATLAS, D3FEND & NIST AI RMF">
+      <div class="repo-stars">★ 4,132</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">mukul975 /</span> Anthropic-Cybersecurity-Skills</div>
+        <div class="repo-desc">754 structured cybersecurity skills mapped to MITRE ATT&amp;CK, NIST CSF 2.0, ATLAS, D3FEND &amp; NIST AI RMF.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/conorbronsdon/avoid-ai-writing" data-github="https://github.com/conorbronsdon/avoid-ai-writing" data-desc="Audits and rewrites content to eliminate detectable AI writing patterns">
+      <div class="repo-stars">★ 759</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">conorbronsdon /</span> avoid-ai-writing</div>
+        <div class="repo-desc">Audits and rewrites content to eliminate detectable AI writing patterns.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/wondelai/skills" data-github="https://github.com/wondelai/skills" data-desc="Cross-platform skills library for Claude Code and agentskills.io-compatible agents">
+      <div class="repo-stars">★ 480</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">wondelai /</span> skills</div>
+        <div class="repo-desc">Cross-platform skills library for Claude Code and agentskills.io-compatible agents.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/DougTrajano/pydantic-ai-skills" data-github="https://github.com/DougTrajano/pydantic-ai-skills" data-desc="Type-safe agentskills.io support with progressive disclosure for Pydantic AI">
+      <div class="repo-stars">★ 220</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">DougTrajano /</span> pydantic-ai-skills</div>
+        <div class="repo-desc">Type-safe agentskills.io support with progressive disclosure for Pydantic AI.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/Agents365-ai/drawio-skill" data-github="https://github.com/Agents365-ai/drawio-skill" data-desc="Generate draw.io diagrams from natural language descriptions">
+      <div class="repo-stars">★ 131</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">Agents365-ai /</span> drawio-skill</div>
+        <div class="repo-desc">Generate draw.io diagrams from natural language descriptions.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/smartcontractkit/chainlink-agent-skills" data-github="https://github.com/smartcontractkit/chainlink-agent-skills" data-desc="Oracle network and smart contract interaction skills (agentskills.io spec)">
+      <div class="repo-stars">★ 85</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">smartcontractkit /</span> chainlink-agent-skills</div>
+        <div class="repo-desc">Oracle network and smart contract interaction skills (agentskills.io spec).</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/tlehman/litprog-skill" data-github="https://github.com/tlehman/litprog-skill" data-desc="Literate programming skill — weave code and documentation across agents">
+      <div class="repo-stars">★ 81</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">tlehman /</span> litprog-skill</div>
+        <div class="repo-desc">Literate programming — weave code and documentation across agents.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/esaradev/icarus-plugin" data-github="https://github.com/esaradev/icarus-plugin" data-desc="Self-memory and replacement models — remember your work, train your replacement">
+      <div class="repo-stars">★ 51</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">esaradev /</span> icarus-plugin</div>
+        <div class="repo-desc">Self-memory and replacement models — remember your work, train your replacement.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/chigwell/skilldock.io" data-github="https://github.com/chigwell/skilldock.io" data-desc="Registry of reusable AI skills based on AgentSkills specification">
+      <div class="repo-stars">★ 50</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">chigwell /</span> skilldock.io</div>
+        <div class="repo-desc">Registry of reusable AI skills based on AgentSkills specification.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/black-forest-labs/skills" data-github="https://github.com/black-forest-labs/skills" data-desc="Official FLUX image generation skills — prompting guidelines and API integration">
+      <div class="repo-stars">★ 44</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">black-forest-labs /</span> skills</div>
+        <div class="repo-desc">Official FLUX image generation skills — prompting guidelines and API integration.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/Romanescu11/hermes-skill-factory" data-github="https://github.com/Romanescu11/hermes-skill-factory" data-desc="Meta-skill plugin that watches workflows and auto-generates reusable skills">
+      <div class="repo-stars">★ 34</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">Romanescu11 /</span> hermes-skill-factory</div>
+        <div class="repo-desc">Meta-skill plugin that watches workflows and auto-generates reusable skills.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/ReinaMacCredy/maestro" data-github="https://github.com/ReinaMacCredy/maestro" data-desc="Harness for long-running AI agents — structured memory, cross-feature learning, plan-approve-execute">
+      <div class="repo-stars">★ 25</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">ReinaMacCredy /</span> maestro</div>
+        <div class="repo-desc">Harness for long-running AI agents — structured memory, cross-feature learning, plan-approve-execute.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/tiann/execplan-skill" data-github="https://github.com/tiann/execplan-skill" data-desc="Complex multi-step task execution with checkpoints and recovery">
+      <div class="repo-stars">★ 24</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">tiann /</span> execplan-skill</div>
+        <div class="repo-desc">Complex multi-step task execution with checkpoints and recovery.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/cablate/Agentic-MCP-Skill" data-github="https://github.com/cablate/Agentic-MCP-Skill" data-desc="Progressive MCP client with three-layer lazy loading — validates agentskills.io pattern">
+      <div class="repo-stars">★ 22</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">cablate /</span> Agentic-MCP-Skill</div>
+        <div class="repo-desc">Progressive MCP client with three-layer lazy loading — validates agentskills.io pattern.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/armelhbobdad/bmad-module-skill-forge" data-github="https://github.com/armelhbobdad/bmad-module-skill-forge" data-desc="Converts repos, docs, and developer discourse into agentskills.io-compliant skills">
+      <div class="repo-stars">★ 17</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">armelhbobdad /</span> bmad-module-skill-forge</div>
+        <div class="repo-desc">Converts repos, docs, and developer discourse into agentskills.io-compliant skills.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/amanning3390/hermeshub" data-github="https://github.com/amanning3390/hermeshub" data-desc="Community skill browsing, search, and one-click installation hub">
+      <div class="repo-stars">★ 15</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">amanning3390 /</span> hermeshub</div>
+        <div class="repo-desc">Community skill browsing, search, and one-click installation hub.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/PederHP/skillsdotnet" data-github="https://github.com/PederHP/skillsdotnet" data-desc="C# / .NET implementation of agentskills.io with MCP integration">
+      <div class="repo-stars">★ 6</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">PederHP /</span> skillsdotnet</div>
+        <div class="repo-desc">C# / .NET implementation of agentskills.io with MCP integration.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+  </div>
+</section>
+
+<section class="cat" data-category="Memory & Context">
+  <div class="cat-meta">
+    <div class="cat-num">§04</div>
+    <h2 class="cat-title">Memory &amp; context</h2>
+    <p class="cat-desc">Long-term semantic memory, graph-based retrieval, cross-session persistence.</p>
+    <div class="cat-count"><span class="cat-count-n">8</span> repos</div>
+  </div>
+  <div class="cat-list">
+    <a class="repo-row" href="/projects/garrytan/gbrain" data-github="https://github.com/garrytan/gbrain" data-desc="Garry's Opinionated OpenClaw/Hermes Agent Brain">
+      <div class="repo-stars">★ 8,857</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">garrytan /</span> gbrain</div>
+        <div class="repo-desc">Garry's opinionated OpenClaw / Hermes Agent brain.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/vectorize-io/hindsight" data-github="https://github.com/vectorize-io/hindsight" data-desc="Agent memory that learns — long-term retain/recall/reflect workflows">
+      <div class="repo-stars">★ 8,362</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">vectorize-io /</span> hindsight</div>
+        <div class="repo-desc">Agent memory that learns — long-term retain, recall, reflect workflows.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/greyhaven-ai/autocontext" data-github="https://github.com/greyhaven-ai/autocontext" data-desc="Recursive self-improving context harness — helps agents succeed on complex tasks">
+      <div class="repo-stars">★ 711</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">greyhaven-ai /</span> autocontext</div>
+        <div class="repo-desc">Recursive self-improving context harness — helps agents succeed on complex tasks.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/stephenschoettler/hermes-lcm" data-github="https://github.com/stephenschoettler/hermes-lcm" data-desc="Lossless Context Management — DAG-based context engine that never loses a message">
+      <div class="repo-stars">★ 178</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">stephenschoettler /</span> hermes-lcm</div>
+        <div class="repo-desc">Lossless context management — DAG-based engine that never loses a message.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/elkimek/honcho-self-hosted" data-github="https://github.com/elkimek/honcho-self-hosted" data-desc="Self-hosted Honcho memory backend for cross-session persistence">
+      <div class="repo-stars">★ 126</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">elkimek /</span> honcho-self-hosted</div>
+        <div class="repo-desc">Self-hosted Honcho memory backend for cross-session persistence.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/yoloshii/ClawMem" data-github="https://github.com/yoloshii/ClawMem" data-desc="On-device memory and context engine for agents — local-first, no cloud dependencies">
+      <div class="repo-stars">★ 86</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">yoloshii /</span> ClawMem</div>
+        <div class="repo-desc">On-device memory and context engine — local-first, no cloud dependencies.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/plur-ai/plur" data-github="https://github.com/plur-ai/plur" data-desc="Shared memory layer with open engram YAML format for multi-agent systems">
+      <div class="repo-stars">★ 31</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">plur-ai /</span> plur</div>
+        <div class="repo-desc">Shared memory layer with open engram YAML format for multi-agent systems.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/amanning3390/flowstate-qmd" data-github="https://github.com/amanning3390/flowstate-qmd" data-desc="Anticipatory memory with RAG and vector search — Hermes 2026 Hackathon entry">
+      <div class="repo-stars">★ 5</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
+        <div class="repo-desc">Anticipatory memory with RAG and vector search — Hermes 2026 Hackathon entry.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+  </div>
+</section>
+
+<section class="cat" data-category="Plugins & Extensions">
+  <div class="cat-meta">
+    <div class="cat-num">§05</div>
+    <h2 class="cat-title">Plugins &amp; extensions</h2>
+    <p class="cat-desc">Drop-in modules that add tools, safety, payments, or new capabilities.</p>
+    <div class="cat-count"><span class="cat-count-n">7</span> repos</div>
+  </div>
+  <div class="cat-list">
+    <a class="repo-row" href="/projects/clawshell/clawshell" data-github="https://github.com/clawshell/clawshell" data-desc="Runtime Security Layer for OpenClaw/Hermes — PII & sensitive credentials protection">
+      <div class="repo-stars">★ 255</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">clawshell /</span> clawshell</div>
+        <div class="repo-desc">Runtime security layer — PII and sensitive credentials protection.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/robbyczgw-cla/hermes-web-search-plus" data-github="https://github.com/robbyczgw-cla/hermes-web-search-plus" data-desc="Multi-provider web search (Serper, Tavily, Exa, Querit, Perplexity) with auto-routing">
+      <div class="repo-stars">★ 21</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
+        <div class="repo-desc">Multi-provider web search — Serper, Tavily, Exa, Querit, Perplexity with auto-routing.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/42-evey/hermes-plugins" data-github="https://github.com/42-evey/hermes-plugins" data-desc="Goal management, inter-agent bridge, model selection, and cost control plugins">
+      <div class="repo-stars">★ 16</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">42-evey /</span> hermes-plugins</div>
+        <div class="repo-desc">Goal management, inter-agent bridge, model selection, cost control plugins.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/FahrenheitResearch/hermes-weather-plugin" data-github="https://github.com/FahrenheitResearch/hermes-weather-plugin" data-desc="NWS-grade model imagery, NEXRAD radar, and verified meteorological calculations. Pure Rust.">
+      <div class="repo-stars">★ 7</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">FahrenheitResearch /</span> hermes-weather-plugin</div>
+        <div class="repo-desc">NWS-grade model imagery, NEXRAD radar, verified meteorological calculations. Pure Rust.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/42-evey/evey-bridge-plugin" data-github="https://github.com/42-evey/evey-bridge-plugin" data-desc="Claude Code and Hermes context sharing bridge — auto-checks messages, Mother Mode loop">
+      <div class="repo-stars">★ 4</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">42-evey /</span> evey-bridge-plugin</div>
+        <div class="repo-desc">Claude Code and Hermes context sharing bridge — auto-checks messages, Mother Mode loop.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/nativ3ai/hermes-payguard" data-github="https://github.com/nativ3ai/hermes-payguard" data-desc="Safe-by-design USDC and x402 payment plugin for Hermes Agent">
+      <div class="repo-stars">★ 4</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">nativ3ai /</span> hermes-payguard</div>
+        <div class="repo-desc">Safe-by-design USDC and x402 payment plugin for Hermes Agent.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/raulvidis/hermes-cloudflare" data-github="https://github.com/raulvidis/hermes-cloudflare" data-desc="Cloudflare Browser Rendering plugin — crawl, scrape, extract content from web pages">
+      <div class="repo-stars">★ 1</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">raulvidis /</span> hermes-cloudflare</div>
+        <div class="repo-desc">Cloudflare Browser Rendering — crawl, scrape, extract content from web pages.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+  </div>
+</section>
+
+<section class="cat" data-category="Multi-Agent & Orchestration">
+  <div class="cat-meta">
+    <div class="cat-num">§06</div>
+    <h2 class="cat-title">Multi-agent &amp; orchestration</h2>
+    <p class="cat-desc">Fleet management, swarm coordinators, and multi-agent delegation systems.</p>
+    <div class="cat-count"><span class="cat-count-n">7</span> repos</div>
+  </div>
+  <div class="cat-list">
+    <a class="repo-row" href="/projects/builderz-labs/mission-control" data-github="https://github.com/builderz-labs/mission-control" data-desc="Self-hosted AI agent orchestration — dispatch tasks, run multi-agent workflows, monitor spend">
+      <div class="repo-stars">★ 3,875</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">builderz-labs /</span> mission-control</div>
+        <div class="repo-desc">Self-hosted orchestration — dispatch tasks, run multi-agent workflows, monitor spend.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/swarmclawai/swarmclaw" data-github="https://github.com/swarmclawai/swarmclaw" data-desc="Build autonomous AI agent swarms with orchestration, skills, and multiple model providers">
+      <div class="repo-stars">★ 285</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">swarmclawai /</span> swarmclaw</div>
+        <div class="repo-desc">Build autonomous AI agent swarms — orchestration, skills, multiple model providers.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/howdymary/hermes-agent-metaharness" data-github="https://github.com/howdymary/hermes-agent-metaharness" data-desc="Meta-harness for Hermes Agent — meta-optimization with arxiv paper reference">
+      <div class="repo-stars">★ 46</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">howdymary /</span> hermes-agent-metaharness</div>
+        <div class="repo-desc">Meta-harness for Hermes Agent — meta-optimization with arxiv paper reference.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/runtimenoteslabs/gladiator" data-github="https://github.com/runtimenoteslabs/gladiator" data-desc="Autonomous AI companies competing for GitHub stars — agent-vs-agent arena">
+      <div class="repo-stars">★ 29</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">runtimenoteslabs /</span> gladiator</div>
+        <div class="repo-desc">Autonomous AI companies competing for GitHub stars — agent-vs-agent arena.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/1ilkhamov/opencode-hermes-multiagent" data-github="https://github.com/1ilkhamov/opencode-hermes-multiagent" data-desc="17 specialized agents for research, planning, implementation, quality, and infrastructure">
+      <div class="repo-stars">★ 28</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">1ilkhamov /</span> opencode-hermes-multiagent</div>
+        <div class="repo-desc">17 specialized agents — research, planning, implementation, quality, infrastructure.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/supermodeltools/bigiron" data-github="https://github.com/supermodeltools/bigiron" data-desc="AI-native SDLC — Hermes Agent + Supermodel code graph, graph-gated at every phase">
+      <div class="repo-stars">★ 7</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">supermodeltools /</span> bigiron</div>
+        <div class="repo-desc">AI-native SDLC — Hermes Agent + Supermodel code graph, graph-gated at every phase.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/Rainhoole/hermes-agent-acp-skill" data-github="https://github.com/Rainhoole/hermes-agent-acp-skill" data-desc="ACP-style multi-agent delegation — routes tasks to Hermes, Codex, or Claude Code">
+      <div class="repo-stars">★ 4</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">Rainhoole /</span> hermes-agent-acp-skill</div>
+        <div class="repo-desc">ACP-style multi-agent delegation — routes tasks to Hermes, Codex, or Claude Code.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+  </div>
+</section>
+
+<section class="cat" data-category="Deployment & Infra">
+  <div class="cat-meta">
+    <div class="cat-num">§07</div>
+    <h2 class="cat-title">Deployment &amp; infra</h2>
+    <p class="cat-desc">Docker, Nix, systemd, and managed cloud templates — from a $5 VPS to enterprise Kubernetes.</p>
+    <div class="cat-count"><span class="cat-count-n">7</span> repos</div>
+  </div>
+  <div class="cat-list">
+    <a class="repo-row" href="/projects/numtide/llm-agents.nix" data-github="https://github.com/numtide/llm-agents.nix" data-desc="Nix packages for AI coding agents including Hermes">
+      <div class="repo-stars">★ 967</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">numtide /</span> llm-agents.nix</div>
+        <div class="repo-desc">Nix packages for AI coding agents including Hermes.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/TheAiSingularity/hermesclaw" data-github="https://github.com/TheAiSingularity/hermesclaw" data-desc="Hermes Agent sandboxed with hardware-level enforcement">
+      <div class="repo-stars">★ 16</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">TheAiSingularity /</span> hermesclaw</div>
+        <div class="repo-desc">Hermes Agent sandboxed with hardware-level enforcement.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/0xrsydn/nix-hermes-agent" data-github="https://github.com/0xrsydn/nix-hermes-agent" data-desc="Nix package and NixOS module for reproducible Hermes deployment">
+      <div class="repo-stars">★ 11</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">0xrsydn /</span> nix-hermes-agent</div>
+        <div class="repo-desc">Nix package and NixOS module for reproducible Hermes deployment.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/rookiemann/portable-hermes-agent" data-github="https://github.com/rookiemann/portable-hermes-agent" data-desc="Windows desktop agent — 100 tools, GUI, local models, TTS, ComfyUI. No install, no Docker.">
+      <div class="repo-stars">★ 7</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">rookiemann /</span> portable-hermes-agent</div>
+        <div class="repo-desc">Windows desktop agent — 100 tools, GUI, local models, TTS, ComfyUI. No install, no Docker.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/xmbshwll/hermes-agent-docker" data-github="https://github.com/xmbshwll/hermes-agent-docker" data-desc="Simple Docker sandbox image for Hermes Agent">
+      <div class="repo-stars">★ 6</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">xmbshwll /</span> hermes-agent-docker</div>
+        <div class="repo-desc">Simple Docker sandbox image for Hermes Agent.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/JackTheGit/hermes-autonomous-server" data-github="https://github.com/JackTheGit/hermes-autonomous-server" data-desc="Headless systemd deployment with Nous Portal integration — production-ready">
+      <div class="repo-stars">★ 2</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">JackTheGit /</span> hermes-autonomous-server</div>
+        <div class="repo-desc">Headless systemd deployment with Nous Portal integration — production-ready.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/ellickjohnson/portainer-stack-hermes" data-github="https://github.com/ellickjohnson/portainer-stack-hermes" data-desc="Docker Compose stack with Portainer UI and ttyd web terminal">
+      <div class="repo-stars">★ 1</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">ellickjohnson /</span> portainer-stack-hermes</div>
+        <div class="repo-desc">Docker Compose stack with Portainer UI and ttyd web terminal.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+  </div>
+</section>
+
+<section class="cat" data-category="Integrations & Bridges">
+  <div class="cat-meta">
+    <div class="cat-num">§08</div>
+    <h2 class="cat-title">Integrations &amp; bridges</h2>
+    <p class="cat-desc">Connect Hermes to other agents, platforms, and specialized systems.</p>
+    <div class="cat-count"><span class="cat-count-n">7</span> repos</div>
+  </div>
+  <div class="cat-list">
+    <a class="repo-row" href="/projects/AaronWong1999/hermesclaw" data-github="https://github.com/AaronWong1999/hermesclaw" data-desc="Run Hermes Agent and OpenClaw on the same WeChat account">
+      <div class="repo-stars">★ 112</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">AaronWong1999 /</span> hermesclaw</div>
+        <div class="repo-desc">Run Hermes Agent and OpenClaw on the same WeChat account.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/raulvidis/hermes-android" data-github="https://github.com/raulvidis/hermes-android" data-desc="Android device control — bridge app + Python toolset for mobile automation">
+      <div class="repo-stars">★ 38</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">raulvidis /</span> hermes-android</div>
+        <div class="repo-desc">Android device control — bridge app + Python toolset for mobile automation.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/teknium1/hermes-miniverse" data-github="https://github.com/teknium1/hermes-miniverse" data-desc="Bridge Hermes to Miniverse pixel worlds — agent embodiment in virtual environments">
+      <div class="repo-stars">★ 8</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">teknium1 /</span> hermes-miniverse</div>
+        <div class="repo-desc">Bridge Hermes to Miniverse pixel worlds — agent embodiment in virtual environments.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/Ridwannurudeen/hermes-council" data-github="https://github.com/Ridwannurudeen/hermes-council" data-desc="Adversarial multi-perspective council MCP server for decision-making">
+      <div class="repo-stars">★ 6</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">Ridwannurudeen /</span> hermes-council</div>
+        <div class="repo-desc">Adversarial multi-perspective council MCP server for decision-making.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/marlandoj/zouroboros-swarm-executors" data-github="https://github.com/marlandoj/zouroboros-swarm-executors" data-desc="Claude Code and Hermes task handoff bridge for zo-swarm-orchestrator">
+      <div class="repo-stars">★ 4</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">marlandoj /</span> zouroboros-swarm-executors</div>
+        <div class="repo-desc">Claude Code and Hermes task handoff bridge for zo-swarm-orchestrator.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/gizdusum/hermes-blockchain-oracle" data-github="https://github.com/gizdusum/hermes-blockchain-oracle" data-desc="Solana blockchain intelligence MCP server — wallets, whales, tokens, NFTs, network health">
+      <div class="repo-stars">★ 3</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">gizdusum /</span> hermes-blockchain-oracle</div>
+        <div class="repo-desc">Solana blockchain intelligence MCP — wallets, whales, tokens, NFTs, network health.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/kevinmarmstrong/hermes-claude-code-rc" data-github="https://github.com/kevinmarmstrong/hermes-claude-code-rc" data-desc="Hermes Agent plugin for remote controlling Claude Code sessions via Telegram">
+      <div class="repo-stars">★ 1</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">kevinmarmstrong /</span> hermes-claude-code-rc</div>
+        <div class="repo-desc">Hermes Agent plugin for remote controlling Claude Code sessions via Telegram.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+  </div>
+</section>
+
+<section class="cat" data-category="Developer Tools">
+  <div class="cat-meta">
+    <div class="cat-num">§09</div>
+    <h2 class="cat-title">Developer tools</h2>
+    <p class="cat-desc">CLIs, linters, migration helpers, token trackers, and other dev utilities.</p>
+    <div class="cat-count"><span class="cat-count-n">8</span> repos</div>
+  </div>
+  <div class="cat-list">
+    <a class="repo-row" href="/projects/junhoyeo/tokscale" data-github="https://github.com/junhoyeo/tokscale" data-desc="CLI tool for tracking token usage from Claude Code, OpenClaw, Hermes, Codex, Gemini, and more">
+      <div class="repo-stars">★ 1,690</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">junhoyeo /</span> tokscale</div>
+        <div class="repo-desc">CLI for tracking token usage — Claude Code, OpenClaw, Hermes, Codex, Gemini, and more.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/joeynyc/hermes-skins" data-github="https://github.com/joeynyc/hermes-skins" data-desc="Community CLI skins and themes for Hermes terminal UI">
+      <div class="repo-stars">★ 76</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">joeynyc /</span> hermes-skins</div>
+        <div class="repo-desc">Community CLI skins and themes for Hermes terminal UI.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/AlexAI-MCP/hermes-CCC" data-github="https://github.com/AlexAI-MCP/hermes-CCC" data-desc="Hermes Agent ported to Claude Code Channel — 46 native skills, no OAuth, no external process">
+      <div class="repo-stars">★ 56</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">AlexAI-MCP /</span> hermes-CCC</div>
+        <div class="repo-desc">Hermes ported to Claude Code Channel — 46 native skills, no OAuth, no external process.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/unmodeled-tyler/vessel-browser" data-github="https://github.com/unmodeled-tyler/vessel-browser" data-desc="AI-native browser built for autonomous agent control via MCP">
+      <div class="repo-stars">★ 44</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">unmodeled-tyler /</span> vessel-browser</div>
+        <div class="repo-desc">AI-native browser built for autonomous agent control via MCP.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/Abruptive/Ankh.md" data-github="https://github.com/Abruptive/Ankh.md" data-desc="TAW Agent framework for creating scoped Hermes Agents">
+      <div class="repo-stars">★ 25</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">Abruptive /</span> Ankh.md</div>
+        <div class="repo-desc">TAW Agent framework for creating scoped Hermes Agents.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/roli-lpci/lintlang" data-github="https://github.com/roli-lpci/lintlang" data-desc="Static linter for AI agent configs, tool descriptions, and system prompts. HERM v1.1 scoring.">
+      <div class="repo-stars">★ 24</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">roli-lpci /</span> lintlang</div>
+        <div class="repo-desc">Static linter for agent configs, tool descriptions, system prompts. HERM v1.1 scoring.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/0xNyk/openclaw-to-hermes" data-github="https://github.com/0xNyk/openclaw-to-hermes" data-desc="Migration tool from OpenClaw to Hermes Agent">
+      <div class="repo-stars">★ 21</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">0xNyk /</span> openclaw-to-hermes</div>
+        <div class="repo-desc">Migration tool from OpenClaw to Hermes Agent.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/42-evey/evey-setup" data-github="https://github.com/42-evey/evey-setup" data-desc="Get a hermes-agent stack running in minutes — free models, 29 plugins, zero cost">
+      <div class="repo-stars">★ 7</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">42-evey /</span> evey-setup</div>
+        <div class="repo-desc">Get a hermes-agent stack running in minutes — free models, 29 plugins, zero cost.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+  </div>
+</section>
+
+<section class="cat" data-category="Domain Applications">
+  <div class="cat-meta">
+    <div class="cat-num">§10</div>
+    <h2 class="cat-title">Domain applications</h2>
+    <p class="cat-desc">Purpose-built agents for specific verticals — SRE, jobs, gaming, blockchain, robotics.</p>
+    <div class="cat-count"><span class="cat-count-n">8</span> repos</div>
+  </div>
+  <div class="cat-list">
+    <a class="repo-row" href="/projects/ucsandman/DashClaw" data-github="https://github.com/ucsandman/DashClaw" data-desc="Decision infrastructure with guard policies and risk assessment for agents">
+      <div class="repo-stars">★ 204</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">ucsandman /</span> DashClaw</div>
+        <div class="repo-desc">Decision infrastructure with guard policies and risk assessment for agents.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/Lethe044/hermes-incident-commander" data-github="https://github.com/Lethe044/hermes-incident-commander" data-desc="Autonomous SRE agent — detects, heals, and learns from production incidents">
+      <div class="repo-stars">★ 11</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">Lethe044 /</span> hermes-incident-commander</div>
+        <div class="repo-desc">Autonomous SRE agent — detects, heals, and learns from production incidents.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/Christabel337/job-scout-agent" data-github="https://github.com/Christabel337/job-scout-agent" data-desc="Autonomous job hunting — scans listings, writes cover letters, tracks applications">
+      <div class="repo-stars">★ 11</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">Christabel337 /</span> job-scout-agent</div>
+        <div class="repo-desc">Autonomous job hunting — scans listings, writes cover letters, tracks applications.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/rodmarkun/anihermes" data-github="https://github.com/rodmarkun/anihermes" data-desc="Local anime server and tracker via natural language for Hermes Agent">
+      <div class="repo-stars">★ 9</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">rodmarkun /</span> anihermes</div>
+        <div class="repo-desc">Local anime server and tracker via natural language for Hermes Agent.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit" data-github="https://github.com/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit" data-desc="Autonomous monitoring — cron-based research ingestion, cost forecasting, headless systemd">
+      <div class="repo-stars">★ 9</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">JackTheGit /</span> hermes-ai-infrastructure-monitoring-toolkit</div>
+        <div class="repo-desc">Autonomous monitoring — cron-based research, cost forecasting, headless systemd.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/bigph00t/hermescraft" data-github="https://github.com/bigph00t/hermescraft" data-desc="Embodied AI companion for Minecraft — persistent memory, vision, learning, multi-agent">
+      <div class="repo-stars">★ 8</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">bigph00t /</span> hermescraft</div>
+        <div class="repo-desc">Embodied AI companion for Minecraft — persistent memory, vision, learning, multi-agent.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/hxsteric/mercury" data-github="https://github.com/hxsteric/mercury" data-desc="Blockchain cash flow analyzer — multi-chain analysis, fraud detection, WebGL dashboard">
+      <div class="repo-stars">★ 5</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">hxsteric /</span> mercury</div>
+        <div class="repo-desc">Blockchain cash flow analyzer — multi-chain analysis, fraud detection, WebGL dashboard.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/bryercowan/hermes-embodied" data-github="https://github.com/bryercowan/hermes-embodied" data-desc="Self-improving robotics via VLA model fine-tuning on cloud GPUs">
+      <div class="repo-stars">★ 2</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">bryercowan /</span> hermes-embodied</div>
+        <div class="repo-desc">Self-improving robotics via VLA model fine-tuning on cloud GPUs.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+  </div>
+</section>
+
+<section class="cat" data-category="Guides & Docs">
+  <div class="cat-meta">
+    <div class="cat-num">§11</div>
+    <h2 class="cat-title">Guides &amp; docs</h2>
+    <p class="cat-desc">Curated lists, optimization playbooks, setup walkthroughs, and community wikis.</p>
+    <div class="cat-count"><span class="cat-count-n">7</span> repos</div>
+  </div>
+  <div class="cat-list">
+    <a class="repo-row" href="/projects/0xNyk/awesome-hermes-agent" data-github="https://github.com/0xNyk/awesome-hermes-agent" data-desc="Curated list of awesome skills, tools, integrations, and resources for Hermes Agent">
+      <div class="repo-stars">★ 898</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">0xNyk /</span> awesome-hermes-agent</div>
+        <div class="repo-desc">Curated list of skills, tools, integrations, and resources for Hermes Agent.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/alchaincyf/hermes-agent-orange-book" data-github="https://github.com/alchaincyf/hermes-agent-orange-book" data-desc="Hermes Agent practical guide — Orange Book series (Chinese language)">
+      <div class="repo-stars">★ 315</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">alchaincyf /</span> hermes-agent-orange-book</div>
+        <div class="repo-desc">Hermes Agent practical guide — Orange Book series (Chinese language).</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/ksimback/hermes-ecosystem" data-github="https://github.com/ksimback/hermes-ecosystem" data-desc="Hermes Atlas — the community map of every tool, skill, and integration for Hermes Agent">
+      <div class="repo-stars">★ 263</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">ksimback /</span> hermes-ecosystem</div>
+        <div class="repo-desc">Hermes Atlas — the community map of every tool, skill, and integration for Hermes Agent.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/OnlyTerp/hermes-optimization-guide" data-github="https://github.com/OnlyTerp/hermes-optimization-guide" data-desc="Performance optimization guide for Hermes deployments">
+      <div class="repo-stars">★ 51</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">OnlyTerp /</span> hermes-optimization-guide</div>
+        <div class="repo-desc">Performance optimization guide for Hermes deployments.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/metantonio/hermes-wsl-ubuntu" data-github="https://github.com/metantonio/hermes-wsl-ubuntu" data-desc="Step-by-step WSL2 Ubuntu setup guide for Windows users">
+      <div class="repo-stars">★ 8</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">metantonio /</span> hermes-wsl-ubuntu</div>
+        <div class="repo-desc">Step-by-step WSL2 Ubuntu setup guide for Windows users.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/mudrii/hermes-agent-docs" data-github="https://github.com/mudrii/hermes-agent-docs" data-desc="Community documentation covering deployment patterns and v0.2.0+ workflows">
+      <div class="repo-stars">★ 6</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">mudrii /</span> hermes-agent-docs</div>
+        <div class="repo-desc">Community documentation — deployment patterns and v0.2.0+ workflows.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/martymcenroe/HermesWiki" data-github="https://github.com/martymcenroe/HermesWiki" data-desc="Community wiki with deployment patterns and recipes">
+      <div class="repo-stars">★ 2</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">martymcenroe /</span> HermesWiki</div>
+        <div class="repo-desc">Community wiki with deployment patterns and recipes.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+  </div>
+</section>
+
+<section class="cat" data-category="Forks & Derivatives">
+  <div class="cat-meta">
+    <div class="cat-num">§12</div>
+    <h2 class="cat-title">Forks &amp; derivatives</h2>
+    <p class="cat-desc">Patched, cloud-deployed, or fine-tuned variants of Hermes Agent.</p>
+    <div class="cat-count"><span class="cat-count-n">3</span> repos</div>
+  </div>
+  <div class="cat-list">
+    <a class="repo-row" href="/projects/nativ3ai/hermes-agent-camel" data-github="https://github.com/nativ3ai/hermes-agent-camel" data-desc="Hermes with integrated CaMeL trust boundaries for safer autonomous execution">
+      <div class="repo-stars">★ 12</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">nativ3ai /</span> hermes-agent-camel</div>
+        <div class="repo-desc">Hermes with integrated CaMeL trust boundaries for safer autonomous execution.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/kaminocorp/hermes-alpha" data-github="https://github.com/kaminocorp/hermes-alpha" data-desc="Cloud-deployed Hermes with pre-configured templates and managed infrastructure">
+      <div class="repo-stars">★ 8</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">kaminocorp /</span> hermes-alpha</div>
+        <div class="repo-desc">Cloud-deployed Hermes with pre-configured templates and managed infrastructure.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+    <a class="repo-row" href="/projects/beardthelion/hermes-skill-distillation" data-github="https://github.com/beardthelion/hermes-skill-distillation" data-desc="Generate agentic training trajectories from real-world tasks for Hermes 4 fine-tuning">
+      <div class="repo-stars">★ 1</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">beardthelion /</span> hermes-skill-distillation</div>
+        <div class="repo-desc">Generate agentic training trajectories from real-world tasks for Hermes 4 fine-tuning.</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+  </div>
+</section>
+
+<!-- Curated lists -->
+<section class="curated-lists" id="curated-lists">
+  <div class="cat-meta">
+    <div class="cat-num">§·lists</div>
+    <h2 class="cat-title">Curated lists</h2>
+    <p class="cat-desc">Opinionated cuts of the ecosystem — starting points when you already know what you need.</p>
+    <div class="cat-count">6 lists</div>
+  </div>
+  <div class="lists-grid">
+    <a href="/lists/best-memory-providers" class="list-card">
+      <div class="lc-title">Best memory providers</div>
+      <div class="lc-desc">Long-term semantic memory, graph-based retrieval, and cross-session persistence tools.</div>
+    </a>
+    <a href="/lists/top-skills" class="list-card">
+      <div class="lc-title">Top skills</div>
+      <div class="lc-desc">Most popular skills and registries following the agentskills.io open standard.</div>
+    </a>
+    <a href="/lists/deployment-options" class="list-card">
+      <div class="lc-title">Deployment options</div>
+      <div class="lc-desc">Docker, Nix, systemd, and managed cloud templates for production deployments.</div>
+    </a>
+    <a href="/lists/multi-agent-frameworks" class="list-card">
+      <div class="lc-title">Multi-agent frameworks</div>
+      <div class="lc-desc">Fleet management, swarm coordinators, and multi-agent delegation systems.</div>
+    </a>
+    <a href="/lists/developer-tools" class="list-card">
+      <div class="lc-title">Developer tools</div>
+      <div class="lc-desc">CLIs, linters, migration helpers, token trackers, and dev utilities.</div>
+    </a>
+    <a href="/lists/workspaces-and-guis" class="list-card">
+      <div class="lc-title">Workspaces &amp; GUIs</div>
+      <div class="lc-desc">Web and desktop interfaces — chat UIs, memory browsers, and config dashboards.</div>
+    </a>
+  </div>
+</section>
+
+<!-- Footnote -->
+<footer class="footnote">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<!-- Chat widget -->
+<button id="chat-btn" title="Ask the Atlas">ask the atlas</button>
+<aside id="chat-panel" aria-label="Atlas chat">
   <div class="chat-header">
     <div>
-      <h3>Ask the Atlas</h3>
-      <span>Powered by OpenRouter · Grounded in research</span>
+      <h3>ask the atlas</h3>
+      <span>openrouter · grounded in research</span>
     </div>
     <div class="chat-header-actions">
-      <button id="chat-clear" title="Clear conversation">↻</button>
-      <button id="chat-close" title="Close">✕</button>
+      <button id="chat-clear" title="Clear conversation" aria-label="Clear conversation">clear</button>
+      <button id="chat-close" title="Close" aria-label="Close chat">close</button>
     </div>
   </div>
   <div id="chat-messages"></div>
   <div class="chat-input-wrap">
-    <input type="text" id="chat-input" placeholder="Ask anything about Hermes Agent...">
-    <button id="chat-send" title="Send">Send</button>
+    <input type="text" id="chat-input" placeholder="ask anything about hermes agent..." aria-label="Ask a question">
+    <button id="chat-send" title="Send">send</button>
   </div>
-</div>
+</aside>
 
 <!-- Tooltip + Dashboard + Chat JS -->
 <script>
 (function() {
   // ── Theme toggle ──
+  function renderThemeToggle() {
+    const toggle = document.getElementById('theme-toggle');
+    if (!toggle) return;
+    const current = document.documentElement.getAttribute('data-theme');
+    const isLight = current === 'light';
+    toggle.querySelector('.tt-light').classList.toggle('tt-active', isLight);
+    toggle.querySelector('.tt-dark').classList.toggle('tt-active', !isLight);
+  }
+  renderThemeToggle();
+
   const themeToggle = document.getElementById('theme-toggle');
   if (themeToggle) {
     themeToggle.addEventListener('click', () => {
@@ -1091,6 +1084,7 @@
       const next = current === 'light' ? 'dark' : 'light';
       document.documentElement.setAttribute('data-theme', next);
       try { localStorage.setItem('theme', next); } catch (e) {}
+      renderThemeToggle();
     });
   }
 
@@ -1119,10 +1113,11 @@
   const ttDesc = document.getElementById('tt-desc');
 
   function initTooltips() {
-    document.querySelectorAll('.item[data-desc]').forEach(item => {
+    document.querySelectorAll('.repo-row[data-desc]').forEach(item => {
       item.addEventListener('mouseenter', e => {
-        ttName.textContent = item.textContent.replace(/★[\s\d,.K]+/, '').trim();
-        ttDesc.textContent = item.getAttribute('data-desc');
+        const nameEl = item.querySelector('.repo-name');
+        ttName.textContent = nameEl ? nameEl.textContent.replace('official', '').trim() : '';
+        ttDesc.textContent = item.getAttribute('data-desc') || '';
         tooltip.style.display = 'block';
         positionTooltip(e);
       });
@@ -1140,19 +1135,17 @@
     tooltip.style.left = x + 'px';
     tooltip.style.top = y + 'px';
   }
-
   initTooltips();
 
-  // ── Add data-repo attributes to all items ──
-  document.querySelectorAll('.item[data-github]').forEach(item => {
+  // ── Add data-repo attributes to repo rows ──
+  document.querySelectorAll('.repo-row[data-github]').forEach(item => {
     const match = item.getAttribute('data-github').match(/github\.com\/([^/]+\/[^/]+)/);
     if (match) item.setAttribute('data-repo', match[1]);
   });
 
-  // ── Live star counts + sparklines + trending badges ──
+  // ── Live star counts + weekly deltas + trending ──
   async function fetchStars() {
     try {
-      // Fetch current stars and 30-day history in parallel
       const [starsRes, historyRes] = await Promise.all([
         fetch('/api/stars'),
         fetch('/api/stars-history?days=30').catch(() => null)
@@ -1161,14 +1154,12 @@
       if (!starsRes.ok) return;
       const data = await starsRes.json();
 
-      // History data (may be empty if KV hasn't accumulated days yet)
       let history = null;
       if (historyRes && historyRes.ok) {
         const histData = await historyRes.json();
         history = histData.history || [];
       }
 
-      // Build per-repo time series from history
       const timeSeries = {};
       if (history && history.length > 0) {
         for (const snapshot of history) {
@@ -1179,7 +1170,6 @@
         }
       }
 
-      // Calculate weekly deltas (current - 7 days ago) for trending
       const deltas = {};
       const growthPct = {};
       for (const [key, series] of Object.entries(timeSeries)) {
@@ -1191,7 +1181,6 @@
         if (weekAgo > 0) growthPct[key] = (delta / weekAgo) * 100;
       }
 
-      // Determine top 5 trending repos by % growth
       const trendingSet = new Set(
         Object.entries(growthPct)
           .filter(([_, pct]) => pct > 0)
@@ -1200,92 +1189,95 @@
           .map(([key]) => key)
       );
 
-      // Update each chip
-      document.querySelectorAll('.item[data-repo]').forEach(item => {
+      // Update repo rows
+      document.querySelectorAll('.repo-row[data-repo]').forEach(item => {
         const key = item.getAttribute('data-repo');
         const info = data.repos?.[key];
         if (!info) return;
 
-        const starsEl = item.querySelector('.stars');
-        if (starsEl) {
-          starsEl.textContent = '★ ' + formatStars(info.stars);
-        }
+        const starsEl = item.querySelector('.repo-stars');
+        if (starsEl) starsEl.textContent = '★ ' + formatStars(info.stars);
         item.setAttribute('data-stars', info.stars);
         if (info.updatedAt) item.setAttribute('data-updated', info.updatedAt);
 
-        // Remove any previously added decorations
-        item.querySelectorAll('.delta, .trending').forEach(el => el.remove());
-
-        // Weekly delta indicator (only if non-zero change)
-        const delta = deltas[key];
-        if (delta && Math.abs(delta) >= 1) {
-          const deltaEl = document.createElement('span');
-          deltaEl.className = delta > 0 ? 'delta' : 'delta negative';
-          deltaEl.textContent = (delta > 0 ? '+' : '') + formatStars(Math.abs(delta));
-          deltaEl.title = `${delta > 0 ? '+' : ''}${delta} stars since last weekly snapshot`;
-          item.appendChild(deltaEl);
-        }
-
-        // Trending flame badge
-        if (trendingSet.has(key)) {
-          const flame = document.createElement('span');
-          flame.className = 'trending';
-          flame.textContent = '🔥';
-          flame.title = `Trending — top 5 fastest growing`;
-          item.appendChild(flame);
+        const deltaEl = item.querySelector('.repo-delta');
+        if (deltaEl) {
+          const delta = deltas[key];
+          if (delta === undefined) {
+            deltaEl.textContent = '— / wk';
+            deltaEl.className = 'repo-delta zero';
+          } else if (delta === 0) {
+            deltaEl.textContent = '0 / wk';
+            deltaEl.className = 'repo-delta zero';
+          } else if (delta > 0) {
+            deltaEl.innerHTML = '+' + formatStars(delta) + ' / wk' + (trendingSet.has(key) ? '<span class="hot"> · hot</span>' : '');
+            deltaEl.className = 'repo-delta';
+          } else {
+            deltaEl.textContent = '-' + formatStars(Math.abs(delta)) + ' / wk';
+            deltaEl.className = 'repo-delta negative';
+          }
         }
       });
 
-      // Update stats bar
-      const statsBar = document.getElementById('stats-bar');
-      if (statsBar && data.totals) {
+      // Update stats row
+      if (data.totals) {
         document.getElementById('stat-total-stars').textContent = formatStars(data.totals.stars);
         document.getElementById('stat-total-repos').textContent = data.totals.count;
-        document.getElementById('stat-updated').textContent = new Date(data.totals.updated).toLocaleDateString();
-        statsBar.classList.add('loaded');
+        const sumDelta = Object.values(deltas).reduce((a, b) => a + (b > 0 ? b : 0), 0);
+        const weekEl = document.getElementById('stat-week-delta');
+        if (weekEl) weekEl.textContent = sumDelta > 0 ? '+' + formatStars(sumDelta) : '—';
       }
 
-      // Update masthead meta (month is always live; count comes from API)
+      // Update masthead meta
       const metaMonth = document.getElementById('meta-month');
       if (metaMonth) {
-        metaMonth.textContent = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        const now = new Date();
+        const months = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+        metaMonth.textContent = months[now.getMonth()] + '·' + now.getFullYear();
       }
       const metaCount = document.getElementById('meta-count');
-      if (metaCount && data.totals?.count) {
-        metaCount.textContent = data.totals.count;
+      if (metaCount && data.totals?.count) metaCount.textContent = data.totals.count + '·repos';
+
+      const metaVersion = document.getElementById('meta-version');
+      if (metaVersion && data.hermes?.version) metaVersion.textContent = 'hermes·' + data.hermes.version;
+
+      const metaSync = document.getElementById('meta-sync');
+      if (metaSync && data.totals?.updated) {
+        const d = new Date(data.totals.updated);
+        const h = String(d.getUTCHours()).padStart(2, '0');
+        const m = String(d.getUTCMinutes()).padStart(2, '0');
+        metaSync.textContent = 'last·sync·' + h + ':' + m + '·utc';
       }
 
-      // Update hero stats — stars (target by id to avoid matching first .num)
+      // Hero sub count
+      const heroSubCount = document.getElementById('hero-sub-count');
+      if (heroSubCount && data.totals?.count) heroSubCount.textContent = data.totals.count;
+
+      // Featured repo numbers
       const heroStars = document.getElementById('hero-stars');
       if (heroStars && data.repos?.['NousResearch/hermes-agent']) {
         heroStars.textContent = formatStars(data.repos['NousResearch/hermes-agent'].stars);
       }
-
-      // Update hero "Latest" — numeric version (big) + dated tag (small)
       const heroVersion = document.getElementById('hero-version');
-      if (heroVersion && data.hermes?.version) {
-        heroVersion.textContent = data.hermes.version;
-      }
+      if (heroVersion && data.hermes?.version) heroVersion.textContent = data.hermes.version;
       const heroVersionTag = document.getElementById('hero-version-tag');
-      if (heroVersionTag && data.hermes?.tag) {
-        heroVersionTag.textContent = data.hermes.tag;
-      }
+      if (heroVersionTag && data.hermes?.tag) heroVersionTag.textContent = data.hermes.tag;
     } catch (e) {
       console.log('Stars API unavailable, using static counts', e);
     }
   }
 
   function formatStars(n) {
-    if (n >= 1000) return (n / 1000).toFixed(n >= 10000 ? 1 : 1) + 'K';
+    if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
     return String(n);
   }
 
   fetchStars();
 
-  // ── Search & Filter ──
+  // ── Search ──
   const searchInput = document.getElementById('search-input');
   const sortBtns = document.querySelectorAll('.sort-btn');
-  const categories = document.querySelectorAll('.category');
+  const categories = document.querySelectorAll('.cat');
 
   if (searchInput) {
     searchInput.addEventListener('input', () => {
@@ -1293,7 +1285,7 @@
       let totalVisible = 0;
 
       categories.forEach(cat => {
-        const items = cat.querySelectorAll('.item');
+        const items = cat.querySelectorAll('.repo-row');
         let catVisible = 0;
 
         items.forEach(item => {
@@ -1307,16 +1299,12 @@
         cat.style.display = catVisible > 0 ? '' : 'none';
         totalVisible += catVisible;
 
-        // Update count badge
-        const countEl = cat.querySelector('.count');
+        const countEl = cat.querySelector('.cat-count-n');
         if (countEl && q) countEl.textContent = catVisible;
       });
 
-      // Show result count
       const resultCount = document.getElementById('result-count');
-      if (resultCount) {
-        resultCount.textContent = q ? `${totalVisible} results` : '';
-      }
+      if (resultCount) resultCount.textContent = q ? totalVisible + ' results' : '';
     });
   }
 
@@ -1332,9 +1320,9 @@
 
   function sortItems(mode) {
     categories.forEach(cat => {
-      const container = cat.querySelector('.items');
+      const container = cat.querySelector('.cat-list');
       if (!container) return;
-      const items = Array.from(container.querySelectorAll('.item'));
+      const items = Array.from(container.querySelectorAll('.repo-row'));
 
       items.sort((a, b) => {
         if (mode === 'stars') {
@@ -1346,14 +1334,13 @@
         }
         return 0;
       });
-
       items.forEach(item => container.appendChild(item));
     });
   }
 
-  // Initialize data-stars attributes from current star text
-  document.querySelectorAll('.item').forEach(item => {
-    const starsEl = item.querySelector('.stars');
+  // Initialize data-stars from current star text
+  document.querySelectorAll('.repo-row').forEach(item => {
+    const starsEl = item.querySelector('.repo-stars');
     if (starsEl && !item.getAttribute('data-stars')) {
       const text = starsEl.textContent.replace('★', '').trim().replace(',', '');
       let val = 0;
@@ -1373,12 +1360,11 @@
   const chatMessages = document.getElementById('chat-messages');
 
   const CHAT_STORAGE_KEY = 'hermes-chat-history-v1';
-  const CHAT_MAX_SAVED = 30; // keep last 30 turns to avoid localStorage bloat
-  const WELCOME_MSG = 'Hi! I\'m the Hermes Atlas assistant. I know everything about the Hermes Agent ecosystem — tools, skills, comparisons, setup guides, and more. What would you like to know?';
+  const CHAT_MAX_SAVED = 30;
+  const WELCOME_MSG = "hi — i'm the hermes atlas assistant. ask me anything about hermes agent: tools, skills, comparisons, setup.";
 
   let chatHistory = [];
 
-  // Load saved history from localStorage
   function loadChatHistory() {
     try {
       const raw = localStorage.getItem(CHAT_STORAGE_KEY);
@@ -1386,9 +1372,7 @@
       const parsed = JSON.parse(raw);
       if (!Array.isArray(parsed)) return null;
       return parsed;
-    } catch {
-      return null;
-    }
+    } catch { return null; }
   }
 
   function saveChatHistory() {
@@ -1405,30 +1389,26 @@
     appendStaticMessage('assistant', WELCOME_MSG);
   }
 
-  // Append a message without saving (used for restoration and welcome msg)
   function appendStaticMessage(role, text, modelUsed) {
     const el = document.createElement('div');
-    el.className = `chat-msg chat-${role}`;
+    el.className = 'chat-msg chat-' + role;
     el.innerHTML = role === 'user' ? escapeHtml(text) : renderMarkdown(text);
     if (role === 'assistant' && modelUsed) {
       const badge = document.createElement('div');
       badge.className = 'chat-model-badge';
       badge.textContent = formatModelName(modelUsed);
-      badge.title = `Answered by ${modelUsed}`;
+      badge.title = 'Answered by ' + modelUsed;
       el.appendChild(badge);
     }
     chatMessages.appendChild(el);
     return el;
   }
 
-  // Initialize chat: restore history or show welcome
   function initChat() {
     const saved = loadChatHistory();
     if (saved && saved.length > 0) {
       chatHistory = saved;
-      // Show welcome first
       appendStaticMessage('assistant', WELCOME_MSG);
-      // Then restore each saved turn
       for (const msg of saved) {
         appendStaticMessage(msg.role, msg.content, msg.model);
       }
@@ -1443,7 +1423,6 @@
       chatPanel.classList.toggle('open');
       if (chatPanel.classList.contains('open')) {
         chatInput.focus();
-        // Scroll to bottom when opening
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
     });
@@ -1451,7 +1430,7 @@
   }
   if (chatClear) {
     chatClear.addEventListener('click', () => {
-      if (chatHistory.length === 0 || confirm('Clear conversation history?')) {
+      if (chatHistory.length === 0 || confirm('clear conversation history?')) {
         clearChatHistory();
         chatInput.focus();
       }
@@ -1462,21 +1441,18 @@
     const msg = chatInput.value.trim();
     if (!msg) return;
 
-    // Add user message
     appendMessage('user', msg);
     chatInput.value = '';
     chatHistory.push({ role: 'user', content: msg });
     saveChatHistory();
 
-    // Disable send button + show loading
     chatSend.disabled = true;
     chatInput.disabled = true;
-    const loadingEl = appendMessage('assistant', 'Searching the research...');
+    const loadingEl = appendMessage('assistant', 'searching the research...');
     loadingEl.classList.add('loading');
 
     try {
       const controller = new AbortController();
-      // 90 second client-side timeout (Vercel function maxDuration is 60s)
       const timeoutId = setTimeout(() => controller.abort(), 90000);
 
       const res = await fetch('/api/chat', {
@@ -1486,14 +1462,20 @@
         signal: controller.signal
       });
 
-      // Handle non-streaming error responses (rate limits return JSON 429)
-      if (!res.ok && res.headers.get('content-type')?.includes('application/json')) {
-        const errData = await res.json();
+      if (!res.ok) {
         clearTimeout(timeoutId);
-        throw new Error(errData.error || `Error ${res.status}`);
+        if (res.headers.get('content-type')?.includes('application/json')) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || 'Error ' + res.status);
+        }
+        throw new Error('Error ' + res.status + '. Please try again.');
       }
 
-      // Handle streaming response (errors come inline as text now)
+      if (!res.body) {
+        clearTimeout(timeoutId);
+        throw new Error('Empty response body. Please try again.');
+      }
+
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let fullResponse = '';
@@ -1503,8 +1485,6 @@
         const { done, value } = await reader.read();
         if (done) break;
         const chunk = decoder.decode(value, { stream: true });
-
-        // Skip the heartbeat zero-width space
         const cleaned = chunk.replace(/\u200B/g, '');
         if (!cleaned) continue;
 
@@ -1515,8 +1495,6 @@
         }
 
         fullResponse += cleaned;
-
-        // Strip the model trailer if it appears mid-stream so we never render it
         const displayText = fullResponse.replace(/\u200E__META__.*?__META__\u200E/, '');
         loadingEl.innerHTML = renderMarkdown(displayText);
         chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -1524,37 +1502,30 @@
 
       clearTimeout(timeoutId);
 
-      // Parse out the model trailer from the final response
       let modelUsed = null;
       const trailerMatch = fullResponse.match(/\u200E__META__(.*?)__META__\u200E/);
       if (trailerMatch) {
-        try {
-          const meta = JSON.parse(trailerMatch[1]);
-          modelUsed = meta.model;
-        } catch {}
+        try { modelUsed = JSON.parse(trailerMatch[1]).model; } catch {}
         fullResponse = fullResponse.replace(trailerMatch[0], '');
       }
 
-      if (!fullResponse.trim()) {
-        throw new Error('No response received. Please try again.');
-      }
+      if (!fullResponse.trim()) throw new Error('no response received. please try again.');
 
-      // Re-render final content (without trailer) and add model badge
       loadingEl.innerHTML = renderMarkdown(fullResponse);
       if (modelUsed) {
         const badge = document.createElement('div');
         badge.className = 'chat-model-badge';
         badge.textContent = formatModelName(modelUsed);
-        badge.title = `Answered by ${modelUsed}`;
+        badge.title = 'Answered by ' + modelUsed;
         loadingEl.appendChild(badge);
       }
 
       chatHistory.push({ role: 'assistant', content: fullResponse, model: modelUsed });
       saveChatHistory();
     } catch (e) {
-      let msg = e.message || 'Something went wrong. Please try again.';
+      let msg = e.message || 'something went wrong. please try again.';
       if (e.name === 'AbortError') {
-        msg = 'Request timed out. The AI service is slow right now — please try again.';
+        msg = 'request timed out. the AI service is slow right now — please try again.';
       }
       loadingEl.textContent = msg;
       loadingEl.classList.remove('loading');
@@ -1573,7 +1544,7 @@
 
   function appendMessage(role, text) {
     const el = document.createElement('div');
-    el.className = `chat-msg chat-${role}`;
+    el.className = 'chat-msg chat-' + role;
     el.innerHTML = role === 'user' ? escapeHtml(text) : renderMarkdown(text);
     chatMessages.appendChild(el);
     chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -1584,17 +1555,12 @@
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
-  // Convert long OpenRouter model IDs to friendly short names
   function formatModelName(id) {
     if (!id) return '';
-    // Strip date suffix like -20260402
     let name = id.replace(/-\d{8}$/, '');
-    // Strip :free suffix
     name = name.replace(/:free$/, '');
-    // Get the part after the slash
     const parts = name.split('/');
     const lastPart = parts[parts.length - 1];
-    // Handle common model families
     if (lastPart.includes('gemma')) return 'powered by gemma 4';
     if (lastPart.includes('gemini')) return 'powered by gemini';
     if (lastPart.includes('hermes')) return 'powered by hermes 3';

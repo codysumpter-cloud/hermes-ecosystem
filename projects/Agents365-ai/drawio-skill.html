@@ -4,240 +4,92 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>drawio-skill — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
-<meta name="description" content="drawio-skill — From Text to Professional Diagrams. An Agent Skill (SKILL.md) that generates draw.io diagrams from natural language and exports to PNG/SVG/PDF. W">
+<meta name="description" content="Generate draw.io diagrams from natural language descriptions">
 <link rel="canonical" href="https://hermesatlas.com/projects/Agents365-ai/drawio-skill">
 <meta property="og:title" content="drawio-skill — Hermes Atlas">
-<meta property="og:description" content="drawio-skill — From Text to Professional Diagrams. An Agent Skill (SKILL.md) that generates draw.io diagrams from natural language and exports to PNG/SVG/PDF. W">
+<meta property="og:description" content="Generate draw.io diagrams from natural language descriptions">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/Agents365-ai/drawio-skill">
 <meta property="og:site_name" content="Hermes Atlas">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="drawio-skill — Hermes Atlas">
-<meta name="twitter:description" content="drawio-skill — From Text to Professional Diagrams. An Agent Skill (SKILL.md) that generates draw.io diagrams from natural language and exports to PNG/SVG/PDF. W">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
-<script>
-  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
-</script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-  :root {
-    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
-    --border-subtle: #1e1e30; --border-default: #2a2a44;
-    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
-    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
-    --brand-purple: #a78bfa; --brand-star: #fbbf24;
-    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
-  }
-  [data-theme="light"] {
-    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
-    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
-    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
-    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
-    --brand-star: #d97706;
-    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
-  }
-
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: var(--bg-base); color: var(--text-primary);
-    font-family: 'Inter', -apple-system, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    transition: background 0.2s, color 0.2s;
-  }
-  a { color: var(--text-link); text-decoration: none; }
-  a:hover { color: var(--text-link-hover); text-decoration: underline; }
-
-  .nav {
-    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
-    display: flex; justify-content: space-between; align-items: center;
-    max-width: 960px; margin: 0 auto;
-  }
-  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
-  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
-  .nav-actions { display: flex; gap: 8px; align-items: center; }
-  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
-  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
-  #theme-toggle {
-    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
-    border: 1px solid var(--border-subtle); color: var(--text-secondary);
-    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
-  }
-  #theme-toggle:hover { border-color: var(--brand-purple); }
-  #theme-toggle .icon-sun { display: none; }
-  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
-  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
-
-  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
-
-  .breadcrumb { margin-bottom: 16px; }
-  .breadcrumb a {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
-    background: var(--overlay-medium); color: var(--text-tertiary);
-  }
-  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
-
-  .project h1 {
-    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
-  }
-  .project-desc {
-    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
-  }
-  .meta-row {
-    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
-    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
-  }
-  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
-  .meta-row .badge {
-    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.3px;
-  }
-  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
-  .meta-row .badge-lang { background: var(--overlay-medium); }
-
-  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
-  .actions a {
-    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
-    transition: opacity 0.15s;
-  }
-  .actions .btn-primary {
-    background: linear-gradient(135deg, #a78bfa, #818cf8);
-    color: #fff;
-  }
-  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
-  .actions .btn-secondary {
-    background: var(--overlay-medium); color: var(--text-secondary);
-    border: 1px solid var(--border-subtle);
-  }
-  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
-
-  /* README styles */
-  .readme {
-    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
-  }
-  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
-  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
-  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
-  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
-  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
-  .readme a { color: var(--text-link); }
-  .readme strong { color: var(--text-primary); }
-  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
-  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
-  .readme li { margin-bottom: 4px; }
-  .readme code {
-    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
-    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
-  }
-  .readme pre {
-    background: var(--bg-card); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
-  }
-  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
-  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
-  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
-  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
-  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
-  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
-  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
-
-  /* Project summary (LLM-generated) */
-  .project-summary { margin-bottom: 32px; }
-  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
-  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
-  .summary-highlights {
-    list-style: none; margin: 0; padding: 0;
-    display: flex; flex-wrap: wrap; gap: 8px;
-  }
-  .summary-highlights li {
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
-    color: var(--text-secondary);
-  }
-
-  /* Collapsed README */
-  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
-  .readme-toggle {
-    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
-    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .readme-toggle:hover { color: var(--text-primary); }
-
-  /* Related projects */
-  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
-  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
-  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-  .related-chip {
-    display: inline-flex; align-items: center; gap: 5px;
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
-    color: var(--text-secondary); white-space: nowrap;
-  }
-  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
-  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
-  .list-link { margin-top: 12px; font-size: 13px; }
-
-  .page-footer {
-    text-align: center; margin-top: 40px; padding-top: 24px;
-    border-top: 1px solid var(--border-subtle);
-    font-size: 11px; color: var(--text-muted);
-  }
-  .page-footer a { color: var(--text-link); }
-
-  @media (max-width: 600px) {
-    .project { padding: 24px 16px 60px; }
-    .project h1 { font-size: 22px; }
-  }
-</style>
+<meta name="twitter:description" content="Generate draw.io diagrams from natural language descriptions">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
+<script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
 </head>
 <body>
-<nav class="nav">
-  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
-  <div class="nav-actions">
-    <a href="/" class="nav-link">Ecosystem Map</a>
-    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
-  </div>
-</nav>
 
-<article class="project">
-  <div class="breadcrumb">
-    <a href="/">Skills &amp; Skill Registries</a>
-  </div>
+<a class="skip-link" href="#main">Skip to content</a>
 
-  <h1>drawio-skill</h1>
-  <p class="project-desc">drawio-skill — From Text to Professional Diagrams. An Agent Skill (SKILL.md) that generates draw.io diagrams from natural language and exports to PNG/SVG/PDF. Works with Claude Code, OpenClaw, Hermes Agent, OpenAI Codex, and SkillsMP.</p>
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span>apr·2026</span>
+    <span>93·repos</span>
+    <span>hermes·v0.10.0</span>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/" class="active">map</a>
+    <a href="/#curated-lists">lists</a>
+    <a href="/reports/state-of-hermes-april-2026">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="/lists/top-skills">skills &amp; skill registries</a><span class="sep">/</span>drawio-skill
+</div>
+
+<article id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">Agents365-ai</span><span class="slash">/</span>drawio-skill
+  </h1>
+  <p class="project-desc">Generate draw.io diagrams from natural language descriptions</p>
 
   <div class="meta-row">
-    <span class="stars">★ 278</span>
-    <span class="badge badge-lang">Shell</span>
+    <span class="stars">★ 131</span>
     
     
-    <span>Updated 4/6/2026</span>
+    
+    
   </div>
 
   <div class="actions">
-    <a href="https://github.com/Agents365-ai/drawio-skill" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
-    <a href="https://agents365-ai.github.io/drawio-skill/" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>
+    <a href="https://github.com/Agents365-ai/drawio-skill" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    
   </div>
+</section>
 
-  
-  <section class="project-summary">
-    <h2>Overview</h2>
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
     <p class="summary-text">This project is a diagramming skill that enables AI agents to generate professional draw.io XML files and image exports from natural language descriptions. It utilizes the native draw.io desktop CLI to produce grid-aligned diagrams with specialized presets for architectures, UML, and machine learning models. The tool features an iterative self-check loop that automatically identifies and fixes layout issues while supporting animated connectors for data-flow visualization. It integrates with major agent platforms including Hermes Agent, Claude Code, and OpenClaw.</p>
     <ul class="summary-highlights">
       <li>Generates editable .drawio files and exports to PNG, SVG, or PDF</li>
       <li>Includes 6 diagram presets including ML models with tensor shape annotations</li>
       <li>Automated self-check loop identifies and fixes six common layout issues</li>
     </ul>
-  </section>
+  </div>
+</section>
 
-  <details class="readme-details">
-    <summary class="readme-toggle">Full README from GitHub</summary>
-    <section class="readme" data-nosnippet>
-      <h1>drawio-skill — From Text to Professional Diagrams</h1>
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <h4>drawio-skill — From Text to Professional Diagrams</h4>
 <p><a href="https://github.com/Agents365-ai/drawio-skill/blob/main/README_CN.md">中文文档</a> | <a href="https://agents365-ai.github.io/drawio-skill/">Online Docs</a></p>
-<h2>What it does</h2>
+<h5>What it does</h5>
 <ul>
 <li>Generates <code>.drawio</code> XML files from natural language descriptions</li>
 <li>Exports diagrams to PNG, SVG, PDF, or JPG using the native draw.io desktop CLI</li>
@@ -250,7 +102,7 @@
 <li><strong>Auto-launch</strong> draw.io desktop after export for manual fine-tuning</li>
 <li>Triggers automatically when diagrams would help explain complex systems</li>
 </ul>
-<h2>Multi-Platform Support</h2>
+<h5>Multi-Platform Support</h5>
 <p>Works with all major AI coding agents that support the <a href="https://agentskills.io">Agent Skills</a> format:</p>
 <table>
 <thead>
@@ -286,8 +138,8 @@
 <td>GitHub topics configured</td>
 </tr>
 </tbody></table>
-<h2>Comparison</h2>
-<h3>vs No Skill (native agent)</h3>
+<h5>Comparison</h5>
+<h6>vs No Skill (native agent)</h6>
 <table>
 <thead>
 <tr>
@@ -372,7 +224,7 @@
 <td>Yes — opens <code>.drawio</code> file after export for fine-tuning</td>
 </tr>
 </tbody></table>
-<h3>vs Other draw.io Skills &amp; Tools</h3>
+<h6>vs Other draw.io Skills &amp; Tools</h6>
 <table>
 <thead>
 <tr>
@@ -503,7 +355,7 @@
 <td>❌ needs plugin install</td>
 </tr>
 </tbody></table>
-<h3>Key advantages</h3>
+<h6>Key advantages</h6>
 <ol>
 <li><strong>Self-check + iterative loop</strong> — the only pure-SKILL.md solution that reads its own output and auto-fixes before showing the user, then supports multi-round refinement</li>
 <li><strong>6 diagram type presets</strong> — ERD, UML Class, Sequence, Architecture, ML/Deep Learning, Flowchart — each with preset shapes, styles, and layout conventions</li>
@@ -512,7 +364,7 @@
 <li><strong>Production-grade layout</strong> — grid-aligned coordinates, complexity-scaled spacing, routing corridors, hub-center strategy, animated connectors</li>
 <li><strong>Browser fallback</strong> — generates diagrams.net URLs when the desktop CLI is unavailable, plus auto-launch for desktop editing</li>
 </ol>
-<h2>Supported diagram types</h2>
+<h5>Supported diagram types</h5>
 <ul>
 <li><strong>Architecture</strong>: microservices, cloud (AWS/GCP/Azure), network topology, deployment — with tier-based swimlanes and hub-center strategy</li>
 <li><strong>ML / Deep Learning</strong>: Transformer, CNN, LSTM, GRU architectures — with tensor shape annotations and layer-type color coding</li>
@@ -521,26 +373,26 @@
 <li><strong>Data</strong>: ER diagrams (table containers, PK/FK notation), data flow diagrams (DFD)</li>
 <li><strong>Other</strong>: org charts, mind maps, wireframes</li>
 </ul>
-<h2>How it works</h2>
+<h5>How it works</h5>
 <p align="center">
   <img src="https://raw.githubusercontent.com/Agents365-ai/drawio-skill/main/assets/workflow.png" width="420" alt="Workflow">
 </p>
 
-<h2>Prerequisites</h2>
+<h5>Prerequisites</h5>
 <p>The draw.io desktop app must be installed for diagram export:</p>
-<h3>macOS</h3>
+<h6>macOS</h6>
 <pre><code class="language-bash"># Recommended — Homebrew
 brew install --cask drawio
 
 # Verify
 drawio --version
 </code></pre>
-<h3>Windows</h3>
+<h6>Windows</h6>
 <p>Download and install from: <a href="https://github.com/jgraph/drawio-desktop/releases">https://github.com/jgraph/drawio-desktop/releases</a></p>
 <pre><code class="language-powershell"># Verify
 &quot;C:\Program Files\draw.io\draw.io.exe&quot; --version
 </code></pre>
-<h3>Linux</h3>
+<h6>Linux</h6>
 <p>Download <code>.deb</code> or <code>.rpm</code> from: <a href="https://github.com/jgraph/drawio-desktop/releases">https://github.com/jgraph/drawio-desktop/releases</a></p>
 <pre><code class="language-bash"># Headless export (required on Linux servers without display)
 sudo apt install xvfb  # Debian/Ubuntu
@@ -566,15 +418,15 @@ xvfb-run -a drawio --version
 <td>Wrap commands with <code>xvfb-run -a</code> for headless export</td>
 </tr>
 </tbody></table>
-<h2>Skill Installation</h2>
-<h3>Claude Code</h3>
+<h5>Skill Installation</h5>
+<h6>Claude Code</h6>
 <pre><code class="language-bash"># Global install (available in all projects)
 git clone https://github.com/Agents365-ai/drawio-skill.git ~/.claude/skills/drawio-skill
 
 # Project-level install
 git clone https://github.com/Agents365-ai/drawio-skill.git .claude/skills/drawio-skill
 </code></pre>
-<h3>OpenClaw</h3>
+<h6>OpenClaw</h6>
 <pre><code class="language-bash"># Via ClawHub
 clawhub install drawio-pro-skill
 
@@ -584,7 +436,7 @@ git clone https://github.com/Agents365-ai/drawio-skill.git ~/.openclaw/skills/dr
 # Project-level install
 git clone https://github.com/Agents365-ai/drawio-skill.git skills/drawio-skill
 </code></pre>
-<h3>Hermes Agent</h3>
+<h6>Hermes Agent</h6>
 <pre><code class="language-bash"># Install under design category
 git clone https://github.com/Agents365-ai/drawio-skill.git ~/.hermes/skills/design/drawio-skill
 </code></pre>
@@ -593,22 +445,22 @@ git clone https://github.com/Agents365-ai/drawio-skill.git ~/.hermes/skills/desi
   external_dirs:
     - ~/myskills/drawio-skill
 </code></pre>
-<h3>OpenAI Codex</h3>
+<h6>OpenAI Codex</h6>
 <pre><code class="language-bash"># User-level install
 git clone https://github.com/Agents365-ai/drawio-skill.git ~/.agents/skills/drawio-skill
 
 # Project-level install
 git clone https://github.com/Agents365-ai/drawio-skill.git .agents/skills/drawio-skill
 </code></pre>
-<h3>SkillsMP</h3>
+<h6>SkillsMP</h6>
 <p>Browse on <a href="https://skillsmp.com/skills/agents365-ai-drawio-skill-skill-md">SkillsMP</a> or use the CLI:</p>
 <pre><code class="language-bash">skills install drawio-skill
 </code></pre>
-<h3>ClawHub</h3>
+<h6>ClawHub</h6>
 <p>Browse on <a href="https://clawhub.ai/agents365-ai/drawio-pro-skill">ClawHub</a> or use the CLI:</p>
 <pre><code class="language-bash">clawhub install drawio-pro-skill
 </code></pre>
-<h3>Installation paths summary</h3>
+<h6>Installation paths summary</h6>
 <table>
 <thead>
 <tr>
@@ -643,7 +495,7 @@ git clone https://github.com/Agents365-ai/drawio-skill.git .agents/skills/drawio
 <td>N/A</td>
 </tr>
 </tbody></table>
-<h2>Updates</h2>
+<h5>Updates</h5>
 <p>Check for updates:</p>
 <pre><code class="language-bash"># Run from anywhere — pass your install path
 bash ~/.claude/skills/drawio-skill/scripts/check-update.sh
@@ -661,13 +513,13 @@ clawhub update drawio-pro-skill
 # SkillsMP
 skills update drawio-skill
 </code></pre>
-<h2>Usage</h2>
+<h5>Usage</h5>
 <p>Just describe what you want:</p>
 <pre><code>Create a microservices e-commerce architecture with API Gateway, auth/user/order/product/payment services,
 Kafka message queue, notification service, and separate databases for each service
 </code></pre>
 <p>The agent will generate the <code>.drawio</code> XML file and export it to PNG automatically.</p>
-<h2>Example</h2>
+<h5>Example</h5>
 <p><strong>Prompt:</strong></p>
 <blockquote>
 <p>Create a microservices e-commerce architecture with Mobile/Web/Admin clients, API Gateway,
@@ -676,18 +528,18 @@ and User DB / Order DB / Product DB / Redis Cache / Stripe API</p>
 </blockquote>
 <p><strong>Output:</strong></p>
 <p><img src="https://raw.githubusercontent.com/Agents365-ai/drawio-skill/main/assets/microservices-example.png" alt="Microservices Architecture"></p>
-<h2>Topology demos</h2>
+<h5>Topology demos</h5>
 <p>The skill handles various diagram topologies with clean edge routing — no lines crossing through shapes.</p>
-<h3>Star topology (7 nodes)</h3>
+<h6>Star topology (7 nodes)</h6>
 <p>Central message broker with 6 microservices radiating outward. Edges enter Kafka from different sides, zero crossings.</p>
 <p><img src="https://raw.githubusercontent.com/Agents365-ai/drawio-skill/main/assets/demo-star.png" alt="Star topology"></p>
-<h3>Layered flow (10 nodes, 4 tiers)</h3>
+<h6>Layered flow (10 nodes, 4 tiers)</h6>
 <p>E-commerce architecture with 2 cross-connections: Order→Product (same-tier horizontal) and Auth→Redis (diagonal via routing corridor). All edges route cleanly.</p>
 <p><img src="https://raw.githubusercontent.com/Agents365-ai/drawio-skill/main/assets/demo-layered.png" alt="Layered flow"></p>
-<h3>Ring / cycle (8 nodes)</h3>
+<h6>Ring / cycle (8 nodes)</h6>
 <p>CI/CD pipeline with a closed loop and 2 spur branches. Edges flow along the perimeter without crossing the interior.</p>
 <p><img src="https://raw.githubusercontent.com/Agents365-ai/drawio-skill/main/assets/demo-ring.png" alt="Ring cycle"></p>
-<h2>Files</h2>
+<h5>Files</h5>
 <ul>
 <li><code>SKILL.md</code> — <strong>the only required file</strong>. Loaded by all platforms as the skill instructions.</li>
 <li><code>agents/openai.yaml</code> — OpenAI Codex-specific configuration (UI, policy)</li>
@@ -702,7 +554,7 @@ and User DB / Order DB / Product DB / Redis Cache / Stripe API</p>
 <blockquote>
 <p>All example diagrams were generated by Claude Opus 4.6 with this skill.</p>
 </blockquote>
-<h2>Known Limitations</h2>
+<h5>Known Limitations</h5>
 <ul>
 <li><strong>Command name varies by platform</strong>: macOS Homebrew installs the command as <code>draw.io</code>; some Linux packages use <code>drawio</code>. The skill handles both, but verify which name works on your system with <code>draw.io --version</code> or <code>drawio --version</code></li>
 <li><strong>Linux headless export</strong>: Requires <code>xvfb</code> for display virtualization — without it, CLI export will fail on servers without a display</li>
@@ -711,9 +563,9 @@ and User DB / Order DB / Product DB / Redis Cache / Stripe API</p>
 <li><strong>Cloud icons</strong>: Currently supports basic AWS resource icons. GCP, Azure, and Kubernetes icon sets are not yet included</li>
 <li><strong>No source .drawio for microservices example</strong>: The <code>microservices-example.png</code> in assets was generated in a session but the source <code>.drawio</code> was not preserved</li>
 </ul>
-<h2>License</h2>
+<h5>License</h5>
 <p>MIT</p>
-<h2>Support</h2>
+<h5>Support</h5>
 <p>If this skill helps you, consider supporting the author:</p>
 <table>
   <tr>
@@ -735,43 +587,66 @@ and User DB / Order DB / Product DB / Redis Cache / Stripe API</p>
   </tr>
 </table>
 
-<h2>Author</h2>
+<h5>Author</h5>
 <p><strong>Agents365-ai</strong></p>
 <ul>
 <li>Bilibili: <a href="https://space.bilibili.com/441831884">https://space.bilibili.com/441831884</a></li>
 <li>GitHub: <a href="https://github.com/Agents365-ai">https://github.com/Agents365-ai</a></li>
 </ul>
+  </section>
+</details>
 
-    </section>
-  </details>
-
-  <aside class="related">
-    <h2>More in Skills &amp; Skill Registries</h2>
-    <div class="related-grid">
-      <a href="/projects/mukul975/Anthropic-Cybersecurity-Skills" class="related-chip">Anthropic-Cybersecurity-Skills <span class="related-stars">4.1K</span></a>
-          <a href="/projects/conorbronsdon/avoid-ai-writing" class="related-chip">avoid-ai-writing <span class="related-stars">759</span></a>
-          <a href="/projects/wondelai/skills" class="related-chip">wondelai/skills <span class="related-stars">480</span></a>
-          <a href="/projects/DougTrajano/pydantic-ai-skills" class="related-chip">pydantic-ai-skills <span class="related-stars">220</span></a>
-          <a href="/projects/smartcontractkit/chainlink-agent-skills" class="related-chip">chainlink-agent-skills <span class="related-stars">85</span></a>
-          <a href="/projects/tlehman/litprog-skill" class="related-chip">litprog-skill <span class="related-stars">81</span></a>
-          <a href="/projects/esaradev/icarus-plugin" class="related-chip">icarus-plugin <span class="related-stars">51</span></a>
-          <a href="/projects/chigwell/skilldock.io" class="related-chip">skilldock.io <span class="related-stars">50</span></a>
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in skills &amp; skill registries</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/mukul975/Anthropic-Cybersecurity-Skills">
+        <div class="stars">★ 4.1K</div>
+        <div class="name"><span class="org">mukul975 /</span> Anthropic-Cybersecurity-Skills</div>
+      </a>
+      <a class="related-row" href="/projects/conorbronsdon/avoid-ai-writing">
+        <div class="stars">★ 759</div>
+        <div class="name"><span class="org">conorbronsdon /</span> avoid-ai-writing</div>
+      </a>
+      <a class="related-row" href="/projects/wondelai/skills">
+        <div class="stars">★ 480</div>
+        <div class="name"><span class="org">wondelai /</span> skills</div>
+      </a>
+      <a class="related-row" href="/projects/DougTrajano/pydantic-ai-skills">
+        <div class="stars">★ 220</div>
+        <div class="name"><span class="org">DougTrajano /</span> pydantic-ai-skills</div>
+      </a>
+      <a class="related-row" href="/projects/smartcontractkit/chainlink-agent-skills">
+        <div class="stars">★ 85</div>
+        <div class="name"><span class="org">smartcontractkit /</span> chainlink-agent-skills</div>
+      </a>
+      <a class="related-row" href="/projects/tlehman/litprog-skill">
+        <div class="stars">★ 81</div>
+        <div class="name"><span class="org">tlehman /</span> litprog-skill</div>
+      </a>
+      <a class="related-row" href="/projects/esaradev/icarus-plugin">
+        <div class="stars">★ 51</div>
+        <div class="name"><span class="org">esaradev /</span> icarus-plugin</div>
+      </a>
+      <a class="related-row" href="/projects/chigwell/skilldock.io">
+        <div class="stars">★ 50</div>
+        <div class="name"><span class="org">chigwell /</span> skilldock.io</div>
+      </a>
     </div>
-    <p class="list-link"><a href="/lists/top-skills">See all Skills &amp; Skill Registries projects →</a></p>
-  </aside>
+    <p class="list-link"><a href="/lists/top-skills">see all skills &amp; skill registries →</a></p>
+  </div>
+</aside>
+
 </article>
 
-<div class="page-footer">
-  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
-</div>
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
 
-<script>
-  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
-    const c=document.documentElement.getAttribute('data-theme');
-    const n=c==='light'?'dark':'light';
-    document.documentElement.setAttribute('data-theme',n);
-    try{localStorage.setItem('theme',n)}catch(e){}
-  });
-</script>
+<script>(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();</script>
 </body>
 </html>
