@@ -1,13 +1,13 @@
 {
   "NousResearch/hermes-agent": {
-    "summary": "Hermes Agent is an open-source AI assistant designed for continuous learning and cross-platform task execution. It utilizes a closed learning loop to autonomously create and refine skills from experience while maintaining persistent user modeling and session memory. The system supports 14 messaging platforms and six execution backends, including Docker and SSH, allowing it to run on everything from local terminals to serverless cloud infrastructure. Users can integrate over 200 models from various providers and automate complex workflows using a built-in cron scheduler.",
+    "summary": "Hermes Agent is an open-source AI assistant designed for persistent, cross-platform task execution and self-improvement. It utilizes a closed learning loop to autonomously create and refine skills from experience while maintaining user models and session history. The system supports 14 messaging platforms and six execution backends, including Docker and SSH, allowing it to run on diverse infrastructure from local machines to serverless cloud environments. Users can integrate over 200 models through various providers and automate workflows using a built-in natural language cron scheduler.",
     "highlights": [
       "Autonomous skill creation and self-improvement through a closed learning loop.",
       "Supports 14 platforms including Telegram, Discord, Slack, and WhatsApp.",
-      "Six execution backends including Docker, SSH, and serverless Modal environments."
+      "Six execution backends including Docker, SSH, and serverless Modal persistence."
     ],
-    "readmeHash": "1e1a381a87f39311c33bc0a8f13c37a0d10e15b2e58ca54bb9a177984a5ca4b1",
-    "generatedAt": "2026-04-17T21:34:21.438Z",
+    "readmeHash": "3aacd1e2afd29e14cc54418fe70591db82e6531fdf51263ab68bc763560402b7",
+    "generatedAt": "2026-04-18T06:51:30.035Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -149,8 +149,8 @@
       "Uses a three-tier word replacement table for precise editing",
       "Performs a second-pass audit to catch surviving linguistic patterns"
     ],
-    "readmeHash": "ee6ed1867fef9014dd54ab69ab64fc235286af817c42a603ed1319ccfa2824a7",
-    "generatedAt": "2026-04-17T18:15:20.222Z",
+    "readmeHash": "7d44aceca91db29cc3ccc2fd257e1e26255b81806aaa70c8f8e1838b6ef4f452",
+    "generatedAt": "2026-04-18T06:51:35.179Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -520,14 +520,14 @@
     "audit": "pass"
   },
   "swarmclawai/swarmclaw": {
-    "summary": "SwarmClaw is a self-hosted runtime designed to orchestrate and manage autonomous AI agent swarms. It operates as a multi-provider system that supports MCP-native tools, delegation, and scheduled tasks across various LLM backends and CLI-based agents. The platform features an organizational chart interface for visualizing agent hierarchies and includes a reviewed conversation-to-skill learning mechanism. It integrates with over 20 providers, including OpenClaw, Hermes, and local models via Ollama.",
+    "summary": "SwarmClaw is a self-hosted runtime designed for orchestrating and managing autonomous AI agent swarms. It operates as a multi-provider system that supports MCP-native tools, delegation, and scheduled tasks across various LLM backends and CLI-based agents. The platform enables agents to learn new skills from reviewed conversations and provides an organizational chart interface to visualize team activity. It integrates with over 20 providers, including OpenClaw, Hermes, and local models via Ollama.",
     "highlights": [
       "Self-hosted runtime for autonomous agent orchestration and delegation",
-      "Supports 23 providers including OpenClaw, Hermes, and major LLM APIs",
-      "Native MCP support with durable memory and runtime skill learning"
+      "Supports 23 providers including Hermes, OpenClaw, and local Ollama",
+      "Features conversation-to-skill learning and persistent agent memory"
     ],
-    "readmeHash": "790f3abfead15c1cfc20bd6d50bdc6c323f6496fd7732439a390855f5e86c690",
-    "generatedAt": "2026-04-17T21:34:40.573Z",
+    "readmeHash": "bbd697fbd1fed8eaa9b58aa56c7a332fc2be2e10ba38da08dd8f8ad6fa3418c3",
+    "generatedAt": "2026-04-18T06:51:44.261Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"

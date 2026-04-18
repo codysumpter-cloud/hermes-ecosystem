@@ -209,11 +209,11 @@
   <p class="project-desc">The agent that grows with you</p>
 
   <div class="meta-row">
-    <span class="stars">★ 96.6K</span>
+    <span class="stars">★ 97.5K</span>
     <span class="badge badge-lang">Python</span>
     <span class="badge badge-lang">MIT</span>
     <span class="badge badge-official">Nous Research</span>
-    <span>Updated 4/17/2026</span>
+    <span>Updated 4/18/2026</span>
   </div>
 
   <div class="actions">
@@ -224,11 +224,11 @@
   
   <section class="project-summary">
     <h2>Overview</h2>
-    <p class="summary-text">Hermes Agent is an open-source AI assistant designed for continuous learning and cross-platform task execution. It utilizes a closed learning loop to autonomously create and refine skills from experience while maintaining persistent user modeling and session memory. The system supports 14 messaging platforms and six execution backends, including Docker and SSH, allowing it to run on everything from local terminals to serverless cloud infrastructure. Users can integrate over 200 models from various providers and automate complex workflows using a built-in cron scheduler.</p>
+    <p class="summary-text">Hermes Agent is an open-source AI assistant designed for persistent, cross-platform task execution and self-improvement. It utilizes a closed learning loop to autonomously create and refine skills from experience while maintaining user models and session history. The system supports 14 messaging platforms and six execution backends, including Docker and SSH, allowing it to run on diverse infrastructure from local machines to serverless cloud environments. Users can integrate over 200 models through various providers and automate workflows using a built-in natural language cron scheduler.</p>
     <ul class="summary-highlights">
       <li>Autonomous skill creation and self-improvement through a closed learning loop.</li>
       <li>Supports 14 platforms including Telegram, Discord, Slack, and WhatsApp.</li>
-      <li>Six execution backends including Docker, SSH, and serverless Modal environments.</li>
+      <li>Six execution backends including Docker, SSH, and serverless Modal persistence.</li>
     </ul>
   </section>
 
@@ -438,10 +438,14 @@ hermes claw migrate --overwrite  # Overwrite existing conflicts
 <hr>
 <h2>Contributing</h2>
 <p>We welcome contributions! See the <a href="https://hermes-agent.nousresearch.com/docs/developer-guide/contributing">Contributing Guide</a> for development setup, code style, and PR process.</p>
-<p>Quick start for contributors:</p>
+<p>Quick start for contributors — clone and go with <code>setup-hermes.sh</code>:</p>
 <pre><code class="language-bash">git clone https://github.com/NousResearch/hermes-agent.git
 cd hermes-agent
-curl -LsSf https://astral.sh/uv/install.sh | sh
+./setup-hermes.sh     # installs uv, creates venv, installs .[all], symlinks ~/.local/bin/hermes
+./hermes              # auto-detects the venv, no need to `source` first
+</code></pre>
+<p>Manual path (equivalent to the above):</p>
+<pre><code class="language-bash">curl -LsSf https://astral.sh/uv/install.sh | sh
 uv venv venv --python 3.11
 source venv/bin/activate
 uv pip install -e &quot;.[all,dev]&quot;
