@@ -767,14 +767,14 @@
     "audit": "pass"
   },
   "joeynyc/hermes-skins": {
-    "summary": "Hermes Skins is a collection of community-driven visual themes for the Hermes CLI agent that allows users to customize the terminal interface's appearance. The project utilizes YAML configuration files to modify visual elements such as ASCII art banners, color schemes, spinner animations, and branding text without altering the agent's underlying logic. Users can apply themes like Skynet, Vault-Tec, or Sakura by placing files in a local directory and updating their configuration. This system supports partial overrides, meaning custom skins inherit missing values from a default template for easier creation.",
+    "summary": "Hermes Skins is a collection of community-contributed visual themes for the Hermes CLI agent. It allows users to customize the terminal interface by modifying YAML configuration files that define banner colors, ASCII art, spinner animations, and branding text. The project uses a inheritance-based engine where custom skins merge with default settings, enabling partial overrides for specific UI elements. Available themes range from retro-computing aesthetics like MS-DOS and Vault-Tec to modern synthwave and anime-inspired designs.",
     "highlights": [
-      "Customizes CLI visuals including banners, spinners, and response-box labels",
-      "Uses YAML files for simple theme definition and inheritance",
-      "Includes diverse themes like Pirate, Vault-Tec, and Cyberdyne Systems"
+      "Customizes CLI visuals including ASCII banners, spinners, and color schemes",
+      "Uses YAML-based configuration files for easy theme creation and sharing",
+      "Inherits missing values from default skin for simplified customization"
     ],
-    "readmeHash": "8fc83843747a861c7734158e851b5a02ddfd12fa4f3a7e822adf214f411b4740",
-    "generatedAt": "2026-04-17T18:18:50.381Z",
+    "readmeHash": "e265244c32a30f7e24322932bf32abc1f90bae41f55bd815a6180586ce756543",
+    "generatedAt": "2026-04-18T19:18:47.966Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -793,14 +793,14 @@
     "audit": "pass"
   },
   "unmodeled-tyler/vessel-browser": {
-    "summary": "Vessel is an open-source Chromium-based browser designed for persistent web agents that require durable state and human supervision. It operates as a Model Context Protocol (MCP) host, allowing external agent harnesses like Hermes to control the browser while maintaining a visible UI for human auditing and intervention. The platform features named session persistence, structured page visibility context, and built-in tools for handling popups and consent walls. It bridges the gap between headless automation and manual browsing by providing a dedicated runtime for long-running autonomous workflows.",
+    "summary": "Vessel is an open-source Chromium-based browser designed to provide a persistent, human-supervised environment for autonomous web agents. It functions as a runtime that exposes browser state and controls to external agent harnesses via the Model Context Protocol (MCP). The interface allows humans to audit agent activity in real-time, intervene in workflows, and manage durable sessions with named checkpoints and credential storage. It integrates with major LLM providers and supports specialized agent tools like page diffing, popup recovery, and structured visibility context.",
     "highlights": [
-      "MCP-native control for external agent harnesses and Hermes Agent",
-      "Durable session persistence for cookies, bookmarks, and tab layouts",
-      "Human-in-the-loop supervisory interface with live agent transcripts and approvals"
+      "Provides a human-visible UI for auditing and intervening in agent workflows",
+      "Exposes browser control and state management through MCP endpoints",
+      "Maintains persistent agent sessions with named checkpoints and cookie storage"
     ],
-    "readmeHash": "e3f5f69878b266a3c6fe02fea3bf424deb3705f508877d4043cd4e4d90d4648d",
-    "generatedAt": "2026-04-17T18:18:58.676Z",
+    "readmeHash": "c2d4c3cfae93753cefb0f54acb2c632e26c18aae3428ac901c1dcac1ca880522",
+    "generatedAt": "2026-04-18T19:18:52.491Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -1131,40 +1131,40 @@
     "audit": "pass"
   },
   "nesquena/hermes-webui": {
-    "summary": "Hermes WebUI is a lightweight, dark-themed browser interface for the Hermes Agent, providing a graphical alternative to the command-line environment. Built with Python and vanilla JavaScript, it achieves 1:1 parity with the CLI without requiring complex build steps or frameworks. The interface features a three-panel layout for managing sessions, active chats, and workspace file browsing. It includes a dedicated control center for managing agent settings, model profiles, and persistent memory features.",
+    "summary": "Hermes WebUI is a lightweight, dark-themed browser interface for the Hermes Agent, providing a graphical alternative to the command-line environment. It is built using Python and vanilla JavaScript without heavy frameworks or build steps, ensuring full parity with the CLI's features. The interface features a three-panel layout for managing sessions, chat interactions, and workspace file browsing. It includes a dedicated control center for settings and a visual context ring to monitor token usage in real-time.",
     "highlights": [
-      "Full parity with Hermes CLI features in a web interface",
-      "Three-panel layout for chat, sessions, and workspace file browsing",
-      "Lightweight architecture using Python and vanilla JavaScript without bundlers"
+      "Three-panel layout for sessions, chat, and workspace file browsing",
+      "Zero-build architecture using Python and vanilla JavaScript",
+      "Full feature parity with the Hermes Agent CLI experience"
     ],
-    "readmeHash": "c79f38dc704d4abc2e2dc81bdddd7988e374821a76fcf5c4d987f1646a33fc98",
-    "generatedAt": "2026-04-17T18:20:52.906Z",
+    "readmeHash": "2a4cc7216750955bb771d5661d3e6ab6417ca16e6d77a3e9c05ce7124e86d9a5",
+    "generatedAt": "2026-04-18T19:19:01.263Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
   },
   "garrytan/gbrain": {
-    "summary": "GBrain is a persistent memory and context layer designed to transform AI agents into long-term knowledge repositories. It utilizes a local PGLite database and a library of 25 specialized skills to ingest, enrich, and cross-link data from meetings, emails, and social media. The system operates on a \"brain-first\" principle, requiring agents to query internal memory for context before executing external API calls or generating responses. This architecture enables autonomous background tasks like citation fixing, entity extraction, and automated daily briefings via MCP server integrations.",
+    "summary": "GBrain is a persistent memory and knowledge graph system designed to provide AI agents with long-term context and structured information retrieval. It utilizes a hybrid search approach and a self-wiring knowledge graph to automatically extract entities and create typed relationships from ingested meetings, emails, and notes. The system operates through 26 specialized skills that manage tasks such as content ingestion, automated enrichment of person and company profiles, and autonomous maintenance. It integrates directly with Hermes Agent and OpenClaw via MCP tools or a standalone CLI using PGLite for local storage.",
     "highlights": [
-      "Provides 25 specialized skills for autonomous data ingestion and enrichment",
-      "Exposes 30+ MCP tools for integration with Claude and Cursor",
-      "Uses PGLite for zero-config local vector and relational storage"
+      "Automates entity extraction and typed relationship linking without LLM calls",
+      "Features 26 modular skills for ingestion, enrichment, and autonomous maintenance",
+      "Implements hybrid search and backlink-boosted ranking for high-precision retrieval"
     ],
-    "readmeHash": "eedec922e5e5996ffe3463e39e9723daeafdf707d9c01961da961728bf1d4434",
-    "generatedAt": "2026-04-17T18:20:57.303Z",
+    "readmeHash": "6ba315a4c9bcd35bb6c210b7ab7df45cbe07911156439fe18d8b1d24c7b7a36a",
+    "generatedAt": "2026-04-18T19:19:05.153Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
   },
   "pyrate-llama/hermes-ui": {
-    "summary": "Hermes UI is a glassmorphic web interface designed to provide a visual management layer for the self-hosted Hermes Agent. It operates as a single-file React application served via a lightweight Python proxy that handles real-time log streaming and API communication without external pip dependencies. The interface includes specialized panels for monitoring system stats, inspecting internal memory files, and browsing Model Context Protocol (MCP) tools. Users can also preview generated artifacts like HTML or SVG files in a sandboxed environment and manage their agent's skills and session history.",
+    "summary": "Hermes UI is a glassmorphic web interface designed for the self-hosted Hermes Agent ecosystem. It functions as a single-file React application served via a lightweight Python proxy, requiring no external dependencies or build steps. The interface provides specialized tools for agent interaction, including real-time log streaming, an artifact panel for rendering HTML/SVG, and a memory inspector for editing internal state files. It also enforces optional behavioral guidelines to focus the agent on surgical, goal-driven code collaboration.",
     "highlights": [
-      "Single-file React architecture with no build steps or dependencies",
-      "Real-time log streaming and tool call visualization via SSE",
-      "Integrated file browser and memory inspector for agent configuration"
+      "Single-file React architecture with no npm dependencies",
+      "Real-time artifact panel for live HTML and SVG rendering",
+      "Integrated file browser and memory inspector for agent state"
     ],
-    "readmeHash": "b1933167fc86104098b2f48efe5c0486775d615bcb8ae28d51430faeb671c4e8",
-    "generatedAt": "2026-04-17T18:21:01.799Z",
+    "readmeHash": "15701f73a4d7a82a99a853ae39ae65845b67b9b6fb1300853c1ab5816b92dfe6",
+    "generatedAt": "2026-04-18T19:19:08.838Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -1196,14 +1196,14 @@
     "audit": "pass"
   },
   "stephenschoettler/hermes-lcm": {
-    "summary": "Hermes-LCM is a context management plugin for the Hermes Agent that prevents information loss during long-running conversations. It replaces standard lossy compression with a hierarchical Directed Acyclic Graph (DAG) engine that persists every message in an immutable SQLite store. When context limits are reached, the system performs multi-level escalation from detailed summaries to deterministic truncation while maintaining retrieval paths. This allows the agent to use specialized tools like grep and expansion to drill back into original message content from compacted summaries.",
+    "summary": "hermes-lcm is a context management plugin for Hermes Agent designed to prevent information loss when conversation history exceeds the context window. It utilizes a hierarchical Directed Acyclic Graph (DAG) of summaries to compact old messages while maintaining a path for detailed retrieval. This approach provides the agent with autonomous tools to drill down into specific historical details without relying on external search methods.",
     "highlights": [
-      "Immutable SQLite storage ensures no conversation data is ever deleted",
-      "Hierarchical DAG structure enables multi-level summary escalation and retrieval",
-      "Built-in agent tools for searching, describing, and expanding compacted context"
+      "Uses a hierarchical DAG for lossless message compaction",
+      "Provides agent tools for structured historical retrieval",
+      "Features an immutable-first SQLite message store"
     ],
-    "readmeHash": "58cd16f3e35e0b65ba2303aa44659e8a2725cf37e11f7c010a5d9b9ef66033ee",
-    "generatedAt": "2026-04-17T18:21:14.876Z",
+    "readmeHash": "cb60f1c085db4c4cfd32c6d92015db5089d381fcdc67d403ee884476ea770b38",
+    "generatedAt": "2026-04-18T19:19:14.287Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
