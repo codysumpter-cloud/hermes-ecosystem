@@ -47,10 +47,12 @@ export default async function handler(req, res) {
 
     // Batch all repos into one GraphQL query.
     // For NousResearch/hermes-agent, also pull latestRelease so the site can
-    // render live Hermes version in the masthead without staleness.
+    // render live Hermes version without staleness. We pull both the tagName
+    // (dated, e.g. "v2026.4.16") and the release name (which contains the
+    // numeric version, e.g. "Hermes Agent v0.10.0 (v2026.4.16)").
     const repoQueries = repoList.map((r, i) => {
       const releaseField = (r.owner === "NousResearch" && r.repo === "hermes-agent")
-        ? "latestRelease { tagName publishedAt }"
+        ? "latestRelease { tagName name publishedAt }"
         : "";
       return `repo${i}: repository(owner: "${r.owner}", name: "${r.repo}") {
         stargazerCount
@@ -87,8 +89,14 @@ export default async function handler(req, res) {
     const starData = repoList.map((r, i) => {
       const node = ghData.data?.[`repo${i}`];
       if (r.owner === "NousResearch" && r.repo === "hermes-agent" && node?.latestRelease) {
+        // Parse numeric version (e.g. "v0.10.0") from the release name,
+        // falling back to the tagName if the name doesn't match the pattern.
+        const name = node.latestRelease.name || "";
+        const numericMatch = name.match(/v\d+\.\d+\.\d+/);
         hermesRelease = {
-          version: node.latestRelease.tagName,
+          version: numericMatch ? numericMatch[0] : node.latestRelease.tagName,
+          tag: node.latestRelease.tagName,
+          name: node.latestRelease.name,
           publishedAt: node.latestRelease.publishedAt
         };
       }

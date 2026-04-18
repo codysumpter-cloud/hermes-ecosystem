@@ -483,6 +483,14 @@
   .hero-stat { text-align: center; }
   .hero-stat .num { font-size: 20px; font-weight: 800; color: #c084fc; }
   [data-theme="light"] .hero-stat .num { color: #7c3aed; }
+  .hero-stat .num-sub {
+    font-size: 11px; font-weight: 600;
+    color: var(--text-hero-desc);
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    letter-spacing: 0.2px;
+    margin-top: 1px;
+    font-variant-numeric: tabular-nums;
+  }
   .hero-stat .label {
     font-size: 10px; text-transform: uppercase;
     letter-spacing: 0.8px; color: var(--text-hero-stat-label); margin-top: 2px;
@@ -777,7 +785,7 @@
   <div class="header-icon">🗺️</div>
   <h1>Hermes Atlas</h1>
   <div class="subtitle">The community map of every tool, skill, and integration for <span>Hermes Agent</span> by Nous Research</div>
-  <div class="meta"><span id="meta-month">April 2026</span> · <span id="meta-count">90+</span> Projects · Security Reviewed · Quality Filtered · Hermes <span id="meta-version">v0.9.0</span></div>
+  <div class="meta"><span id="meta-month">April 2026</span> · <span id="meta-count">90+</span> Projects · Security Reviewed · Quality Filtered</div>
 </div>
 
 <!-- Tooltip (single shared element, positioned via JS) -->
@@ -824,12 +832,16 @@
     <div class="hero-title">⚕ NousResearch / hermes-agent</div>
     <div class="hero-desc">The self-improving AI agent that grows with you — persistent memory, auto-generated skills, 16 platforms, 6 execution backends</div>
     <div class="hero-stats">
-      <div class="hero-stat"><div class="num">83.3K</div><div class="label">Stars</div></div>
+      <div class="hero-stat"><div class="num" id="hero-stars">83.3K</div><div class="label">Stars</div></div>
       <div class="hero-stat"><div class="num">11.2K</div><div class="label">Forks</div></div>
       <div class="hero-stat"><div class="num">47</div><div class="label">Built-in Tools</div></div>
       <div class="hero-stat"><div class="num">20+</div><div class="label">LLM Providers</div></div>
       <div class="hero-stat"><div class="num">16</div><div class="label">Platforms</div></div>
-      <div class="hero-stat"><div class="num">v0.9.0</div><div class="label">Latest</div></div>
+      <div class="hero-stat">
+        <div class="num" id="hero-version">v0.10.0</div>
+        <div class="num-sub" id="hero-version-tag">v2026.4.16</div>
+        <div class="label">Latest</div>
+      </div>
     </div>
   </a>
 
@@ -1233,7 +1245,7 @@
         statsBar.classList.add('loaded');
       }
 
-      // Update masthead meta (month is always live; count + version come from API)
+      // Update masthead meta (month is always live; count comes from API)
       const metaMonth = document.getElementById('meta-month');
       if (metaMonth) {
         metaMonth.textContent = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
@@ -1242,15 +1254,21 @@
       if (metaCount && data.totals?.count) {
         metaCount.textContent = data.totals.count;
       }
-      const metaVersion = document.getElementById('meta-version');
-      if (metaVersion && data.hermes?.version) {
-        metaVersion.textContent = data.hermes.version;
-      }
 
-      // Update hero stat
-      const heroStars = document.querySelector('.hero-stat .num');
+      // Update hero stats — stars (target by id to avoid matching first .num)
+      const heroStars = document.getElementById('hero-stars');
       if (heroStars && data.repos?.['NousResearch/hermes-agent']) {
         heroStars.textContent = formatStars(data.repos['NousResearch/hermes-agent'].stars);
+      }
+
+      // Update hero "Latest" — numeric version (big) + dated tag (small)
+      const heroVersion = document.getElementById('hero-version');
+      if (heroVersion && data.hermes?.version) {
+        heroVersion.textContent = data.hermes.version;
+      }
+      const heroVersionTag = document.getElementById('hero-version-tag');
+      if (heroVersionTag && data.hermes?.tag) {
+        heroVersionTag.textContent = data.hermes.tag;
       }
     } catch (e) {
       console.log('Stars API unavailable, using static counts', e);
