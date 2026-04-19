@@ -172,8 +172,10 @@ jobs:
 
             const passed = issues.length === 0;
             const hasWarnings = warnings.length > 0;
+            const alreadyInAtlas = issues.some(i => i.includes('Already in the ecosystem map'));
 
             core.setOutput('passed', passed ? 'true' : 'false');
+            core.setOutput('already_in_atlas', alreadyInAtlas ? 'true' : 'false');
             core.setOutput('issues', JSON.stringify(issues));
             core.setOutput('warnings', JSON.stringify(warnings));
 
@@ -216,6 +218,25 @@ jobs:
               repo: context.repo.repo,
               issue_number: context.issue.number,
               body: report
+            });
+
+      - name: Close issue if already in atlas
+        if: steps.validate.outputs.already_in_atlas == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: 'closed',
+              state_reason: 'not_planned'
+            });
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: 'Auto-closing — this repo is already in the ecosystem map. Reopen if you believe this is a mistake.'
             });
 
       - name: Create PR to add repo (if passed)
