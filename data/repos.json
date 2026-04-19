@@ -948,5 +948,15 @@
     "url": "https://github.com/clawvader-tech/hermes-telegram-miniapp",
     "official": false,
     "category": "Workspaces & GUIs"
+  },
+  {
+    "owner": "keepnotes-ai",
+    "repo": "keep",
+    "name": "keep",
+    "description": "Reflective memory for AI agents",
+    "stars": 29,
+    "url": "https://github.com/keepnotes-ai/keep",
+    "official": false,
+    "category": "Memory & Context"
   }
 ]
