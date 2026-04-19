@@ -58,11 +58,11 @@
   <p class="project-desc">Garry's Opinionated OpenClaw/Hermes Agent Brain</p>
 
   <div class="meta-row">
-    <span class="stars">★ 9.1K</span>
+    <span class="stars">★ 9.2K</span>
     <span><span class="meta-label">lang</span>TypeScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-04-18</span>
+    <span><span class="meta-label">updated</span>2026-04-19</span>
   </div>
 
   <div class="actions">
@@ -75,11 +75,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">GBrain is a persistent memory and knowledge graph system designed to provide AI agents with long-term context and structured information retrieval. It utilizes a hybrid search approach and a self-wiring knowledge graph to automatically extract entities and create typed relationships from ingested meetings, emails, and notes. The system operates through 26 specialized skills that manage tasks such as content ingestion, automated enrichment of person and company profiles, and autonomous maintenance. It integrates directly with Hermes Agent and OpenClaw via MCP tools or a standalone CLI using PGLite for local storage.</p>
+    <p class="summary-text">GBrain is a persistent memory and knowledge management system designed to provide AI agents with long-term context and structured reasoning. It utilizes a self-wiring knowledge graph and hybrid search to automatically extract entities and create typed links between people, companies, and events without requiring constant LLM calls. The system includes 26 specialized skills for ingesting diverse data sources like meetings, emails, and tweets while maintaining a structured timeline and backlink-boosted ranking. It integrates with Hermes Agent and OpenClaw via MCP tools to automate background tasks like daily briefings and entity enrichment.</p>
     <ul class="summary-highlights">
-      <li>Automates entity extraction and typed relationship linking without LLM calls</li>
-      <li>Features 26 modular skills for ingestion, enrichment, and autonomous maintenance</li>
-      <li>Implements hybrid search and backlink-boosted ranking for high-precision retrieval</li>
+      <li>Self-wiring knowledge graph with automated entity extraction and typed linking.</li>
+      <li>Hybrid search architecture combining vector retrieval with backlink-boosted ranking.</li>
+      <li>Ships with 26 modular skills for ingestion, enrichment, and task management.</li>
     </ul>
   </div>
 </section>
@@ -698,6 +698,7 @@ ADMIN
   gbrain integrations                   Integration recipe dashboard
   gbrain check-backlinks check|fix      Back-link enforcement
   gbrain lint [--fix]                   LLM artifact detection
+  gbrain repair-jsonb [--dry-run]       Repair v0.12.0 double-encoded JSONB (Postgres)
   gbrain transcribe &lt;audio&gt;             Transcribe audio (Groq Whisper)
   gbrain research init &lt;name&gt;           Scaffold a data-research recipe
   gbrain research list                  Show available recipes
@@ -748,11 +749,11 @@ ADMIN
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 9.6K</div>
+        <div class="stars">★ 9.7K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
-        <div class="stars">★ 744</div>
+        <div class="stars">★ 745</div>
         <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
       </a>
       <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
@@ -772,7 +773,7 @@ ADMIN
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
       </a>
       <a class="related-row" href="/projects/stephenschoettler/hermes-lcm">
-        <div class="stars">★ 195</div>
+        <div class="stars">★ 204</div>
         <div class="name"><span class="org">stephenschoettler /</span> hermes-lcm</div>
       </a>
     </div>

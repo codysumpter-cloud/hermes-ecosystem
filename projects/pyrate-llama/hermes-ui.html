@@ -62,7 +62,7 @@
     <span><span class="meta-label">lang</span>HTML</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-04-18</span>
+    <span><span class="meta-label">updated</span>2026-04-19</span>
   </div>
 
   <div class="actions">
@@ -75,11 +75,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes UI is a glassmorphic web interface designed for the self-hosted Hermes Agent ecosystem. It functions as a single-file React application served via a lightweight Python proxy, requiring no external dependencies or build steps. The interface provides specialized tools for agent interaction, including real-time log streaming, an artifact panel for rendering HTML/SVG, and a memory inspector for editing internal state files. It also enforces optional behavioral guidelines to focus the agent on surgical, goal-driven code collaboration.</p>
+    <p class="summary-text">Hermes UI is a glassmorphic web interface for the self-hosted Hermes Agent that provides a centralized workspace for AI interaction and system monitoring. It operates as a single-file React application served via a lightweight Python proxy, requiring no external dependencies or build steps. The interface features a specialized artifact panel for live HTML/SVG rendering, real-time log streaming, and a file browser for managing local agent memory and configurations. Users can also toggle behavioral guidelines and monitor connected Model Context Protocol (MCP) tools directly from the dashboard.</p>
     <ul class="summary-highlights">
-      <li>Single-file React architecture with no npm dependencies</li>
-      <li>Real-time artifact panel for live HTML and SVG rendering</li>
-      <li>Integrated file browser and memory inspector for agent state</li>
+      <li>Single-file React architecture with no npm dependencies required</li>
+      <li>Live artifact panel for rendering HTML, SVG, and code blocks</li>
+      <li>Real-time log streaming and system performance monitoring dashboard</li>
     </ul>
   </div>
 </section>
@@ -94,10 +94,10 @@
 <img src="https://img.shields.io/badge/architecture-single_file-44d88a?style=for-the-badge" alt="Single file HTML">
 <img src="https://img.shields.io/badge/react-18.2-61dafb?style=for-the-badge" alt="React 18"></p>
 <blockquote>
-<p>[!IMPORTANT]
-<strong>Karpathy-style behavioral guidelines are ON by default.</strong>
-New chats automatically get a system-prompt appendix enforcing four coding principles: <em>Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Execution</em>. This tightens Hermes into a careful, scoped code collaborator rather than a chatty generalist.</p>
-<p>If this isn&#39;t what you want, turn it off in <strong>Settings → General → Apply Karpathy behavioral guidelines</strong>. The change applies to new chats only — existing chats keep whatever setting they started with. The prompt text lives in <a href="https://github.com/pyrate-llama/hermes-ui/blob/main/behavioral_guidelines.md"><code>behavioral_guidelines.md</code></a> and is fully editable.</p>
+<p>[!NOTE]
+<strong>Karpathy-style behavioral guidelines are available as an opt-in — OFF by default.</strong>
+When enabled, new chats get a system-prompt appendix enforcing four coding principles: <em>Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Execution</em>. This tightens Hermes into a careful, scoped code collaborator — useful for focused coding sessions, but it can cause over-thinking loops on tasks that just need a skill to run (the reason it ships OFF).</p>
+<p>Turn it on in <strong>Settings → General → Apply Karpathy behavioral guidelines</strong>. The change applies to new chats only — existing chats keep whatever setting they started with. The prompt text lives in <a href="https://github.com/pyrate-llama/hermes-ui/blob/main/behavioral_guidelines.md"><code>behavioral_guidelines.md</code></a> and is fully editable.</p>
 </blockquote>
 <h4>Artifact Panel</h4>
 <p><img src="https://raw.githubusercontent.com/pyrate-llama/hermes-ui/main/screenshots/screenshot-artifacts.png" alt="Artifact Panel"></p>
@@ -400,7 +400,7 @@ tailscale up
         <div class="name"><span class="org">outsourc-e /</span> hermes-workspace</div>
       </a>
       <a class="related-row" href="/projects/fathah/hermes-desktop">
-        <div class="stars">★ 268</div>
+        <div class="stars">★ 277</div>
         <div class="name"><span class="org">fathah /</span> hermes-desktop</div>
       </a>
       <a class="related-row" href="/projects/sanchomuzax/hermes-webui">
@@ -412,11 +412,11 @@ tailscale up
         <div class="name"><span class="org">Euraika-Labs /</span> pan-ui</div>
       </a>
       <a class="related-row" href="/projects/xaspx/hermes-control-interface">
-        <div class="stars">★ 378</div>
+        <div class="stars">★ 401</div>
         <div class="name"><span class="org">xaspx /</span> hermes-control-interface</div>
       </a>
       <a class="related-row" href="/projects/dodo-reach/hermes-desktop">
-        <div class="stars">★ 420</div>
+        <div class="stars">★ 438</div>
         <div class="name"><span class="org">dodo-reach /</span> hermes-desktop</div>
       </a>
       <a class="related-row" href="/projects/nesquena/hermes-webui">

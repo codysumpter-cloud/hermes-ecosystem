@@ -58,11 +58,11 @@
   <p class="project-desc">A self-hosted web dashboard for the Hermes AI agent stack. Provides a browser-based terminal, file explorer, session overview, cron management, system metrics, and an agent status panel — all behind a single password gate.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 378</span>
+    <span class="stars">★ 401</span>
     <span><span class="meta-label">lang</span>JavaScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-04-17</span>
+    <span><span class="meta-label">updated</span>2026-04-18</span>
   </div>
 
   <div class="actions">
@@ -75,11 +75,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">The Hermes Control Interface is a self-hosted web dashboard designed to manage the Hermes AI agent stack through a centralized graphical interface. It utilizes a Node.js and Express backend with WebSockets to provide real-time system monitoring, multi-agent gateway management, and a browser-based terminal. Users can configure over 80 agent settings, track detailed token analytics across different models, and manage scheduled cron jobs for automated tasks. The platform also includes a revamped chat interface with collapsible tool call cards and a secure file explorer scoped to the agent's directory.</p>
+    <p class="summary-text">The Hermes Control Interface is a self-hosted web dashboard designed to manage the Hermes AI agent stack through a centralized graphical interface. It utilizes a Node.js and Express backend with WebSockets to provide real-time terminal access, file management, and multi-agent gateway control. Users can monitor system metrics, track token usage analytics, and configure agent skills or cron jobs without using the command line. The platform includes a revamped chat interface with tool call visualization and a robust role-based access control system for team management.</p>
     <ul class="summary-highlights">
-      <li>Multi-agent gateway for starting, stopping, and configuring individual profiles.</li>
-      <li>Detailed token analytics tracking costs and usage by model and platform.</li>
-      <li>Role-based access control with 28 permissions across 12 functional groups.</li>
+      <li>Multi-agent gateway for starting, stopping, and configuring multiple profiles.</li>
+      <li>Real-time chat interface with session management and tool call cards.</li>
+      <li>Detailed token analytics tracking costs by model, platform, and time.</li>
     </ul>
   </div>
 </section>
@@ -90,11 +90,11 @@
     <h2>Hermes Control Interface</h2>
 <p>A self-hosted web dashboard for the <a href="https://github.com/NousResearch/hermes-agent">Hermes AI agent</a> stack. Manage terminals, files, sessions, cron jobs, token analytics, multi-agent gateways, and team access — all behind a password gate.</p>
 <p><strong>Stack:</strong> Vanilla JS + Vite · Node.js · Express · WebSocket · xterm.js
-<strong>Version:</strong> 3.3.2</p>
+<strong>Version:</strong> 3.4.0</p>
 <hr>
 <h3>Highlights</h3>
 <blockquote>
-<p><strong>Chat Revamped</strong> — Collapsible tool call cards with JSON viewer, session sidebar with model tags, banner-free output.</p>
+<p><strong>Chat via Gateway API</strong> — Real-time streaming, tool call cards with JSON viewer, session resume, stop button, multi-profile support. Auto-fallback to CLI.</p>
 </blockquote>
 <blockquote>
 <p><strong>RBAC v2</strong> — 28 permissions across 12 groups. Admin, viewer, or custom roles per user.</p>
@@ -104,6 +104,9 @@
 </blockquote>
 <blockquote>
 <p><strong>Token Analytics</strong> — Track sessions, messages, tokens, cost by model, platform, and time range.</p>
+</blockquote>
+<blockquote>
+<p><strong>Security Hardened</strong> — Command injection fixes, CSRF on 21 endpoints, dynamic CORS, security audit report (18 findings addressed).</p>
 </blockquote>
 <hr>
 <h3>Screenshots</h3>
@@ -509,7 +512,7 @@
 </tr>
 <tr>
 <td>Hermes Agent</td>
-<td>v3.x</td>
+<td>v0.3.x</td>
 <td>Latest</td>
 </tr>
 <tr>
@@ -710,6 +713,66 @@ nohup node server.js &amp;&gt;/dev/null &amp; disown
 If running via systemd, use <code>sudo systemctl restart hermes-control</code>.</p>
 <hr>
 <h3>Changelog</h3>
+<h4>v3.4.0 (2026-04-19)</h4>
+<p><strong>⚡ Chat Revamp (CLI → Gateway API):</strong></p>
+<ul>
+<li><strong>Gateway API chat:</strong> Full rewrite from CLI subprocess to Gateway API (<code>/v1/responses</code>) — real-time SSE streaming, structured events, no more waiting for full response</li>
+<li><strong>Tool call cards:</strong> Collapsible cards with JSON viewer for tool results (collapsed by default)</li>
+<li><strong>Session resume:</strong> Auto via <code>X-Hermes-Session-Id</code> header — conversations persist across page reloads</li>
+<li><strong>Stop button:</strong> Cancel running streams mid-response</li>
+<li><strong>Multi-profile support:</strong> All profiles (default/soci/cuan/david) work via Gateway API with auto port discovery</li>
+<li><strong>CLI fallback:</strong> Automatic fallback to CLI if gateway is down</li>
+<li><strong>Session list:</strong> Sorted by last activity, filter by source type (Telegram/Discord/API/CLI/Cron)</li>
+<li><strong>Mobile UX:</strong> Auto-hide sidebar on session select, responsive header, opaque topbar</li>
+</ul>
+<p><strong>🔒 Security (CRITICAL + HIGH):</strong></p>
+<ul>
+<li><strong>Command injection fixed:</strong> Skills uninstall/update endpoints use <code>execHermes()</code> + strict regex <code>^[\w.\-]+$</code> validation</li>
+<li><strong>CSRF protection:</strong> 21 admin endpoints now require <code>requireCsrf</code> (user mgmt, config, keys, skills, HCI update/rollback/restart, backup, doctor, profiles)</li>
+<li><strong>Gateway API key:</strong> Dynamic from <code>~/.hermes/config.yaml</code> (removed hardcoded <code>&#39;hci-gateway-2026&#39;</code> from source)</li>
+<li><strong>Dynamic CORS origins:</strong> <code>cors_origins</code> no longer hardcoded — supports <code>HCI_CORS_ORIGINS</code> env var, auto-detect from request, or localhost defaults</li>
+<li><strong><code>escapeHtml()</code> fix:</strong> Added <code>&quot;</code> and <code>&#39;</code> escaping to prevent XSS via HTML attributes</li>
+<li><strong>Debug CSRF logging removed:</strong> Partial tokens no longer logged to console</li>
+<li><strong>18-item security audit report</strong> (SECURITY_AUDIT.md)</li>
+</ul>
+<p><strong>🧹 Maintenance:</strong></p>
+<ul>
+<li>~270 lines dead code removed (unused functions, duplicate endpoints, redundant imports, duplicate CSS)</li>
+<li>Session cache invalidation after rename and delete operations</li>
+</ul>
+<p><strong>🔌 Open-Source Ready:</strong></p>
+<ul>
+<li>CORS origins: dynamic resolution for any deployment (env var → auto-detect → localhost defaults)</li>
+<li>Gateway API key: reads from config.yaml, env var override supported</li>
+<li><code>.env.example</code> updated with <code>GATEWAY_API_KEY</code> and <code>HCI_CORS_ORIGINS</code> documentation</li>
+</ul>
+<h4>v3.3.3 (2026-04-19)</h4>
+<p><strong>🔒 Security (Critical + High):</strong></p>
+<ul>
+<li><strong>Command injection fix:</strong> Skills uninstall/update endpoints now use <code>execHermes()</code> + strict regex validation <code>^[\w.\-]+$</code> on skill names (prevents shell metacharacter injection)</li>
+<li><strong>CSRF protection:</strong> Added <code>requireCsrf</code> to 21 admin endpoints (user mgmt, config, keys, skills, HCI update/rollback/restart, backup, doctor, profile create/delete)</li>
+<li><strong>Hardcoded API key removed:</strong> Gateway API key now reads from <code>~/.hermes/config.yaml</code> dynamically (was hardcoded <code>&#39;hci-gateway-2026&#39;</code> in source)</li>
+<li><strong>Dynamic CORS origins:</strong> <code>cors_origins</code> no longer hardcoded to specific domains — supports <code>HCI_CORS_ORIGINS</code> env var, auto-detect from request origin, or localhost defaults</li>
+<li><strong>Session rename:</strong> Switched from <code>shell()</code> to <code>execHermes()</code> (defense-in-depth)</li>
+</ul>
+<p><strong>🧹 Maintenance:</strong></p>
+<ul>
+<li><strong>Dead code cleanup:</strong> ~270 lines removed across 6 files (unused functions, duplicate endpoints, redundant imports, duplicate CSS)</li>
+<li><strong>18-item security audit report</strong> added (SECURITY_AUDIT.md)</li>
+</ul>
+<p><strong>🐛 Bug Fixes:</strong></p>
+<ul>
+<li><strong>Session list sorting:</strong> Fixed sort order — backend now correctly sorts by last activity timestamp</li>
+<li><strong>Delete session button:</strong> Fixed operator precedence bug in <code>await showModal({...})?.action</code> that prevented delete API call</li>
+<li><strong>Session list refresh:</strong> Cache invalidated after rename and delete operations (stale 10s cache)</li>
+<li><strong>Gateway session resume:</strong> Gateway process restart fixed stale bytecode issue</li>
+</ul>
+<p><strong>🔌 Open-Source Ready:</strong></p>
+<ul>
+<li>CORS origins: dynamic resolution (env var → auto-detect → localhost defaults)</li>
+<li>Gateway API key: reads from config.yaml, env var override supported</li>
+<li><code>.env.example</code> updated with <code>GATEWAY_API_KEY</code> and <code>HCI_CORS_ORIGINS</code> docs</li>
+</ul>
 <h4>v3.3.2 (2026-04-17)</h4>
 <p><strong>🐛 Bug Fixes:</strong></p>
 <ul>
@@ -819,7 +882,7 @@ If running via systemd, use <code>sudo systemctl restart hermes-control</code>.<
         <div class="name"><span class="org">outsourc-e /</span> hermes-workspace</div>
       </a>
       <a class="related-row" href="/projects/fathah/hermes-desktop">
-        <div class="stars">★ 268</div>
+        <div class="stars">★ 277</div>
         <div class="name"><span class="org">fathah /</span> hermes-desktop</div>
       </a>
       <a class="related-row" href="/projects/sanchomuzax/hermes-webui">
@@ -831,7 +894,7 @@ If running via systemd, use <code>sudo systemctl restart hermes-control</code>.<
         <div class="name"><span class="org">Euraika-Labs /</span> pan-ui</div>
       </a>
       <a class="related-row" href="/projects/dodo-reach/hermes-desktop">
-        <div class="stars">★ 420</div>
+        <div class="stars">★ 438</div>
         <div class="name"><span class="org">dodo-reach /</span> hermes-desktop</div>
       </a>
       <a class="related-row" href="/projects/nesquena/hermes-webui">

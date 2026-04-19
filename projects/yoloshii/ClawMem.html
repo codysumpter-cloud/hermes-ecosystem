@@ -62,7 +62,7 @@
     <span><span class="meta-label">lang</span>TypeScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-04-13</span>
+    <span><span class="meta-label">updated</span>2026-04-19</span>
   </div>
 
   <div class="actions">
@@ -75,11 +75,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">ClawMem is a local-first memory and context layer designed to provide persistent knowledge for AI agents across different sessions and platforms. It utilizes a hybrid retrieval architecture that combines vector search, BM25, and multi-graph traversal to surface relevant documents, decisions, and causal relationships. The system automatically captures insights from conversation transcripts using local models and maintains a shared SQLite vault accessible by Claude Code, OpenClaw, and Hermes agents. By operating entirely on-device without cloud dependencies, it ensures data privacy while enabling cross-runtime memory continuity.</p>
+    <p class="summary-text">ClawMem is a local-first memory and context engine designed to provide persistent knowledge across different AI agent runtimes. It utilizes a hybrid retrieval architecture that combines vector search, BM25, and multi-graph traversal to surface relevant project documentation and past decisions. The system automatically captures session insights using local observer models and maintains a unified SQLite vault shared between Claude Code, OpenClaw, and Hermes agents. By operating entirely on-device without cloud dependencies, it ensures data privacy while managing document lifecycles and causal relationships between facts.</p>
     <ul class="summary-highlights">
-      <li>Hybrid retrieval combining vector search, BM25, and multi-graph traversal</li>
-      <li>Local-first architecture with no API keys or cloud dependencies</li>
-      <li>Cross-platform memory sharing between Claude Code, OpenClaw, and Hermes</li>
+      <li>Unified local SQLite vault for cross-agent memory persistence</li>
+      <li>Hybrid retrieval combining vector search, BM25, and graph traversal</li>
+      <li>Automated decision capture and handoff generation via local models</li>
     </ul>
   </div>
 </section>
@@ -306,7 +306,7 @@ clawmem setup mcp      # Register MCP server in ~/.claude.json (31 tools)
 <p>Disable OpenClaw&#39;s native memory search to avoid duplicate injection:</p>
 <pre><code class="language-bash">openclaw config set agents.defaults.memorySearch.extraPaths &quot;[]&quot;
 </code></pre>
-<p>ClawMem coexists cleanly with OpenClaw&#39;s <a href="https://docs.openclaw.ai/concepts/active-memory">Active Memory</a> plugin (v2026.4.10+). They search different backends and inject into different prompt regions, so both can run simultaneously without conflict. See the <a href="https://github.com/yoloshii/ClawMem/blob/main/docs/guides/openclaw-plugin.md#coexistence-with-openclaw-active-memory">OpenClaw plugin guide</a> for details.</p>
+<p>ClawMem coexists cleanly with OpenClaw&#39;s <a href="https://docs.openclaw.ai/concepts/active-memory">Active Memory</a> plugin (v2026.4.10+) and, on OpenClaw v2026.4.18+ (#65411), with the <code>memory-core</code> dreaming sidecar — both run alongside ClawMem instead of being mutually exclusive. They search different backends and inject into different prompt regions, so they do not conflict. See the <a href="https://github.com/yoloshii/ClawMem/blob/main/docs/guides/openclaw-plugin.md#coexistence-with-openclaw-active-memory">OpenClaw plugin guide — Active Memory coexistence</a> and the <a href="https://github.com/yoloshii/ClawMem/blob/main/docs/guides/openclaw-plugin.md#coexistence-with-memory-core-dreaming-sidecar">memory-core dreaming sidecar section</a> for the two patterns.</p>
 <p><strong>Pair ClawMem (memory) with a context-engine plugin (v0.10.0+).</strong> OpenClaw and Hermes maintainers have converged on a two-surface plugin model: one slot for memory plugins (cross-session, retrieval-first) and a separate slot for context-engine plugins (in-session, compression/compaction-first). Under that model ClawMem is a memory layer — it has always been one in Hermes via the <code>MemoryProvider</code> ABC, and v0.10.0 moves the OpenClaw integration to the same semantic slot. You can now run ClawMem in the <code>memory</code> slot alongside an LCM-style compression plugin (for example, <code>lossless-claw</code>) in the <code>context-engine</code> slot. The two plugins do not overlap: one persists across sessions, the other reshapes the live window. See the <a href="https://github.com/yoloshii/ClawMem/blob/main/docs/guides/openclaw-plugin.md#memory-vs-context-engine--the-dual-plugin-surface">OpenClaw plugin guide — memory vs context engine</a> for the full rationale.</p>
 <blockquote>
 <p><strong>OpenClaw v2026.4.11+ recommended (required for ClawMem v0.10.0+).</strong> v2026.4.11 introduced a new plugin discovery contract that requires each plugin directory to ship a <code>package.json</code> with <code>openclaw.extensions</code> declared, and that rejects symlinked plugin directories. ClawMem v0.10.0 includes both fixes. Older ClawMem versions (&lt; v0.10.0) on OpenClaw v2026.4.11+ will fail to discover silently — upgrade ClawMem, then re-run <code>clawmem setup openclaw</code>. See <a href="https://github.com/yoloshii/ClawMem/blob/main/docs/guides/upgrading.md#v090--v0100">docs/guides/upgrading.md</a>.</p>
@@ -315,11 +315,16 @@ clawmem setup mcp      # Register MCP server in ~/.claude.json (31 tools)
 <h5>Hermes Agent</h5>
 <p>ClawMem integrates as a native MemoryProvider plugin — Hermes&#39;s pluggable interface for agent memory. Same automatic retrieval and extraction, delivered through Hermes&#39;s memory lifecycle instead of Claude Code hooks.</p>
 <p><strong>Install:</strong></p>
-<pre><code class="language-bash"># Copy or symlink the plugin into Hermes&#39;s plugin directory
+<pre><code class="language-bash"># Preferred — user-plugin path (Hermes #10529, v2026.4.13+).
+# Survives `git pull` of hermes-agent and avoids dual-registration with bundled providers.
+cp -r /path/to/ClawMem/src/hermes ${HERMES_HOME:-~/.hermes}/plugins/clawmem
+
+# Or, the bundled-style path (always supported, takes precedence on name collisions).
+# Recommended only when you actively work in the hermes-agent source tree.
 cp -r /path/to/ClawMem/src/hermes /path/to/hermes-agent/plugins/memory/clawmem
 
-# Or symlink for development
-ln -s /path/to/ClawMem/src/hermes /path/to/hermes-agent/plugins/memory/clawmem
+# Symlink alternative for in-place development (either path).
+ln -s /path/to/ClawMem/src/hermes ${HERMES_HOME:-~/.hermes}/plugins/clawmem
 </code></pre>
 <p><strong>Configure</strong> in your Hermes profile&#39;s <code>.env</code> or environment:</p>
 <pre><code class="language-bash">CLAWMEM_BIN=/path/to/clawmem          # Path to clawmem binary (or ensure it&#39;s on PATH)
@@ -1046,22 +1051,9 @@ clawmem status                                  Quick index status
 </tr>
 <tr>
 <td><code>lifecycle_status</code></td>
-<td>Document lifecycle statistics: active, archived, forgotten, pinned, snoozed counts and policy summary</td>
-</tr>
-<tr>
-<td><code>lifecycle_sweep</code></td>
-<td>Run lifecycle policies: archive stale docs past retention threshold, optionally purge old archives. Defaults to dry_run (preview only)</td>
-</tr>
-<tr>
-<td><code>lifecycle_restore</code></td>
-<td>Restore documents that were auto-archived by lifecycle policies. Filter by query, collection, or restore all</td>
+<td>Document lifecycle statistics: active, archived, forgotten, pinned,</td>
 </tr>
 </tbody></table>
-<h4>Compact Mode</h4>
-<p><code>search</code>, <code>vsearch</code>, and <code>query</code> accept <code>compact: true</code> to return <code>{ id, path, title, score, snippet, content_type, fragment }</code> instead of full content. Saves ~5x tokens for initial filtering.</p>
-<h3>Hooks (Claude Code Integration)</h3>
-<p>Hooks installed by <code>clawmem setup hooks</code>:</p>
-<p>| Hook | Event | Wha</p>
 <hr>
 <p><em>README truncated. <a href="https://github.com/yoloshii/ClawMem#readme">Continue reading on GitHub</a></em></p>
 
@@ -1076,11 +1068,11 @@ clawmem status                                  Quick index status
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 9.6K</div>
+        <div class="stars">★ 9.7K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
-        <div class="stars">★ 744</div>
+        <div class="stars">★ 745</div>
         <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
       </a>
       <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
@@ -1096,11 +1088,11 @@ clawmem status                                  Quick index status
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
       </a>
       <a class="related-row" href="/projects/garrytan/gbrain">
-        <div class="stars">★ 9.1K</div>
+        <div class="stars">★ 9.2K</div>
         <div class="name"><span class="org">garrytan /</span> gbrain</div>
       </a>
       <a class="related-row" href="/projects/stephenschoettler/hermes-lcm">
-        <div class="stars">★ 195</div>
+        <div class="stars">★ 204</div>
         <div class="name"><span class="org">stephenschoettler /</span> hermes-lcm</div>
       </a>
     </div>

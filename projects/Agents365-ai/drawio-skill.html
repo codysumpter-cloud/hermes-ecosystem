@@ -58,11 +58,11 @@
   <p class="project-desc">drawio-skill — From Text to Professional Diagrams. An Agent Skill (SKILL.md) that generates draw.io diagrams from natural language and exports to PNG/SVG/PDF. Works with Claude Code, OpenClaw, Hermes Agent, OpenAI Codex, and SkillsMP.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 314</span>
+    <span class="stars">★ 322</span>
     <span><span class="meta-label">lang</span>Shell</span>
     
     
-    <span><span class="meta-label">updated</span>2026-04-06</span>
+    <span><span class="meta-label">updated</span>2026-04-19</span>
   </div>
 
   <div class="actions">
@@ -75,11 +75,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">This project is a diagramming skill that enables AI agents to generate professional draw.io XML files and image exports from natural language descriptions. It utilizes the native draw.io desktop CLI to produce grid-aligned diagrams with specialized presets for architectures, UML, and machine learning models. The tool features an iterative self-check loop that automatically identifies and fixes layout issues while supporting animated connectors for data-flow visualization. It integrates with major agent platforms including Hermes Agent, Claude Code, and OpenClaw.</p>
+    <p class="summary-text">The drawio-skill project is an open-source tool that enables AI agents to generate and export professional draw.io diagrams from natural language descriptions. It utilizes the native draw.io desktop CLI to convert XML into various formats like PNG, SVG, and PDF while enforcing grid-aligned layouts and semantic color systems. The skill includes specialized presets for architecture, UML, and machine learning diagrams, featuring unique capabilities like tensor shape annotations and animated data-flow connectors. It integrates with multiple agent platforms including Hermes Agent, Claude Code, and Opencode to provide an iterative design loop with automated self-correction.</p>
     <ul class="summary-highlights">
-      <li>Generates editable .drawio files and exports to PNG, SVG, or PDF</li>
-      <li>Includes 6 diagram presets including ML models with tensor shape annotations</li>
-      <li>Automated self-check loop identifies and fixes six common layout issues</li>
+      <li>Generates .drawio XML and exports to PNG, SVG, PDF, or JPG</li>
+      <li>Six specialized presets for ERD, UML, Architecture, and ML diagrams</li>
+      <li>Automated self-check loop reads and fixes diagram layout issues</li>
     </ul>
   </div>
 </section>
@@ -118,9 +118,14 @@
 <td>Native SKILL.md format</td>
 </tr>
 <tr>
-<td><strong>OpenClaw</strong></td>
+<td><strong>Opencode</strong></td>
 <td>✅ Full support</td>
-<td><code>metadata.openclaw</code> namespace, dependency gating, installer</td>
+<td>Native SKILL.md via <code>skill</code> tool; also reads <code>.claude/skills/</code> paths</td>
+</tr>
+<tr>
+<td><strong>OpenClaw / ClawHub</strong></td>
+<td>✅ Full support</td>
+<td><code>metadata.openclaw</code> namespace, dependency gating, ClawHub installer</td>
 </tr>
 <tr>
 <td><strong>Hermes Agent</strong></td>
@@ -251,7 +256,7 @@
 </tr>
 <tr>
 <td><strong>Multi-agent</strong></td>
-<td>✅ 5 platforms</td>
+<td>✅ 6 platforms</td>
 <td>❌ Claude Code only</td>
 <td>❌ Claude Code only</td>
 <td>❌</td>
@@ -360,7 +365,7 @@
 <li><strong>Self-check + iterative loop</strong> — the only pure-SKILL.md solution that reads its own output and auto-fixes before showing the user, then supports multi-round refinement</li>
 <li><strong>6 diagram type presets</strong> — ERD, UML Class, Sequence, Architecture, ML/Deep Learning, Flowchart — each with preset shapes, styles, and layout conventions</li>
 <li><strong>ML/DL model diagrams</strong> — tensor shape annotations, layer-type color coding, encoder/decoder swimlanes — built for academic papers</li>
-<li><strong>Multi-agent, zero-config</strong> — works across 5 platforms with just one <code>SKILL.md</code> file + draw.io desktop. No MCP server, no Python, no Node.js, no browser</li>
+<li><strong>Multi-agent, zero-config</strong> — works across 6 platforms with just one <code>SKILL.md</code> file + draw.io desktop. No MCP server, no Python, no Node.js, no browser</li>
 <li><strong>Production-grade layout</strong> — grid-aligned coordinates, complexity-scaled spacing, routing corridors, hub-center strategy, animated connectors</li>
 <li><strong>Browser fallback</strong> — generates diagrams.net URLs when the desktop CLI is unavailable, plus auto-launch for desktop editing</li>
 </ol>
@@ -426,6 +431,14 @@ git clone https://github.com/Agents365-ai/drawio-skill.git ~/.claude/skills/draw
 # Project-level install
 git clone https://github.com/Agents365-ai/drawio-skill.git .claude/skills/drawio-skill
 </code></pre>
+<h4>Opencode</h4>
+<pre><code class="language-bash"># Global install (Opencode-native path)
+git clone https://github.com/Agents365-ai/drawio-skill.git ~/.config/opencode/skills/drawio-skill
+
+# Project-level install
+git clone https://github.com/Agents365-ai/drawio-skill.git .opencode/skills/drawio-skill
+</code></pre>
+<p>Opencode also reads <code>~/.claude/skills/</code> and <code>.claude/skills/</code>, so an existing Claude Code install is automatically picked up — no second clone needed.</p>
 <h4>OpenClaw</h4>
 <pre><code class="language-bash"># Via ClawHub
 clawhub install drawio-pro-skill
@@ -475,7 +488,12 @@ git clone https://github.com/Agents365-ai/drawio-skill.git .agents/skills/drawio
 <td><code>.claude/skills/drawio-skill/</code></td>
 </tr>
 <tr>
-<td>OpenClaw</td>
+<td>Opencode</td>
+<td><code>~/.config/opencode/skills/drawio-skill/</code> (also reads <code>~/.claude/skills/</code>)</td>
+<td><code>.opencode/skills/drawio-skill/</code> (also reads <code>.claude/skills/</code>)</td>
+</tr>
+<tr>
+<td>OpenClaw / ClawHub</td>
 <td><code>~/.openclaw/skills/drawio-skill/</code></td>
 <td><code>skills/drawio-skill/</code></td>
 </tr>
@@ -496,17 +514,11 @@ git clone https://github.com/Agents365-ai/drawio-skill.git .agents/skills/drawio
 </tr>
 </tbody></table>
 <h3>Updates</h3>
-<p>Check for updates:</p>
-<pre><code class="language-bash"># Run from anywhere — pass your install path
-bash ~/.claude/skills/drawio-skill/scripts/check-update.sh
-
-# Or from the skill directory
-cd ~/.claude/skills/drawio-skill &amp;&amp; bash scripts/check-update.sh
-</code></pre>
-<p>Update to latest version:</p>
+<p>The skill auto-checks for updates once per 12 hours on first use in a conversation. When a new version is available, the agent prints a one-line notice in the reply. To apply:</p>
 <pre><code class="language-bash">cd &lt;your-install-path&gt;/drawio-skill &amp;&amp; git pull
 </code></pre>
-<p>Platform-specific package managers:</p>
+<p>The check is read-only, self-throttled, and silent when up to date, offline, or not a git install — it won&#39;t block or slow the workflow.</p>
+<p>Package-manager installs handle updates themselves:</p>
 <pre><code class="language-bash"># OpenClaw
 clawhub update drawio-pro-skill
 
@@ -543,7 +555,7 @@ and User DB / Order DB / Product DB / Redis Cache / Stripe API</p>
 <ul>
 <li><code>SKILL.md</code> — <strong>the only required file</strong>. Loaded by all platforms as the skill instructions.</li>
 <li><code>agents/openai.yaml</code> — OpenAI Codex-specific configuration (UI, policy)</li>
-<li><code>scripts/check-update.sh</code> — lightweight update checker (compares local vs remote HEAD)</li>
+<li><code>update.sh</code> — auto-runs on first skill use per conversation; self-throttled to once per 12h, silent when up to date</li>
 <li><code>README.md</code> — this file (English, displayed on GitHub homepage)</li>
 <li><code>README_CN.md</code> — Chinese documentation</li>
 <li><code>assets/</code> — example diagrams and workflow images</li>
@@ -605,7 +617,7 @@ and User DB / Order DB / Product DB / Redis Cache / Stripe API</p>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mukul975/Anthropic-Cybersecurity-Skills">
-        <div class="stars">★ 4.5K</div>
+        <div class="stars">★ 4.6K</div>
         <div class="name"><span class="org">mukul975 /</span> Anthropic-Cybersecurity-Skills</div>
       </a>
       <a class="related-row" href="/projects/conorbronsdon/avoid-ai-writing">
@@ -613,7 +625,7 @@ and User DB / Order DB / Product DB / Redis Cache / Stripe API</p>
         <div class="name"><span class="org">conorbronsdon /</span> avoid-ai-writing</div>
       </a>
       <a class="related-row" href="/projects/wondelai/skills">
-        <div class="stars">★ 637</div>
+        <div class="stars">★ 642</div>
         <div class="name"><span class="org">wondelai /</span> skills</div>
       </a>
       <a class="related-row" href="/projects/DougTrajano/pydantic-ai-skills">
@@ -629,7 +641,7 @@ and User DB / Order DB / Product DB / Redis Cache / Stripe API</p>
         <div class="name"><span class="org">tlehman /</span> litprog-skill</div>
       </a>
       <a class="related-row" href="/projects/esaradev/icarus-plugin">
-        <div class="stars">★ 55</div>
+        <div class="stars">★ 58</div>
         <div class="name"><span class="org">esaradev /</span> icarus-plugin</div>
       </a>
       <a class="related-row" href="/projects/chigwell/skilldock.io">

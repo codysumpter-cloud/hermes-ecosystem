@@ -182,14 +182,14 @@
     "audit": "pass"
   },
   "Agents365-ai/drawio-skill": {
-    "summary": "This project is a diagramming skill that enables AI agents to generate professional draw.io XML files and image exports from natural language descriptions. It utilizes the native draw.io desktop CLI to produce grid-aligned diagrams with specialized presets for architectures, UML, and machine learning models. The tool features an iterative self-check loop that automatically identifies and fixes layout issues while supporting animated connectors for data-flow visualization. It integrates with major agent platforms including Hermes Agent, Claude Code, and OpenClaw.",
+    "summary": "The drawio-skill project is an open-source tool that enables AI agents to generate and export professional draw.io diagrams from natural language descriptions. It utilizes the native draw.io desktop CLI to convert XML into various formats like PNG, SVG, and PDF while enforcing grid-aligned layouts and semantic color systems. The skill includes specialized presets for architecture, UML, and machine learning diagrams, featuring unique capabilities like tensor shape annotations and animated data-flow connectors. It integrates with multiple agent platforms including Hermes Agent, Claude Code, and Opencode to provide an iterative design loop with automated self-correction.",
     "highlights": [
-      "Generates editable .drawio files and exports to PNG, SVG, or PDF",
-      "Includes 6 diagram presets including ML models with tensor shape annotations",
-      "Automated self-check loop identifies and fixes six common layout issues"
+      "Generates .drawio XML and exports to PNG, SVG, PDF, or JPG",
+      "Six specialized presets for ERD, UML, Architecture, and ML diagrams",
+      "Automated self-check loop reads and fixes diagram layout issues"
     ],
-    "readmeHash": "5f35aa801e5aa519e6e08d489eb82190c916f86d42559adfaaa79b427c239d45",
-    "generatedAt": "2026-04-17T18:15:32.967Z",
+    "readmeHash": "b23dbfb289768c13b4f42f7150a8f6607339c6a7f05c5942604d31dda6058fe3",
+    "generatedAt": "2026-04-19T06:59:04.624Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -390,14 +390,14 @@
     "audit": "pass"
   },
   "yoloshii/ClawMem": {
-    "summary": "ClawMem is a local-first memory and context layer designed to provide persistent knowledge for AI agents across different sessions and platforms. It utilizes a hybrid retrieval architecture that combines vector search, BM25, and multi-graph traversal to surface relevant documents, decisions, and causal relationships. The system automatically captures insights from conversation transcripts using local models and maintains a shared SQLite vault accessible by Claude Code, OpenClaw, and Hermes agents. By operating entirely on-device without cloud dependencies, it ensures data privacy while enabling cross-runtime memory continuity.",
+    "summary": "ClawMem is a local-first memory and context engine designed to provide persistent knowledge across different AI agent runtimes. It utilizes a hybrid retrieval architecture that combines vector search, BM25, and multi-graph traversal to surface relevant project documentation and past decisions. The system automatically captures session insights using local observer models and maintains a unified SQLite vault shared between Claude Code, OpenClaw, and Hermes agents. By operating entirely on-device without cloud dependencies, it ensures data privacy while managing document lifecycles and causal relationships between facts.",
     "highlights": [
-      "Hybrid retrieval combining vector search, BM25, and multi-graph traversal",
-      "Local-first architecture with no API keys or cloud dependencies",
-      "Cross-platform memory sharing between Claude Code, OpenClaw, and Hermes"
+      "Unified local SQLite vault for cross-agent memory persistence",
+      "Hybrid retrieval combining vector search, BM25, and graph traversal",
+      "Automated decision capture and handoff generation via local models"
     ],
-    "readmeHash": "0bb5f7c7a2d1467b3feab370bb85d7e81008b8f735626cb14bc3cc030032c4b0",
-    "generatedAt": "2026-04-17T18:16:43.940Z",
+    "readmeHash": "cbc2301433245902a212ca3a618d06ada3ec13c5fb5fc4f06ed12c8e37118082",
+    "generatedAt": "2026-04-19T06:59:10.768Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -1079,14 +1079,14 @@
     "audit": "pass"
   },
   "xaspx/hermes-control-interface": {
-    "summary": "The Hermes Control Interface is a self-hosted web dashboard designed to manage the Hermes AI agent stack through a centralized graphical interface. It utilizes a Node.js and Express backend with WebSockets to provide real-time system monitoring, multi-agent gateway management, and a browser-based terminal. Users can configure over 80 agent settings, track detailed token analytics across different models, and manage scheduled cron jobs for automated tasks. The platform also includes a revamped chat interface with collapsible tool call cards and a secure file explorer scoped to the agent's directory.",
+    "summary": "The Hermes Control Interface is a self-hosted web dashboard designed to manage the Hermes AI agent stack through a centralized graphical interface. It utilizes a Node.js and Express backend with WebSockets to provide real-time terminal access, file management, and multi-agent gateway control. Users can monitor system metrics, track token usage analytics, and configure agent skills or cron jobs without using the command line. The platform includes a revamped chat interface with tool call visualization and a robust role-based access control system for team management.",
     "highlights": [
-      "Multi-agent gateway for starting, stopping, and configuring individual profiles.",
-      "Detailed token analytics tracking costs and usage by model and platform.",
-      "Role-based access control with 28 permissions across 12 functional groups."
+      "Multi-agent gateway for starting, stopping, and configuring multiple profiles.",
+      "Real-time chat interface with session management and tool call cards.",
+      "Detailed token analytics tracking costs by model, platform, and time."
     ],
-    "readmeHash": "e261fdb14b0aa8ca2bd10b6201dc82f97277521696b595840c031c334cd2fd0f",
-    "generatedAt": "2026-04-17T18:20:35.673Z",
+    "readmeHash": "86a9f06974d5872ffb442139c9943a9f050b4c7b663b9c90cc5804163bd28015",
+    "generatedAt": "2026-04-19T06:59:22.885Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -1144,27 +1144,27 @@
     "audit": "pass"
   },
   "garrytan/gbrain": {
-    "summary": "GBrain is a persistent memory and knowledge graph system designed to provide AI agents with long-term context and structured information retrieval. It utilizes a hybrid search approach and a self-wiring knowledge graph to automatically extract entities and create typed relationships from ingested meetings, emails, and notes. The system operates through 26 specialized skills that manage tasks such as content ingestion, automated enrichment of person and company profiles, and autonomous maintenance. It integrates directly with Hermes Agent and OpenClaw via MCP tools or a standalone CLI using PGLite for local storage.",
+    "summary": "GBrain is a persistent memory and knowledge management system designed to provide AI agents with long-term context and structured reasoning. It utilizes a self-wiring knowledge graph and hybrid search to automatically extract entities and create typed links between people, companies, and events without requiring constant LLM calls. The system includes 26 specialized skills for ingesting diverse data sources like meetings, emails, and tweets while maintaining a structured timeline and backlink-boosted ranking. It integrates with Hermes Agent and OpenClaw via MCP tools to automate background tasks like daily briefings and entity enrichment.",
     "highlights": [
-      "Automates entity extraction and typed relationship linking without LLM calls",
-      "Features 26 modular skills for ingestion, enrichment, and autonomous maintenance",
-      "Implements hybrid search and backlink-boosted ranking for high-precision retrieval"
+      "Self-wiring knowledge graph with automated entity extraction and typed linking.",
+      "Hybrid search architecture combining vector retrieval with backlink-boosted ranking.",
+      "Ships with 26 modular skills for ingestion, enrichment, and task management."
     ],
-    "readmeHash": "6ba315a4c9bcd35bb6c210b7ab7df45cbe07911156439fe18d8b1d24c7b7a36a",
-    "generatedAt": "2026-04-18T19:19:05.153Z",
+    "readmeHash": "497cc0205d54b9ce660c7bcbdddee1009240ff41cb727a861738e27cf21a42c7",
+    "generatedAt": "2026-04-19T06:59:27.235Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
   },
   "pyrate-llama/hermes-ui": {
-    "summary": "Hermes UI is a glassmorphic web interface designed for the self-hosted Hermes Agent ecosystem. It functions as a single-file React application served via a lightweight Python proxy, requiring no external dependencies or build steps. The interface provides specialized tools for agent interaction, including real-time log streaming, an artifact panel for rendering HTML/SVG, and a memory inspector for editing internal state files. It also enforces optional behavioral guidelines to focus the agent on surgical, goal-driven code collaboration.",
+    "summary": "Hermes UI is a glassmorphic web interface for the self-hosted Hermes Agent that provides a centralized workspace for AI interaction and system monitoring. It operates as a single-file React application served via a lightweight Python proxy, requiring no external dependencies or build steps. The interface features a specialized artifact panel for live HTML/SVG rendering, real-time log streaming, and a file browser for managing local agent memory and configurations. Users can also toggle behavioral guidelines and monitor connected Model Context Protocol (MCP) tools directly from the dashboard.",
     "highlights": [
-      "Single-file React architecture with no npm dependencies",
-      "Real-time artifact panel for live HTML and SVG rendering",
-      "Integrated file browser and memory inspector for agent state"
+      "Single-file React architecture with no npm dependencies required",
+      "Live artifact panel for rendering HTML, SVG, and code blocks",
+      "Real-time log streaming and system performance monitoring dashboard"
     ],
-    "readmeHash": "15701f73a4d7a82a99a853ae39ae65845b67b9b6fb1300853c1ab5816b92dfe6",
-    "generatedAt": "2026-04-18T19:19:08.838Z",
+    "readmeHash": "c918b650c25fc0383b22503a7ca949c802a39e0fe94e1f4a8f59f5e224ab585b",
+    "generatedAt": "2026-04-19T06:59:31.003Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
