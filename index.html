@@ -64,6 +64,15 @@
   </button>
 </header>
 
+<!-- Report banner -->
+<div class="report-banner" id="report-banner">
+  <div class="report-banner-content">
+    <span class="report-banner-badge">new report</span>
+    <span class="report-banner-text"><a href="/reports/state-of-hermes-april-2026">the state of hermes agent — april 2026</a> · 57k stars in 6 weeks, 90+ ecosystem projects, and what to watch next.</span>
+  </div>
+  <button class="report-banner-close" id="report-banner-close" title="Dismiss" aria-label="Dismiss banner">×</button>
+</div>
+
 <!-- Hero strip -->
 <section class="hero-strip" id="main">
   <h1 class="hero-title">the community map of <em>hermes agent</em>.</h1>
@@ -80,15 +89,6 @@
   <div class="stat"><span class="n">12</span><div class="l">categories</div></div>
   <div class="stat"><span class="n">6</span><div class="l">curated lists</div></div>
 </section>
-
-<!-- Report banner -->
-<div class="report-banner" id="report-banner">
-  <div class="report-banner-content">
-    <span class="report-banner-badge">new report</span>
-    <span class="report-banner-text"><a href="/reports/state-of-hermes-april-2026">the state of hermes agent — april 2026</a> · 57k stars in 6 weeks, 90+ ecosystem projects, and what to watch next.</span>
-  </div>
-  <button class="report-banner-close" id="report-banner-close" title="Dismiss" aria-label="Dismiss banner">×</button>
-</div>
 
 <!-- Featured (hero repo) -->
 <section class="featured" aria-label="Featured project">
@@ -130,6 +130,42 @@
   <div class="tt-desc" id="tt-desc"></div>
   <div class="tt-link">open on github →</div>
 </div>
+
+<!-- Curated lists -->
+<section class="curated-lists" id="curated-lists">
+  <div class="cat-meta">
+    <div class="cat-num">§·lists</div>
+    <h2 class="cat-title">Curated lists</h2>
+    <p class="cat-desc">Opinionated cuts of the ecosystem — starting points when you already know what you need.</p>
+    <div class="cat-count">6 lists</div>
+  </div>
+  <div class="lists-grid">
+    <a href="/lists/best-memory-providers" class="list-card">
+      <div class="lc-title">Best memory providers</div>
+      <div class="lc-desc">Long-term semantic memory, graph-based retrieval, and cross-session persistence tools.</div>
+    </a>
+    <a href="/lists/top-skills" class="list-card">
+      <div class="lc-title">Top skills</div>
+      <div class="lc-desc">Most popular skills and registries following the agentskills.io open standard.</div>
+    </a>
+    <a href="/lists/deployment-options" class="list-card">
+      <div class="lc-title">Deployment options</div>
+      <div class="lc-desc">Docker, Nix, systemd, and managed cloud templates for production deployments.</div>
+    </a>
+    <a href="/lists/multi-agent-frameworks" class="list-card">
+      <div class="lc-title">Multi-agent frameworks</div>
+      <div class="lc-desc">Fleet management, swarm coordinators, and multi-agent delegation systems.</div>
+    </a>
+    <a href="/lists/developer-tools" class="list-card">
+      <div class="lc-title">Developer tools</div>
+      <div class="lc-desc">CLIs, linters, migration helpers, token trackers, and dev utilities.</div>
+    </a>
+    <a href="/lists/workspaces-and-guis" class="list-card">
+      <div class="lc-title">Workspaces &amp; GUIs</div>
+      <div class="lc-desc">Web and desktop interfaces — chat UIs, memory browsers, and config dashboards.</div>
+    </a>
+  </div>
+</section>
 
 <!-- ═══ Category Sections ═══ -->
 
@@ -1013,42 +1049,6 @@
         <div class="repo-desc">Generate agentic training trajectories from real-world tasks for Hermes 4 fine-tuning.</div>
       </div>
       <div class="repo-delta">— / wk</div>
-    </a>
-  </div>
-</section>
-
-<!-- Curated lists -->
-<section class="curated-lists" id="curated-lists">
-  <div class="cat-meta">
-    <div class="cat-num">§·lists</div>
-    <h2 class="cat-title">Curated lists</h2>
-    <p class="cat-desc">Opinionated cuts of the ecosystem — starting points when you already know what you need.</p>
-    <div class="cat-count">6 lists</div>
-  </div>
-  <div class="lists-grid">
-    <a href="/lists/best-memory-providers" class="list-card">
-      <div class="lc-title">Best memory providers</div>
-      <div class="lc-desc">Long-term semantic memory, graph-based retrieval, and cross-session persistence tools.</div>
-    </a>
-    <a href="/lists/top-skills" class="list-card">
-      <div class="lc-title">Top skills</div>
-      <div class="lc-desc">Most popular skills and registries following the agentskills.io open standard.</div>
-    </a>
-    <a href="/lists/deployment-options" class="list-card">
-      <div class="lc-title">Deployment options</div>
-      <div class="lc-desc">Docker, Nix, systemd, and managed cloud templates for production deployments.</div>
-    </a>
-    <a href="/lists/multi-agent-frameworks" class="list-card">
-      <div class="lc-title">Multi-agent frameworks</div>
-      <div class="lc-desc">Fleet management, swarm coordinators, and multi-agent delegation systems.</div>
-    </a>
-    <a href="/lists/developer-tools" class="list-card">
-      <div class="lc-title">Developer tools</div>
-      <div class="lc-desc">CLIs, linters, migration helpers, token trackers, and dev utilities.</div>
-    </a>
-    <a href="/lists/workspaces-and-guis" class="list-card">
-      <div class="lc-title">Workspaces &amp; GUIs</div>
-      <div class="lc-desc">Web and desktop interfaces — chat UIs, memory browsers, and config dashboards.</div>
     </a>
   </div>
 </section>
