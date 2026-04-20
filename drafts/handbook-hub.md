@@ -1,4 +1,4 @@
-# Hermes Agent: The Complete Beginner's Guide (2026)
+# Hermes Agent: The Complete Beginner's Guide (Apr 2026)
 
 By [Kevin Simback](https://x.com/ksimback) · Hermes Atlas maintainer · Updated 2026-04-20
 
