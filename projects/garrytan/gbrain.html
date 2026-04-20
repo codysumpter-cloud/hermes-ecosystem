@@ -58,11 +58,11 @@
   <p class="project-desc">Garry's Opinionated OpenClaw/Hermes Agent Brain</p>
 
   <div class="meta-row">
-    <span class="stars">★ 9.2K</span>
+    <span class="stars">★ 9.5K</span>
     <span><span class="meta-label">lang</span>TypeScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-04-19</span>
+    <span><span class="meta-label">updated</span>2026-04-20</span>
   </div>
 
   <div class="actions">
@@ -75,11 +75,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">GBrain is a persistent memory and knowledge management system designed to provide AI agents with long-term context and structured reasoning. It utilizes a self-wiring knowledge graph and hybrid search to automatically extract entities and create typed links between people, companies, and events without requiring constant LLM calls. The system includes 26 specialized skills for ingesting diverse data sources like meetings, emails, and tweets while maintaining a structured timeline and backlink-boosted ranking. It integrates with Hermes Agent and OpenClaw via MCP tools to automate background tasks like daily briefings and entity enrichment.</p>
+    <p class="summary-text">GBrain is a persistent memory and context layer designed to prevent AI agents from losing information over time. It utilizes a self-wiring knowledge graph and hybrid search to automatically extract entity references and create typed links between people, companies, and events. The system operates through 26 specialized skills that handle automated ingestion of meetings, emails, and tweets while performing overnight memory consolidation. It integrates directly with Hermes Agent and OpenClaw via an MCP server to provide structured, long-term recall for autonomous workflows.</p>
     <ul class="summary-highlights">
-      <li>Self-wiring knowledge graph with automated entity extraction and typed linking.</li>
-      <li>Hybrid search architecture combining vector retrieval with backlink-boosted ranking.</li>
-      <li>Ships with 26 modular skills for ingestion, enrichment, and task management.</li>
+      <li>Self-wiring knowledge graph with automated entity extraction and typed linking</li>
+      <li>Hybrid search combining vector retrieval with backlink-boosted ranking</li>
+      <li>Ships with 26 specialized skills for media ingestion and enrichment</li>
     </ul>
   </div>
 </section>
@@ -377,6 +377,7 @@ gbrain skillpack-check --quiet    # exit 0/1/2 for pipeline gating
 gbrain skillpack-check | jq       # full JSON: {healthy, summary, actions[], doctor, migrations}
 </code></pre>
 <p>If anything&#39;s off, <code>actions[]</code> tells you the exact command to run. For deeper troubleshooting: <a href="https://github.com/garrytan/gbrain/blob/main/docs/guides/minions-fix.md"><code>docs/guides/minions-fix.md</code></a>.</p>
+<p>Moving gateway crons to Minions (deterministic scripts, zero LLM tokens per fire): <a href="https://github.com/garrytan/gbrain/blob/main/docs/guides/minions-shell-jobs.md"><code>docs/guides/minions-shell-jobs.md</code></a>.</p>
 <h3>Skillify: your skills tree stops being a black box</h3>
 <p>Hermes and similar agent frameworks auto-create skills as a background behavior. Fine until you don&#39;t know what the agent shipped. Checklists decay. Tests drift. Resolver entries get stale. Six months later you&#39;ve got an opaque pile of &quot;skills&quot; that nobody has read, nobody has tested, and nobody is sure still work.</p>
 <p>GBrain ships the same capability. Except the human stays in the loop.</p>
@@ -699,6 +700,7 @@ ADMIN
   gbrain check-backlinks check|fix      Back-link enforcement
   gbrain lint [--fix]                   LLM artifact detection
   gbrain repair-jsonb [--dry-run]       Repair v0.12.0 double-encoded JSONB (Postgres)
+  gbrain orphans [--json] [--count]     Find pages with zero inbound wikilinks
   gbrain transcribe &lt;audio&gt;             Transcribe audio (Groq Whisper)
   gbrain research init &lt;name&gt;           Scaffold a data-research recipe
   gbrain research list                  Show available recipes
@@ -749,11 +751,11 @@ ADMIN
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 9.7K</div>
+        <div class="stars">★ 9.8K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
-        <div class="stars">★ 745</div>
+        <div class="stars">★ 748</div>
         <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
       </a>
       <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
@@ -765,7 +767,7 @@ ADMIN
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 44</div>
+        <div class="stars">★ 45</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
@@ -773,7 +775,7 @@ ADMIN
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
       </a>
       <a class="related-row" href="/projects/stephenschoettler/hermes-lcm">
-        <div class="stars">★ 204</div>
+        <div class="stars">★ 215</div>
         <div class="name"><span class="org">stephenschoettler /</span> hermes-lcm</div>
       </a>
     </div>

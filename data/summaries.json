@@ -78,14 +78,14 @@
     "audit": "pass"
   },
   "outsourc-e/hermes-workspace": {
-    "summary": "Hermes Workspace is a native web-based command center designed to manage and orchestrate AI agents through a unified graphical interface. It functions as a Progressive Web App that connects to OpenAI-compatible backends or the Hermes gateway to provide real-time SSE streaming of agent outputs and tool calls. The platform integrates a terminal, file browser, and an inspector for searching and editing agent memory and skills. It supports local model providers like Ollama and LM Studio, offering enhanced session persistence and job tracking when routed through a dedicated gateway.",
+    "summary": "Hermes Workspace is a native web-based command center designed to provide a unified interface for managing AI agents. It integrates directly with the Hermes Agent gateway via real-time SSE streaming to offer a suite of tools including a terminal, memory browser, and skills manager. Users can browse and edit agent memory, manage over 2,000 skills, and monitor tool calls through a security-hardened dashboard. The platform supports any OpenAI-compatible backend and is available as a mobile-first Progressive Web App.",
     "highlights": [
-      "Unified interface for chat, terminal, memory browser, and skills management",
-      "Real-time SSE streaming with visual rendering for agent tool calls",
-      "Supports local backends including Ollama, Atomic Chat, and vLLM"
+      "Real-time SSE streaming for agent output and tool call rendering",
+      "Comprehensive memory and skills management with search and edit capabilities",
+      "Cross-platform support via mobile-first PWA and Docker deployment options"
     ],
-    "readmeHash": "3dfb970af23cd7d3b633664d9e637f04e10e4d2c2aaf5bc39a6aaf2d603cc4df",
-    "generatedAt": "2026-04-17T18:14:58.327Z",
+    "readmeHash": "0db207dbc8ed2cbddc5f2088d5e34f155aaecfbb45fee0e2d79d599b73bb101c",
+    "generatedAt": "2026-04-20T07:16:58.749Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -182,14 +182,14 @@
     "audit": "pass"
   },
   "Agents365-ai/drawio-skill": {
-    "summary": "The drawio-skill project is an open-source tool that enables AI agents to generate and export professional draw.io diagrams from natural language descriptions. It utilizes the native draw.io desktop CLI to convert XML into various formats like PNG, SVG, and PDF while enforcing grid-aligned layouts and semantic color systems. The skill includes specialized presets for architecture, UML, and machine learning diagrams, featuring unique capabilities like tensor shape annotations and animated data-flow connectors. It integrates with multiple agent platforms including Hermes Agent, Claude Code, and Opencode to provide an iterative design loop with automated self-correction.",
+    "summary": "drawio-skill is a tool that enables AI agents to generate professional draw.io diagrams from natural language descriptions. It produces .drawio XML files and utilizes the native draw.io desktop CLI to export them as PNG, SVG, PDF, or JPG. The skill features six diagram presets, including ML/Deep Learning and UML, and supports an iterative review loop for refining layouts. It is compatible with multiple AI platforms, including Hermes Agent, Claude Code, and Opencode.",
     "highlights": [
-      "Generates .drawio XML and exports to PNG, SVG, PDF, or JPG",
-      "Six specialized presets for ERD, UML, Architecture, and ML diagrams",
-      "Automated self-check loop reads and fixes diagram layout issues"
+      "Six presets for ERD, UML, Architecture, ML, and Flowcharts",
+      "Grid-aligned layouts with animated connectors and tensor shape annotations",
+      "Multi-platform support for Hermes Agent, Claude Code, and others"
     ],
-    "readmeHash": "b23dbfb289768c13b4f42f7150a8f6607339c6a7f05c5942604d31dda6058fe3",
-    "generatedAt": "2026-04-19T06:59:04.624Z",
+    "readmeHash": "a79b15296f307b4bc0ec62fdbf0e48dc6e802a3421fd2ab721d6e399da60ab93",
+    "generatedAt": "2026-04-20T07:17:07.496Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -312,14 +312,14 @@
     "audit": "pass"
   },
   "armelhbobdad/bmad-module-skill-forge": {
-    "summary": "Skill Forge is a development tool that converts source code, documentation, and developer discussions into verified instruction files for AI agents to prevent API hallucinations. It uses AST extraction to map function signatures and types directly to specific source files and line numbers, ensuring agents follow real implementation details. The tool generates version-pinned skills compliant with the agentskills.io specification, supporting workflows for libraries, SaaS APIs, and complex dependency stacks. Every skill includes a provenance map for auditability and a compact context snippet for efficient agent memory management.",
+    "summary": "Skill Forge is a development tool that converts source code, documentation, and developer discourse into verified instruction files for AI agents. It uses Abstract Syntax Tree (AST) extraction to map agent instructions directly to specific file paths and line numbers, ensuring technical accuracy. The system generates version-pinned skills compliant with the agentskills.io specification to prevent model hallucinations regarding API signatures and parameter types. Users can manage the entire skill lifecycle through automated workflows, including creation, testing, and exporting to platforms like Cursor or Copilot.",
     "highlights": [
-      "Extracts verified function signatures and types via AST analysis",
-      "Links every AI instruction to specific source file line numbers",
-      "Generates agentskills.io-compliant markdown and JSON instruction sets"
+      "Maps AI instructions to specific source code line numbers",
+      "Generates agentskills.io-compliant markdown and JSON instruction sets",
+      "Supports version-pinned skill storage for multiple library releases"
     ],
-    "readmeHash": "cdf94eee115fe18cdd6da97d005520f67a95d8c2a5242e3ce610e5dbd682e02b",
-    "generatedAt": "2026-04-17T21:34:29.958Z",
+    "readmeHash": "dd7fa5b15b1f2f12a30123cd6389db472f6352a0be395e82d38da65be9929f0c",
+    "generatedAt": "2026-04-20T07:17:14.074Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -598,14 +598,14 @@
     "audit": "pass"
   },
   "numtide/llm-agents.nix": {
-    "summary": "llm-agents.nix is a collection of Nix packages designed to simplify the deployment and management of AI coding agents and development tools. It provides a unified repository of Nix expressions that automate the installation of various terminal-based agents, ranging from local open-source tools to proprietary binaries. The project is updated daily to ensure users have access to the latest versions of tools like Goose, Claude Code, and various agent orchestrators. This infrastructure allows developers to run diverse AI agents instantly via Nix flakes without manual environment configuration.",
+    "summary": "llm-agents.nix is a collection of Nix packages designed to simplify the deployment and management of AI-powered coding agents and development tools. The project provides a centralized repository of Nix expressions that automate the installation of various CLI-based agents, ensuring they are updated daily from their respective sources. Users can run these tools instantly via Nix flakes, eliminating the need for manual environment configuration or dependency management. The collection includes a wide range of orchestrators and terminal-based assistants, such as Goose, Claude Code, and various multi-agent management frameworks.",
     "highlights": [
-      "Provides Nix packages for numerous terminal-based AI coding agents",
-      "Automates daily updates for all included agentic development tools",
-      "Supports both open-source and proprietary binary-based AI tools"
+      "Provides automated daily updates for AI coding agent packages",
+      "Enables instant execution of tools via Nix flake commands",
+      "Supports diverse agents including Goose, Claude Code, and Bernstein"
     ],
-    "readmeHash": "dad1061258604094bedbc0dc2af414d548b18ddd04236d8f61f1dccedcee5ac9",
-    "generatedAt": "2026-04-17T18:17:50.705Z",
+    "readmeHash": "dd8ee959291db1656d998d869aa259edf20b71f311815cd01d3b805e95706feb",
+    "generatedAt": "2026-04-20T07:17:23.428Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -819,14 +819,14 @@
     "audit": "pass"
   },
   "roli-lpci/lintlang": {
-    "summary": "lintlang is a static linter designed to identify language-based bugs in AI agent configurations, tool descriptions, and system prompts. It uses seven structural detectors (H1-H7) to find issues like tool ambiguity and missing termination conditions without requiring LLM calls. The tool integrates into CI pipelines to gate deployments based on finding severity. It supports YAML, JSON, and plain text formats for a wide range of agent frameworks.",
+    "summary": "lintlang is a static analysis tool designed to identify language-level failures in AI agent configurations, system prompts, and tool definitions. It employs seven structural detectors to catch issues like ambiguous tool descriptions, missing termination conditions, and schema mismatches without making LLM calls. By running locally or in CI pipelines, it prevents common runtime errors such as infinite loops and incorrect tool selection. The tool supports YAML, JSON, and Markdown formats, providing concrete fix suggestions for identified vulnerabilities.",
     "highlights": [
-      "Static analysis with zero LLM calls, cost, or latency",
-      "Seven structural detectors for common agent failure modes",
-      "CI integration with verdict-based gating (PASS, REVIEW, FAIL)"
+      "Identifies structural language bugs using seven specialized detectors (H1-H7).",
+      "Operates with zero LLM calls, ensuring no latency or data exposure.",
+      "Provides verdict-based gating for CI/CD pipelines to block failing configs."
     ],
-    "readmeHash": "ea152abe0bc92200fafd83a759d5b3c1bc058f86e3eb4c22371e137d12397d63",
-    "generatedAt": "2026-04-17T18:19:10.637Z",
+    "readmeHash": "d16d9a78def72391a4bdeaf9e4bce1def9c997de5de300c8a0b86868b26eea73",
+    "generatedAt": "2026-04-20T07:17:31.745Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -1144,27 +1144,27 @@
     "audit": "pass"
   },
   "garrytan/gbrain": {
-    "summary": "GBrain is a persistent memory and knowledge management system designed to provide AI agents with long-term context and structured reasoning. It utilizes a self-wiring knowledge graph and hybrid search to automatically extract entities and create typed links between people, companies, and events without requiring constant LLM calls. The system includes 26 specialized skills for ingesting diverse data sources like meetings, emails, and tweets while maintaining a structured timeline and backlink-boosted ranking. It integrates with Hermes Agent and OpenClaw via MCP tools to automate background tasks like daily briefings and entity enrichment.",
+    "summary": "GBrain is a persistent memory and context layer designed to prevent AI agents from losing information over time. It utilizes a self-wiring knowledge graph and hybrid search to automatically extract entity references and create typed links between people, companies, and events. The system operates through 26 specialized skills that handle automated ingestion of meetings, emails, and tweets while performing overnight memory consolidation. It integrates directly with Hermes Agent and OpenClaw via an MCP server to provide structured, long-term recall for autonomous workflows.",
     "highlights": [
-      "Self-wiring knowledge graph with automated entity extraction and typed linking.",
-      "Hybrid search architecture combining vector retrieval with backlink-boosted ranking.",
-      "Ships with 26 modular skills for ingestion, enrichment, and task management."
+      "Self-wiring knowledge graph with automated entity extraction and typed linking",
+      "Hybrid search combining vector retrieval with backlink-boosted ranking",
+      "Ships with 26 specialized skills for media ingestion and enrichment"
     ],
-    "readmeHash": "497cc0205d54b9ce660c7bcbdddee1009240ff41cb727a861738e27cf21a42c7",
-    "generatedAt": "2026-04-19T06:59:27.235Z",
+    "readmeHash": "4e725332ad09dc9c8d0a749c564d7d1afafeaf67724b473a18b77cda66ad3f9b",
+    "generatedAt": "2026-04-20T07:17:41.692Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
   },
   "pyrate-llama/hermes-ui": {
-    "summary": "Hermes UI is a glassmorphic web interface for the self-hosted Hermes Agent that provides a centralized workspace for AI interaction and system monitoring. It operates as a single-file React application served via a lightweight Python proxy, requiring no external dependencies or build steps. The interface features a specialized artifact panel for live HTML/SVG rendering, real-time log streaming, and a file browser for managing local agent memory and configurations. Users can also toggle behavioral guidelines and monitor connected Model Context Protocol (MCP) tools directly from the dashboard.",
+    "summary": "Hermes UI is a glassmorphic web interface for the Hermes Agent self-hosted AI assistant. It operates as a single-file React 18 application served via a lightweight Python proxy that requires no external dependencies. The interface provides real-time tool visualization, live log streaming, and an artifact panel for rendering HTML, SVG, and code blocks. Users can also manage internal memory, browse files, and monitor connected MCP tools through a unified dashboard.",
     "highlights": [
-      "Single-file React architecture with no npm dependencies required",
-      "Live artifact panel for rendering HTML, SVG, and code blocks",
-      "Real-time log streaming and system performance monitoring dashboard"
+      "Single-file React 18 architecture with no build step required",
+      "Real-time SSE log streaming and tool call visualization",
+      "Artifact panel for live rendering of HTML, SVG, and code"
     ],
-    "readmeHash": "c918b650c25fc0383b22503a7ca949c802a39e0fe94e1f4a8f59f5e224ab585b",
-    "generatedAt": "2026-04-19T06:59:31.003Z",
+    "readmeHash": "553b52c957f51ca03da0d31726fb473a0a3a9622de561d9c27bf39c54db6fb96",
+    "generatedAt": "2026-04-20T07:17:45.523Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -1196,14 +1196,40 @@
     "audit": "pass"
   },
   "stephenschoettler/hermes-lcm": {
-    "summary": "hermes-lcm is a context management plugin for Hermes Agent designed to prevent information loss when conversation history exceeds the context window. It utilizes a hierarchical Directed Acyclic Graph (DAG) of summaries to compact old messages while maintaining a path for detailed retrieval. This approach provides the agent with autonomous tools to drill down into specific historical details without relying on external search methods.",
+    "summary": "Hermes-LCM is a context management plugin for the Hermes Agent that prevents information loss during long-running conversations. It replaces standard lossy compression with a hierarchical Directed Acyclic Graph (DAG) that persists all messages in a profile-scoped SQLite database. The system utilizes a three-level escalation strategy—ranging from detailed summaries to deterministic truncation—to maintain context window limits while preserving data lineage. Agents can autonomously retrieve original details from compacted history using a dedicated suite of tools like lcm_grep and lcm_expand.",
     "highlights": [
-      "Uses a hierarchical DAG for lossless message compaction",
-      "Provides agent tools for structured historical retrieval",
-      "Features an immutable-first SQLite message store"
+      "Hierarchical DAG-based summary engine for multi-level context compaction",
+      "Dedicated agent tools for structured retrieval of compacted conversation history",
+      "Immutable-first SQLite storage ensuring no message is ever deleted"
     ],
-    "readmeHash": "cb60f1c085db4c4cfd32c6d92015db5089d381fcdc67d403ee884476ea770b38",
-    "generatedAt": "2026-04-18T19:19:14.287Z",
+    "readmeHash": "d077265bdc26c872b39e1d3dc71314e02716c74c08ef6a51ef2f4a15775b2835",
+    "generatedAt": "2026-04-20T07:17:50.141Z",
+    "model": "google/gemma-4-31b-it:free",
+    "version": 1,
+    "audit": "pass"
+  },
+  "Codename-11/hermes-relay": {
+    "summary": "Hermes-Relay is a native Android companion application designed to provide a mobile interface for the Hermes agent platform. It establishes a secure connection between a mobile device and a Hermes server using a Python-based plugin and WebSocket Secure (WSS) communication. Users can interact with their AI agents through a dedicated chat interface, access a remote terminal, and execute device control commands. The system simplifies setup through QR-based pairing and includes a dashboard for monitoring connected devices and bridge activity.",
+    "highlights": [
+      "Native Android client supporting chat, terminal, and device control",
+      "Secure WebSocket communication with QR-based server pairing",
+      "Server-side Python plugin for seamless hermes-agent integration"
+    ],
+    "readmeHash": "c96d521204d2472bf049c7df289a4fa7701e54a71e7d80525ee770e2a57ccea9",
+    "generatedAt": "2026-04-20T07:17:54.226Z",
+    "model": "google/gemma-4-31b-it:free",
+    "version": 1,
+    "audit": "pass"
+  },
+  "clawvader-tech/hermes-telegram-miniapp": {
+    "summary": "Hermes Telegram Mini App is a React-based terminal interface that allows users to manage and interact with Hermes agents directly within Telegram. It functions as a mobile-first workspace that connects to a local Hermes installation via a secure gateway, providing a dark-mode dashboard for chat and system monitoring. The application features integrated tools for managing cron jobs, spawning background agent instances, and performing vision-based tasks through local OCR and LLM servers. Security is maintained through dual HMAC-SHA256 and Ed25519 validation to ensure only authorized Telegram users can access the agent.",
+    "highlights": [
+      "Terminal-style chat with streaming responses and slash command support",
+      "Real-time system monitoring for CPU, memory, and disk usage",
+      "Background agent spawning with support for five concurrent instances"
+    ],
+    "readmeHash": "c5787ca063daa34c89be1aca78e8d211eb0efb9ab27d09e5757bcbf486dfc8b8",
+    "generatedAt": "2026-04-20T07:17:58.550Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"

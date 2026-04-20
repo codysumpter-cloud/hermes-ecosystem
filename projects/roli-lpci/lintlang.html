@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>lintlang — Hermes Agent Developer Tools | Hermes Atlas</title>
-<meta name="description" content="lintlang by Hermes Labs — static linter for AI agent configs, tool descriptions, and system prompts. HERM v1.1 scoring.">
+<meta name="description" content="Static linter for AI agent configs, tool descriptions, and system prompts with zero-LLM CI gating">
 <link rel="canonical" href="https://hermesatlas.com/projects/roli-lpci/lintlang">
 <meta property="og:title" content="lintlang — Hermes Atlas">
-<meta property="og:description" content="lintlang by Hermes Labs — static linter for AI agent configs, tool descriptions, and system prompts. HERM v1.1 scoring.">
+<meta property="og:description" content="Static linter for AI agent configs, tool descriptions, and system prompts with zero-LLM CI gating">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/roli-lpci/lintlang">
 <meta property="og:site_name" content="Hermes Atlas">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="lintlang — Hermes Atlas">
-<meta name="twitter:description" content="lintlang by Hermes Labs — static linter for AI agent configs, tool descriptions, and system prompts. HERM v1.1 scoring.">
+<meta name="twitter:description" content="Static linter for AI agent configs, tool descriptions, and system prompts with zero-LLM CI gating">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -55,19 +55,19 @@
   <h1 class="project-name">
     <span class="org">roli-lpci</span><span class="slash">/</span>lintlang
   </h1>
-  <p class="project-desc">lintlang by Hermes Labs — static linter for AI agent configs, tool descriptions, and system prompts. HERM v1.1 scoring.</p>
+  <p class="project-desc">Static linter for AI agent configs, tool descriptions, and system prompts with zero-LLM CI gating</p>
 
   <div class="meta-row">
     <span class="stars">★ 25</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
-    <span><span class="meta-label">updated</span>2026-04-18</span>
+    <span><span class="meta-label">updated</span>2026-04-19</span>
   </div>
 
   <div class="actions">
     <a href="https://github.com/roli-lpci/lintlang" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
-    <a href="https://hermes-labs.ai" target="_blank" rel="noopener" class="btn-secondary">homepage</a>
+    <a href="https://github.com/roli-lpci/lintlang" target="_blank" rel="noopener" class="btn-secondary">homepage</a>
   </div>
 </section>
 
@@ -75,11 +75,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">lintlang is a static linter designed to identify language-based bugs in AI agent configurations, tool descriptions, and system prompts. It uses seven structural detectors (H1-H7) to find issues like tool ambiguity and missing termination conditions without requiring LLM calls. The tool integrates into CI pipelines to gate deployments based on finding severity. It supports YAML, JSON, and plain text formats for a wide range of agent frameworks.</p>
+    <p class="summary-text">lintlang is a static analysis tool designed to identify language-level failures in AI agent configurations, system prompts, and tool definitions. It employs seven structural detectors to catch issues like ambiguous tool descriptions, missing termination conditions, and schema mismatches without making LLM calls. By running locally or in CI pipelines, it prevents common runtime errors such as infinite loops and incorrect tool selection. The tool supports YAML, JSON, and Markdown formats, providing concrete fix suggestions for identified vulnerabilities.</p>
     <ul class="summary-highlights">
-      <li>Static analysis with zero LLM calls, cost, or latency</li>
-      <li>Seven structural detectors for common agent failure modes</li>
-      <li>CI integration with verdict-based gating (PASS, REVIEW, FAIL)</li>
+      <li>Identifies structural language bugs using seven specialized detectors (H1-H7).</li>
+      <li>Operates with zero LLM calls, ensuring no latency or data exposure.</li>
+      <li>Provides verdict-based gating for CI/CD pipelines to block failing configs.</li>
     </ul>
   </div>
 </section>
@@ -88,6 +88,31 @@
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
     <h2>lintlang</h2>
+<p>AI agent configs fail for language reasons long before they fail for code reasons: vague tool descriptions, missing stop conditions, and schema fields that say nothing useful.</p>
+<p><code>lintlang</code> is a static linter for agent configs, system prompts, and tool definitions that catches those language-level failures before they hit CI, runtime, or human review.</p>
+<ul>
+<li>&quot;My agent picks the wrong tool because the tool descriptions all sound the same.&quot;</li>
+<li>&quot;We only catch prompt and config drift after the agent starts looping.&quot;</li>
+<li>&quot;I want a prompt linter or agent-config linter that runs in CI with no model calls.&quot;</li>
+<li>&quot;Our YAML is valid, but the instructions inside it are still bad.&quot;</li>
+</ul>
+<pre><code class="language-bash">pip install lintlang
+</code></pre>
+<pre><code class="language-bash">lintlang scan samples/bad_tool_descriptions.yaml
+</code></pre>
+<pre><code class="language-text">LINTLANG v0.2.1
+samples/bad_tool_descriptions.yaml
+
+FAIL — 1 CRITICAL, 2 HIGH, 6 MEDIUM, 3 LOW
+H1: Tool Description Ambiguity
+  [CRITICAL] tool:process_ticket
+  Tool &#39;process_ticket&#39; has no description.
+</code></pre>
+<p><strong>When To Use It</strong></p>
+<p>Use <code>lintlang</code> when you author or review AI agent tool descriptions, system prompts, or config files and want a static prompt/config quality gate in CI before runtime testing.</p>
+<p><strong>When Not To Use It</strong></p>
+<p>Do not use <code>lintlang</code> as a runtime evaluator, an LLM judge, or proof that an agent is behaviorally safe. It catches structural language problems, not dynamic execution failures.</p>
+<p><img src="https://raw.githubusercontent.com/roli-lpci/lintlang/main/assets/preview.png" alt="lintlang preview"></p>
 <p><a href="https://github.com/roli-lpci/lintlang/actions/workflows/ci.yml"><img src="https://github.com/roli-lpci/lintlang/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
 <a href="https://pypi.org/project/lintlang/"><img src="https://img.shields.io/pypi/v/lintlang" alt="PyPI version"></a>
 <a href="https://pypi.org/project/lintlang/"><img src="https://img.shields.io/pypi/dm/lintlang" alt="PyPI downloads"></a>
@@ -367,15 +392,15 @@ pytest
         <div class="name"><span class="org">junhoyeo /</span> tokscale</div>
       </a>
       <a class="related-row" href="/projects/joeynyc/hermes-skins">
-        <div class="stars">★ 235</div>
+        <div class="stars">★ 241</div>
         <div class="name"><span class="org">joeynyc /</span> hermes-skins</div>
       </a>
       <a class="related-row" href="/projects/AlexAI-MCP/hermes-CCC">
-        <div class="stars">★ 83</div>
+        <div class="stars">★ 85</div>
         <div class="name"><span class="org">AlexAI-MCP /</span> hermes-CCC</div>
       </a>
       <a class="related-row" href="/projects/unmodeled-tyler/vessel-browser">
-        <div class="stars">★ 53</div>
+        <div class="stars">★ 54</div>
         <div class="name"><span class="org">unmodeled-tyler /</span> vessel-browser</div>
       </a>
       <a class="related-row" href="/projects/Abruptive/Ankh.md">
