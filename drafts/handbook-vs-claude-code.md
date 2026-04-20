@@ -1,4 +1,4 @@
-# Hermes Agent vs Claude Code: Which AI Agent Should You Use in 2026?
+# Hermes Agent vs Claude Code: Which AI Agent Should You Use?
 
 By [Kevin Simback](https://x.com/ksimback) · Hermes Atlas maintainer · Updated 2026-04-20
 
