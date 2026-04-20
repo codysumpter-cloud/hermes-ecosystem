@@ -9,3 +9,8 @@ CLAUDE.md
 .gstack/
 .agents/
 skills-lock.json
+
+# In-progress tracking — stays in C:\Users\kevin\hermes-drafts\ (private, outside repo)
+# Covers: roadmaps, launch playbooks, analytics setup plans, status/todo docs
+tasks/
+notes/
