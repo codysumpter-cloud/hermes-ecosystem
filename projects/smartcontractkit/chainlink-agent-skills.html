@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>chainlink-agent-skills — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
-<meta name="description" content="Oracle network and smart contract interaction skills (agentskills.io spec)">
+<meta name="description" content="[PUBLIC] Repository for Chainlink Skills that implement https://agentskills.io/specification">
 <link rel="canonical" href="https://hermesatlas.com/projects/smartcontractkit/chainlink-agent-skills">
 <meta property="og:title" content="chainlink-agent-skills — Hermes Atlas">
-<meta property="og:description" content="Oracle network and smart contract interaction skills (agentskills.io spec)">
+<meta property="og:description" content="[PUBLIC] Repository for Chainlink Skills that implement https://agentskills.io/specification">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/smartcontractkit/chainlink-agent-skills">
 <meta property="og:site_name" content="Hermes Atlas">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="chainlink-agent-skills — Hermes Atlas">
-<meta name="twitter:description" content="Oracle network and smart contract interaction skills (agentskills.io spec)">
+<meta name="twitter:description" content="[PUBLIC] Repository for Chainlink Skills that implement https://agentskills.io/specification">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,14 +56,14 @@
   <h1 class="project-name">
     <span class="org">smartcontractkit</span><span class="slash">/</span>chainlink-agent-skills
   </h1>
-  <p class="project-desc">Oracle network and smart contract interaction skills (agentskills.io spec)</p>
+  <p class="project-desc">[PUBLIC] Repository for Chainlink Skills that implement https://agentskills.io/specification</p>
 
   <div class="meta-row">
-    <span class="stars">★ 85</span>
+    <span class="stars">★ 87</span>
+    <span><span class="meta-label">lang</span>JavaScript</span>
+    <span><span class="meta-label">license</span>MIT</span>
     
-    
-    
-    
+    <span><span class="meta-label">updated</span>2026-04-21</span>
   </div>
 
   <div class="actions">
@@ -78,11 +78,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Chainlink Agent Skills provides a set of specialized capabilities for agents to interact with oracle networks and smart contracts. The project implements the Agent Skills specification, utilizing YAML frontmatter and markdown instructions to define functional modules. It includes dedicated skills for Chainlink CRE onboarding and CCIP operations, such as sending, monitoring, and local testing. Users can install these skills via Vercel's CLI to enable task-specific agent automation.</p>
+    <p class="summary-text">Chainlink Agent Skills is a collection of standardized tools that enable AI agents to interact with Chainlink oracle services and smart contracts. The project implements the Agent Skills specification, allowing agents to discover and execute specific blockchain functions through a modular CLI-based installation. These skills provide capabilities for cross-chain transfers via CCIP, data feed integration, and Chainlink Runtime Environment (CRE) operations. By using these skills, developers can prompt agents to generate Solidity code, manage workflows, and perform local testing for decentralized applications.</p>
     <ul class="summary-highlights">
-      <li>Implements the official Agent Skills specification</li>
-      <li>Provides specialized skills for Chainlink CRE and CCIP</li>
-      <li>Supports installation via Vercel's CLI tool</li>
+      <li>Implements standardized Agent Skills specification for AI agent interoperability.</li>
+      <li>Enables CCIP cross-chain sends, monitoring, and local testing workflows.</li>
+      <li>Provides multi-chain Data Feeds integration and CRE runtime operations.</li>
     </ul>
   </div>
 </section>
@@ -90,11 +90,9 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h3>Chainlink Agent Skills</h3>
+    <h2>Chainlink Agent Skills</h2>
 <p>Official Repo for Chainlink skills. Each skill follows the <a href="https://agentskills.io/specification">Agent Skills specification</a>.</p>
-<h4>Spec</h4>
-<p>Skills follow the <a href="https://agentskills.io/specification">Agent Skills format</a>: YAML frontmatter (<code>name</code>, <code>description</code>) plus markdown instructions.</p>
-<h4>Available Skills</h4>
+<h3>Available Skills</h3>
 <table>
 <thead>
 <tr>
@@ -110,20 +108,39 @@
 <td><a href="chainlink-ccip-skill/">chainlink-ccip-skill</a></td>
 <td>CCIP sends, contracts, local testing, monitoring, discovery, and CCT workflows</td>
 </tr>
+<tr>
+<td><a href="chainlink-data-feeds-skill/">chainlink-data-feeds-skill</a></td>
+<td>Data Feeds contracts, multi-chain Data Feeds integration</td>
+</tr>
 </tbody></table>
-<h4>Install Using Vercel&#39;s Skills Installer</h4>
+<h3>Install</h3>
 <p>Use <a href="https://github.com/vercel-labs/skills#readme">vercel&#39;s CLI for the open skills ecosystem</a>. Project-level installation is the default. </p>
+<pre><code class="language-bash">npx skills add smartcontractkit/chainlink-agent-skills
+</code></pre>
+<p align="center">
+<img width="75%" alt="npx skills add" src="https://github.com/user-attachments/assets/4edcf29c-f34a-4e56-90de-ec5e92deee1a" />
+</p>
+
+
 <p>But if you want to install globally (at the user level) then add the <code>-g</code> flag.</p>
 <p>Note the use of <code>--skill</code> to specify which specific skill to install. </p>
-<pre><code>npx skills add https://github.com/smartcontractkit/chainlink-agent-skills --skill chainlink-cre-skill -g
-npx skills add https://github.com/smartcontractkit/chainlink-agent-skills --skill chainlink-ccip-skill -g
+<pre><code class="language-bash">npx skills add smartcontractkit/chainlink-agent-skills --skill chainlink-cre-skill -g
+npx skills add smartcontractkit/chainlink-agent-skills --skill chainlink-ccip-skill -g
+npx skills add smartcontractkit/chainlink-agent-skills --skill chainlink-data-feeds-skill -g
 </code></pre>
-<h4>Use</h4>
+<h3>Use</h3>
 <p>When your agent supports Agent Skills, it will discover and activate these skills based on the task. <strong>However</strong> we recommend that you explicitly invoke the skill in your agent chat sessions as follows:</p>
-<p><code>Use the /chainlink-cre-skill skill and .....[insert detailed prompt]....</code></p>
-<p><code>Use the /chainlink-ccip-skill skill and .....[insert detailed prompt]....</code></p>
-<h4>Best Used With</h4>
-<p>Cursor Composer-1.5, Claude Opus 4.6, Codex 5.2+, Gemini 3.</p>
+<pre><code class="language-text">Using the /chainlink-data-feeds-skill, develop a Solidity contract that:
+
+- reads the ETH/USD Chainlink price feed on Ethereum mainnet
+- is structured as a Foundry project
+- handles required package installation and project setup
+- includes proper validation
+- follows security best practices
+
+Any questions before you start?
+</code></pre>
+
   </section>
 </details>
 
@@ -135,35 +152,35 @@ npx skills add https://github.com/smartcontractkit/chainlink-agent-skills --skil
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mukul975/Anthropic-Cybersecurity-Skills">
-        <div class="stars">★ 4.1K</div>
+        <div class="stars">★ 5.4K</div>
         <div class="name"><span class="org">mukul975 /</span> Anthropic-Cybersecurity-Skills</div>
       </a>
       <a class="related-row" href="/projects/conorbronsdon/avoid-ai-writing">
-        <div class="stars">★ 759</div>
+        <div class="stars">★ 1.1K</div>
         <div class="name"><span class="org">conorbronsdon /</span> avoid-ai-writing</div>
       </a>
       <a class="related-row" href="/projects/wondelai/skills">
-        <div class="stars">★ 480</div>
+        <div class="stars">★ 681</div>
         <div class="name"><span class="org">wondelai /</span> skills</div>
       </a>
       <a class="related-row" href="/projects/DougTrajano/pydantic-ai-skills">
-        <div class="stars">★ 220</div>
+        <div class="stars">★ 249</div>
         <div class="name"><span class="org">DougTrajano /</span> pydantic-ai-skills</div>
       </a>
       <a class="related-row" href="/projects/Agents365-ai/drawio-skill">
-        <div class="stars">★ 131</div>
+        <div class="stars">★ 377</div>
         <div class="name"><span class="org">Agents365-ai /</span> drawio-skill</div>
       </a>
       <a class="related-row" href="/projects/tlehman/litprog-skill">
-        <div class="stars">★ 81</div>
+        <div class="stars">★ 100</div>
         <div class="name"><span class="org">tlehman /</span> litprog-skill</div>
       </a>
       <a class="related-row" href="/projects/esaradev/icarus-plugin">
-        <div class="stars">★ 51</div>
+        <div class="stars">★ 95</div>
         <div class="name"><span class="org">esaradev /</span> icarus-plugin</div>
       </a>
       <a class="related-row" href="/projects/chigwell/skilldock.io">
-        <div class="stars">★ 50</div>
+        <div class="stars">★ 55</div>
         <div class="name"><span class="org">chigwell /</span> skilldock.io</div>
       </a>
     </div>

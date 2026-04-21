@@ -201,14 +201,14 @@
     "auditedAt": "2026-04-20T08:40:32.803Z"
   },
   "smartcontractkit/chainlink-agent-skills": {
-    "summary": "Chainlink Agent Skills provides a set of specialized capabilities for agents to interact with oracle networks and smart contracts. The project implements the Agent Skills specification, utilizing YAML frontmatter and markdown instructions to define functional modules. It includes dedicated skills for Chainlink CRE onboarding and CCIP operations, such as sending, monitoring, and local testing. Users can install these skills via Vercel's CLI to enable task-specific agent automation.",
+    "summary": "Chainlink Agent Skills is a collection of standardized tools that enable AI agents to interact with Chainlink oracle services and smart contracts. The project implements the Agent Skills specification, allowing agents to discover and execute specific blockchain functions through a modular CLI-based installation. These skills provide capabilities for cross-chain transfers via CCIP, data feed integration, and Chainlink Runtime Environment (CRE) operations. By using these skills, developers can prompt agents to generate Solidity code, manage workflows, and perform local testing for decentralized applications.",
     "highlights": [
-      "Implements the official Agent Skills specification",
-      "Provides specialized skills for Chainlink CRE and CCIP",
-      "Supports installation via Vercel's CLI tool"
+      "Implements standardized Agent Skills specification for AI agent interoperability.",
+      "Enables CCIP cross-chain sends, monitoring, and local testing workflows.",
+      "Provides multi-chain Data Feeds integration and CRE runtime operations."
     ],
-    "readmeHash": "67f6d40be1772e5cdbad5d8af69fc6d6146966b672c611513a1c2a567f9e8a0d",
-    "generatedAt": "2026-04-21T07:08:12.143Z",
+    "readmeHash": "6c69371e5362262986c224012f5d28696a7706dc701152f1fa297dd740e519eb",
+    "generatedAt": "2026-04-21T15:54:18.321Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -323,14 +323,14 @@
     "audit": "pass"
   },
   "armelhbobdad/bmad-module-skill-forge": {
-    "summary": "Skill Forge is a development tool that converts source code, documentation, and developer discussions into verified instruction files for AI agents. It uses Abstract Syntax Tree (AST) extraction to map library functions and parameter types directly to specific file paths and line numbers, ensuring agents use real APIs instead of hallucinating them. The tool generates version-pinned skills compliant with the agentskills.io specification, allowing for immutable and reproducible agent instructions. It is designed for library maintainers and developers who need to provide AI agents with accurate, traceable context for specific software versions.",
+    "summary": "Skill Forge is a development tool that converts source code, documentation, and developer discussions into verified instruction sets for AI agents to prevent API hallucinations. It uses Abstract Syntax Tree (AST) extraction to map instructions directly to specific file paths and line numbers in the source repository. The tool generates version-pinned skills compliant with the agentskills.io specification, ensuring agents use correct function signatures and parameter types. It supports automated workflows for creating, testing, and exporting skills across various AI environments like Cursor and Copilot.",
     "highlights": [
-      "Extracts verified function signatures and types directly from source code",
-      "Links every AI instruction to specific file paths and line numbers",
-      "Generates version-pinned, immutable skill files compliant with agentskills.io standards"
+      "Maps AI instructions to specific source code file and line numbers",
+      "Generates version-pinned, immutable skill files to prevent documentation rot",
+      "Produces agentskills.io-compliant markdown and JSON for cross-platform agent compatibility"
     ],
-    "readmeHash": "dd7fa5b15b1f2f12a30123cd6389db472f6352a0be395e82d38da65be9929f0c",
-    "generatedAt": "2026-04-21T07:08:29.797Z",
+    "readmeHash": "b8c42752e906a5e594b5dbecc7dd1a7a531f8aa9c4774fe1811402597723e691",
+    "generatedAt": "2026-04-21T15:54:23.637Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -620,14 +620,14 @@
     "auditedAt": "2026-04-20T08:42:14.478Z"
   },
   "numtide/llm-agents.nix": {
-    "summary": "llm-agents.nix is a collection of Nix packages designed to simplify the deployment and management of AI coding agents and development tools. The project provides a centralized repository of Nix expressions that automate the installation of various terminal-based agents, ensuring they are updated daily from their respective sources. Users can execute these tools directly via Nix flakes, eliminating the need for manual environment configuration or dependency management. The collection includes a wide range of orchestrators and assistants, such as Claude Code, Goose, and various CLI proxies for unified API access.",
+    "summary": "llm-agents.nix is a collection of Nix packages designed to simplify the deployment and management of various AI coding agents and development tools. The project provides a unified repository of Nix expressions that automate the installation of both source-based and binary-distributed agents through a daily update cycle. Users can instantly run or install a wide range of tools including Claude Code, Goose, and specialized orchestrators like Bernstein. This infrastructure ensures that developers have consistent, reproducible access to the latest agentic coding tools across different environments.",
     "highlights": [
-      "Provides daily updated Nix packages for numerous AI coding agents",
-      "Enables direct execution of tools via Nix flake commands",
-      "Supports diverse agents including Claude Code, Goose, and Cursor CLI"
+      "Provides reproducible Nix packages for numerous AI coding agents",
+      "Automatically updated daily to ensure access to latest versions",
+      "Supports both open-source and proprietary binary-distributed tools"
     ],
-    "readmeHash": "dd8ee959291db1656d998d869aa259edf20b71f311815cd01d3b805e95706feb",
-    "generatedAt": "2026-04-21T07:09:16.848Z",
+    "readmeHash": "031c2179f51f25bd68519902dcfc6901e19b96a0b4d23aff745bec4608fb9b6e",
+    "generatedAt": "2026-04-21T15:54:31.974Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -1003,14 +1003,14 @@
     "auditedAt": "2026-04-20T08:43:49.162Z"
   },
   "0xNyk/awesome-hermes-agent": {
-    "summary": "Awesome Hermes Agent is a curated repository of resources, skills, and integrations designed to support the Hermes Agent ecosystem by Nous Research. It organizes community-contributed tools into categories such as deployment utilities, multi-agent frameworks, and domain-specific applications like autonomous novel writing. The list provides a structured path for users to transition from basic installation to advanced workflows using verified skills and graphical interfaces. By tagging resources with maturity levels, it helps developers identify stable tools for production use versus experimental proofs of concept.",
+    "summary": "This repository is a curated collection of resources, tools, and community-developed skills designed for the Hermes Agent ecosystem. It organizes the landscape of the self-improving AI agent by categorizing official Nous Research projects, third-party skill libraries, and deployment utilities. Users can find specialized integrations for messaging platforms like Telegram and Discord, as well as meta-skills that allow the agent to auto-generate its own capabilities from workflows. The list serves as a central hub for developers to extend the agent's memory, reasoning, and task-execution layers.",
     "highlights": [
-      "Categorized directory of skills, plugins, and multi-agent orchestration tools",
-      "Maturity tags for production, beta, and experimental ecosystem resources",
-      "Curated guides for installation, GUI setup, and skill development"
+      "Tracks official Nous Research core repositories and documentation",
+      "Catalogs community skills for goal management and literate programming",
+      "Lists multi-platform bridges for Telegram, Discord, and Slack"
     ],
-    "readmeHash": "0ebf18b4f55800c841c2e890beefea23688128f77a32e257cd41462386fab951",
-    "generatedAt": "2026-04-21T07:09:58.268Z",
+    "readmeHash": "d557cdc31b0761d5e8e2410804c90ea1f1ef6b90a025f9cd52d11a40721d3559",
+    "generatedAt": "2026-04-21T15:54:41.796Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -1081,18 +1081,17 @@
     "audit": "pass"
   },
   "nativ3ai/hermes-agent-camel": {
-    "summary": "This project is a fork of the Hermes Agent that integrates CaMeL trust boundaries to protect against indirect prompt injection. It works by separating trusted operator control from untrusted data sources like web content and tool outputs through a dedicated security envelope and capability gating. The system enforces a trusted operator plan derived from real user turns to authorize sensitive actions such as terminal execution and file mutation. Users can toggle between guarded, monitor, and legacy runtime modes to compare security enforcement against standard agent behavior.",
+    "summary": "This project is a specialized fork of Hermes Agent that integrates CaMeL trust-boundary principles to defend against prompt-injection attacks during autonomous execution. It implements a security layer that monitors or enforces policies to block unauthorized sensitive actions when the agent is operating under untrusted contexts. Users can explicitly opt into these protections using specific CLI flags while maintaining access to the core Hermes features like autonomous skill creation and multi-platform messaging. The system supports various runtime modes, including a monitor mode for tracing policy decisions and an enforcement mode for active threat mitigation.",
     "highlights": [
-      "Separates trusted operator control from untrusted tool and web data",
-      "Gates sensitive capabilities like terminal execution and file mutation",
-      "Implements provenance-aware wrapping for all untrusted model context"
+      "Implements CaMeL trust-boundary principles for prompt-injection defense",
+      "Offers monitor and enforce modes for granular security control",
+      "Maintains full compatibility with upstream Hermes Agent features"
     ],
-    "readmeHash": "4fbd0349c575a859ef0e040dc4d1f175f0348e07e9d662bb693f6776eba7302b",
-    "generatedAt": "2026-04-17T18:20:23.329Z",
+    "readmeHash": "380c1bde1a906beba0c06b9f9dd6a91e702bcf46b5f95221593a90fc618f81f9",
+    "generatedAt": "2026-04-21T15:54:46.999Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
-    "audit": "pass",
-    "auditedAt": "2026-04-20T08:44:12.525Z"
+    "audit": "pass"
   },
   "kaminocorp/hermes-alpha": {
     "summary": "Hermes Alpha is an experimental framework designed to test if a stock AI agent can autonomously bootstrap and manage a bug bounty system from first principles. The architecture utilizes a two-agent loop where a persistent 'Overseer' agent builds, deploys, and refines an ephemeral 'Hunter' agent tasked with finding software vulnerabilities. By providing the agent with only a Linux terminal and an identity document rather than custom tools, the project evaluates the self-improvement capabilities of the Hermes model. The system integrates with Fly.io for managed infrastructure and uses Elephantasm for long-term memory streams.",
@@ -1150,18 +1149,17 @@
     "auditedAt": "2026-04-20T08:44:23.461Z"
   },
   "dodo-reach/hermes-desktop": {
-    "summary": "Hermes Desktop is a native macOS application that provides a dedicated workspace for managing Hermes Agents over SSH. It connects directly to remote hosts to manage sessions, files, and cron jobs without requiring a browser wrapper, gateway API, or local data mirroring. The app features a multi-tabbed terminal, conflict-aware file editing, and profile-specific usage tracking. It is designed for users who need a high-performance, native interface while maintaining the remote host as the single source of truth.",
+    "summary": "Hermes Desktop is a native macOS application that provides a dedicated workspace for managing Hermes Agent hosts via SSH. It connects directly to remote machines to manage sessions, skills, and cron jobs without requiring a gateway API, local file mirroring, or remote daemon. The app features a multi-tabbed terminal, conflict-aware file editing, and profile-specific usage analytics. It serves as a local companion for users who want a polished desktop interface while maintaining the remote host as the single source of truth.",
     "highlights": [
-      "Direct SSH connection with no local file mirroring or daemon required",
-      "Profile-aware workspace for managing sessions, skills, and cron jobs",
-      "Integrated multi-tabbed terminal with live theme and color controls"
+      "Direct SSH connection with no middle-layer API or remote daemon",
+      "Real multi-tabbed terminal with profile-aware environment variables",
+      "Management of remote cron jobs, skills, and SQLite session stores"
     ],
-    "readmeHash": "dfba49c859b3d31ff57560b6fc86412b3461f34bfb5d22267fde3778d0884a34",
-    "generatedAt": "2026-04-17T18:20:43.717Z",
+    "readmeHash": "59943a7ae5e4b7f52b4bd390a94c87a22e4ae3fa64e7a765829259ed6c7ad1b6",
+    "generatedAt": "2026-04-21T15:54:51.580Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
-    "audit": "pass",
-    "auditedAt": "2026-04-20T08:44:26.410Z"
+    "audit": "pass"
   },
   "clawshell/clawshell": {
     "summary": "ClawShell is a security-privileged process that acts as a safety harness for the Hermes Agent ecosystem by protecting sensitive credentials and PII. It functions as a proxy between the agent and upstream LLM providers, swapping virtual keys for real ones stored in a restricted directory to ensure the agent never has direct access to credentials. The system performs Data Loss Prevention (DLP) scanning to redact or block sensitive information in request and response bodies. Additionally, it provides secure email isolation through IMAP sender filtering and supports OAuth-based authentication for providers like OpenAI.",
