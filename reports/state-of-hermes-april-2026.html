@@ -49,6 +49,7 @@
     <span>apr·2026</span>
     <span>93·repos</span>
     <span>hermes·v0.10.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ atlas</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
     <a href="/">map</a>
@@ -277,6 +278,7 @@
   <p><strong>Methodology:</strong> Synthesized from 27 research files including official documentation, GitHub release notes, press coverage, X/Twitter analysis, Reddit discussion, and the awesome-hermes-agent curated list. All 80+ ecosystem repos are independently security-reviewed and live-tracked.</p>
   <p>Not affiliated with Nous Research. Hermes Atlas is an independent community project.</p>
   <p>Corrections welcome: <a href="https://github.com/ksimback/hermes-ecosystem/issues">open an issue</a></p>
+  <p class="star-cta">if this was useful, drop a ★ on the <a href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener">atlas repo</a> →</p>
   <a class="cta" href="https://hermesatlas.com">explore the ecosystem map →</a>
 </div>
 
@@ -304,6 +306,15 @@
       try { localStorage.setItem('theme', n); } catch (e) {}
       render();
     });
+  })();
+</script>
+
+<script>
+  (function(){
+    fetch('/api/stars').then(function(r){ return r.ok && r.json(); }).then(function(d){
+      var el = document.getElementById('meta-atlas');
+      if (el && d && d.atlas && d.atlas.stars) el.textContent = '★ ' + d.atlas.stars + '·atlas';
+    }).catch(function(){});
   })();
 </script>
 

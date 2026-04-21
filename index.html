@@ -52,6 +52,7 @@
     <span id="meta-count">93·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <span id="meta-sync">last·sync·—</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ atlas</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
     <a href="/" class="active">map</a>
@@ -1264,6 +1265,11 @@
         const h = String(d.getUTCHours()).padStart(2, '0');
         const m = String(d.getUTCMinutes()).padStart(2, '0');
         metaSync.textContent = 'last·sync·' + h + ':' + m + '·utc';
+      }
+
+      const metaAtlas = document.getElementById('meta-atlas');
+      if (metaAtlas && data.atlas?.stars) {
+        metaAtlas.textContent = '★ ' + data.atlas.stars + '·atlas';
       }
 
       // Hero sub count

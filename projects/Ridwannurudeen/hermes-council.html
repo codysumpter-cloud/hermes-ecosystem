@@ -33,6 +33,7 @@
     <span>apr·2026</span>
     <span>93·repos</span>
     <span>hermes·v0.10.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ atlas</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
     <a href="/" class="active">map</a>
@@ -92,19 +93,19 @@
   <section class="readme" data-nosnippet>
     <p><a href="https://github.com/Ridwannurudeen/hermes-council/actions/workflows/ci.yml"><img src="https://github.com/Ridwannurudeen/hermes-council/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
 <a href="https://github.com/Ridwannurudeen/hermes-council/actions/workflows/ci.yml"><img src="https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/Ridwannurudeen/316e2a72a4089fdb4fddc9980ed1c28b/raw/coverage.json" alt="Coverage"></a></p>
-<h3>hermes-council</h3>
+<h4>hermes-council</h4>
 <p>Adversarial multi-perspective council MCP server for <a href="https://github.com/NousResearch/hermes-agent">hermes-agent</a>.</p>
 <p>Five personas from distinct intellectual traditions debate questions through structured adversarial deliberation, producing calibrated verdicts with confidence scores, evidence links, and DPO preference pairs for RL training.</p>
 <blockquote>
 <p><strong>Origin</strong>: This project was built in response to feedback on <a href="https://github.com/NousResearch/hermes-agent/pull/848">hermes-agent PR #848</a>, where the adversarial council concept was proposed as a core subsystem. The recommendation was to rebuild it as an external MCP server to avoid core tool injection, provider bypass, hidden LLM costs, and brittle parsing. Integration PR: <a href="https://github.com/NousResearch/hermes-agent/pull/1972">#1972</a>.</p>
 </blockquote>
-<h4>Install</h4>
+<h5>Install</h5>
 <pre><code class="language-bash">pip install git+https://github.com/Ridwannurudeen/hermes-council.git
 </code></pre>
 <p>For RL components:</p>
 <pre><code class="language-bash">pip install &quot;hermes-council[rl] @ git+https://github.com/Ridwannurudeen/hermes-council.git&quot;
 </code></pre>
-<h4>Quick Start</h4>
+<h5>Quick Start</h5>
 <p>Add to your hermes-agent config (<code>~/.hermes/config.yaml</code>):</p>
 <pre><code class="language-yaml">mcp_servers:
   council:
@@ -113,7 +114,7 @@
 <p>Set your API key:</p>
 <pre><code class="language-bash">export OPENROUTER_API_KEY=your-key-here
 </code></pre>
-<h4>Tools</h4>
+<h5>Tools</h5>
 <table>
 <thead>
 <tr>
@@ -138,7 +139,7 @@
 <td>Skeptic + Oracle + Arbiter</td>
 </tr>
 </tbody></table>
-<h4>Configuration</h4>
+<h5>Configuration</h5>
 <p>All configuration is via environment variables:</p>
 <table>
 <thead>
@@ -189,7 +190,7 @@
 <td><code>~/.hermes-council/config.yaml</code></td>
 </tr>
 </tbody></table>
-<h4>Custom Personas</h4>
+<h5>Custom Personas</h5>
 <p>Create <code>~/.hermes-council/config.yaml</code>:</p>
 <pre><code class="language-yaml">personas:
   security_analyst:
@@ -202,7 +203,7 @@
     tags: [&quot;security&quot;, &quot;adversarial&quot;]
 </code></pre>
 <p>Custom personas merge with the 5 defaults. Use the same name to override a default.</p>
-<h4>The Five Personas</h4>
+<h5>The Five Personas</h5>
 <table>
 <thead>
 <tr>
@@ -237,7 +238,7 @@
 <td>Synthesizes all views with explicit prior/posterior updates</td>
 </tr>
 </tbody></table>
-<h4>Skills</h4>
+<h5>Skills</h5>
 <p>Install council skills for hermes-agent:</p>
 <pre><code class="language-bash">hermes-council install-skills
 </code></pre>
@@ -247,8 +248,8 @@
 <li><code>bayesian-synthesis</code> — Bayesian reasoning and evidence synthesis</li>
 <li><code>adversarial-critique</code> — Stress-testing and safety gating</li>
 </ul>
-<h4>RL Integration</h4>
-<h5>CouncilEvaluator</h5>
+<h5>RL Integration</h5>
+<h6>CouncilEvaluator</h6>
 <p>Use the council as a reward signal for RL training:</p>
 <pre><code class="language-python">from hermes_council.rl.evaluator import CouncilEvaluator
 
@@ -267,18 +268,18 @@ reward = evaluator.normalized_reward(verdict)
 # Extract DPO preference pairs
 dpo_pairs = evaluator.extract_dpo_pairs(verdict)
 </code></pre>
-<h5>OuroborosEnv</h5>
+<h6>OuroborosEnv</h6>
 <p>An example Atropos RL environment is provided in <code>examples/ouroboros_env.py</code>. Copy it into your hermes-agent installation:</p>
 <pre><code class="language-bash">cp examples/ouroboros_env.py /path/to/hermes-agent/environments/
 cp examples/ouroboros.yaml /path/to/hermes-agent/datagen-config-examples/
 </code></pre>
-<h4>Development</h4>
+<h5>Development</h5>
 <pre><code class="language-bash">git clone https://github.com/Ridwannurudeen/hermes-council.git
 cd hermes-council
 pip install -e &quot;.[dev]&quot;
 pytest
 </code></pre>
-<h4>License</h4>
+<h5>License</h5>
 <p>MIT</p>
   </section>
 </details>
@@ -331,6 +332,7 @@ pytest
 </footer>
 
 <script>(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();</script>
+<script>(function(){fetch('/api/stars').then(function(r){return r.ok&&r.json()}).then(function(d){var el=document.getElementById('meta-atlas');if(el&&d&&d.atlas&&d.atlas.stars)el.textContent='★ '+d.atlas.stars+'·atlas'}).catch(function(){});})();</script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>

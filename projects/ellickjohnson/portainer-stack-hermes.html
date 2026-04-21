@@ -33,6 +33,7 @@
     <span>apr·2026</span>
     <span>93·repos</span>
     <span>hermes·v0.10.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ atlas</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
     <a href="/" class="active">map</a>
@@ -90,15 +91,15 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h3>Hermes - Portainer Stack</h3>
+    <h4>Hermes - Portainer Stack</h4>
 <p>Hermes agent with ttyd web terminal, running from pre-built GHCR image.</p>
-<h4>Setup</h4>
+<h5>Setup</h5>
 <ol>
 <li><strong>Build image</strong>: Run the GitHub Action (Actions → Build and Push Hermes Image → Run workflow)</li>
 <li><strong>Deploy</strong>: Add as a Git Repository stack in Portainer pointing to this repo</li>
 <li><strong>Access</strong>: <code>http://&lt;host&gt;:7681</code></li>
 </ol>
-<h4>Updating</h4>
+<h5>Updating</h5>
 <ol>
 <li>Run the GitHub Action to build a new image</li>
 <li>In Portainer, pull and redeploy the stack</li>
@@ -150,6 +151,7 @@
 </footer>
 
 <script>(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();</script>
+<script>(function(){fetch('/api/stars').then(function(r){return r.ok&&r.json()}).then(function(d){var el=document.getElementById('meta-atlas');if(el&&d&&d.atlas&&d.atlas.stars)el.textContent='★ '+d.atlas.stars+'·atlas'}).catch(function(){});})();</script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>

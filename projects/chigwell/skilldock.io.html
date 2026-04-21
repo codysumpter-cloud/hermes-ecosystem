@@ -33,6 +33,7 @@
     <span>apr·2026</span>
     <span>93·repos</span>
     <span>hermes·v0.10.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ atlas</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
     <a href="/" class="active">map</a>
@@ -100,17 +101,17 @@
 <a href="https://opensource.org/license/apache-2-0"><img src="https://img.shields.io/badge/License-Apache2.0-green.svg" alt="License: MIT"></a>
 <a href="https://pepy.tech/project/skilldock"><img src="https://static.pepy.tech/badge/skilldock" alt="Downloads"></a>
 <a href="https://www.linkedin.com/in/eugene-evstafev-716669181/"><img src="https://img.shields.io/badge/LinkedIn-blue" alt="LinkedIn"></a></p>
-<h3>SkillDock Python SDK and CLI</h3>
+<h4>SkillDock Python SDK and CLI</h4>
 <p><code>skilldock</code> is an OpenAPI-driven Python client (and a CLI) for the SkillDock API.</p>
 <p>It loads the OpenAPI spec at runtime and exposes:</p>
 <ul>
 <li>A Python <code>SkilldockClient</code> that can call any <code>operationId</code></li>
 <li>A CLI that can list available operations and call them from your terminal</li>
 </ul>
-<h4>Install</h4>
+<h5>Install</h5>
 <pre><code class="language-bash">pip install skilldock
 </code></pre>
-<h4>Quickstart (CLI)</h4>
+<h5>Quickstart (CLI)</h5>
 <p>List operations from the OpenAPI spec:</p>
 <pre><code class="language-bash">skilldock ops
 </code></pre>
@@ -250,7 +251,7 @@ skilldock namespaces list
 <p>Low-level request (method + path, bypassing <code>operationId</code>):</p>
 <pre><code class="language-bash">skilldock request GET /health
 </code></pre>
-<h4>Quickstart (Python)</h4>
+<h5>Quickstart (Python)</h5>
 <pre><code class="language-python">from skilldock import SkilldockClient
 
 client = SkilldockClient(
@@ -273,7 +274,7 @@ print(result)
 
 client.close()
 </code></pre>
-<h4>Description Versioning</h4>
+<h5>Description Versioning</h5>
 <p>The registry now stores <code>description_md</code> per release version.</p>
 <ul>
 <li>Publish flow:<ul>
@@ -297,7 +298,7 @@ client.close()
 </ul>
 </li>
 </ul>
-<h4>Configuration</h4>
+<h5>Configuration</h5>
 <p>The CLI stores config (including token) in a local JSON file:</p>
 <pre><code class="language-bash">skilldock config path
 skilldock config show
@@ -313,7 +314,7 @@ skilldock config set --token &quot;YOUR_TOKEN&quot;
 <li><code>SKILLDOCK_TOKEN</code></li>
 <li><code>SKILLDOCK_TIMEOUT_S</code></li>
 </ul>
-<h4>Authentication Notes (Google)</h4>
+<h5>Authentication Notes (Google)</h5>
 <p>This SDK assumes the API accepts a token in an HTTP header (usually <code>Authorization: Bearer &lt;token&gt;</code>).
 The exact details are derived from the OpenAPI <code>securitySchemes</code> when present.</p>
 <p>The SkillDock API can accept (depending on server configuration):</p>
@@ -336,7 +337,7 @@ The exact details are derived from the OpenAPI <code>securitySchemes</code> when
 <p>To create a personal API token (recommended for longer-lived auth):</p>
 <pre><code class="language-bash">skilldock tokens create --save
 </code></pre>
-<h4>Development</h4>
+<h5>Development</h5>
 <p>Run the small unit test suite:</p>
 <pre><code class="language-bash">python -m unittest discover -s tests
 </code></pre>
@@ -395,6 +396,7 @@ The exact details are derived from the OpenAPI <code>securitySchemes</code> when
 </footer>
 
 <script>(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();</script>
+<script>(function(){fetch('/api/stars').then(function(r){return r.ok&&r.json()}).then(function(d){var el=document.getElementById('meta-atlas');if(el&&d&&d.atlas&&d.atlas.stars)el.textContent='★ '+d.atlas.stars+'·atlas'}).catch(function(){});})();</script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>

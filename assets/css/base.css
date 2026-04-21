@@ -113,3 +113,34 @@ body::after {
     scroll-behavior: auto !important;
   }
 }
+
+/* Star-the-repo CTA — shared across all page types */
+.mast-star {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--ink-mute);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.mast-star:hover { color: var(--accent); }
+@media (max-width: 900px) {
+  .mast-star { font-size: 10px; }
+}
+
+.star-cta {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--ink-dim, var(--ink-mute));
+  margin: 24px 0 16px;
+  line-height: 1.6;
+}
+.star-cta a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 0.15s;
+}
+.star-cta a:hover { color: var(--accent); }

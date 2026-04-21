@@ -33,6 +33,7 @@
     <span>apr·2026</span>
     <span>93·repos</span>
     <span>hermes·v0.10.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ atlas</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
     <a href="/" class="active">map</a>
@@ -90,9 +91,9 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h3>Hermes ACP Orchestrator Skill</h3>
+    <h4>Hermes ACP Orchestrator Skill</h4>
 <p>A production-oriented Hermes skill for ACP-style multi-agent delegation.</p>
-<h4>What it solves</h4>
+<h5>What it solves</h5>
 <p>This skill standardizes how you delegate work across:</p>
 <ul>
 <li>Hermes internal subagents</li>
@@ -105,28 +106,28 @@
 <li>Context isolation (delegated work does not pollute the parent context)</li>
 <li>Safety controls (timeouts + output limits for external agents)</li>
 </ol>
-<h4>Skill Name</h4>
+<h5>Skill Name</h5>
 <p><code>hermes-acp-orchestrator</code></p>
-<h4>Who should use this</h4>
+<h5>Who should use this</h5>
 <p>Use this skill if you are orchestrating engineering workflows where different sub-agents specialize in different tasks (implementation, review, risk analysis, synthesis).</p>
-<h4>Quick example</h4>
+<h5>Quick example</h5>
 <pre><code class="language-python">delegate_task(tasks=[
   {&quot;goal&quot;: &quot;Risk review&quot;, &quot;agent&quot;: &quot;claude-code&quot;},
   {&quot;goal&quot;: &quot;Patch + tests&quot;, &quot;agent&quot;: &quot;codex&quot;},
   {&quot;goal&quot;: &quot;Final integration summary&quot;, &quot;agent&quot;: &quot;hermes&quot;}
 ])
 </code></pre>
-<h4>Recommended Hermes config</h4>
+<h5>Recommended Hermes config</h5>
 <pre><code class="language-yaml">delegation:
   external_timeout_seconds: 900
   external_max_output_chars: 24000
 </code></pre>
-<h4>Files</h4>
+<h5>Files</h5>
 <ul>
 <li><code>SKILL.md</code> — the skill instructions and workflow patterns</li>
 <li><code>README.md</code> — repository overview and usage guidance</li>
 </ul>
-<h4>License</h4>
+<h5>License</h5>
 <p>MIT</p>
   </section>
 </details>
@@ -175,6 +176,7 @@
 </footer>
 
 <script>(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();</script>
+<script>(function(){fetch('/api/stars').then(function(r){return r.ok&&r.json()}).then(function(d){var el=document.getElementById('meta-atlas');if(el&&d&&d.atlas&&d.atlas.stars)el.textContent='★ '+d.atlas.stars+'·atlas'}).catch(function(){});})();</script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>

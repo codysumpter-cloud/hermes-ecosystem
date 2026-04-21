@@ -33,6 +33,7 @@
     <span>apr·2026</span>
     <span>93·repos</span>
     <span>hermes·v0.10.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ atlas</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
     <a href="/" class="active">map</a>
@@ -90,14 +91,14 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h3>Mercury — Blockchain Cash Flow Analyzer</h3>
+    <h4>Mercury — Blockchain Cash Flow Analyzer</h4>
 <blockquote>
 <p>A Hermes Agent skill for multi-chain blockchain cash flow analysis, fraud detection, trading strategy generation, and real-time interactive dashboards.</p>
 </blockquote>
 <p><img src="https://img.shields.io/badge/Hermes-Skill-blue?style=for-the-badge" alt="Mercury Dashboard">
 <img src="https://img.shields.io/badge/Chains-Ethereum%20%7C%20Base%20%7C%20Solana-green?style=for-the-badge" alt="Chains">
 <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" alt="License"></p>
-<h4>Features</h4>
+<h5>Features</h5>
 <ul>
 <li><strong>Multi-Chain Support</strong> — Ethereum, Base, and Solana transaction fetching</li>
 <li><strong>Cash Flow Analysis</strong> — Period-by-period inflow/outflow breakdown, token distribution, top counterparties</li>
@@ -111,20 +112,20 @@
 </li>
 <li><strong>Hermes Subagents</strong> — Parallel execution with <code>delegate_task</code> for maximum speed</li>
 </ul>
-<h4>Installation</h4>
-<h5>Quick Install (for Hermes Agent users)</h5>
+<h5>Installation</h5>
+<h6>Quick Install (for Hermes Agent users)</h6>
 <pre><code class="language-bash"># Clone into your Hermes skills directory
 git clone https://github.com/YOUR_USERNAME/mercury.git ~/.hermes/skills/data-science/blockchain-cashflow
 </code></pre>
-<h5>API Keys</h5>
+<h6>API Keys</h6>
 <p>Add your API keys to <code>~/.hermes/.env</code>:</p>
 <pre><code class="language-env">ETHERSCAN_API_KEY=your_etherscan_key    # Free at https://etherscan.io/apis
 BASESCAN_API_KEY=your_basescan_key      # Free at https://basescan.org/apis
 HELIUS_API_KEY=your_helius_key          # Free at https://helius.dev
 </code></pre>
 <p>The scripts auto-load keys from <code>~/.hermes/.env</code> — no manual export needed.</p>
-<h4>Usage</h4>
-<h5>With Hermes Agent (Recommended)</h5>
+<h5>Usage</h5>
+<h6>With Hermes Agent (Recommended)</h6>
 <p>Just tell your Hermes agent:</p>
 <pre><code>Analyze wallet 0x8a4ff766a5dfb16d9dbd6a31f950c48a0caf0f54
 </code></pre>
@@ -136,7 +137,7 @@ HELIUS_API_KEY=your_helius_key          # Free at https://helius.dev
 <li>Generate a trading strategy</li>
 <li>Launch the interactive dashboard</li>
 </ol>
-<h5>Standalone Scripts</h5>
+<h6>Standalone Scripts</h6>
 <pre><code class="language-bash"># 1. Fetch transactions
 python3 scripts/fetch_transactions.py \
   --address 0x8a4ff766a5dfb16d9dbd6a31f950c48a0caf0f54 \
@@ -167,7 +168,7 @@ python3 scripts/dashboard_server.py \
   --cashflow /tmp/bc_cashflow.json \
   --fraud /tmp/bc_fraud.json
 </code></pre>
-<h4>Architecture</h4>
+<h5>Architecture</h5>
 <pre><code>Mercury Skill
 ├── SKILL.md                    # Hermes skill definition (YAML frontmatter + instructions)
 ├── scripts/
@@ -180,14 +181,14 @@ python3 scripts/dashboard_server.py \
 │   └── dashboard.html          # Three-layer interactive dashboard
 └── README.md
 </code></pre>
-<h4>Dashboard Preview</h4>
+<h5>Dashboard Preview</h5>
 <p>The dashboard features three animation layers:</p>
 <ul>
 <li><strong>Layer 0</strong>: WebGL fragment shader with fbm noise, domain warping, scanlines, and film grain</li>
 <li><strong>Layer 1</strong>: Canvas 2D network particles with proximity connections and mouse attraction</li>
 <li><strong>Layer 2</strong>: Dashboard UI with stat cards, flow network map, circular gauges, charts, and risk grid</li>
 </ul>
-<h4>Fraud Detection Patterns</h4>
+<h5>Fraud Detection Patterns</h5>
 <table>
 <thead>
 <tr>
@@ -227,15 +228,15 @@ python3 scripts/dashboard_server.py \
 <td>Single-block mass distribution</td>
 </tr>
 </tbody></table>
-<h4>Requirements</h4>
+<h5>Requirements</h5>
 <ul>
 <li>Python 3.8+</li>
 <li>No external dependencies (stdlib only!)</li>
 <li>Hermes Agent (for subagent orchestration)</li>
 </ul>
-<h4>License</h4>
+<h5>License</h5>
 <p>MIT</p>
-<h4>Credits</h4>
+<h5>Credits</h5>
 <p>Built for the <a href="https://nousresearch.com">Nous Research Hermes Agent Hackathon</a> — March 2026</p>
   </section>
 </details>
@@ -288,6 +289,7 @@ python3 scripts/dashboard_server.py \
 </footer>
 
 <script>(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();</script>
+<script>(function(){fetch('/api/stars').then(function(r){return r.ok&&r.json()}).then(function(d){var el=document.getElementById('meta-atlas');if(el&&d&&d.atlas&&d.atlas.stars)el.textContent='★ '+d.atlas.stars+'·atlas'}).catch(function(){});})();</script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>

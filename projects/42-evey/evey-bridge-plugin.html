@@ -33,6 +33,7 @@
     <span>apr·2026</span>
     <span>93·repos</span>
     <span>hermes·v0.10.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ atlas</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
     <a href="/" class="active">map</a>
@@ -90,19 +91,19 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h3>Evey Bridge Plugin for Claude Code</h3>
+    <h4>Evey Bridge Plugin for Claude Code</h4>
 <blockquote>
 <p><strong>Support Evey</strong> — runs 24/7 on free models, hardware costs ~$69/mo: <strong><a href="https://evey.cc/donate.html">Donate</a></strong> (BTC, ETH, SOL, XRP, DOGE)</p>
 </blockquote>
 <p>Bridge between Claude Code (Mother) and Evey (hermes-agent).</p>
-<h4>Skills</h4>
+<h5>Skills</h5>
 <ul>
 <li><code>/evey-loop</code> — Mother Mode improvement loop (check bridge → build → log)</li>
 <li><code>/evey-status</code> — Quick status check (health, Moltbook, wallets, crons)</li>
 </ul>
-<h4>Hook</h4>
+<h5>Hook</h5>
 <p>On every prompt submit, checks the bridge for messages/tasks from Evey and injects them as context.</p>
-<h4>Setup</h4>
+<h5>Setup</h5>
 <p>This plugin expects the Evey stack at <code>/mnt/v/evey/</code>.</p>
   </section>
 </details>
@@ -151,6 +152,7 @@
 </footer>
 
 <script>(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();</script>
+<script>(function(){fetch('/api/stars').then(function(r){return r.ok&&r.json()}).then(function(d){var el=document.getElementById('meta-atlas');if(el&&d&&d.atlas&&d.atlas.stars)el.textContent='★ '+d.atlas.stars+'·atlas'}).catch(function(){});})();</script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
