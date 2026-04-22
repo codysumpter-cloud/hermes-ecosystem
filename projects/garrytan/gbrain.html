@@ -59,11 +59,11 @@
   <p class="project-desc">Garry's Opinionated OpenClaw/Hermes Agent Brain</p>
 
   <div class="meta-row">
-    <span class="stars">★ 9.9K</span>
+    <span class="stars">★ 10.1K</span>
     <span><span class="meta-label">lang</span>TypeScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-04-21</span>
+    <span><span class="meta-label">updated</span>2026-04-22</span>
   </div>
 
   <div class="actions">
@@ -78,11 +78,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">GBrain is a persistent memory and context layer designed to prevent AI agents from losing information over time. It utilizes a self-wiring knowledge graph and hybrid search to automatically extract entity references and create typed links between people, companies, and events. The system operates through 26 specialized skills that handle automated content ingestion from meetings, emails, and social media while performing overnight memory consolidation. It integrates directly with Hermes Agent and OpenClaw via MCP tools to provide structured timelines and backlink-boosted information retrieval.</p>
+    <p class="summary-text">GBrain is a persistent memory and knowledge graph system designed to provide AI agents with long-term context and structured information retrieval. It utilizes a self-wiring graph architecture that automatically extracts entity references and creates typed links between people, companies, and events without requiring LLM calls for every connection. The system features a hybrid search engine and 26 specialized skills that allow agents to ingest diverse data sources like emails, meetings, and tweets while maintaining a structured timeline. It integrates directly with Hermes Agent and OpenClaw, offering an MCP server for use with tools like Claude Code and Cursor.</p>
     <ul class="summary-highlights">
-      <li>Self-wiring knowledge graph with automated entity extraction and typed linking</li>
+      <li>Self-wiring knowledge graph with automated entity and relationship extraction</li>
       <li>Hybrid search combining vector retrieval with backlink-boosted ranking</li>
-      <li>Twenty-six specialized skills for automated ingestion, enrichment, and task management</li>
+      <li>Ships with 26 modular skills for ingestion, enrichment, and maintenance</li>
     </ul>
   </div>
 </section>
@@ -98,6 +98,9 @@
 <blockquote>
 <p><strong>~30 minutes to a fully working brain.</strong> Database ready in 2 seconds (PGLite, no server). You just answer questions about API keys.</p>
 </blockquote>
+<blockquote>
+<p><strong>LLMs:</strong> fetch <a href="https://github.com/garrytan/gbrain/blob/main/llms.txt"><code>llms.txt</code></a> for the documentation map, or <a href="https://github.com/garrytan/gbrain/blob/main/llms-full.txt"><code>llms-full.txt</code></a> for the same map with core docs inlined in one fetch. <strong>Agents:</strong> start with <a href="https://github.com/garrytan/gbrain/blob/main/AGENTS.md"><code>AGENTS.md</code></a> (or <a href="https://github.com/garrytan/gbrain/blob/main/CLAUDE.md"><code>CLAUDE.md</code></a> if you&#39;re Claude Code).</p>
+</blockquote>
 <h3>Install</h3>
 <h4>On an agent platform (recommended)</h4>
 <p>GBrain is designed to be installed and operated by an AI agent. If you don&#39;t have one running yet:</p>
@@ -110,12 +113,19 @@
 https://raw.githubusercontent.com/garrytan/gbrain/master/INSTALL_FOR_AGENTS.md
 </code></pre>
 <p>That&#39;s it. The agent clones the repo, installs GBrain, sets up the brain, loads 26 skills, and configures recurring jobs. You answer a few questions about API keys. ~30 minutes.</p>
+<p>If your agent doesn&#39;t auto-read <code>AGENTS.md</code>, point it at that file first:
+<code>https://raw.githubusercontent.com/garrytan/gbrain/master/AGENTS.md</code> is the non-Claude
+agent operating protocol (install, read order, trust boundary, common tasks). For
+the full doc map, use <code>llms.txt</code> at the same URL root.</p>
 <h4>Standalone CLI (no agent)</h4>
 <pre><code class="language-bash">git clone https://github.com/garrytan/gbrain.git &amp;&amp; cd gbrain &amp;&amp; bun install &amp;&amp; bun link
 gbrain init                     # local brain, ready in 2 seconds
 gbrain import ~/notes/          # index your markdown
 gbrain query &quot;what themes show up across my notes?&quot;
 </code></pre>
+<p><strong>Do NOT use <code>bun install -g github:garrytan/gbrain</code>.</strong> Bun blocks the top-level
+postinstall hook on global installs, so schema migrations never run and the CLI
+aborts with <code>Aborted()</code> the first time it opens PGLite. Use <code>git clone + bun install &amp;&amp; bun link</code> as shown above. See <a href="https://github.com/garrytan/gbrain/issues/218">#218</a>.</p>
 <pre><code>3 results (hybrid search, 0.12s):
 
 1. concepts/do-things-that-dont-scale (score: 0.94)
@@ -381,6 +391,20 @@ gbrain skillpack-check | jq       # full JSON: {healthy, summary, actions[], doc
 </code></pre>
 <p>If anything&#39;s off, <code>actions[]</code> tells you the exact command to run. For deeper troubleshooting: <a href="https://github.com/garrytan/gbrain/blob/main/docs/guides/minions-fix.md"><code>docs/guides/minions-fix.md</code></a>.</p>
 <p>Moving gateway crons to Minions (deterministic scripts, zero LLM tokens per fire): <a href="https://github.com/garrytan/gbrain/blob/main/docs/guides/minions-shell-jobs.md"><code>docs/guides/minions-shell-jobs.md</code></a>.</p>
+<h3>Durable agents: <code>gbrain agent</code> (v0.15)</h3>
+<p>Your subagent runs survive crashes now. OpenClaw died mid-run? The worker re-claims on restart and replays from the last committed turn. Fan-out across 50 shards, one shard crashes — the aggregator still claims after every child reaches a terminal state and writes a mixed-outcome summary. Tool calls persist as a two-phase ledger (<code>pending</code> → <code>complete | failed</code>) so replay is safe by construction, not by hope.</p>
+<pre><code class="language-bash"># Submit a single-subagent run
+gbrain agent run &quot;summarize my last 10 journal pages&quot;
+
+# Fan out N prompts across N subagent children + 1 aggregator
+gbrain agent run &quot;analyze every page&quot; \
+  --fanout-manifest manifests/pages.json \
+  --subagent-def analyzer
+
+# Tail a running job (heartbeat per turn + full transcript on completion)
+gbrain agent logs 1247 --follow --since 5m
+</code></pre>
+<p>Durability is the point: every Anthropic turn commits to <code>subagent_messages</code>, every tool call to <code>subagent_tool_executions</code>. Worker kills, OpenClaw crashes, timeouts — all resumable. Host repos (your OpenClaw, etc.) ship their own subagent definitions via <code>GBRAIN_PLUGIN_PATH</code> + a <code>gbrain.plugin.json</code> manifest: see <a href="https://github.com/garrytan/gbrain/blob/main/docs/guides/plugin-authors.md"><code>docs/guides/plugin-authors.md</code></a>. Requires <code>ANTHROPIC_API_KEY</code> on the worker.</p>
 <h3>Skillify: your skills tree stops being a black box</h3>
 <p>Hermes and similar agent frameworks auto-create skills as a background behavior. Fine until you don&#39;t know what the agent shipped. Checklists decay. Tests drift. Resolver entries get stale. Six months later you&#39;ve got an opaque pile of &quot;skills&quot; that nobody has read, nobody has tested, and nobody is sure still work.</p>
 <p>GBrain ships the same capability. Except the human stays in the loop.</p>
@@ -758,19 +782,19 @@ ADMIN
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
-        <div class="stars">★ 849</div>
+        <div class="stars">★ 891</div>
         <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
       </a>
       <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
-        <div class="stars">★ 170</div>
+        <div class="stars">★ 174</div>
         <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
       </a>
       <a class="related-row" href="/projects/yoloshii/ClawMem">
-        <div class="stars">★ 128</div>
+        <div class="stars">★ 130</div>
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 46</div>
+        <div class="stars">★ 47</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
@@ -778,7 +802,7 @@ ADMIN
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
       </a>
       <a class="related-row" href="/projects/stephenschoettler/hermes-lcm">
-        <div class="stars">★ 243</div>
+        <div class="stars">★ 253</div>
         <div class="name"><span class="org">stephenschoettler /</span> hermes-lcm</div>
       </a>
     </div>

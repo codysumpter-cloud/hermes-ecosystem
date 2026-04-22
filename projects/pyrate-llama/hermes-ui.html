@@ -59,11 +59,11 @@
   <p class="project-desc">Glassmorphic web interface for Hermes Agent — your self-hosted AI assistant</p>
 
   <div class="meta-row">
-    <span class="stars">★ 31</span>
+    <span class="stars">★ 32</span>
     <span><span class="meta-label">lang</span>HTML</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-04-20</span>
+    <span><span class="meta-label">updated</span>2026-04-22</span>
   </div>
 
   <div class="actions">
@@ -78,11 +78,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes UI is a glassmorphic web interface for the Hermes Agent self-hosted AI assistant. It operates as a single-file React 18 application served via a lightweight Python proxy that requires no external dependencies. The interface provides real-time tool visualization, live log streaming, and an artifact panel for rendering HTML, SVG, and code blocks. Users can also manage internal memory, browse files, and monitor connected MCP tools through a unified dashboard.</p>
+    <p class="summary-text">Hermes UI is a glassmorphic web interface designed for the self-hosted Hermes Agent AI assistant. It operates as a single-file HTML application built with React 18, utilizing a lightweight Python proxy server to handle real-time communication and file management. The interface features a multi-functional dashboard for chat, file browsing, and memory inspection, while providing live log streaming via Server-Sent Events. Users can manage MCP tools, execute cron jobs, and preview generated artifacts like HTML or SVG directly within a dedicated side panel.</p>
     <ul class="summary-highlights">
-      <li>Single-file React 18 architecture with no build step required</li>
-      <li>Real-time SSE log streaming and tool call visualization</li>
-      <li>Artifact panel for live rendering of HTML, SVG, and code</li>
+      <li>Single-file HTML architecture using React 18 and Python proxy</li>
+      <li>Real-time artifact panel for live HTML, SVG, and PDF previews</li>
+      <li>Integrated file browser and memory inspector for local agent data</li>
     </ul>
   </div>
 </section>
@@ -94,23 +94,68 @@
 <p><strong>English</strong> · <a href="https://github.com/pyrate-llama/hermes-ui/blob/main/README.zh-CN.md">简体中文</a></p>
 <p>A sleek, glassmorphic web interface for <a href="https://github.com/pyrate-llama/hermes-agent">Hermes Agent</a> — your self-hosted AI assistant.</p>
 <p>Built as a single-file HTML application with React 18, Hermes UI provides a full-featured chat interface, real-time log streaming, file browsing, memory inspection, and more — all through a lightweight Python proxy server.</p>
-<p><img src="https://img.shields.io/badge/theme-glassmorphism-7c6fe0?style=for-the-badge" alt="Dark glassmorphic UI with ambient glow effects">
+<p><img src="https://img.shields.io/badge/version-2.5-ef4444?style=for-the-badge" alt="v2.5">
 <img src="https://img.shields.io/badge/architecture-single_file-44d88a?style=for-the-badge" alt="Single file HTML">
 <img src="https://img.shields.io/badge/react-18.2-61dafb?style=for-the-badge" alt="React 18"></p>
-<blockquote>
-<p>[!NOTE]
-<strong>Karpathy-style behavioral guidelines are available as an opt-in — OFF by default.</strong>
-When enabled, new chats get a system-prompt appendix enforcing four coding principles: <em>Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Execution</em>. This tightens Hermes into a careful, scoped code collaborator — useful for focused coding sessions, but it can cause over-thinking loops on tasks that just need a skill to run (the reason it ships OFF).</p>
-<p>Turn it on in <strong>Settings → General → Apply Karpathy behavioral guidelines</strong>. The change applies to new chats only — existing chats keep whatever setting they started with. The prompt text lives in <a href="https://github.com/pyrate-llama/hermes-ui/blob/main/behavioral_guidelines.md"><code>behavioral_guidelines.md</code></a> and is fully editable.</p>
-</blockquote>
-<h4>Artifact Panel</h4>
-<p><img src="https://raw.githubusercontent.com/pyrate-llama/hermes-ui/main/screenshots/screenshot-artifacts.png" alt="Artifact Panel"></p>
-<h4>Midnight (default)</h4>
-<p><img src="https://raw.githubusercontent.com/pyrate-llama/hermes-ui/main/screenshots/screenshot-midnight.png" alt="Midnight Theme"></p>
-<h4>Twilight</h4>
-<p><img src="https://raw.githubusercontent.com/pyrate-llama/hermes-ui/main/screenshots/screenshot-twilight.png" alt="Twilight Theme"></p>
-<h4>Dawn</h4>
-<p><img src="https://raw.githubusercontent.com/pyrate-llama/hermes-ui/main/screenshots/screenshot-dawn.png" alt="Dawn Theme"></p>
+<h4>Chat</h4>
+<p><img src="https://raw.githubusercontent.com/pyrate-llama/hermes-ui/main/screenshots/chat.png" alt="Chat with inline image generation and live terminal panel"></p>
+<h4>Dashboard</h4>
+<p><img src="https://raw.githubusercontent.com/pyrate-llama/hermes-ui/main/screenshots/dashboard.png" alt="Dashboard with live stats, recent activity, and installed skills"></p>
+<h4>Skills Browser</h4>
+<p><img src="https://raw.githubusercontent.com/pyrate-llama/hermes-ui/main/screenshots/skills.png" alt="Browse and manage installed Hermes skills"></p>
+<h4>Cron Jobs</h4>
+<p><img src="https://raw.githubusercontent.com/pyrate-llama/hermes-ui/main/screenshots/cron-jobs.png" alt="Scheduled cron jobs with edit, pause, and run-now controls"></p>
+<h4>MCP Tools</h4>
+<p><img src="https://raw.githubusercontent.com/pyrate-llama/hermes-ui/main/screenshots/mcp-tools.png" alt="Connected MCP servers grouped by category"></p>
+<h4>File Browser</h4>
+<p><img src="https://raw.githubusercontent.com/pyrate-llama/hermes-ui/main/screenshots/files.png" alt="Live file browser for the ~/.hermes directory with inline preview"></p>
+<h4>Light Theme</h4>
+<p><img src="https://raw.githubusercontent.com/pyrate-llama/hermes-ui/main/screenshots/chat-light.png" alt="Dawn light theme with pirate personality"></p>
+<hr>
+<h3>What&#39;s new in v2.5</h3>
+<p>~45 commits since v2.0 (April 2026).</p>
+<p><strong>New features</strong></p>
+<ul>
+<li><strong>Command palette</strong> (<code>Ctrl/Cmd+K</code>) — fuzzy search across chats and skills (nesq-style)</li>
+<li><strong>Document upload in chat</strong> — drop <code>.txt</code>, <code>.md</code>, <code>.pdf</code>, <code>.json</code>, <code>.csv</code>, <code>.py</code>, <code>.js</code>, <code>.ts</code> files directly into the composer</li>
+<li><strong>Artifact panel</strong> — auto-detects HTML, SVG, PDF, and CSV output and renders live previews in a widening right panel</li>
+<li><strong>MCP Tools modal</strong> — categorized view of all connected servers (Web, Browser, Terminal, Files, Code, etc.)</li>
+<li><strong>Base System Prompt field</strong> — write your own persona or instructions in Settings, applied to new chats</li>
+<li><strong><code>~/.hermes/extra_system_prompt.md</code> addon</strong> (opt-in) — prepend a user-local prompt snippet without forking the repo</li>
+<li><strong>Karpathy behavioral guidelines toggle</strong> (OFF by default, editable at <code>behavioral_guidelines.md</code>)</li>
+<li><strong>Compaction marker SSE event</strong> — visible indicator when context compression fires mid-stream</li>
+<li><strong>Simplified Chinese README</strong> and an in-app language switcher</li>
+</ul>
+<p><strong>Visual refresh</strong></p>
+<ul>
+<li>New inline SVG icon set throughout</li>
+<li>Segmented toolbar pill, ambient depth layers (vignette + noise + third glow blob)</li>
+<li>Color-grouped sidebar icons, regrouped sidebar sections, tightened vertical density</li>
+<li>Dashboard card polish with refreshed typography</li>
+<li>Message bubble and user-avatar gradient refinements</li>
+<li>Light-theme code block readability fix (hljs stylesheet swap)</li>
+<li>Palette-icon theme dropdown replacing the three raw theme swatches</li>
+</ul>
+<p><strong>Skills</strong></p>
+<ul>
+<li>Delete button wired to a matching DELETE endpoint</li>
+<li>Edit/save for skill contents</li>
+<li>Details modal wired to a working endpoint</li>
+<li>Newest-first sort via a new <code>/skills/dates</code> endpoint with relative timestamps</li>
+</ul>
+<p><strong>Stability &amp; bug fixes</strong></p>
+<ul>
+<li>Composer no longer shows &quot;send&quot; when a stream is actually running (state-desync unstick)</li>
+<li>Auto-pause-send on <code>Enter</code> while streaming</li>
+<li>Chat list stays visible across non-chat views</li>
+<li>Scroll position preserved when switching between views</li>
+<li>Session-id rotation after compression re-keys the UI correctly</li>
+<li>Tool calls are no longer stripped from stored sessions</li>
+<li>RTF drag-drop auto-converts to plain text</li>
+<li>Theme dropdown no longer clipped by the header&#39;s containing block</li>
+<li><code>serve_lite.py</code> fails loudly on the wrong Python interpreter</li>
+<li><code>serve.py</code> is now a shim that forwards to <code>serve_lite.py</code> — existing systemd units keep working</li>
+</ul>
 <hr>
 <h3>Features</h3>
 <p><strong>Chat Interface</strong></p>
@@ -119,8 +164,11 @@ When enabled, new chats get a system-prompt appendix enforcing four coding princ
 <li>Tool call visualization with expandable results</li>
 <li>Message editing and re-sending</li>
 <li>Image paste/drop with Gemini vision analysis</li>
-<li>Pause, interject, and stop controls mid-stream</li>
+<li>Document upload in the composer (.txt, .md, .pdf, .json, .csv, .py, .js, .ts) — RTF auto-converts to plain text</li>
+<li>Pause, interject, and stop controls mid-stream (auto-pause on <code>Enter</code> while streaming)</li>
+<li>Command palette (<code>Ctrl/Cmd+K</code>) for fuzzy search across chats and skills</li>
 <li>Multiple personality modes (default, technical, creative, pirate, kawaii, and more)</li>
+<li>Base System Prompt field in Settings — write your own persona or instructions</li>
 <li>PDF and HTML chat export</li>
 <li>Markdown rendering with syntax-highlighted code blocks</li>
 </ul>
@@ -132,8 +180,8 @@ When enabled, new chats get a system-prompt appendix enforcing four coding princ
 </ul>
 <p><strong>Artifact Panel</strong></p>
 <ul>
-<li>5th tab in the live terminal panel (alongside Gateway, Errors, Web UI, All)</li>
-<li>Auto-detects HTML, SVG, and code blocks in Hermes responses and renders them live</li>
+<li>Dedicated tab in the live right panel (alongside Errors, Web UI, All)</li>
+<li>Auto-detects HTML, SVG, PDF, and CSV output in Hermes responses and renders them live</li>
 <li>Auto-detects file paths Hermes saves to disk (e.g. <code>~/Desktop/page.html</code>) and loads them automatically — no need to copy-paste code</li>
 <li>Panel dynamically widens from 320px to 600px when Artifacts tab is active</li>
 <li>Sandboxed iframe rendering for HTML/SVG with full animation and JavaScript support</li>
@@ -400,11 +448,11 @@ tailscale up
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/outsourc-e/hermes-workspace">
-        <div class="stars">★ 1.9K</div>
+        <div class="stars">★ 2.0K</div>
         <div class="name"><span class="org">outsourc-e /</span> hermes-workspace</div>
       </a>
       <a class="related-row" href="/projects/fathah/hermes-desktop">
-        <div class="stars">★ 330</div>
+        <div class="stars">★ 342</div>
         <div class="name"><span class="org">fathah /</span> hermes-desktop</div>
       </a>
       <a class="related-row" href="/projects/sanchomuzax/hermes-webui">
@@ -416,15 +464,15 @@ tailscale up
         <div class="name"><span class="org">Euraika-Labs /</span> pan-ui</div>
       </a>
       <a class="related-row" href="/projects/xaspx/hermes-control-interface">
-        <div class="stars">★ 444</div>
+        <div class="stars">★ 450</div>
         <div class="name"><span class="org">xaspx /</span> hermes-control-interface</div>
       </a>
       <a class="related-row" href="/projects/dodo-reach/hermes-desktop">
-        <div class="stars">★ 511</div>
+        <div class="stars">★ 526</div>
         <div class="name"><span class="org">dodo-reach /</span> hermes-desktop</div>
       </a>
       <a class="related-row" href="/projects/nesquena/hermes-webui">
-        <div class="stars">★ 3.1K</div>
+        <div class="stars">★ 3.2K</div>
         <div class="name"><span class="org">nesquena /</span> hermes-webui</div>
       </a>
       <a class="related-row" href="/projects/clawvader-tech/hermes-telegram-miniapp">

@@ -59,11 +59,11 @@
   <p class="project-desc">Conductor for cross-agent coding workflows: structured memory, handoffs, plan-approve-execute coordination across external CLIs (Codex, Claude Code, Gemini).</p>
 
   <div class="meta-row">
-    <span class="stars">★ 71</span>
+    <span class="stars">★ 79</span>
     <span><span class="meta-label">lang</span>TypeScript</span>
     
     
-    <span><span class="meta-label">updated</span>2026-04-21</span>
+    <span><span class="meta-label">updated</span>2026-04-22</span>
   </div>
 
   <div class="actions">
@@ -78,11 +78,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Maestro is a local-first conductor for multi-agent software engineering that enables persistent state management across separate agent sessions. It uses a CLI and a local filesystem-based state model in the .maestro/ directory to coordinate missions, features, and handoffs without requiring a server or database. The tool allows human operators to manage long-running workflows by breaking work into milestones and generating markdown briefs for fresh agent runs. It bridges the gap between different terminal-based agent harnesses like Claude Code and Codex through structured memory and shared project context.</p>
+    <p class="summary-text">Maestro is a local-first conductor for multi-agent software engineering that enables persistent state management across separate agent sessions. It operates by storing missions, features, and memory as on-disk state in a .maestro/ directory, removing the need for servers, databases, or background daemons. This approach allows human operators to coordinate multiple terminal-based agents like Claude Code or Codex while maintaining a disciplined, inspectable record of progress and learnings. The system facilitates structured handoffs and cross-feature learning through a CLI-driven workflow and a read-only TUI dashboard.</p>
     <ul class="summary-highlights">
-      <li>Local-first state management using disk-based .maestro/ directory storage</li>
+      <li>Local-first state management using on-disk .maestro directory files</li>
       <li>Structured mission planning with milestones, features, and validation assertions</li>
-      <li>Native handoff launches for starting fresh agent sessions with context</li>
+      <li>Native handoff launches that generate markdown briefs for fresh agent runs</li>
     </ul>
   </div>
 </section>
@@ -169,7 +169,7 @@
 </tr>
 <tr>
 <td>Reply</td>
-<td>A agent&#39;s structured outcome record for a feature, optionally gated by behavioral principles.</td>
+<td>An agent&#39;s structured outcome record for a feature, optionally gated by behavioral principles.</td>
 </tr>
 <tr>
 <td>Principle</td>
@@ -378,6 +378,181 @@ maestro milestone seal implement --mission &lt;mission-id&gt;
   --json
 </code></pre>
 <p>Use <code>--model</code> to override the agent default (<code>gpt-5.4</code> for Codex, <code>opus</code> for Claude), <code>--name</code> to label the launch, and <code>--base</code> when you need a specific base branch for a worktree handoff. Use <code>maestro handoff pickup</code> to consume a packet and immediately take over its linked task.</p>
+<h3>Task System</h3>
+<p>Tasks are Maestro&#39;s lightweight, mutable issue graph for the daily queue. A task answers &quot;what do I do next?&quot;; a mission answers &quot;what are we building?&quot; Tasks live in <code>.maestro/tasks/tasks.jsonl</code>, are repo-tracked, and review like regular diffs.</p>
+<h4>Lifecycle</h4>
+<pre><code class="language-mermaid">flowchart LR
+    pending --&gt;|claim| in_progress
+    in_progress --&gt;|unclaim| pending
+    in_progress --&gt;|complete| completed
+    completed -.-&gt;|reopen| pending
+</code></pre>
+<ul>
+<li><code>pending</code> tasks sit in the queue.</li>
+<li><code>in_progress</code> tasks are claimed by exactly one session.</li>
+<li><code>completed</code> tasks are locked; edits or re-runs require <code>task reopen</code>, which restores the task and its continuation summary.</li>
+<li>Legacy statuses (<code>open</code>, <code>blocked</code>, <code>deferred</code>, <code>closed</code>) still parse from older state files and collapse to <code>pending</code> or <code>completed</code> on read.</li>
+</ul>
+<p>Every task carries a <code>type</code> (<code>task</code>, <code>bug</code>, <code>feature</code>, <code>epic</code>, <code>chore</code>), a <code>priority</code> (<code>P0</code>-<code>P4</code>, default <code>P2</code>), freeform <code>labels</code>, optional <code>parentId</code>, ownership metadata (<code>assignee</code>, <code>claimedAt</code>, <code>lastActivityAt</code>), optional <code>contractId</code>, and an optional <code>receipt</code> (<code>summary</code>, <code>surprise</code>, <code>verifiedBy</code>) captured at completion.</p>
+<h4>Dependencies and blocking</h4>
+<p>Blocking is symmetric and stored on both sides. Each task has a <code>blockedBy</code> list of prerequisites and a <code>blocks</code> list of dependents. Declaring that <code>A</code> blocks <code>B, C</code> atomically updates all three tasks.</p>
+<pre><code class="language-bash">maestro task block &lt;id&gt; &lt;blockedTaskIds...&gt;
+maestro task unblock &lt;id&gt; &lt;blockedTaskIds...&gt;
+maestro task create &quot;...&quot; --blocked-by &lt;ids&gt;
+</code></pre>
+<p>Rules enforced by the domain layer:</p>
+<ul>
+<li>A task is <strong>ready</strong> only when every entry in its <code>blockedBy</code> is <code>completed</code> (or missing from the store). <code>task ready</code> returns exactly the pending, unblocked, unassigned set, ranked <code>P0</code>/<code>P1</code> first and then by creation time.</li>
+<li>Status moves into <code>in_progress</code> or <code>completed</code> fail with a blocker error when any prerequisite is still open.</li>
+<li>The retired <code>task deps add|remove</code> verbs now error and point to <code>task block</code> / <code>task unblock</code>.</li>
+</ul>
+<h4>Discovery</h4>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>maestro task ready</code></td>
+<td>Pending, unblocked, unassigned tasks, <code>P0</code>/<code>P1</code> first.</td>
+</tr>
+<tr>
+<td><code>maestro task mine</code></td>
+<td>Tasks claimed by the active session.</td>
+</tr>
+<tr>
+<td><code>maestro task stuck</code></td>
+<td><code>in_progress</code> tasks idle past <code>--older-than</code> (default <code>4h</code>).</td>
+</tr>
+<tr>
+<td><code>maestro task similar &lt;id&gt;</code></td>
+<td>Tasks that look alike by title, completion reason, receipt text, and linked contract text.</td>
+</tr>
+<tr>
+<td><code>maestro task list</code></td>
+<td>Full filter set: <code>--status</code>, <code>--priority</code>, <code>--type</code>, <code>--label</code>, <code>--parent</code>, <code>--assignee</code>, <code>--limit</code>.</td>
+</tr>
+</tbody></table>
+<h4>Ownership and claim</h4>
+<p>Claiming is exclusive and session-scoped. Session IDs come from the <code>sessionDetection</code> config (Claude Code out of the box) or <code>--session &lt;id&gt;</code> when scripting.</p>
+<pre><code class="language-bash">maestro task claim &lt;id&gt;
+maestro task claim &lt;id&gt; --busy-check        # refuse if this session already owns open work
+maestro task claim &lt;id&gt; --force             # steal from another session
+maestro task claim &lt;id&gt; --stale-after 4h    # auto-release a dead owner&#39;s stale claim
+maestro task unclaim &lt;id&gt;                   # in_progress demotes to pending
+maestro task release-owned &lt;sessionId&gt;      # release everything a session held
+maestro task heartbeat &lt;id&gt;                 # bump lastActivityAt without other edits
+</code></pre>
+<p><code>task update &lt;id&gt; --status in_progress</code> auto-claims an unassigned task for the current session, provided the session has no other open work (or <code>--force</code> is passed). This preserves the invariant that a session owns at most one in-flight task at a time.</p>
+<h4>Batch planning</h4>
+<p>Agents can stage a whole queue upfront from one JSON file. References between tasks use a batch-local <code>name</code> slot that resolves to real ids inside a single atomic write.</p>
+<pre><code class="language-bash">maestro task plan --file plan.json
+maestro task plan --file - &lt; plan.json
+maestro task plan --file plan.json --start scaffold    # auto-claim the named task
+maestro task plan --file plan.json --dry-run           # validate without writing
+</code></pre>
+<pre><code class="language-json">{
+  &quot;batchId&quot;: &quot;auth-slice&quot;,
+  &quot;tasks&quot;: [
+    { &quot;name&quot;: &quot;scaffold&quot;, &quot;title&quot;: &quot;Scaffold auth module&quot;, &quot;type&quot;: &quot;chore&quot;, &quot;priority&quot;: 2 },
+    { &quot;name&quot;: &quot;tests&quot;, &quot;title&quot;: &quot;Add login tests&quot;, &quot;blockedBy&quot;: [&quot;scaffold&quot;] },
+    { &quot;title&quot;: &quot;Wire login route&quot;, &quot;blockedBy&quot;: [&quot;scaffold&quot;, &quot;tests&quot;], &quot;labels&quot;: [&quot;auth&quot;] }
+  ]
+}
+</code></pre>
+<h4>Resumable continuation</h4>
+<p>Every task has a durable, on-disk continuation record that tells the next agent where work stands. It is the source of truth for resume across sessions, across agents, and across context compaction. Standalone handoff packets are the transfer artifact; the continuation is the state.</p>
+<p>Two files back each task:</p>
+<ul>
+<li><code>.maestro/tasks/continuations/active/&lt;taskId&gt;.json</code> -- live summary. Moves to <code>completed/&lt;taskId&gt;.json</code> at <code>task update --status completed</code> and returns to <code>active/</code> on <code>task reopen</code>.</li>
+<li><code>.maestro/tasks/local-history/&lt;taskId&gt;.jsonl</code> -- append-only event log (per-machine).</li>
+</ul>
+<p>Summary fields: <code>currentState</code>, <code>nextAction</code>, <code>keyDecisions</code>, <code>activeAgent</code>, <code>lastActiveAt</code>. Event kinds: <code>snapshot</code>, <code>decision</code>, <code>next_action_set</code>, <code>blocker_set</code>, <code>handoff_created</code>, <code>handoff_picked_up</code>, <code>agent_takeover</code>, <code>task_completed</code>, <code>task_reopened</code>.</p>
+<h5>Three ways work resumes</h5>
+<ol>
+<li><p><strong>Same session, chat intent.</strong> Maestro installs Claude Code hooks that hydrate the active continuation into the agent&#39;s context with no CLI call:</p>
+<ul>
+<li><code>SessionStart</code> injects a short pointer when an active task exists: id, title, status, last-active timestamp, and a nudge to say <code>continue</code> or <code>resume</code>.</li>
+<li><code>UserPromptSubmit</code> watches for these exact phrases (case- and punctuation-insensitive) and expands them into the full resume payload (current state, next action, active decisions, recent timeline) before the model sees the prompt:<ul>
+<li><code>continue</code></li>
+<li><code>continue work</code></li>
+<li><code>resume</code></li>
+<li><code>resume work</code></li>
+<li><code>pick up where we left off</code></li>
+<li><code>resume where we left off</code></li>
+<li><code>resume from where we left off</code></li>
+</ul>
+</li>
+<li><code>PreCompact</code> preserves the continuation in the compacted summary so resume survives a context reset.</li>
+</ul>
+<p>These are plain chat intents, not Maestro CLI commands.</p>
+</li>
+<li><p><strong>Different agent, handoff pickup.</strong> <code>maestro handoff pickup [--id &lt;handoffId&gt;]</code> consumes one open packet atomically, force-claims the linked task for the current session, moves it to <code>in_progress</code>, transfers any contract ownership, rewrites the continuation summary with a <code>Resumed from handoff ...</code> prefix, and records <code>agent_takeover</code> + <code>handoff_picked_up</code> events. The new agent inherits the prior <code>nextAction</code> and <code>keyDecisions</code> without a separate chat intent.</p>
+</li>
+<li><p><strong>Manual inspection.</strong> <code>maestro task show &lt;id&gt;</code> prints the raw task and continuation state for offline review.</p>
+</li>
+</ol>
+<h5>Keep the continuation fresh while working</h5>
+<pre><code class="language-bash">maestro task update &lt;id&gt; \
+  --current-state &quot;Tests pass locally; rebased on main&quot; \
+  --next-action &quot;Open PR and request review&quot; \
+  --add-decision &quot;Use bcrypt over argon2 for parity with legacy&quot; \
+  --remove-decision &quot;Use JWTs in localStorage&quot;
+</code></pre>
+<p>Refresh when current state or next action changes, when a load-bearing decision or constraint changes, or when blockers appear or clear.</p>
+<h4>Contracts</h4>
+<p>A contract is a machine-checked agreement attached to a task: what to touch, what to avoid, and what &quot;done&quot; means. At completion, Maestro diffs <code>claimedAtCommit..HEAD</code> and renders a verdict.</p>
+<p>Lifecycle: <code>draft</code> -&gt; <code>locked</code> or <code>amended</code> -&gt; <code>fulfilled</code> or <code>broken</code>, with <code>discarded</code> as an early-exit from <code>draft</code>. A closed contract can be reopened alongside its task.</p>
+<pre><code class="language-bash">maestro task contract new &lt;taskId&gt; --editor &quot;$EDITOR&quot;   # or --from template.yaml
+maestro task contract edit &lt;ref&gt;
+maestro task contract lock &lt;ref&gt;                         # freeze scope + claim commit
+maestro task contract amend &lt;ref&gt;                        # record a post-lock change
+maestro task contract show &lt;ref&gt;
+maestro task contract list
+maestro task contract verdict &lt;ref&gt;                      # preview without closing
+maestro task contract discard &lt;ref&gt;                      # draft only
+maestro task contract reopen &lt;ref&gt;                       # after fulfilled/broken
+maestro task contract criteria mark &lt;ref&gt; &lt;criterionId&gt; --evidence &quot;bun test&quot;
+maestro task contract criteria add &lt;ref&gt; &quot;New criterion text&quot;
+maestro task contract criteria remove &lt;ref&gt; &lt;criterionId&gt;
+</code></pre>
+<p>A contract records:</p>
+<ul>
+<li><code>intent</code> -- one-sentence goal.</li>
+<li><code>scope</code> -- <code>filesExpected</code>, <code>filesForbidden</code>, optional <code>maxFilesTouched</code> cap.</li>
+<li><code>doneWhen[]</code> -- explicit criteria, each <code>manual</code> or <code>receipt-hint</code>, each markable with evidence.</li>
+<li><code>claimedAtCommit</code> -- git HEAD captured at lock; the verdict diffs against it.</li>
+<li><code>configSnapshot</code> -- strictness, overlap policy, anchor-rebase fallback, and stale-reclaim policy in effect at lock time.</li>
+<li><code>ownershipHistory</code> -- transfers from <code>claim --force</code> reclaims and <code>handoff pickup</code>.</li>
+</ul>
+<p>Completion gating: <code>task update --status completed</code> against a task with a locked contract closes the contract, renders a verdict, and fails completion when the verdict is broken and either <code>contracts.strict=true</code> is set or <code>--strict</code> is passed. Use <code>--no-contract</code> to complete without a contract when <code>contracts.default=required</code>.</p>
+<p>Relevant config (<code>.maestro/config.yaml</code>):</p>
+<pre><code class="language-yaml">contracts:
+  default: prompt              # required | prompt | optional
+  strict: false                # block completion on broken verdict
+  overlapPolicy: fail          # fail | annotate (active contract scope overlap)
+  rebaseFallback: best-effort  # best-effort | fail (when claimedAtCommit is missing)
+  defaultMaxFilesTouched: ~    # integer cap or unset
+  staleReclaimContractPolicy: inherit  # inherit | block (when taking over a stale claim)
+</code></pre>
+<h4>Task storage</h4>
+<pre><code class="language-text">.maestro/tasks/
+├── tasks.jsonl                 # authoritative task graph (repo-tracked)
+├── contracts/                  # per-task locked contracts and verdicts (repo-tracked)
+├── contract-templates/         # reusable YAML drafts for `contract new --from`
+├── continuations/              # per-task resume summaries + event logs
+├── batches/                    # batch plan manifests
+├── candidates/                 # captured work candidates awaiting promotion
+└── local-history/              # per-machine audit log (ignored)
+</code></pre>
+<p><code>tasks.jsonl</code>, <code>contracts/</code>, and <code>principles.jsonl</code> are intentionally repo-tracked so the queue and its policies review like any other code change. Local histories and candidate piles stay per-machine. Bound their growth with:</p>
+<pre><code class="language-bash">maestro task prune                       # keep the most recent 500 entries per kind
+maestro task prune --keep 100 --candidates-only
+maestro task prune --continuations-only --dry-run
+maestro task prune --all                 # purge both piles
+</code></pre>
 <h3>Common Commands</h3>
 <table>
 <thead>
@@ -567,7 +742,12 @@ maestro milestone seal implement --mission &lt;mission-id&gt;
 │       └── agents/
 ├── tasks/
 │   ├── tasks.jsonl
-│   └── candidates/
+│   ├── contracts/
+│   ├── contract-templates/
+│   ├── continuations/
+│   ├── batches/
+│   ├── candidates/
+│   └── local-history/
 ├── principles.jsonl
 └── notes.json
 
@@ -630,35 +810,35 @@ maestro mission-control --render-check --size 120x40
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mukul975/Anthropic-Cybersecurity-Skills">
-        <div class="stars">★ 5.4K</div>
+        <div class="stars">★ 5.5K</div>
         <div class="name"><span class="org">mukul975 /</span> Anthropic-Cybersecurity-Skills</div>
       </a>
       <a class="related-row" href="/projects/conorbronsdon/avoid-ai-writing">
-        <div class="stars">★ 1.1K</div>
+        <div class="stars">★ 1.2K</div>
         <div class="name"><span class="org">conorbronsdon /</span> avoid-ai-writing</div>
       </a>
       <a class="related-row" href="/projects/wondelai/skills">
-        <div class="stars">★ 681</div>
+        <div class="stars">★ 691</div>
         <div class="name"><span class="org">wondelai /</span> skills</div>
       </a>
       <a class="related-row" href="/projects/DougTrajano/pydantic-ai-skills">
-        <div class="stars">★ 249</div>
+        <div class="stars">★ 252</div>
         <div class="name"><span class="org">DougTrajano /</span> pydantic-ai-skills</div>
       </a>
       <a class="related-row" href="/projects/Agents365-ai/drawio-skill">
-        <div class="stars">★ 377</div>
+        <div class="stars">★ 386</div>
         <div class="name"><span class="org">Agents365-ai /</span> drawio-skill</div>
       </a>
       <a class="related-row" href="/projects/smartcontractkit/chainlink-agent-skills">
-        <div class="stars">★ 87</div>
+        <div class="stars">★ 88</div>
         <div class="name"><span class="org">smartcontractkit /</span> chainlink-agent-skills</div>
       </a>
       <a class="related-row" href="/projects/tlehman/litprog-skill">
-        <div class="stars">★ 100</div>
+        <div class="stars">★ 102</div>
         <div class="name"><span class="org">tlehman /</span> litprog-skill</div>
       </a>
       <a class="related-row" href="/projects/esaradev/icarus-plugin">
-        <div class="stars">★ 95</div>
+        <div class="stars">★ 98</div>
         <div class="name"><span class="org">esaradev /</span> icarus-plugin</div>
       </a>
     </div>

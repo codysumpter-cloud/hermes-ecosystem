@@ -283,14 +283,14 @@
     "auditedAt": "2026-04-20T08:40:53.315Z"
   },
   "ReinaMacCredy/maestro": {
-    "summary": "Maestro is a local-first conductor for multi-agent software engineering that enables persistent state management across separate agent sessions. It uses a CLI and a local filesystem-based state model in the .maestro/ directory to coordinate missions, features, and handoffs without requiring a server or database. The tool allows human operators to manage long-running workflows by breaking work into milestones and generating markdown briefs for fresh agent runs. It bridges the gap between different terminal-based agent harnesses like Claude Code and Codex through structured memory and shared project context.",
+    "summary": "Maestro is a local-first conductor for multi-agent software engineering that enables persistent state management across separate agent sessions. It operates by storing missions, features, and memory as on-disk state in a .maestro/ directory, removing the need for servers, databases, or background daemons. This approach allows human operators to coordinate multiple terminal-based agents like Claude Code or Codex while maintaining a disciplined, inspectable record of progress and learnings. The system facilitates structured handoffs and cross-feature learning through a CLI-driven workflow and a read-only TUI dashboard.",
     "highlights": [
-      "Local-first state management using disk-based .maestro/ directory storage",
+      "Local-first state management using on-disk .maestro directory files",
       "Structured mission planning with milestones, features, and validation assertions",
-      "Native handoff launches for starting fresh agent sessions with context"
+      "Native handoff launches that generate markdown briefs for fresh agent runs"
     ],
-    "readmeHash": "59e24380e99e98f2821fa4d843f39e6395d39d67abb5c88a1dde6131176b3685",
-    "generatedAt": "2026-04-21T07:08:21.062Z",
+    "readmeHash": "e2b022185fb0826a78457cb233913a172be8c2ff260cb5c432090306ab6e21da",
+    "generatedAt": "2026-04-22T07:07:08.457Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
@@ -1189,31 +1189,30 @@
     "audit": "pass"
   },
   "garrytan/gbrain": {
-    "summary": "GBrain is a persistent memory and context layer designed to prevent AI agents from losing information over time. It utilizes a self-wiring knowledge graph and hybrid search to automatically extract entity references and create typed links between people, companies, and events. The system operates through 26 specialized skills that handle automated content ingestion from meetings, emails, and social media while performing overnight memory consolidation. It integrates directly with Hermes Agent and OpenClaw via MCP tools to provide structured timelines and backlink-boosted information retrieval.",
+    "summary": "GBrain is a persistent memory and knowledge graph system designed to provide AI agents with long-term context and structured information retrieval. It utilizes a self-wiring graph architecture that automatically extracts entity references and creates typed links between people, companies, and events without requiring LLM calls for every connection. The system features a hybrid search engine and 26 specialized skills that allow agents to ingest diverse data sources like emails, meetings, and tweets while maintaining a structured timeline. It integrates directly with Hermes Agent and OpenClaw, offering an MCP server for use with tools like Claude Code and Cursor.",
     "highlights": [
-      "Self-wiring knowledge graph with automated entity extraction and typed linking",
+      "Self-wiring knowledge graph with automated entity and relationship extraction",
       "Hybrid search combining vector retrieval with backlink-boosted ranking",
-      "Twenty-six specialized skills for automated ingestion, enrichment, and task management"
+      "Ships with 26 modular skills for ingestion, enrichment, and maintenance"
     ],
-    "readmeHash": "0f3f74a34d11f105f3c266141a0589bcd8422738097fd22cba0c90424a34e6be",
-    "generatedAt": "2026-04-21T07:10:35.323Z",
+    "readmeHash": "49e020aede9107d3e16f37d45554d0e8435758a4c7cebd9f0214ef344bb612d1",
+    "generatedAt": "2026-04-22T07:07:26.418Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
     "audit": "pass"
   },
   "pyrate-llama/hermes-ui": {
-    "summary": "Hermes UI is a glassmorphic web interface for the Hermes Agent self-hosted AI assistant. It operates as a single-file React 18 application served via a lightweight Python proxy that requires no external dependencies. The interface provides real-time tool visualization, live log streaming, and an artifact panel for rendering HTML, SVG, and code blocks. Users can also manage internal memory, browse files, and monitor connected MCP tools through a unified dashboard.",
+    "summary": "Hermes UI is a glassmorphic web interface designed for the self-hosted Hermes Agent AI assistant. It operates as a single-file HTML application built with React 18, utilizing a lightweight Python proxy server to handle real-time communication and file management. The interface features a multi-functional dashboard for chat, file browsing, and memory inspection, while providing live log streaming via Server-Sent Events. Users can manage MCP tools, execute cron jobs, and preview generated artifacts like HTML or SVG directly within a dedicated side panel.",
     "highlights": [
-      "Single-file React 18 architecture with no build step required",
-      "Real-time SSE log streaming and tool call visualization",
-      "Artifact panel for live rendering of HTML, SVG, and code"
+      "Single-file HTML architecture using React 18 and Python proxy",
+      "Real-time artifact panel for live HTML, SVG, and PDF previews",
+      "Integrated file browser and memory inspector for local agent data"
     ],
-    "readmeHash": "553b52c957f51ca03da0d31726fb473a0a3a9622de561d9c27bf39c54db6fb96",
-    "generatedAt": "2026-04-20T07:17:45.523Z",
+    "readmeHash": "eb674d5b1ee0de56aedf25a98929874a7e22ff6bbf379162b95d56ebaec78ca7",
+    "generatedAt": "2026-04-22T07:07:30.239Z",
     "model": "google/gemma-4-31b-it:free",
     "version": 1,
-    "audit": "pass",
-    "auditedAt": "2026-04-20T08:44:38.324Z"
+    "audit": "pass"
   },
   "kevinmarmstrong/hermes-claude-code-rc": {
     "summary": "This Hermes Agent plugin enables remote management of Claude Code sessions through a Telegram interface. It bridges the gap between mobile devices and local filesystems by allowing users to initiate authenticated remote control sessions on their host machine via slash commands. The plugin captures the resulting session URL and returns it to the user, enabling full access to local tools and databases from the Claude mobile app. Beyond session management, it supports headless command execution and direct shell access with built-in safety filters for dangerous operations.",
